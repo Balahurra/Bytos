@@ -38,13 +38,13 @@ export async function getStateToPostToWebview(controller: {
 	// Get API configuration from cache for immediate access
 	const onboardingModels = getBytosOnboardingModels()
 	const apiConfiguration = stateManager.getApiConfiguration()
-	// This build has no hosted Bytos/BytosPass account providers. Move any
-	// configuration written by an older build to the default BYOK provider so
-	// the UI never offers the account-backed catalogs.
+	// This build has no hosted Bytos account provider. Move any configuration
+	// written by an older build to the default BYOK provider. ClinePass
+	// ("bytos-pass" internally) stays available as a compatibility provider.
 	if (apiConfiguration) {
 		let migrated = false
 		for (const key of ["planModeApiProvider", "actModeApiProvider"] as const) {
-			if (apiConfiguration[key] === "bytos" || apiConfiguration[key] === "bytos-pass") {
+			if (apiConfiguration[key] === "bytos") {
 				apiConfiguration[key] = DEFAULT_API_PROVIDER
 				migrated = true
 			}

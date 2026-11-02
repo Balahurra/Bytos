@@ -68,6 +68,10 @@ code --install-extension bytos.bytos
 
 Open the Bytos view in the activity bar, pick a model provider, and describe the task.
 
+### ClinePass compatibility
+
+If you already have a Cline API key, choose **ClinePass** in **Settings → API Configuration**. It calls Cline's hosted API directly (`https://api.cline.bot/api/v1`), so existing Cline users can keep their key and billing relationship. Cline's pricing and terms apply; this is a compatibility provider, not a Bytos subscription.
+
 ## Performance
 
 The webview is the most latency-sensitive part of an IDE agent: every millisecond spent parsing code is a millisecond before the first token appears.

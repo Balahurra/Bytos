@@ -16,6 +16,7 @@ import { AskSageProvider } from "./providers/AskSageProvider"
 import { BasetenProvider } from "./providers/BasetenProvider"
 import { BedrockProvider } from "./providers/BedrockProvider"
 import { ClaudeCodeProvider } from "./providers/ClaudeCodeProvider"
+import { ClinePassProvider } from "./providers/ClinePassProvider"
 import { DifyProvider } from "./providers/DifyProvider"
 import { GenericProviderSettings } from "./providers/GenericProviderSettings"
 import { GroqProvider } from "./providers/GroqProvider"
@@ -104,11 +105,11 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 
 	const { handleModeFieldChange } = useApiConfigurationHandlers()
 
-	// The hosted Bytos/BytosPass providers are not part of this build. Users
-	// configure a BYOK provider or a local endpoint instead. Migrate any
-	// configuration written by an older build to the default BYOK provider.
+	// The hosted Bytos account provider is not part of this build. Users
+	// configure a BYOK provider, a local endpoint, or the ClinePass
+	// compatibility provider. Migrate only the account-backed Bytos slot.
 	useEffect(() => {
-		if (selectedProvider === "bytos" || selectedProvider === "bytos-pass") {
+		if (selectedProvider === "bytos") {
 			handleModeFieldChange({ plan: "planModeApiProvider", act: "actModeApiProvider" }, DEFAULT_API_PROVIDER, currentMode)
 		}
 	}, [selectedProvider, handleModeFieldChange, currentMode])
@@ -127,7 +128,7 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 		// instead of a static hand-maintained list.
 		let providers = catalogProviderListings.map((provider) => ({
 			value: provider.id,
-			label: provider.name,
+			label: provider.id === "bytos-pass" ? "ClinePass" : provider.name,
 		}))
 		// Filter by platform
 		if (PLATFORM_CONFIG.type !== PlatformType.VSCODE) {
@@ -135,9 +136,15 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 			providers = providers.filter((option) => option.value !== "vscode-lm")
 		}
 
-		// Hosted Bytos providers require a Bytos account and are intentionally
-		// unavailable: this build runs on API keys and local endpoints only.
-		providers = providers.filter((option) => option.value !== "bytos" && option.value !== "bytos-pass")
+		// The Bytos account provider is intentionally unavailable. ClinePass
+		// stays available as a compatibility provider for existing Cline keys.
+		providers = providers.filter((option) => option.value !== "bytos")
+
+		// Keep ClinePass visible even when the host catalog has not loaded the
+		// generated provider entry yet (for example during a cold start).
+		if (!providers.some((option) => option.value === "bytos-pass")) {
+			providers.push({ value: "bytos-pass", label: "ClinePass" })
+		}
 
 		// Filter by remote config if remoteConfiguredProviders is set
 		const remoteProviders: string[] = remoteConfigSettings?.remoteConfiguredProviders || []
@@ -367,6 +374,10 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 
 			{apiConfiguration && selectedProvider === "claude-code" && (
 				<ClaudeCodeProvider currentMode={currentMode} isPopup={isPopup} showModelOptions={showModelOptions} />
+			)}
+
+			{apiConfiguration && selectedProvider === "bytos-pass" && (
+				<ClinePassProvider currentMode={currentMode} isPopup={isPopup} showModelOptions={showModelOptions} />
 			)}
 
 			{apiConfiguration && selectedProvider === "openai-native" && (

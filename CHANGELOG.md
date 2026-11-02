@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.1.27]
+
+### Added
+
+- **ClinePass compatibility provider.** You can now paste an existing Cline API key in Settings → API Configuration → ClinePass. Requests go directly to Cline's hosted API (`https://api.cline.bot/api/v1`), so existing Cline users can keep using their key. Cline's pricing and terms apply. No Bytos account is required.
+
+### Changed
+
+- The Bytos account provider remains unavailable; ClinePass is the only hosted compatibility surface.
+
 ## [4.1.26]
 
 ### Changed

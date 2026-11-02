@@ -42,8 +42,7 @@ const GeneralSettingsSection = ({ renderSectionHeader }: GeneralSettingsSectionP
 					</Tooltip>
 
 					<p className="text-sm mt-[5px] text-description">
-						Help improve Bytos by sending usage data and error reports. Reports don't include your code or prompts,
-						except for requests to the Bytos and BytosPass providers. See our{" "}
+						Help improve Bytos by sending usage data and error reports. Reports don't include your code or prompts. See our{" "}
 						<VSCodeLink
 							className="text-inherit"
 							href="https://docs.bytos.dev/more-info/telemetry"

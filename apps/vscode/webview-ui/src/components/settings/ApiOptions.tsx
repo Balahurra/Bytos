@@ -1,3 +1,4 @@
+import { DEFAULT_API_PROVIDER } from "@shared/api"
 import type { Mode } from "@shared/storage/types"
 import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react"
 import Fuse from "fuse.js"
@@ -8,7 +9,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { PLATFORM_CONFIG, PlatformType } from "@/config/platform.config"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import { useProviderListings } from "@/hooks/useProviderListings"
-import { BytosPassHint } from "./BytosPassHint"
 import { OPENROUTER_MODEL_PICKER_Z_INDEX } from "./OpenRouterModelPicker"
 import { AIhubmixProvider } from "./providers/AihubmixProvider"
 import { AnthropicProvider } from "./providers/AnthropicProvider"
@@ -16,8 +16,6 @@ import { AskSageProvider } from "./providers/AskSageProvider"
 import { BasetenProvider } from "./providers/BasetenProvider"
 import { BedrockProvider } from "./providers/BedrockProvider"
 import { ClaudeCodeProvider } from "./providers/ClaudeCodeProvider"
-import { BytosPassProvider } from "./providers/BytosPassProvider"
-import { BytosProvider } from "./providers/BytosProvider"
 import { DifyProvider } from "./providers/DifyProvider"
 import { GenericProviderSettings } from "./providers/GenericProviderSettings"
 import { GroqProvider } from "./providers/GroqProvider"
@@ -82,14 +80,7 @@ declare module "vscode" {
 	}
 }
 
-const ApiOptions = ({
-	showModelOptions,
-	apiErrorMessage,
-	modelIdErrorMessage,
-	isPopup,
-	currentMode,
-	initialModelTab,
-}: ApiOptionsProps) => {
+const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, isPopup, currentMode }: ApiOptionsProps) => {
 	// Use full context state for immediate save payload
 	const { apiConfiguration, remoteConfigSettings } = useExtensionState()
 
@@ -113,6 +104,15 @@ const ApiOptions = ({
 
 	const { handleModeFieldChange } = useApiConfigurationHandlers()
 
+	// The hosted Bytos/BytosPass providers are not part of this build. Users
+	// configure a BYOK provider or a local endpoint instead. Migrate any
+	// configuration written by an older build to the default BYOK provider.
+	useEffect(() => {
+		if (selectedProvider === "bytos" || selectedProvider === "bytos-pass") {
+			handleModeFieldChange({ plan: "planModeApiProvider", act: "actModeApiProvider" }, DEFAULT_API_PROVIDER, currentMode)
+		}
+	}, [selectedProvider, handleModeFieldChange, currentMode])
+
 	// Provider search state
 	const [searchTerm, setSearchTerm] = useState("")
 	const [isDropdownVisible, setIsDropdownVisible] = useState(false)
@@ -134,6 +134,10 @@ const ApiOptions = ({
 			// Don't include VS Code LM API for non-VSCode platforms
 			providers = providers.filter((option) => option.value !== "vscode-lm")
 		}
+
+		// Hosted Bytos providers require a Bytos account and are intentionally
+		// unavailable: this build runs on API keys and local endpoints only.
+		providers = providers.filter((option) => option.value !== "bytos" && option.value !== "bytos-pass")
 
 		// Filter by remote config if remoteConfiguredProviders is set
 		const remoteProviders: string[] = remoteConfigSettings?.remoteConfiguredProviders || []
@@ -349,23 +353,8 @@ const ApiOptions = ({
 				</ProviderDropdownWrapper>
 			</DropdownContainer>
 
-			{!isPopup && <BytosPassHint currentMode={currentMode} selectedProvider={selectedProvider} />}
-
 			{apiConfiguration && selectedProvider === "hicap" && (
 				<HicapProvider currentMode={currentMode} isPopup={isPopup} showModelOptions={showModelOptions} />
-			)}
-
-			{apiConfiguration && selectedProvider === "bytos" && (
-				<BytosProvider
-					currentMode={currentMode}
-					initialModelTab={initialModelTab}
-					isPopup={isPopup}
-					showModelOptions={showModelOptions}
-				/>
-			)}
-
-			{apiConfiguration && selectedProvider === "bytos-pass" && (
-				<BytosPassProvider currentMode={currentMode} isPopup={isPopup} showModelOptions={showModelOptions} />
 			)}
 
 			{apiConfiguration && selectedProvider === "asksage" && (

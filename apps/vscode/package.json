@@ -2,7 +2,7 @@
 	"name": "bytos",
 	"displayName": "Bytos",
 	"description": "Autonomous coding agent right in your IDE, capable of creating/editing files, running commands, using the browser, and more with your permission every step of the way.",
-	"version": "4.1.25",
+	"version": "4.1.26",
 	"icon": "assets/icons/icon.png",
 	"engines": {
 		"vscode": "^1.101.0"
@@ -146,11 +146,6 @@
 				"icon": "$(history)"
 			},
 			{
-				"command": "bytos.accountButtonClicked",
-				"title": "Account",
-				"icon": "$(account)"
-			},
-			{
 				"command": "bytos.settingsButtonClicked",
 				"title": "Settings",
 				"icon": "$(settings-gear)"
@@ -268,11 +263,6 @@
 				{
 					"command": "bytos.historyButtonClicked",
 					"group": "navigation@3",
-					"when": "view == bytos.SidebarProvider"
-				},
-				{
-					"command": "bytos.accountButtonClicked",
-					"group": "navigation@5",
 					"when": "view == bytos.SidebarProvider"
 				},
 				{

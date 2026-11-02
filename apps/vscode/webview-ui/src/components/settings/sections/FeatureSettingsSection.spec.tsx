@@ -97,13 +97,4 @@ describe("FeatureSettingsSection", () => {
 
 		expect(screen.queryByRole("switch", { name: "Cloud" })).toBeNull()
 	})
-
-	it("calls updateSetting with cloudSessionsEnabled when the available Cloud toggle is switched", () => {
-		mockExtensionState.value = { ...mockExtensionState.value, cloudSessionsAvailable: true, cloudSessionsEnabled: false }
-		render(<FeatureSettingsSection renderSectionHeader={() => null} />)
-
-		fireEvent.click(screen.getByRole("switch", { name: "Cloud" }))
-
-		expect(mockUpdateSetting).toHaveBeenCalledWith("cloudSessionsEnabled", true)
-	})
 })

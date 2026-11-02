@@ -6,6 +6,7 @@
 
 import { isModelToolEnabledGlobally, readCompactionStrategyGlobally } from "@bytos/core"
 import { getHooksEnabledSafe } from "@core/hooks/hooks-utils"
+import { DEFAULT_API_PROVIDER } from "@shared/api"
 import type { ExtensionState, Platform } from "@shared/ExtensionMessage"
 import { BytosEnv } from "@/config"
 import { ExtensionRegistryInfo, HostRegistryInfo } from "@/registry"
@@ -37,6 +38,21 @@ export async function getStateToPostToWebview(controller: {
 	// Get API configuration from cache for immediate access
 	const onboardingModels = getBytosOnboardingModels()
 	const apiConfiguration = stateManager.getApiConfiguration()
+	// This build has no hosted Bytos/BytosPass account providers. Move any
+	// configuration written by an older build to the default BYOK provider so
+	// the UI never offers the account-backed catalogs.
+	if (apiConfiguration) {
+		let migrated = false
+		for (const key of ["planModeApiProvider", "actModeApiProvider"] as const) {
+			if (apiConfiguration[key] === "bytos" || apiConfiguration[key] === "bytos-pass") {
+				apiConfiguration[key] = DEFAULT_API_PROVIDER
+				migrated = true
+			}
+		}
+		if (migrated) {
+			stateManager.setApiConfiguration(apiConfiguration)
+		}
+	}
 	const lastShownAnnouncementId = stateManager.getGlobalStateKey("lastShownAnnouncementId")
 	const taskHistory = stateManager.getGlobalStateKey("taskHistory")
 	const autoApprovalSettings = stateManager.getGlobalSettingsKey("autoApprovalSettings")

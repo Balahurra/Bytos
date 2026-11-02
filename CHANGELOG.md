@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.1.26]
+
+### Changed
+
+- Bytos now opens directly in the chat surface. The account/onboarding gate with Free, BytosPass, Frontier, and BYOK options has been removed.
+- The hosted Bytos and BytosPass providers are no longer offered. Every provider is configured with an API key, a custom endpoint, or a local runtime such as Ollama or LM Studio.
+- Removed the Account button and account view, the BytosPass promo, the account card in provider settings, and account-gated Cloud controls.
+
+### Performance
+
+- Removed onboarding and account code from the webview startup path, reducing the initial bundle from 6.13 MB to 5.89 MB.
+
 ## [4.1.25]
 
 ### Added

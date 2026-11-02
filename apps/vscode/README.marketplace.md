@@ -1,7 +1,7 @@
 # Bytos
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/bytos/bytos/main/assets/branding/logos/bytos-wordmark-dark.svg" width="60%" alt="Bytos" />
+  <img src="https://raw.githubusercontent.com/bytos/bytos/main/assets/branding/bytos-app-icon.png" width="96" alt="Bytos" />
 </p>
 <div align="center">
 <table>

@@ -1,4 +1,5 @@
 import { VSCodeCheckbox, VSCodeLink } from "@vscode/webview-ui-toolkit/react"
+import { Sparkles } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import PreferredLanguageSetting from "../PreferredLanguageSetting"
@@ -43,7 +44,8 @@ const GeneralSettingsSection = ({ renderSectionHeader }: GeneralSettingsSectionP
 					</Tooltip>
 
 					<p className="text-sm mt-[5px] text-description">
-						Help improve Bytos by sending usage data and error reports. Reports don't include your code or prompts. See our{" "}
+						Help improve Bytos by sending usage data and error reports. Reports don't include your code or prompts.
+						See our{" "}
 						<VSCodeLink
 							className="text-inherit"
 							href="https://docs.bytos.dev/more-info/telemetry"
@@ -64,6 +66,20 @@ const GeneralSettingsSection = ({ renderSectionHeader }: GeneralSettingsSectionP
 
 			{/* Terminal settings live inside General; there is no separate Terminal tab. */}
 			<TerminalSettingsSection renderSectionHeader={() => null} />
+
+			{/* Auto Phase Plan settings are intentionally empty for now. */}
+			<Section>
+				<div className="flex items-center gap-2" id="auto-phase-plan-section">
+					<span
+						className="flex items-center justify-center w-5 h-5 rounded-[3px]"
+						style={{
+							backgroundColor: "color-mix(in srgb, var(--vscode-textLink-foreground) 12%, transparent)",
+						}}>
+						<Sparkles className="w-3.5 h-3.5 text-[var(--vscode-textLink-foreground)]" />
+					</span>
+					<h3 className="m-0 text-base font-semibold">Auto Phase Plan</h3>
+				</div>
+			</Section>
 		</div>
 	)
 }

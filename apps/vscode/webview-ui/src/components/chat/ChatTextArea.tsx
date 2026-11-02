@@ -3,7 +3,6 @@ import { StringRequest } from "@shared/proto/bytos/common"
 import { FileSearchRequest, FileSearchType, RelativePathsRequest } from "@shared/proto/bytos/file"
 import { PlanActMode, TogglePlanActModeRequest } from "@shared/proto/bytos/state"
 import { type SlashCommand } from "@shared/slashCommands"
-import { Mode } from "@shared/storage/types"
 import { VSCodeButton } from "@vscode/webview-ui-toolkit/react"
 import { AtSignIcon, PlusIcon, TriangleAlertIcon } from "lucide-react"
 import type React from "react"
@@ -96,12 +95,20 @@ interface GitCommit {
 const PLAN_MODE_COLOR = "var(--vscode-activityWarningBadge-background)"
 const ACT_MODE_COLOR = "var(--vscode-focusBorder)"
 
+type PhaseSelection = "plan" | "act" | "auto"
+
+const PHASE_OPTIONS: ReadonlyArray<{ id: PhaseSelection; label: string }> = [
+	{ id: "plan", label: "Plan" },
+	{ id: "act", label: "Act" },
+	{ id: "auto", label: "Auto Phase" },
+]
+
 const SwitchContainer = styled.div`
 	display: flex;
 	align-items: center;
-	background-color: transparent;
+	background-color: var(--vscode-input-background);
 	border: 1px solid var(--vscode-input-border);
-	border-radius: 12px;
+	border-radius: 4px;
 	overflow: hidden;
 	cursor: pointer;
 	transform: scale(1);
@@ -111,14 +118,15 @@ const SwitchContainer = styled.div`
 `
 
 const Slider = styled.div.withConfig({
-	shouldForwardProp: (prop) => !["isAct", "isPlan"].includes(prop),
-})<{ isAct: boolean; isPlan?: boolean }>`
+	shouldForwardProp: (prop) => !["phase"].includes(prop),
+})<{ phase: PhaseSelection }>`
 	position: absolute;
 	height: 100%;
-	width: 50%;
-	background-color: ${(props) => (props.isPlan ? PLAN_MODE_COLOR : ACT_MODE_COLOR)};
+	width: 33.3333%;
+	background-color: ${(props) =>
+		props.phase === "plan" ? PLAN_MODE_COLOR : props.phase === "act" ? ACT_MODE_COLOR : "var(--vscode-button-background)"};
 	transition: transform 0.2s ease;
-	transform: translateX(${(props) => (props.isAct ? "100%" : "0%")});
+	transform: translateX(${(props) => (props.phase === "act" ? "100%" : props.phase === "auto" ? "200%" : "0%")});
 `
 
 const ButtonGroup = styled.div`
@@ -216,7 +224,6 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 		const {
 			mode: selectedMode,
 			apiConfiguration,
-			openRouterModels,
 			platform,
 			localWorkflowToggles,
 			globalWorkflowToggles,
@@ -236,6 +243,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 		const cloudActOnly =
 			!!currentCloudTask || (bytosMessages.length === 0 && !!cloudSessionsEnabled && cloudTaskTarget?.target === "cloud")
 		const mode = cloudActOnly ? "act" : selectedMode
+		const [phaseSelection, setPhaseSelection] = useState<PhaseSelection>(mode)
 		const [isTextAreaFocused, setIsTextAreaFocused] = useState(false)
 		const [isDraggingOver, setIsDraggingOver] = useState(false)
 		const [gitCommits, setGitCommits] = useState<GitCommit[]>([])
@@ -259,7 +267,12 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 		const [intendedCursorPosition, setIntendedCursorPosition] = useState<number | null>(null)
 		const contextMenuContainerRef = useRef<HTMLDivElement>(null)
 
-		const [shownTooltipMode, setShownTooltipMode] = useState<Mode | null>(null)
+		const [shownTooltipMode, setShownTooltipMode] = useState<PhaseSelection | null>(null)
+		// Keep the visible three-way phase selector in sync with the host mode.
+		// "auto" is UI-only until the Auto Phase Plan settings ship.
+		useEffect(() => {
+			setPhaseSelection(mode)
+		}, [mode])
 		const [pendingInsertions, setPendingInsertions] = useState<string[]>([])
 		const _shiftHoldTimerRef = useRef<NodeJS.Timeout | null>(null)
 		const [showUnsupportedFileError, setShowUnsupportedFileError] = useState(false)
@@ -1095,6 +1108,22 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 			})()
 		}, [cloudActOnly, mode, inputValue, selectedImages, selectedFiles, setInputValue, setSelectedImages, setSelectedFiles])
 
+		const handlePhaseSelect = useCallback(
+			(next: PhaseSelection) => {
+				if (cloudActOnly) {
+					return
+				}
+				setPhaseSelection(next)
+				// "auto" is intentionally UI-only for now; the host still runs
+				// the current plan/act mode until Auto Phase Plan settings land.
+				if (next === "auto" || next === mode) {
+					return
+				}
+				onModeToggle()
+			},
+			[cloudActOnly, mode, onModeToggle],
+		)
+
 		useShortcut(usePlatform().togglePlanActKeys, onModeToggle, { disableTextInputs: false }) // important that we don't disable the text input here
 
 		const handleContextButtonClick = useCallback(() => {
@@ -1703,26 +1732,44 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 								className="text-xs px-2 flex flex-col gap-1"
 								hidden={shownTooltipMode === null}
 								side="top">
-								{`In ${shownTooltipMode === "act" ? "Act" : "Plan"}  mode, Bytos will ${shownTooltipMode === "act" ? "complete the task immediately" : "gather information to architect a plan"}`}
+								{shownTooltipMode === "auto"
+									? "Auto Phase uses the Auto Phase Plan settings to decide when Bytos should plan or act."
+									: `In ${shownTooltipMode === "act" ? "Act" : "Plan"} mode, Bytos will ${
+											shownTooltipMode === "act"
+												? "complete the task immediately"
+												: "gather information to architect a plan"
+										}`}
 								<p className="text-description/80 text-xs mb-0">
 									Toggle w/ <kbd className="text-muted-foreground mx-1">{togglePlanActKeys}</kbd>
 								</p>
 							</TooltipContent>
 							<TooltipTrigger>
-								<SwitchContainer data-testid="mode-switch" onClick={onModeToggle}>
-									<Slider isAct={mode === "act"} isPlan={mode === "plan"} />
-									{["Plan", "Act"].map((m) => (
+								<SwitchContainer data-testid="mode-switch">
+									<Slider phase={phaseSelection} />
+									{PHASE_OPTIONS.map((option) => (
 										<div
-											aria-checked={mode === m.toLowerCase()}
+											aria-checked={phaseSelection === option.id}
+											aria-label={option.label}
 											className={cn(
-												"pt-0.5 pb-px px-2 z-10 text-xs w-1/2 text-center bg-transparent",
-												mode === m.toLowerCase() ? "text-white" : "text-input-foreground",
+												"pt-0.5 pb-px px-1.5 z-10 text-[10px] w-1/3 text-center bg-transparent cursor-pointer whitespace-nowrap",
+												phaseSelection === option.id ? "text-white" : "text-input-foreground",
 											)}
-											key={m}
+											key={option.id}
+											onClick={(event) => {
+												event.stopPropagation()
+												handlePhaseSelect(option.id)
+											}}
+											onKeyDown={(event) => {
+												if (event.key === "Enter" || event.key === " ") {
+													event.preventDefault()
+													handlePhaseSelect(option.id)
+												}
+											}}
 											onMouseLeave={() => setShownTooltipMode(null)}
-											onMouseOver={() => setShownTooltipMode(m.toLowerCase() === "plan" ? "plan" : "act")}
-											role="switch">
-											{m}
+											onMouseOver={() => setShownTooltipMode(option.id)}
+											role="switch"
+											tabIndex={0}>
+											{option.label}
 										</div>
 									))}
 								</SwitchContainer>

@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.29]
+
+### Added
+
+- **Auto Phase Plan** section in Settings → General. The section is intentionally empty until the Auto Phase behavior is specified.
+- The composer phase switch is now a square three-way control: **Plan**, **Act**, and **Auto Phase**. Auto Phase is UI-only for now; it will use the Auto Phase Plan settings once they are implemented.
+
 ## [4.1.28]
 
 ### Changed

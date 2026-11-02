@@ -9,6 +9,7 @@ import {
 	Info,
 	type LucideIcon,
 	SlidersHorizontal,
+	Sparkles,
 	Wrench,
 } from "lucide-react"
 import { useCallback, useEffect, useMemo, useState } from "react"
@@ -25,6 +26,7 @@ import SectionHeader from "./SectionHeader"
 import SettingsTargetHighlight from "./SettingsTargetHighlight"
 import AboutSection from "./sections/AboutSection"
 import ApiConfigurationSection from "./sections/ApiConfigurationSection"
+import AutoPhasePlanSection from "./sections/AutoPhasePlanSection"
 import DebugSection from "./sections/DebugSection"
 import FeatureSettingsSection from "./sections/FeatureSettingsSection"
 import GeneralSettingsSection from "./sections/GeneralSettingsSection"
@@ -34,7 +36,7 @@ import { getNextSettingsNavigationRequestId, resolveSettingsTarget, type Setting
 const IS_DEV = process.env.IS_DEV
 
 // Tab definitions
-type SettingsTabID = "api-config" | "features" | "general" | "about" | "debug" | "remote-config"
+type SettingsTabID = "api-config" | "features" | "auto-phase-plan" | "general" | "about" | "debug" | "remote-config"
 interface SettingsTab {
 	id: SettingsTabID
 	name: string
@@ -58,6 +60,13 @@ const SETTINGS_TABS: SettingsTab[] = [
 		tooltipText: "Feature Settings",
 		headerText: "Feature Settings",
 		icon: CheckCheck,
+	},
+	{
+		id: "auto-phase-plan",
+		name: "Auto Phase Plan",
+		tooltipText: "Auto Phase Plan",
+		headerText: "Auto Phase Plan",
+		icon: Sparkles,
 	},
 	{
 		id: "general",
@@ -123,6 +132,7 @@ const SettingsView = ({ navigationRequest, onDone }: SettingsViewProps) => {
 			"api-config": ApiConfigurationSection,
 			general: GeneralSettingsSection,
 			features: FeatureSettingsSection,
+			"auto-phase-plan": AutoPhasePlanSection,
 			"remote-config": RemoteConfigSection,
 			about: AboutSection,
 			debug: DebugSection,

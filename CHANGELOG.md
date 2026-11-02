@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.30]
+
+### Changed
+
+- **Auto Phase Plan** is now its own Settings page, placed between Features and General. The placeholder section was removed from General.
+- The new page opens clean and is ready for the Auto Phase configuration.
+
 ## [4.1.29]
 
 ### Added

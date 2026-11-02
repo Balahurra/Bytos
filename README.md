@@ -74,7 +74,7 @@ The webview is the most latency-sensitive part of an IDE agent: every millisecon
 
 This fork ships with a smaller startup path:
 
-- The initial webview bundle dropped from **10.16 MB to 6.14 MB (-39.6%)**.
+- The initial webview bundle dropped from **10.16 MB to 6.13 MB (-39.7%)**.
 - Mermaid and its diagram engines are loaded only when a conversation contains a diagram.
 - PDF, DOCX, and XLSX parsers are imported only when those file types are attached.
 - Heavy panels are split into on-demand chunks instead of being parsed at startup.

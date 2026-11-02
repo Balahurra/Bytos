@@ -1,4 +1,4 @@
-import { type ModelInfo, openAiModelInfoSafeDefaults } from "@shared/api"
+import type { ModelInfo } from "@shared/api"
 import type { Mode } from "@shared/storage/types"
 import { useEffect } from "react"
 import { useProviderConfig } from "@/hooks/useProviderConfig"
@@ -7,6 +7,7 @@ import { ApiKeyField } from "../common/ApiKeyField"
 import { BaseUrlField } from "../common/BaseUrlField"
 import { ModelInfoView } from "../common/ModelInfoView"
 import { useProviderApiKeyField } from "../utils/useProviderApiKeyField"
+import { CLINE_PASS_DEFAULT_MODEL_ID, CLINE_PASS_MODELS, clinePassFallbackModelInfo } from "./clinePassModels"
 import { ModelPickerWithManualEntry } from "./ModelPickerWithManualEntry"
 
 /**
@@ -20,56 +21,6 @@ import { ModelPickerWithManualEntry } from "./ModelPickerWithManualEntry"
  */
 const PROVIDER_ID = "bytos-pass" as const
 const CLINE_API_BASE_URL = "https://api.cline.bot/api/v1"
-const DEFAULT_MODEL_ID = "cline-pass/glm-5.3"
-
-// ClinePass catalog snapshot (mirrors the upstream cline-pass model list).
-// A custom model ID can still be entered in the picker for newer models.
-const CLINE_PASS_MODEL_IDS = [
-	"cline-pass/glm-5.3",
-	"cline-pass/glm-5.3-flash",
-	"cline-pass/deepseek-v4.1-flash",
-	"cline-pass/deepseek-v4-pro",
-	"cline-pass/qwen3.8-max",
-	"cline-pass/qwen3.7-max",
-	"cline-pass/qwen3.7-plus",
-	"cline-pass/kimi-k3",
-	"cline-pass/minimax-m3",
-	"cline-pass/mimo-v2.6-pro",
-	"cline-pass/mimo-v2.6-flash",
-	"cline-pass/mimo-v2.5-pro",
-	"cline-pass/mimo-v2.5",
-	"cline-pass/muse-spark-1.3-contributor",
-]
-
-const CLINE_PASS_MODELS: Record<string, ModelInfo> = Object.fromEntries(
-	CLINE_PASS_MODEL_IDS.map((modelId) => [
-		modelId,
-		{
-			...openAiModelInfoSafeDefaults,
-			name: modelId.replace(/^cline-pass\//, ""),
-			maxTokens: 8192,
-			contextWindow: 200000,
-			supportsImages: true,
-			supportsPromptCache: false,
-			supportsReasoning: true,
-			inputPrice: 0,
-			outputPrice: 0,
-			cacheReadsPrice: 0,
-			cacheWritesPrice: 0,
-		},
-	]),
-)
-
-function fallbackModelInfo(modelId: string): ModelInfo {
-	return {
-		...openAiModelInfoSafeDefaults,
-		name: modelId,
-		inputPrice: 0,
-		outputPrice: 0,
-		cacheReadsPrice: 0,
-		cacheWritesPrice: 0,
-	}
-}
 
 interface ClinePassProviderProps {
 	showModelOptions: boolean
@@ -81,10 +32,10 @@ export const ClinePassProvider = ({ showModelOptions, isPopup, currentMode }: Cl
 	const { config, write, commitSelection } = useProviderConfig(PROVIDER_ID)
 	const { selectedModel, commitModelSelection } = useProviderModelSelection(PROVIDER_ID, currentMode, {
 		models: CLINE_PASS_MODELS,
-		defaultModelId: DEFAULT_MODEL_ID,
+		defaultModelId: CLINE_PASS_DEFAULT_MODEL_ID,
 		config,
 		commitSelection,
-		customModelInfo: fallbackModelInfo,
+		customModelInfo: clinePassFallbackModelInfo,
 	})
 
 	const { savedApiKeyMask, handleApiKeyChange } = useProviderApiKeyField({

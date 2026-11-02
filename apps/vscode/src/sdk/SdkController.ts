@@ -24,17 +24,18 @@ import {
 } from "@bytos/core"
 import { formatDisplayUserInput, type RemoteConfig, type RemoteConfigBundle } from "@bytos/shared"
 import type { ApiConfiguration } from "@shared/api"
-import type { ChatContent } from "@shared/ChatContent"
 import { BYTOS_ACCOUNT_AUTH_ERROR_MESSAGE } from "@shared/BytosAccount"
+import type { ChatContent } from "@shared/ChatContent"
 import { CLOUD_CREATION_UNCONFIRMED_ERROR_CODE, CLOUD_SESSION_MODE, isCloudSessionId } from "@shared/cloud/cloud-sessions"
 import { mentionRegexGlobal } from "@shared/context-mentions"
 import type { BytosApiReqInfo, BytosMessage, ExtensionState } from "@shared/ExtensionMessage"
 import type { HistoryItem } from "@shared/HistoryItem"
 import { DeleteAllTaskHistoryCount, type GetTaskHistoryRequest, TaskHistoryArray, TaskResponse } from "@shared/proto/bytos/task"
-import type { Settings } from "@shared/storage/state-keys"
+import { isSecretKey, type Settings } from "@shared/storage/state-keys"
 import type { Mode } from "@shared/storage/types"
 import type { TelemetrySetting } from "@shared/TelemetrySetting"
 import type { BytosCheckpointRestore } from "@shared/WebviewMessage"
+import { type AutoPhasePrompt, readAutoPhasePlanWithKeys } from "@/core/auto-phase/plan-store"
 import { parseMentions } from "@/core/mentions"
 import { ensureMcpServersDirectoryExists } from "@/core/storage/disk"
 import { clearSdkRemoteConfig, refreshSdkRemoteConfig } from "@/core/storage/remote-config/sdk-refresh"
@@ -54,13 +55,14 @@ import type { BytosExtensionContext } from "@/shared/bytos"
 import { toLegacyApiProvider } from "@/shared/model-catalog/provider-helpers"
 import { ShowMessageRequest, ShowMessageType } from "@/shared/proto/host/window"
 import { Logger } from "@/shared/services/Logger"
+import { getProviderModelIdKey } from "@/shared/storage/provider-keys"
 import { resolveDataDirFromEnv } from "@/shared/storage/storage-context"
 import { isBytosManagedProvider } from "@/shared/utils/bytos"
 import { arePathsEqual, getDesktopDir } from "@/utils/path"
 import { BytosAccountService } from "./account-service"
 import { AuthService, LogoutReason } from "./auth-service"
 import { BUILTIN_SLASH_COMMANDS } from "./builtin-slash-commands"
-import { buildStartSessionInput, createHistoryItemFromSession } from "./bytos-session-factory"
+import { buildStartSessionInput, createHistoryItemFromSession, getProviderApiKeyField } from "./bytos-session-factory"
 import { MessageTranslatorState, reshapeErrorForWebview } from "./message-translator"
 import { createProviderCatalog } from "./model-catalog/catalog"
 import type { Disposable, ProviderCatalog, ProviderConfigChange, ProviderConfigStore } from "./model-catalog/contracts"
@@ -125,6 +127,9 @@ import { resolveWorkspaceManagerPaths, resolveWorkspaceRootPath } from "./worksp
 function stubWarn(name: string): void {
 	Logger.warn(`[SdkController] STUB: ${name} not yet implemented`)
 }
+
+/** ClinePass intentionally talks to Cline's hosted API (see ClinePassProvider). */
+const CLINE_PASS_API_BASE_URL = "https://api.cline.bot/api/v1"
 
 function metadataNumber(metadata: SessionHistoryRecord["metadata"] | undefined, key: string): number | undefined {
 	const value = metadata?.[key]
@@ -229,6 +234,8 @@ export class Controller {
 	private readonly providerCatalog: ProviderCatalog
 	private readonly providerConfigStoreSubscription: Disposable
 	private providerConfigStatePostScheduled = false
+	private autoPhaseRun: { cancelled: boolean; currentIndex: number; taskIds: string[] } | null = null
+	private autoPhasePromise: Promise<void> | null = null
 	// Debounces/coalesces postStateToWebview() calls — see StatePostDebouncer.
 	private static readonly STATE_POST_DEBOUNCE_MS = 50
 	private readonly statePostDebouncer: StatePostDebouncer
@@ -1561,6 +1568,184 @@ export class Controller {
 	}
 
 	/**
+	 * Start a saved Auto Phase Plan. Every phase becomes its own Act-mode task,
+	 * with its own provider/model and (when supplied) its own API key. The
+	 * runner waits for each task to finish before starting the next phase.
+	 */
+	async startAutoPhase(): Promise<void> {
+		if (this.autoPhasePromise) {
+			throw new Error("Auto Phase is already running.")
+		}
+
+		const phases = readAutoPhasePlanWithKeys(this.stateManager).filter(
+			(phase) => phase.prompt.trim() && phase.provider.trim() && phase.modelId.trim(),
+		)
+		if (phases.length === 0) {
+			throw new Error("Auto Phase Plan has no runnable phases. Add a prompt, provider, and model first.")
+		}
+
+		const run = { cancelled: false, currentIndex: 0, taskIds: [] as string[] }
+		this.autoPhaseRun = run
+		this.autoPhasePromise = this.runAutoPhase(phases, run)
+			.catch((error) => {
+				const message = error instanceof Error ? error.message : String(error)
+				Logger.error("[AutoPhase] Run stopped:", error)
+				HostProvider.window.showMessage({
+					type: ShowMessageType.ERROR,
+					message: `Auto Phase stopped: ${message}`,
+				})
+			})
+			.finally(() => {
+				this.autoPhaseRun = null
+				this.autoPhasePromise = null
+				void this.postStateToWebview()
+			})
+	}
+
+	async cancelAutoPhase(): Promise<void> {
+		const run = this.autoPhaseRun
+		if (!run) {
+			return
+		}
+		run.cancelled = true
+		try {
+			await this.cancelTask()
+		} catch (error) {
+			Logger.warn("[AutoPhase] Failed to cancel the active phase task:", error)
+		}
+	}
+
+	private async runAutoPhase(
+		phases: AutoPhasePrompt[],
+		run: { cancelled: boolean; currentIndex: number; taskIds: string[] },
+	): Promise<void> {
+		const previousMode = this.stateManager.getGlobalSettingsKey("mode")
+		const previousConfig = { ...this.stateManager.getApiConfiguration() }
+		const providerSnapshots = new Map<string, { apiKey?: string; baseUrl?: string }>()
+		// Legacy API-key fields we overwrite for a phase, with the value they had
+		// before the run. setApiConfiguration() skips undefined values, so these
+		// must be cleared explicitly when the user had no key of their own.
+		const injectedKeyFields = new Map<keyof ApiConfiguration, string | undefined>()
+
+		try {
+			for (let index = 0; index < phases.length; index++) {
+				if (run.cancelled) {
+					break
+				}
+				run.currentIndex = index
+				const phase = phases[index]
+				const provider = phase.provider.trim()
+				const providerId = parseProviderId(provider)
+
+				// Snapshot the user's provider key once, then point the provider at
+				// this phase's key. Everything is restored when the run ends. Even
+				// when a phase has no key of its own we write the snapshot back, so
+				// a previous phase's key can never leak into this phase.
+				if (!providerSnapshots.has(provider)) {
+					const current = this.providerConfigStore.read(providerId)
+					providerSnapshots.set(provider, { apiKey: current.apiKey, baseUrl: current.baseUrl })
+				}
+				const snapshot = providerSnapshots.get(provider)
+				const phaseBaseUrl = provider === "bytos-pass" ? CLINE_PASS_API_BASE_URL : (snapshot?.baseUrl ?? "")
+				this.providerConfigStore.write(providerId, {
+					apiKey: phase.apiKey !== undefined ? phase.apiKey : (snapshot?.apiKey ?? ""),
+					baseUrl: phaseBaseUrl,
+				})
+
+				// buildSessionConfig reads provider/model from StateManager, not from
+				// NewTaskRequest.taskSettings. Set the phase's Act configuration for
+				// the duration of the task, then restore it in the finally block.
+				const modelKey = getProviderModelIdKey(provider, "act")
+				const phaseConfig = {
+					...previousConfig,
+					actModeApiProvider: provider,
+					actModeApiModelId: phase.modelId,
+					[modelKey]: phase.modelId,
+				} as unknown as ApiConfiguration
+				// Providers that keep their key in the legacy ApiConfiguration need
+				// the phase key written there; resolveApiKey prefers that field.
+				const keyField = getProviderApiKeyField(provider)
+				if (phase.apiKey !== undefined && keyField) {
+					if (!injectedKeyFields.has(keyField)) {
+						injectedKeyFields.set(keyField, previousConfig[keyField] as string | undefined)
+					}
+					;(phaseConfig as Record<string, unknown>)[keyField] = phase.apiKey
+				}
+				this.stateManager.setApiConfiguration(phaseConfig)
+				this.stateManager.setGlobalState("mode", "act")
+
+				const taskId = await this.initTask(phase.prompt, [], [], undefined)
+				if (!taskId) {
+					throw new Error(`Phase ${index + 1} could not start a task.`)
+				}
+				run.taskIds.push(taskId)
+				await this.waitForAutoPhaseTask(taskId, run)
+			}
+		} finally {
+			for (const [provider, snapshot] of providerSnapshots) {
+				this.providerConfigStore.write(parseProviderId(provider), {
+					apiKey: snapshot.apiKey ?? "",
+					baseUrl: snapshot.baseUrl ?? "",
+				})
+			}
+			this.stateManager.setApiConfiguration(previousConfig)
+			for (const [field, previousValue] of injectedKeyFields) {
+				if (isSecretKey(field)) {
+					this.stateManager.setSecret(field, previousValue)
+				} else {
+					this.stateManager.setGlobalState(field as never, previousValue as never)
+				}
+			}
+			this.stateManager.setGlobalState("mode", previousMode)
+			await this.postStateToWebview().catch(() => {})
+		}
+	}
+
+	private async waitForAutoPhaseTask(
+		taskId: string,
+		run: { cancelled: boolean; currentIndex: number; taskIds: string[] },
+	): Promise<void> {
+		const deadline = Date.now() + 2 * 60 * 60 * 1000
+		while (!run.cancelled) {
+			if (this.task?.taskId && this.task.taskId !== taskId) {
+				throw new Error("The active task changed while Auto Phase was running.")
+			}
+			const phase = this.turnStateTracker.currentPhase
+			if (phase === "completed") {
+				return
+			}
+			if (phase === "error") {
+				throw new Error(`Phase ${run.currentIndex + 1} failed.`)
+			}
+			if (phase === "resumable") {
+				throw new Error(`Phase ${run.currentIndex + 1} was interrupted.`)
+			}
+			// A turn that stops without the completion tool lands in
+			// "awaiting_followup". If the agent is waiting on a question it needs
+			// the user, so keep waiting; a plain end-of-turn means the phase is
+			// done and the next one may start.
+			if (phase === "awaiting_followup" && !this.hasPendingAsk(taskId)) {
+				return
+			}
+			if (Date.now() > deadline) {
+				throw new Error(`Phase ${run.currentIndex + 1} timed out.`)
+			}
+			await new Promise((resolve) => setTimeout(resolve, 500))
+		}
+	}
+
+	/** True when the phase task's last message is an unanswered ask. */
+	private hasPendingAsk(taskId: string): boolean {
+		const task = this.task
+		if (!task || task.taskId !== taskId) {
+			return false
+		}
+		const messages = task.messageStateHandler.getBytosMessages()
+		const last = messages[messages.length - 1]
+		return last?.type === "ask"
+	}
+
+	/**
 	 * Plan/act mode governing the displayed task. A cloud task always runs in
 	 * Act, so its completion rows render as Act output even while the user's
 	 * saved local mode is Plan.
@@ -2693,6 +2878,7 @@ export class Controller {
 					: undefined,
 				taskHistory: processedTaskHistory,
 				turnState: this.turnStateTracker.get(),
+				autoPhaseRunning: this.autoPhaseRun !== null,
 				queuedPrompts,
 				cloudSessionsAvailable: isCloudSessionsFeatureAvailable(),
 				cloudSessionsEnabled: isCloudSessionsFeatureEnabled(),

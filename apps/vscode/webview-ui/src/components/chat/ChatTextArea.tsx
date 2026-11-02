@@ -1,5 +1,5 @@
 import { mentionRegex, mentionRegexGlobal } from "@shared/context-mentions"
-import { StringRequest } from "@shared/proto/bytos/common"
+import { EmptyRequest, StringRequest } from "@shared/proto/bytos/common"
 import { FileSearchRequest, FileSearchType, RelativePathsRequest } from "@shared/proto/bytos/file"
 import { PlanActMode, TogglePlanActModeRequest } from "@shared/proto/bytos/state"
 import { type SlashCommand } from "@shared/slashCommands"
@@ -236,6 +236,8 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 			cloudTaskTarget,
 			currentCloudTask,
 			cloudModelId,
+			turnState,
+			autoPhaseRunning,
 		} = useExtensionState()
 		// Cloud sessions are Act-only (like the desktop app and the cloud dashboard).
 		// While a cloud task is shown, or a new task is about to run in the cloud,
@@ -268,11 +270,17 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 		const contextMenuContainerRef = useRef<HTMLDivElement>(null)
 
 		const [shownTooltipMode, setShownTooltipMode] = useState<PhaseSelection | null>(null)
-		// Keep the visible three-way phase selector in sync with the host mode.
-		// "auto" is UI-only until the Auto Phase Plan settings ship.
+		const [autoPhaseNotice, setAutoPhaseNotice] = useState<string | null>(null)
+		// Keep the visible three-way phase selector in sync with the host. While the
+		// Auto Phase runner is executing the saved plan the selector stays on Auto;
+		// afterwards it falls back to the host's Plan/Act mode.
 		useEffect(() => {
-			setPhaseSelection(mode)
-		}, [mode])
+			if (autoPhaseRunning) {
+				setPhaseSelection("auto")
+			} else {
+				setPhaseSelection((current) => (current === "auto" ? mode : current))
+			}
+		}, [mode, autoPhaseRunning])
 		const [pendingInsertions, setPendingInsertions] = useState<string[]>([])
 		const _shiftHoldTimerRef = useRef<NodeJS.Timeout | null>(null)
 		const [showUnsupportedFileError, setShowUnsupportedFileError] = useState(false)
@@ -1113,15 +1121,38 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 				if (cloudActOnly) {
 					return
 				}
+				if (next === "auto") {
+					if (autoPhaseRunning) {
+						return
+					}
+					if (
+						turnState?.phase === "streaming" ||
+						turnState?.phase === "awaiting_approval" ||
+						turnState?.phase === "awaiting_followup"
+					) {
+						setAutoPhaseNotice("Finish or cancel the current task before starting Auto Phase.")
+						return
+					}
+					setPhaseSelection("auto")
+					setAutoPhaseNotice(null)
+					void StateServiceClient.startAutoPhase(EmptyRequest.create({})).catch((error) => {
+						setPhaseSelection(mode)
+						setAutoPhaseNotice(error instanceof Error ? error.message : "Auto Phase could not start.")
+					})
+					return
+				}
+
+				if (phaseSelection === "auto") {
+					void StateServiceClient.cancelAutoPhase(EmptyRequest.create({})).catch(() => {})
+				}
 				setPhaseSelection(next)
-				// "auto" is intentionally UI-only for now; the host still runs
-				// the current plan/act mode until Auto Phase Plan settings land.
-				if (next === "auto" || next === mode) {
+				setAutoPhaseNotice(null)
+				if (next === mode) {
 					return
 				}
 				onModeToggle()
 			},
-			[cloudActOnly, mode, onModeToggle],
+			[autoPhaseRunning, cloudActOnly, mode, onModeToggle, phaseSelection, turnState?.phase],
 		)
 
 		useShortcut(usePlatform().togglePlanActKeys, onModeToggle, { disableTextInputs: false }) // important that we don't disable the text input here
@@ -1666,6 +1697,11 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 						</span>
 					</div>
 				)}
+				{autoPhaseNotice && (
+					<div className="px-3.5 pb-1 text-xs" role="alert" style={{ color: "var(--vscode-errorForeground)" }}>
+						{autoPhaseNotice}
+					</div>
+				)}
 				<div className="flex justify-between items-center -mt-[2px] px-3 pb-2">
 					{/* Always render both components, but control visibility with CSS */}
 					<div className="relative flex-1 min-w-0 h-5">
@@ -1733,7 +1769,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 								hidden={shownTooltipMode === null}
 								side="top">
 								{shownTooltipMode === "auto"
-									? "Auto Phase uses the Auto Phase Plan settings to decide when Bytos should plan or act."
+									? "Auto Phase runs the saved Auto Phase Plan phases in order, each as its own Act-mode task."
 									: `In ${shownTooltipMode === "act" ? "Act" : "Plan"} mode, Bytos will ${
 											shownTooltipMode === "act"
 												? "complete the task immediately"

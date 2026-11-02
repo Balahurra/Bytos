@@ -37,6 +37,10 @@ service StateService {
   rpc refreshRemoteConfig(EmptyRequest) returns (Empty);
   rpc testOtelConnection(EmptyRequest) returns (TestConnectionResult);
   rpc testPromptUploading(EmptyRequest) returns (TestConnectionResult);
+  rpc getAutoPhasePlan(EmptyRequest) returns (AutoPhasePlan);
+  rpc saveAutoPhasePlan(AutoPhasePlan) returns (Empty);
+  rpc startAutoPhase(EmptyRequest) returns (String);
+  rpc cancelAutoPhase(EmptyRequest) returns (Empty);
 }
 
 message AutoApprovalActions {
@@ -486,4 +490,20 @@ message TestConnectionResult {
   bool success = 1;
   optional string message = 2;
   optional string error = 3;
+}
+
+// Auto Phase Plan
+message AutoPhasePlanPhase {
+  string id = 1;
+  string prompt = 2;
+  string provider = 3;
+  string model_id = 4;
+  // Write-only: the host stores this in SecretStorage and never echoes it.
+  optional string api_key = 5;
+  // Read-only: length of the stored key so the UI can show a mask.
+  int32 api_key_length = 6;
+}
+
+message AutoPhasePlan {
+  repeated AutoPhasePlanPhase phases = 1;
 }

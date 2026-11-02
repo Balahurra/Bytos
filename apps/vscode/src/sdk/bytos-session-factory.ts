@@ -10,8 +10,8 @@
 
 import { BlockList, isIP } from "node:net"
 import {
-	buildWorkspaceMetadata,
 	type BytosCoreStartInput,
+	buildWorkspaceMetadata,
 	type CoreSessionConfig,
 	getProviderAuthHandler,
 	type ProviderSettings,
@@ -502,6 +502,15 @@ export function getDefaultModelIdForProvider(providerId: string): string | undef
 // ---------------------------------------------------------------------------
 // API key resolution
 // ---------------------------------------------------------------------------
+
+/**
+ * The legacy ApiConfiguration field that holds a provider's API key, if it has
+ * one. Callers that temporarily need a different credential (for example the
+ * Auto Phase runner) can write this field for the active phase.
+ */
+export function getProviderApiKeyField(providerId: string): keyof ApiConfiguration | undefined {
+	return PROVIDER_API_KEY_MAP[toLegacyApiProvider(providerId)]
+}
 
 /**
  * Resolve the API key for a given provider from the ApiConfiguration.

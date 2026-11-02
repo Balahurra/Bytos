@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.1.31]
+
+### Added
+
+- **Auto Phase Plan is now a real runner.** Define up to 10 phases, each with its own prompt, provider, API key, and model. Every phase runs as its own Act-mode task, in order, and appears separately in History.
+- The composer's **Auto Phase** option starts the saved plan from phase 1 and automatically continues with the next phase when one finishes. Cancelling stops the run.
+- Phase prompts can be written, edited, copied, cleared, and saved with the check button; **Done** saves the whole plan without starting it.
+- Each phase shows the selected model's pricing, and ClinePass phases use Cline's `cline-pass/*` model list.
+
+### Changed
+
+- Per-phase provider keys and model settings are restored after the run, so Auto Phase never overwrites your normal API Configuration.
+
 ## [4.1.30]
 
 ### Changed

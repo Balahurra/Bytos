@@ -62,6 +62,11 @@ export interface ExtensionState {
 	 */
 	turnState?: TurnState
 	/**
+	 * True while the Auto Phase runner is executing the saved plan. The composer
+	 * uses it to keep the Auto Phase selector active across phase tasks.
+	 */
+	autoPhaseRunning?: boolean
+	/**
 	 * Follow-up prompts submitted while the active agent turn is still running.
 	 * These are owned by the SDK pending-prompt queue and are sent after the
 	 * current turn reaches a safe continuation point.

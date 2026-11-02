@@ -97,6 +97,9 @@ const GLOBAL_STATE_FIELDS = {
 	dismissedBanners: { default: [] as Array<{ bannerId: string; dismissedAt: number }> },
 	// Last Local/Cloud choice (and repository) picked on the home screen for new tasks
 	cloudTaskTarget: { default: undefined as CloudTaskTargetSelection | undefined },
+	// Auto Phase Plan metadata (prompts, providers, models). API keys are kept
+	// separately in SecretStorage under autoPhaseApiKeys.
+	autoPhasePlan: { default: undefined as string | undefined },
 	// Last agent status confirmed over a live connection, per cloud session id
 	cloudSessionStatuses: { default: {} as RememberedCloudStatuses },
 	// Path to worktree that should auto-open Bytos sidebar when launched
@@ -362,6 +365,7 @@ const SECRETS_KEYS = [
 	"mcpOAuthSecrets",
 	"openai-codex-oauth-credentials", // JSON blob containing OAuth tokens for OpenAI Codex (ChatGPT subscription)
 	"wandbApiKey",
+	"autoPhaseApiKeys", // JSON map of auto-phase id -> API key
 ] as const
 
 // WARNING, these are not ALL of the local state keys in practice. For example, FileContextTracker

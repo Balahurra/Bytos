@@ -1,0 +1,19 @@
+.bytos-ui-agent-quick-actions,
+.bytos-ui-agent-quick-actions__item {
+	box-sizing: border-box;
+	border-style: solid;
+}
+
+.bytos-ui-agent-quick-actions__item {
+	font: inherit;
+}
+
+.bytos-ui-agent-quick-actions__item:hover:not(:disabled) {
+	background: color-mix(in oklab, var(--background) 55%, transparent);
+}
+
+.bytos-ui-agent-quick-actions__item:hover:not(:disabled)
+	.bytos-ui-agent-quick-actions__arrow {
+	background: var(--primary);
+	color: var(--primary-foreground);
+}

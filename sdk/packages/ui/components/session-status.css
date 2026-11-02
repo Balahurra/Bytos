@@ -1,0 +1,19 @@
+.bytos-ui-session-status {
+	--bytos-ui-session-status-color: var(--neutral-a4);
+}
+
+.bytos-ui-session-status__dot {
+	background: var(--bytos-ui-session-status-color);
+}
+
+.bytos-ui-session-status--neutral .bytos-ui-session-status__dot {
+	visibility: hidden;
+}
+
+.bytos-ui-session-status--running {
+	--bytos-ui-session-status-color: var(--primary);
+}
+
+.bytos-ui-session-status--error {
+	--bytos-ui-session-status-color: var(--error-text);
+}

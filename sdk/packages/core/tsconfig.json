@@ -1,0 +1,22 @@
+{
+	"extends": "../tsconfig.base.json",
+	"compilerOptions": {
+		"rootDir": "..",
+		"noEmit": true,
+		"paths": {
+			"@bytos/agents": ["../agents/src/index.ts"],
+			"@bytos/agents/*": ["../agents/src/*", "../agents/src/*/index.ts"],
+			"@bytos/llms": ["../llms/src/index.ts"],
+			"@bytos/llms/browser": ["../llms/src/index.browser.ts"],
+			"@bytos/shared": ["../shared/src/index.ts"],
+			"@bytos/shared/automation": ["../shared/src/automation/index.ts"],
+			"@bytos/shared/browser": ["../shared/src/index.browser.ts"],
+			"@bytos/shared/db": ["../shared/src/db/index.ts"],
+			"@bytos/shared/storage": ["../shared/src/storage/index.ts"],
+			"@bytos/shared/types": ["../shared/src/types/index.ts"],
+			"@bytos/shared/*": ["../shared/src/*", "../shared/src/*/index.ts"]
+		}
+	},
+	"include": ["src/**/*"],
+	"exclude": ["node_modules", "dist", "fixtures"]
+}

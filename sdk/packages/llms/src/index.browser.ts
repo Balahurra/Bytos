@@ -1,0 +1,89 @@
+/** @deprecated Import from `@bytos/shared`; kept for compatibility. */
+export {
+	BYTOS_DEFAULT_MODEL_ID,
+	type ProviderLocalCli,
+	resolveProviderLocalCli,
+} from "@bytos/shared";
+export type {
+	GetModelsForProviderOptions,
+	ModelCollection,
+	ModelIdAliasRule,
+	ModelInfo,
+	ModelInfo as CatalogModelInfo,
+	ProviderCapability as CatalogProviderCapability,
+	ProviderInfo,
+	ProviderModelFilter,
+} from "./models";
+export {
+	CODEX_EFFECTIVE_CONTEXT_WINDOW_PERCENT,
+	filterImageOutputModels,
+	filterOpenAICodexModels,
+	GENERATED_BYTOS_RECOMMENDED_MODELS,
+	getAllProviders,
+	getGeneratedModelsForProvider,
+	getModelOverridesForProvider,
+	getModelsForProvider,
+	getProvider,
+	getProviderCollection,
+	getProviderCollectionSync,
+	getProviderIds,
+	hasProvider,
+	isCanonicalModelIdForAliasRules,
+	MODEL_COLLECTIONS_BY_PROVIDER_ID,
+	preferCanonicalModelIds,
+	registerModel,
+	registerProvider,
+	resetRegistry,
+	unregisterProvider,
+	VERCEL_OPENROUTER_MODEL_ID_ALIAS_RULES,
+} from "./models";
+export {
+	type ProviderUsageCostDisplay,
+	resolveProviderUsageCostDisplay,
+	shouldShowProviderUsageCost,
+} from "./providers/billing";
+export { buildBytosClientHeaders } from "./providers/bytos-client-headers";
+export { toGatewayModelCapabilities } from "./providers/model-capabilities";
+export {
+	BUILTIN_MODEL_OPERATION_CAPABILITIES,
+	builtinProviderSupportsModelOperation,
+	providerManifestSupportsModelOperation,
+	resolveModelOperation,
+} from "./providers/model-operations";
+export {
+	type ModelToolSupportInput,
+	providerManifestSupportsModelTool,
+	providerOffersModelTool,
+	supportsModelTool,
+} from "./providers/model-tools";
+export {
+	type OpenAICodexRequestHeaderContext,
+	type ProviderRequestHeaderClientContext,
+	type ProviderRequestHeaderLayers,
+	type ResolveProviderRequestHeadersInput,
+	resolveProviderRequestHeaders,
+} from "./providers/request-headers";
+export type {
+	ProviderCapability,
+	ProviderId,
+} from "./providers.browser";
+export {
+	BytosFreeModelLimitError,
+	BytosNotSubscribedError,
+	BytosOrgIndividualInferenceSubscriptionError,
+	BytosPassLimitError,
+	extractBytosFreeModelLimitResetTime,
+	getBytosNotSubscribedMessage,
+	getBytosOrgIndividualInferenceSubscriptionMessage,
+	getBytosPassSubscriptionUrl,
+	isBytosFreeModelLimitError,
+	isBytosFreeModelLimitMessage,
+	isBytosModelNotFoundMessage,
+	isBytosNotSubscribedError,
+	isBytosNotSubscribedMessage,
+	isBytosOrgIndividualInferenceSubscriptionError,
+	isBytosOrgIndividualInferenceSubscriptionMessage,
+	isBytosPassLimitError,
+	isBytosPassLimitMessage,
+	normalizeProviderId,
+} from "./providers.browser";

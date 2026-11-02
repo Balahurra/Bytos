@@ -1,0 +1,11 @@
+{
+	"version": 1,
+	"skills": {
+		"bytos-sdk": {
+			"source": "bytos/sdk-skill",
+			"sourceType": "github",
+			"skillPath": "skill/bytos-sdk/SKILL.md",
+			"computedHash": "ce565d78d5bd1c40075248a3a925b2059c5c024bfcdbbf1f55bf3440cae34144"
+		}
+	}
+}

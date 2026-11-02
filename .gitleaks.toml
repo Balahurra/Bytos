@@ -1,0 +1,4 @@
+title = "Bytos SDK secret scanning"
+
+[extend]
+useDefault = true

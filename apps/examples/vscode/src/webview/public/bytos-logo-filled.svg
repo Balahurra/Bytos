@@ -1,0 +1,24 @@
+<svg width="512" height="512" viewBox="148 104 262 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+<defs>
+  <linearGradient id="bgrad" x1="176" y1="132" x2="382" y2="396" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#22D3EE"/>
+    <stop offset=".52" stop-color="#4F8CFF"/>
+    <stop offset="1" stop-color="#8B5CF6"/>
+  </linearGradient>
+  <linearGradient id="tile" x1="0" y1="0" x2="1024" y2="1024" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#0C1424"/>
+    <stop offset="1" stop-color="#05070D"/>
+  </linearGradient>
+  <radialGradient id="glow" cx="0" cy="0" r="1" gradientTransform="translate(512 380) rotate(90) scale(600)">
+    <stop stop-color="#4F8CFF" stop-opacity=".26"/>
+    <stop offset="1" stop-color="#4F8CFF" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="rim" x1="0" y1="0" x2="1024" y2="1024" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#FFFFFF" stop-opacity=".22"/>
+    <stop offset=".55" stop-color="#FFFFFF" stop-opacity=".04"/>
+    <stop offset="1" stop-color="#8B5CF6" stop-opacity=".18"/>
+  </linearGradient>
+</defs>
+<g fill="none" stroke="url(#bgrad)" stroke-width="56" stroke-linecap="round" stroke-linejoin="round"><path d="M176 132 V396"/><path d="M176 156 H282 C332 156 362 184 362 216 C362 248 332 276 282 276 H176"/><path d="M176 276 H300 C352 276 382 306 382 342 C382 378 352 396 300 396 H176"/></g>
+</svg>

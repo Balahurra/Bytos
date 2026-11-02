@@ -1,0 +1,27 @@
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"paths": {
+			"@/*": ["./*"],
+			"@bytos/agents": ["../../../sdk/packages/agents/src/index.ts"],
+			"@bytos/core": ["../../../sdk/packages/core/src/index.ts"],
+			"@bytos/core/cloud": ["../../../sdk/packages/core/src/cloud/index.ts"],
+			"@bytos/core/hub": ["../../../sdk/packages/core/src/hub/index.ts"],
+			"@bytos/core/hub/daemon-entry": [
+				"../../../sdk/packages/core/src/hub/daemon/entry.ts"
+			],
+			"@bytos/llms": ["../../../sdk/packages/llms/src/index.ts"],
+			"@bytos/shared": ["../../../sdk/packages/shared/src/index.ts"],
+			"@bytos/shared/storage": [
+				"../../../sdk/packages/shared/src/storage/index.ts"
+			],
+			"@bytos/shared/db": ["../../../sdk/packages/shared/src/db/index.ts"],
+			"@bytos/shared/*": [
+				"../../../sdk/packages/shared/src/*",
+				"../../../sdk/packages/shared/src/*/index.ts"
+			]
+		}
+	},
+	"include": ["sidecar/**/*.ts", "scripts/**/*.ts", "global.d.ts", "bun.mts"],
+	"exclude": ["node_modules", "webview"]
+}

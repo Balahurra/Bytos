@@ -1,0 +1,147 @@
+---
+title: "CLI Overview"
+sidebarTitle: "CLI Overview"
+description: "Use Bytos CLI for interactive terminal sessions and automated headless workflows."
+---
+
+## Prerequisites
+
+- Bytos CLI installed (install via `npm i -g bytos`)
+- Provider authenticated (`bytos auth`) — use the Bytos Provider, BytosPass, or your own provider key ([Authorization Guide](/getting-started/authorizing-with-bytos#cli-setup))
+
+## Quick Start
+
+```bash
+# Interactive session
+bytos
+
+# Run one task immediately
+bytos "refactor this module to use async/await"
+
+# Structured output for scripts
+bytos --json "list TODO comments"
+```
+
+## Headless mode
+
+Use headless mode for scripts/automation and processable output.
+
+Headless is triggered when using flags like `--json`, when stdin is piped, or when output is redirected.
+
+#### When headless activates
+
+| Invocation | Reason |
+|---|---|
+| `bytos --json "task"` | JSON output mode |
+| `cat file \| bytos "task"` | stdin is piped |
+| `bytos "task" > output.txt` | stdout is redirected |
+
+```bash
+# CI/script style execution
+git diff | bytos "review these changes"
+
+# JSON for parsing: print only the final answer
+bytos --json "summarize this changelog" | jq -r 'select(.type == "run_result") | .text'
+```
+
+See: [Headless Mode](#headless-mode)
+
+### Autonomous execution
+
+For fully unattended runs, use auto-approval:
+
+```bash
+bytos --auto-approve true "run tests and fix failures"
+```
+
+Mode selection also works in headless runs:
+
+```bash
+# plan-first
+bytos -p "design migration plan"
+
+# act immediately (default)
+bytos "apply migration"
+```
+
+<Warning>
+Autonomous execution can modify files and run commands without further prompts. Use a clean branch and review results.
+</Warning>
+
+## High-Value Commands
+
+```bash
+bytos --help
+bytos <command> --help
+```
+
+| Command | Purpose |
+|---|---|
+| `bytos` | Start interactive mode or run a prompt |
+| `bytos auth` | Authenticate and set provider/model |
+| `bytos config` | Show the current configuration |
+| `bytos mcp` | Manage MCP servers |
+| `bytos doctor` | Diagnose/fix configuration issues |
+| `bytos history` | Show and manage task history |
+| `bytos schedule` | Manage scheduled tasks |
+| `bytos hub` | Manage local hub daemon |
+| `bytos kanban` | Run the Kanban app |
+
+## Most-Used Global Flags
+
+Source of truth: [CLI Reference](/cli/cli-reference)
+
+| Flag | Purpose |
+|---|---|
+| `-p, --plan` | Start in Plan mode |
+| `--auto-approve <boolean>` | Global tool auto-approval (`true`/`false`, default `true`) |
+| `-m, --model <model>` | Override model for this run |
+| `-P, --provider <id>` | Override provider for this run |
+| `-c, --cwd <path>` | Set working directory |
+| `--config <dir>` | Use config directory |
+| `--data-dir <dir>` | Use isolated local state |
+| `--json` | Output newline-delimited JSON messages |
+| `--thinking <level>` | Set reasoning effort: `none\|low\|medium\|high\|xhigh`. Bare `--thinking` uses `medium`. Without the flag, Bytos uses the level you last chose with `/model`, or else the provider's default |
+| `-t, --timeout <seconds>` | Set task timeout |
+
+## Automation Patterns
+
+### Pipe context in
+
+```bash
+cat README.md | bytos "summarize key setup steps"
+git diff | bytos "review for potential regressions"
+```
+
+### Chain tasks
+
+```bash
+git diff | bytos "explain these changes" | bytos "write a commit message"
+```
+
+### Restrict command execution
+
+The CLI has no allow or deny list for shell commands. To block commands, use a `PreToolUse` hook that cancels `run_commands` calls you don't allow, like the [.bytosignore hook](/customization/bytosignore#enforcing-bytosignore-with-a-hook).
+
+### Include images in tasks
+
+Mention an image file with `@` and the CLI attaches it to the prompt:
+
+```bash
+bytos "fix the UI shown in @./design-mockup.png"
+```
+
+### Set execution timeout
+
+```bash
+bytos --timeout 600 "run full test suite"
+```
+
+## JSON Output Schema
+
+When you give Bytos a task with `--json`, each line is a JSON object with a `type`. Agent events arrive as `agent_event` lines, and a `run_result` line holds the final `text` when the run finishes. The [CLI Reference](/cli/cli-reference#json-output-for-agent-runs) describes the line types.
+
+## Next Steps
+
+- [CLI Reference](/cli/cli-reference)
+- [ACP](/usage/acp) — use Bytos as the coding agent in Zed, JetBrains IDEs, Neovim, and other ACP clients

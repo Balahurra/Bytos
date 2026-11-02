@@ -1,0 +1,63 @@
+import type { BytosMessage } from "@shared/ExtensionMessage"
+
+export function isVisibleCheckpointUserMessage(message: BytosMessage): boolean {
+	return message.type === "say" && (message.say === "task" || message.say === "user_feedback")
+}
+
+export function isCheckpointAnswerMessage(messages: BytosMessage[], index: number): boolean {
+	const message = messages[index]
+	if (message?.type !== "say" || message.say !== "user_feedback") {
+		return false
+	}
+
+	for (let cursor = index - 1; cursor >= 0; cursor -= 1) {
+		const previous = messages[cursor]
+		if (previous.say === "checkpoint_created") {
+			continue
+		}
+		if (previous.type === "ask") {
+			return previous.ask === "followup" || previous.ask === "mistake_limit_reached"
+		}
+		if (isVisibleCheckpointUserMessage(previous)) {
+			return false
+		}
+	}
+
+	return false
+}
+
+export function isCheckpointRunUserMessage(messages: BytosMessage[], index: number): boolean {
+	return isVisibleCheckpointUserMessage(messages[index]) && !isCheckpointAnswerMessage(messages, index)
+}
+
+export function getCheckpointRunCountForMessage(messages: BytosMessage[], targetIndex: number): number | undefined {
+	if (!isCheckpointRunUserMessage(messages, targetIndex)) {
+		return undefined
+	}
+
+	let runCount = 0
+	for (let index = 0; index <= targetIndex; index += 1) {
+		if (isCheckpointRunUserMessage(messages, index)) {
+			runCount += 1
+		}
+	}
+	return runCount
+}
+
+export function findVisibleCheckpointUserMessageByRun(
+	messages: BytosMessage[],
+	runCount: number,
+): { message: BytosMessage; index: number } | undefined {
+	let seenUsers = 0
+	for (let index = 0; index < messages.length; index += 1) {
+		const message = messages[index]
+		if (!isCheckpointRunUserMessage(messages, index)) {
+			continue
+		}
+		seenUsers += 1
+		if (seenUsers === runCount) {
+			return { message, index }
+		}
+	}
+	return undefined
+}

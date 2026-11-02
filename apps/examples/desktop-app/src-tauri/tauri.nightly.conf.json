@@ -1,0 +1,24 @@
+{
+	"$schema": "https://schema.tauri.app/config/2",
+	"productName": "Bytos Nightly",
+	"identifier": "bot.bytos.app.nightly",
+	"bundle": {
+		"linux": {
+			"deb": {
+				"files": {
+					"/usr/share/metainfo": "linux/metainfo/nightly"
+				}
+			},
+			"rpm": {
+				"files": {
+					"/usr/share/metainfo": "linux/metainfo/nightly"
+				}
+			}
+		}
+	},
+	"plugins": {
+		"updater": {
+			"endpoints": []
+		}
+	}
+}

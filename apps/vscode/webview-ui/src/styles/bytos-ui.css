@@ -1,0 +1,804 @@
+/*
+ * Bytos UI 2.0 component layer.
+ * Visual only: no layout logic or data flow lives here.
+ */
+
+/* ------------------------------------------------------------------ */
+/* Thinking / reasoning                                                */
+/* ------------------------------------------------------------------ */
+
+.bytos-thinking {
+	margin-left: 4px;
+	margin-top: 2px;
+	margin-bottom: 6px;
+}
+
+.bytos-thinking-title {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	padding: 0;
+	min-height: 0;
+	background: transparent;
+	border: 0;
+	font-family: var(--bytos-font-display);
+	font-size: calc(var(--vscode-font-size, 13px) * 0.78);
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	line-height: 1.2;
+	text-transform: uppercase;
+	color: color-mix(in oklab, var(--bytos-thinking) 78%, var(--bytos-text) 22%);
+}
+
+.bytos-thinking-title:hover {
+	color: color-mix(in oklab, var(--bytos-thinking) 92%, var(--bytos-text) 8%);
+}
+
+.bytos-thinking-dot {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: var(--bytos-thinking);
+	box-shadow: 0 0 0 3px color-mix(in oklab, var(--bytos-thinking) 16%, transparent);
+	flex: 0 0 auto;
+}
+
+.bytos-thinking-stream {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	font-family: var(--bytos-font-display);
+	font-size: calc(var(--vscode-font-size, 13px) * 0.8);
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	background: linear-gradient(90deg, var(--bytos-thinking), var(--bytos-cyan), var(--bytos-thinking));
+	background-size: 200% 100%;
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+	animation: bytos-shimmer 2.2s linear infinite;
+}
+
+.bytos-thinking-body {
+	margin-top: 6px;
+	padding: 2px 0 2px 11px;
+	border-left: 2px solid color-mix(in oklab, var(--bytos-thinking) 55%, transparent);
+	font-family: var(--bytos-font-ui);
+	font-size: calc(var(--vscode-font-size, 13px) * 0.96);
+	line-height: 1.55;
+	color: color-mix(in oklab, var(--bytos-text) 74%, var(--bytos-thinking) 26%);
+}
+
+.bytos-thinking-chevron {
+	color: color-mix(in oklab, var(--bytos-thinking) 58%, transparent);
+}
+
+@keyframes bytos-shimmer {
+	0% {
+		background-position: 200% 0;
+	}
+	100% {
+		background-position: -200% 0;
+	}
+}
+
+@keyframes bytos-pulse {
+	0%,
+	100% {
+		opacity: 0.55;
+		transform: scale(0.85);
+	}
+	50% {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+/* ------------------------------------------------------------------ */
+/* Tool activity                                                       */
+/* ------------------------------------------------------------------ */
+
+.bytos-tool-group {
+	margin: 4px 0 8px 4px;
+	padding: 2px 0;
+}
+
+.bytos-tool-group-title {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 5px;
+	font-family: var(--bytos-font-display);
+	font-size: calc(var(--vscode-font-size, 13px) * 0.78);
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	line-height: 1.2;
+	text-transform: uppercase;
+	color: var(--bytos-muted);
+}
+
+.bytos-tool-count {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 18px;
+	height: 17px;
+	padding: 0 5px;
+	border-radius: var(--bytos-radius-pill);
+	background: var(--bytos-cyan-soft);
+	color: color-mix(in oklab, var(--bytos-tool) 80%, var(--bytos-text) 20%);
+	font-family: var(--bytos-font-mono);
+	font-size: calc(var(--vscode-font-size, 13px) * 0.7);
+	letter-spacing: 0;
+}
+
+.bytos-tool-row {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	min-width: 0;
+	max-width: 100%;
+	padding: 3px 6px 3px 4px;
+	border-radius: var(--bytos-radius-xs);
+	font-family: var(--bytos-font-mono);
+	font-size: calc(var(--vscode-font-size, 13px) * 0.88);
+	line-height: 1.35;
+	color: color-mix(in oklab, var(--bytos-text) 78%, var(--bytos-tool) 22%);
+	background: transparent;
+	transition:
+		background var(--bytos-duration) var(--bytos-ease),
+		color var(--bytos-duration) var(--bytos-ease);
+}
+
+.bytos-tool-row:hover {
+	background: color-mix(in oklab, var(--bytos-tool) 8%, transparent);
+	color: var(--bytos-text);
+}
+
+.bytos-tool-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 18px;
+	height: 18px;
+	border-radius: 5px;
+	flex: 0 0 auto;
+	background: var(--bytos-cyan-soft);
+	color: color-mix(in oklab, var(--bytos-tool) 82%, var(--bytos-text) 18%);
+}
+
+.bytos-tool-row-active .bytos-tool-icon {
+	animation: bytos-pulse 1.6s ease-in-out infinite;
+}
+
+.bytos-tool-verb {
+	font-family: var(--bytos-font-display);
+	font-size: calc(var(--vscode-font-size, 13px) * 0.72);
+	font-weight: 600;
+	letter-spacing: 0.07em;
+	text-transform: uppercase;
+	color: color-mix(in oklab, var(--bytos-tool) 80%, var(--bytos-text) 20%);
+	flex: 0 0 auto;
+}
+
+.bytos-tool-path {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.bytos-tool-detail {
+	margin: 4px 0 4px 28px;
+	padding: 8px 10px;
+	border-left: 2px solid color-mix(in oklab, var(--bytos-tool) 36%, transparent);
+	border-radius: 0 var(--bytos-radius-sm) var(--bytos-radius-sm) 0;
+	background: color-mix(in oklab, var(--bytos-canvas) 94%, var(--bytos-tool) 6%);
+	font-family: var(--bytos-font-mono);
+	font-size: calc(var(--vscode-font-size, 13px) * 0.82);
+	line-height: 1.5;
+	color: var(--bytos-muted);
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+/* ------------------------------------------------------------------ */
+/* Task header / context prompt                                        */
+/* ------------------------------------------------------------------ */
+
+.bytos-task-header {
+	position: relative;
+	overflow: hidden;
+	border-radius: var(--bytos-radius-lg);
+	border: 1px solid var(--bytos-border);
+	background:
+		linear-gradient(135deg, color-mix(in oklab, var(--bytos-blue) 9%, transparent), transparent 42%), var(--bytos-panel);
+	box-shadow: var(--bytos-shadow-card);
+	transition:
+		border-color var(--bytos-duration) var(--bytos-ease),
+		background var(--bytos-duration) var(--bytos-ease);
+}
+
+.bytos-task-header::before {
+	content: "";
+	position: absolute;
+	inset: 0 auto 0 0;
+	width: 3px;
+	border-radius: var(--bytos-radius-lg) 0 0 var(--bytos-radius-lg);
+	background: linear-gradient(180deg, var(--bytos-cyan), var(--bytos-blue) 55%, var(--bytos-violet));
+}
+
+.bytos-task-header:hover {
+	border-color: var(--bytos-border-strong);
+}
+
+.bytos-task-title {
+	font-family: var(--bytos-font-ui);
+	font-size: calc(var(--vscode-font-size, 13px) * 0.98);
+	font-weight: 620;
+	line-height: 1.5;
+	letter-spacing: 0;
+}
+
+.bytos-task-body {
+	font-family: var(--bytos-font-ui);
+	font-size: calc(var(--vscode-font-size, 13px) * 0.94);
+	line-height: 1.55;
+}
+
+.bytos-context-bar {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-width: 0;
+	padding: 2px 0 0;
+}
+
+.bytos-context-bar [role="progressbar"],
+.bytos-context-bar .context-window-progress {
+	height: 6px;
+	border-radius: var(--bytos-radius-pill);
+	background: color-mix(in oklab, var(--bytos-text) 9%, transparent);
+}
+
+.bytos-context-bar [data-slot="progress-indicator"],
+.bytos-context-bar [role="progressbar"] > div {
+	border-radius: var(--bytos-radius-pill);
+	background: linear-gradient(90deg, var(--bytos-cyan), var(--bytos-blue));
+}
+
+.bytos-context-bar .bytos-mono,
+.bytos-context-bar span {
+	font-family: var(--bytos-font-mono);
+	font-size: calc(var(--vscode-font-size, 13px) * 0.76);
+	letter-spacing: 0.01em;
+}
+
+/* ------------------------------------------------------------------ */
+/* Composer                                                            */
+/* ------------------------------------------------------------------ */
+
+.bytos-composer {
+	border-radius: var(--bytos-radius-lg);
+	border: 1px solid var(--bytos-border);
+	background: var(--bytos-panel);
+	padding: 10px 12px 8px;
+	transition:
+		border-color var(--bytos-duration) var(--bytos-ease),
+		box-shadow var(--bytos-duration) var(--bytos-ease),
+		background var(--bytos-duration) var(--bytos-ease);
+}
+
+.bytos-composer:focus-within {
+	border-color: color-mix(in oklab, var(--bytos-cyan) 52%, transparent);
+	background: color-mix(in oklab, var(--bytos-canvas) 92%, var(--bytos-blue) 8%);
+	box-shadow:
+		0 0 0 1px color-mix(in oklab, var(--bytos-cyan) 32%, transparent),
+		0 0 0 4px color-mix(in oklab, var(--bytos-cyan) 10%, transparent);
+}
+
+.bytos-composer textarea,
+.bytos-composer input {
+	font-family: var(--bytos-font-ui) !important;
+	font-size: calc(var(--vscode-editor-font-size, 13px) * 0.98) !important;
+	line-height: 1.5 !important;
+}
+
+.bytos-composer-placeholder {
+	font-family: var(--bytos-font-ui);
+	font-size: calc(var(--vscode-font-size, 13px) * 0.92);
+	color: var(--bytos-faint);
+}
+
+.bytos-composer-toolbar {
+	border-top: 1px solid var(--bytos-border);
+	margin-top: 6px;
+	padding-top: 6px;
+}
+
+.bytos-mode-switch {
+	border-radius: var(--bytos-radius-pill) !important;
+	border-color: var(--bytos-border) !important;
+	background: var(--bytos-panel) !important;
+}
+
+.bytos-mode-thumb {
+	background: linear-gradient(90deg, var(--bytos-cyan), var(--bytos-blue)) !important;
+	opacity: 0.92;
+}
+
+.bytos-model-button {
+	font-family: var(--bytos-font-display);
+	font-size: calc(var(--vscode-font-size, 13px) * 0.8);
+	font-weight: 600;
+	letter-spacing: 0.01em;
+	color: var(--bytos-muted) !important;
+}
+
+.bytos-model-button:hover,
+.bytos-model-button:focus {
+	color: color-mix(in oklab, var(--bytos-cyan) 78%, var(--bytos-text) 22%) !important;
+	text-decoration: none !important;
+}
+
+.bytos-context-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	max-width: 180px;
+	padding: 2px 7px;
+	border-radius: var(--bytos-radius-xs);
+	border: 1px solid color-mix(in oklab, var(--bytos-cyan) 22%, transparent);
+	background: var(--bytos-cyan-soft);
+	color: color-mix(in oklab, var(--bytos-cyan) 78%, var(--bytos-text) 22%);
+	font-family: var(--bytos-font-mono);
+	font-size: calc(var(--vscode-font-size, 13px) * 0.76);
+	line-height: 1.3;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* ------------------------------------------------------------------ */
+/* Messages                                                            */
+/* ------------------------------------------------------------------ */
+
+.bytos-user-card {
+	border-radius: var(--bytos-radius-md);
+	border: 1px solid var(--bytos-border);
+	background:
+		linear-gradient(135deg, color-mix(in oklab, var(--bytos-blue) 7%, transparent), transparent 55%), var(--bytos-panel);
+	box-shadow: none;
+}
+
+.bytos-user-label {
+	font-family: var(--bytos-font-display);
+	font-size: calc(var(--vscode-font-size, 13px) * 0.72);
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--bytos-muted);
+}
+
+.bytos-assistant-rail {
+	padding-left: 11px;
+	border-left: 2px solid color-mix(in oklab, var(--bytos-blue) 32%, transparent);
+}
+
+.bytos-approval-card {
+	border-radius: var(--bytos-radius-md);
+	border: 1px solid color-mix(in oklab, var(--bytos-cyan) 26%, transparent);
+	background:
+		linear-gradient(135deg, color-mix(in oklab, var(--bytos-cyan) 8%, transparent), transparent 55%), var(--bytos-panel);
+	padding: 12px 14px;
+	box-shadow: var(--bytos-shadow-card);
+}
+
+/* ------------------------------------------------------------------ */
+/* Navigation                                                          */
+/* ------------------------------------------------------------------ */
+
+.bytos-nav {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	padding: 2px 4px;
+	border-radius: var(--bytos-radius-pill);
+	background: color-mix(in oklab, var(--bytos-canvas) 90%, var(--bytos-blue) 10%);
+	border: 1px solid var(--bytos-border);
+}
+
+.bytos-nav-item {
+	border-radius: var(--bytos-radius-pill);
+	color: var(--bytos-muted);
+	transition:
+		background var(--bytos-duration) var(--bytos-ease),
+		color var(--bytos-duration) var(--bytos-ease);
+}
+
+.bytos-nav-item:hover {
+	background: var(--bytos-accent-soft);
+	color: var(--bytos-text);
+}
+
+.bytos-nav-item[data-active="true"] {
+	background: linear-gradient(90deg, var(--bytos-cyan-soft), var(--bytos-accent-soft));
+	color: var(--bytos-text);
+}
+
+/* ------------------------------------------------------------------ */
+/* Settings                                                            */
+/* ------------------------------------------------------------------ */
+
+.bytos-settings-nav {
+	padding: 8px 6px;
+	gap: 2px;
+	border-right: 1px solid var(--bytos-border);
+	background: color-mix(in oklab, var(--bytos-canvas) 94%, var(--bytos-blue) 6%);
+}
+
+.bytos-settings-nav-item {
+	height: 38px;
+	margin: 1px 4px;
+	padding: 0 10px;
+	border-radius: var(--bytos-radius-sm);
+	border-left: 0 !important;
+	opacity: 0.66;
+	color: var(--bytos-muted);
+	transition:
+		background var(--bytos-duration) var(--bytos-ease),
+		color var(--bytos-duration) var(--bytos-ease),
+		opacity var(--bytos-duration) var(--bytos-ease);
+}
+
+.bytos-settings-nav-item:hover {
+	background: var(--bytos-accent-soft);
+	opacity: 1;
+	color: var(--bytos-text);
+}
+
+.bytos-settings-nav-item[data-active="true"] {
+	opacity: 1;
+	color: var(--bytos-text);
+	background: linear-gradient(90deg, color-mix(in oklab, var(--bytos-blue) 18%, transparent), transparent);
+	box-shadow: inset 2px 0 0 var(--bytos-cyan);
+}
+
+.bytos-settings-nav-item svg {
+	color: color-mix(in oklab, var(--bytos-cyan) 72%, var(--bytos-text) 28%);
+}
+
+.bytos-settings-panel {
+	border-radius: var(--bytos-radius-md);
+	border: 1px solid var(--bytos-border);
+	background: var(--bytos-panel);
+	padding: 14px;
+}
+
+.bytos-section-header {
+	padding: 14px 18px 6px;
+}
+
+.bytos-section-header h2,
+.bytos-settings-section-title {
+	font-family: var(--bytos-font-display);
+	font-size: calc(var(--vscode-font-size, 13px) * 0.8);
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--bytos-muted);
+}
+
+.bytos-section-header p {
+	font-size: calc(var(--vscode-font-size, 13px) * 0.9);
+	line-height: 1.5;
+	color: var(--bytos-muted);
+}
+
+.bytos-provider-card {
+	border-radius: var(--bytos-radius-md);
+	border: 1px solid var(--bytos-border);
+	background: var(--bytos-panel);
+	padding: 12px 14px;
+	transition:
+		border-color var(--bytos-duration) var(--bytos-ease),
+		background var(--bytos-duration) var(--bytos-ease);
+}
+
+.bytos-provider-card:hover {
+	border-color: var(--bytos-border-accent);
+	background: var(--bytos-panel-hover);
+}
+
+.bytos-model-card {
+	border-radius: var(--bytos-radius-sm);
+	border: 1px solid var(--bytos-border);
+	background: var(--bytos-panel);
+	padding: 8px 10px;
+	transition:
+		border-color var(--bytos-duration) var(--bytos-ease),
+		background var(--bytos-duration) var(--bytos-ease);
+}
+
+.bytos-model-card:hover {
+	border-color: var(--bytos-border-accent);
+	background: var(--bytos-panel-hover);
+}
+
+.bytos-model-card[data-selected="true"] {
+	border-color: color-mix(in oklab, var(--bytos-cyan) 48%, transparent);
+	background: color-mix(in oklab, var(--bytos-canvas) 90%, var(--bytos-cyan) 10%);
+}
+
+/* ------------------------------------------------------------------ */
+/* History                                                             */
+/* ------------------------------------------------------------------ */
+
+.bytos-history {
+	padding: 14px 16px;
+}
+
+.bytos-history-group-label {
+	margin: 16px 0 7px;
+}
+
+.bytos-history-card {
+	border-radius: var(--bytos-radius-md);
+	border: 1px solid var(--bytos-border);
+	background: var(--bytos-panel);
+	padding: 11px 12px;
+	transition:
+		border-color var(--bytos-duration) var(--bytos-ease),
+		background var(--bytos-duration) var(--bytos-ease),
+		transform var(--bytos-duration) var(--bytos-ease);
+}
+
+.bytos-history-card:hover {
+	border-color: var(--bytos-border-accent);
+	background: var(--bytos-panel-hover);
+	transform: translateY(-1px);
+}
+
+/* ------------------------------------------------------------------ */
+/* Marketplace / tool catalog                                          */
+/* ------------------------------------------------------------------ */
+
+.marketplace-row {
+	border-radius: var(--bytos-radius-md);
+	border: 1px solid var(--bytos-border);
+	background: var(--bytos-panel);
+	padding: 11px 13px;
+	transition:
+		border-color var(--bytos-duration) var(--bytos-ease),
+		background var(--bytos-duration) var(--bytos-ease),
+		transform var(--bytos-duration) var(--bytos-ease),
+		box-shadow var(--bytos-duration) var(--bytos-ease);
+}
+
+.marketplace-row:hover {
+	border-color: var(--bytos-border-accent);
+	background: var(--bytos-panel-hover);
+	transform: translateY(-1px);
+	box-shadow: var(--bytos-shadow-card);
+}
+
+.marketplace-row-name {
+	font-family: var(--bytos-font-display);
+	font-size: calc(var(--vscode-font-size, 13px) * 1.02);
+	font-weight: 600;
+	letter-spacing: -0.005em;
+}
+
+.marketplace-row-description {
+	font-family: var(--bytos-font-ui);
+	font-size: calc(var(--vscode-font-size, 13px) * 0.9);
+	line-height: 1.45;
+	color: var(--bytos-muted);
+}
+
+.marketplace-pill {
+	border-radius: var(--bytos-radius-pill);
+	font-family: var(--bytos-font-mono);
+	font-size: calc(var(--vscode-font-size, 13px) * 0.72);
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: color-mix(in oklab, var(--bytos-cyan) 76%, var(--bytos-text) 24%);
+	background: var(--bytos-cyan-soft);
+	border-color: color-mix(in oklab, var(--bytos-cyan) 22%, transparent);
+}
+
+.marketplace-section-title {
+	font-family: var(--bytos-font-display);
+	font-size: calc(var(--vscode-font-size, 13px) * 0.8);
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--bytos-muted);
+}
+
+.marketplace-section-header {
+	border-bottom-color: var(--bytos-border);
+}
+
+/* ------------------------------------------------------------------ */
+/* MCP + worktrees                                                     */
+/* ------------------------------------------------------------------ */
+
+.bytos-mcp-card,
+.bytos-worktree-card {
+	border-radius: var(--bytos-radius-md);
+	border: 1px solid var(--bytos-border);
+	background: var(--bytos-panel);
+	padding: 12px 14px;
+	transition:
+		border-color var(--bytos-duration) var(--bytos-ease),
+		background var(--bytos-duration) var(--bytos-ease),
+		transform var(--bytos-duration) var(--bytos-ease);
+}
+
+.bytos-mcp-card:hover,
+.bytos-worktree-card:hover {
+	border-color: var(--bytos-border-accent);
+	background: var(--bytos-panel-hover);
+	transform: translateY(-1px);
+}
+
+.bytos-status-dot {
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	flex: 0 0 auto;
+	background: var(--bytos-success);
+	box-shadow: 0 0 0 3px var(--bytos-success-soft);
+}
+
+.bytos-status-dot[data-status="running"] {
+	background: var(--bytos-cyan);
+	box-shadow: 0 0 0 3px var(--bytos-cyan-soft);
+	animation: bytos-pulse 1.6s ease-in-out infinite;
+}
+
+.bytos-status-dot[data-status="waiting"] {
+	background: var(--bytos-warning);
+	box-shadow: 0 0 0 3px var(--bytos-warning-soft);
+}
+
+.bytos-status-dot[data-status="error"] {
+	background: var(--bytos-error);
+	box-shadow: 0 0 0 3px var(--bytos-error-soft);
+}
+
+/* ------------------------------------------------------------------ */
+/* Home / empty state                                                  */
+/* ------------------------------------------------------------------ */
+
+.bytos-home-header {
+	padding-top: 4px;
+}
+
+.bytos-home-mark {
+	position: relative;
+	display: grid;
+	place-items: center;
+}
+
+.bytos-home-mark::before {
+	content: "";
+	position: absolute;
+	width: 120px;
+	height: 120px;
+	border-radius: 50%;
+	background: radial-gradient(circle, color-mix(in oklab, var(--bytos-blue) 22%, transparent), transparent 68%);
+	filter: blur(2px);
+	pointer-events: none;
+}
+
+.bytos-home-kicker {
+	margin-bottom: 4px;
+}
+
+.bytos-home-title {
+	font-family: var(--bytos-font-display);
+	font-size: calc(var(--vscode-font-size, 13px) * 1.38);
+	font-weight: 600;
+	letter-spacing: -0.015em;
+	color: var(--bytos-text);
+}
+
+.bytos-home-subtitle {
+	max-width: 260px;
+	font-family: var(--bytos-font-ui);
+	font-size: calc(var(--vscode-font-size, 13px) * 0.88);
+	line-height: 1.5;
+	color: var(--bytos-muted);
+}
+
+.bytos-tour-button {
+	border-color: var(--bytos-border);
+	background: var(--bytos-panel);
+	color: var(--bytos-text);
+	font-family: var(--bytos-font-ui);
+	font-size: calc(var(--vscode-font-size, 13px) * 0.88);
+	transition:
+		border-color var(--bytos-duration) var(--bytos-ease),
+		background var(--bytos-duration) var(--bytos-ease),
+		transform var(--bytos-duration) var(--bytos-ease);
+}
+
+.bytos-tour-button:hover {
+	border-color: var(--bytos-border-accent);
+	background: var(--bytos-panel-hover);
+	transform: translateY(-1px);
+}
+
+.bytos-user-card {
+	color: var(--bytos-text);
+}
+
+.bytos-worktree-card[data-current="true"] {
+	border-color: color-mix(in oklab, var(--bytos-cyan) 42%, transparent);
+	background:
+		linear-gradient(135deg, color-mix(in oklab, var(--bytos-cyan) 8%, transparent), transparent 55%), var(--bytos-panel);
+	box-shadow: inset 3px 0 0 var(--bytos-cyan);
+}
+
+.bytos-mcp-card .codicon-chevron-right,
+.bytos-mcp-card .codicon-chevron-down {
+	color: var(--bytos-muted);
+}
+
+/* ------------------------------------------------------------------ */
+/* VS Code toolkit controls                                            */
+/* ------------------------------------------------------------------ */
+
+vscode-button::part(control) {
+	border-radius: var(--bytos-radius-sm);
+	font-family: var(--bytos-font-ui);
+	font-weight: 600;
+	letter-spacing: 0.005em;
+}
+
+vscode-text-field::part(root) {
+	border-radius: var(--bytos-radius-sm);
+	border-color: var(--bytos-border);
+	background: var(--bytos-panel);
+}
+
+vscode-text-field::part(root):focus-within,
+vscode-text-field::part(root):focus {
+	border-color: color-mix(in oklab, var(--bytos-cyan) 52%, transparent);
+	outline: 1px solid color-mix(in oklab, var(--bytos-cyan) 30%, transparent);
+	outline-offset: 1px;
+}
+
+vscode-dropdown::part(control) {
+	border-radius: var(--bytos-radius-sm);
+	border-color: var(--bytos-border);
+	background: var(--bytos-panel);
+	font-family: var(--bytos-font-ui);
+}
+
+vscode-dropdown::part(control):focus,
+vscode-dropdown::part(control):focus-within {
+	border-color: color-mix(in oklab, var(--bytos-cyan) 52%, transparent);
+	outline: 1px solid color-mix(in oklab, var(--bytos-cyan) 30%, transparent);
+	outline-offset: 1px;
+}
+
+vscode-checkbox::part(control) {
+	border-radius: 5px;
+	border-color: var(--bytos-border-strong);
+}
+
+vscode-checkbox[checked]::part(control) {
+	background: var(--bytos-blue);
+	border-color: var(--bytos-blue);
+}
+
+vscode-textarea::part(root) {
+	border-radius: var(--bytos-radius-sm);
+	border-color: var(--bytos-border);
+	background: var(--bytos-panel);
+	font-family: var(--bytos-font-ui);
+}

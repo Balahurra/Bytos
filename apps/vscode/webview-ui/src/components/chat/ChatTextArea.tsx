@@ -1431,7 +1431,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 		return (
 			<div>
 				<div
-					className="relative flex transition-colors ease-in-out duration-100 px-3.5 py-2.5"
+					className="bytos-composer relative flex transition-colors ease-in-out duration-100 px-3.5 py-2.5"
 					onDragEnter={handleDragEnter}
 					onDragLeave={handleDragLeave}
 					onDragOver={onDragOver}
@@ -1480,7 +1480,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 					)}
 					<div
 						className={cn(
-							"absolute bottom-2.5 top-2.5 whitespace-pre-wrap break-words rounded-xs overflow-hidden bg-input-background",
+							"absolute bottom-2.5 top-2.5 whitespace-pre-wrap break-words rounded-xs overflow-hidden bg-transparent",
 							isTextAreaFocused ? "left-3.5 right-3.5" : "left-3.5 right-3.5 border border-input-border",
 						)}
 						ref={highlightLayerRef}
@@ -1491,7 +1491,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 							wordWrap: "break-word",
 							color: "transparent",
 							overflow: "hidden",
-							fontFamily: "var(--vscode-font-family)",
+							fontFamily: "var(--bytos-font-ui)",
 							fontSize: "var(--vscode-editor-font-size)",
 							lineHeight: "var(--vscode-editor-line-height)",
 							borderRadius: 2,
@@ -1544,7 +1544,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 							color: "var(--vscode-input-foreground)",
 							//border: "1px solid var(--vscode-input-border)",
 							borderRadius: 2,
-							fontFamily: "var(--vscode-font-family)",
+							fontFamily: "var(--bytos-font-ui)",
 							fontSize: "var(--vscode-editor-font-size)",
 							lineHeight: "var(--vscode-editor-line-height)",
 							resize: "none",
@@ -1577,7 +1577,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 						value={inputValue}
 					/>
 					{!inputValue && selectedImages.length === 0 && selectedFiles.length === 0 && (
-						<div className="text-xs absolute bottom-5 left-6.5 right-16 text-(--vscode-input-placeholderForeground)/50 whitespace-nowrap overflow-hidden text-ellipsis pointer-events-none z-1">
+						<div className="bytos-composer-placeholder absolute bottom-5 left-6.5 right-16 text-(--vscode-input-placeholderForeground)/50 whitespace-nowrap overflow-hidden text-ellipsis pointer-events-none z-1">
 							Type @ for context, / for slash commands & workflows, hold shift to drag in files/images
 						</div>
 					)}
@@ -1637,7 +1637,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 						</span>
 					</div>
 				)}
-				<div className="flex justify-between items-center -mt-[2px] px-3 pb-2">
+				<div className="bytos-composer-toolbar flex justify-between items-center -mt-[2px] px-3 pb-2">
 					{/* Always render both components, but control visibility with CSS */}
 					<div className="relative flex-1 min-w-0 h-5">
 						{/* ButtonGroup - always in DOM but visibility controlled */}
@@ -1686,6 +1686,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 							<ModelContainer>
 								<ModelButtonWrapper>
 									<ModelDisplayButton
+										className="bytos-model-button"
 										disabled={false}
 										onClick={handleModelButtonClick}
 										role="button"
@@ -1709,8 +1710,8 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 								</p>
 							</TooltipContent>
 							<TooltipTrigger>
-								<SwitchContainer data-testid="mode-switch" onClick={onModeToggle}>
-									<Slider isAct={mode === "act"} isPlan={mode === "plan"} />
+								<SwitchContainer className="bytos-mode-switch" data-testid="mode-switch" onClick={onModeToggle}>
+									<Slider className="bytos-mode-thumb" isAct={mode === "act"} isPlan={mode === "plan"} />
 									{["Plan", "Act"].map((m) => (
 										<div
 											aria-checked={mode === m.toLowerCase()}

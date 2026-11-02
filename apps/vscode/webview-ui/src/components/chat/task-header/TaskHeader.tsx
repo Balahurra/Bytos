@@ -148,7 +148,7 @@ const TaskHeader: React.FC<TaskHeaderProps> = ({
 			{/* Task Header */}
 			<div
 				className={cn(
-					"relative overflow-hidden cursor-pointer rounded-sm flex flex-col gap-1.5 z-10 pt-2 pb-2 px-2 hover:opacity-100 bg-(--vscode-toolbar-hoverBackground)/65",
+					"bytos-task-header relative overflow-hidden cursor-pointer flex flex-col gap-1.5 z-10 pt-2 pb-2 px-2 hover:opacity-100",
 					{
 						"opacity-100 border-1": isTaskExpanded, // No hover effects when expanded, add border
 						"hover:bg-toolbar-hover border-1": !isTaskExpanded, // Hover effects only when collapsed
@@ -193,7 +193,7 @@ const TaskHeader: React.FC<TaskHeaderProps> = ({
 						</div>
 						{!isTaskExpanded && (
 							<div className="select-none whitespace-nowrap overflow-hidden text-ellipsis grow basis-0 min-w-16">
-								<span className="ph-no-capture text-base">{highlightedText}</span>
+								<span className="bytos-task-title ph-no-capture text-base">{highlightedText}</span>
 							</div>
 						)}
 						<div className="inline-flex flex-wrap gap-y-1 items-center justify-end select-none ml-auto min-w-0">
@@ -223,7 +223,7 @@ const TaskHeader: React.FC<TaskHeaderProps> = ({
 					<div className="flex flex-col break-words" key={`task-details-${currentTaskItem?.id}`}>
 						<div
 							className={cn(
-								"ph-no-capture whitespace-pre-wrap break-words px-0.5 text-sm mt-1 relative",
+								"bytos-task-body ph-no-capture whitespace-pre-wrap break-words px-0.5 text-sm mt-1 relative",
 								"max-h-[4.5rem] overflow-hidden",
 								{
 									"max-h-[25vh] overflow-y-auto scroll-smooth": isHighlightedTextExpanded,

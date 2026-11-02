@@ -56,11 +56,11 @@ export const ThinkingRow = memo(
 		}
 
 		return (
-			<div className="ml-1 pl-0 mb-0 -mt-[2px]">
+			<div className="bytos-thinking">
 				{showTitle ? (
 					<Button
 						className={cn(
-							"inline-flex justify-baseline gap-0.5 text-left select-none px-0 py-0 my-0 h-auto min-h-0 w-full text-description overflow-visible",
+							"bytos-thinking-title inline-flex justify-baseline text-left select-none px-0 py-0 my-0 h-auto min-h-0 w-full overflow-visible",
 							{
 								"cursor-pointer": !!onToggle,
 								"cursor-default": !onToggle,
@@ -69,19 +69,19 @@ export const ThinkingRow = memo(
 						onClick={onToggle}
 						size="icon"
 						variant="icon">
+						<span className="bytos-thinking-dot" />
 						<span
 							className={cn("text-[13px] leading-[1.2]", {
-								"animate-shimmer bg-linear-90 from-foreground to-description bg-[length:200%_100%] bg-clip-text text-transparent":
-									isStreaming,
+								"bytos-thinking-stream": isStreaming,
 								"select-none": isStreaming,
 							})}>
 							{title}
 						</span>
 						{showChevron &&
 							(isExpanded ? (
-								<ChevronDownIcon className="!size-1 text-description" />
+								<ChevronDownIcon className="!size-1 bytos-thinking-chevron" />
 							) : (
-								<ChevronRightIcon className="!size-1 text-description" />
+								<ChevronRightIcon className="!size-1 bytos-thinking-chevron" />
 							))}
 					</Button>
 				) : null}
@@ -107,7 +107,7 @@ export const ThinkingRow = memo(
 								)}
 								onScroll={checkScrollable}
 								ref={scrollRef}>
-								<span className="pb-2 block text-sm">{reasoningContent}</span>
+								<span className="bytos-thinking-body pb-2 block">{reasoningContent}</span>
 							</div>
 							{canScrollUp && (
 								<div className="absolute top-0 left-0 right-0 h-6 pointer-events-none bg-gradient-to-b from-background to-transparent" />

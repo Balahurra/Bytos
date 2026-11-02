@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.1.0] — Bytos UI identity baseline
+
+### Changed
+
+- New Bytos visual system: Manrope UI font, Space Grotesk display font, Geist Mono for code, cyan/blue/violet semantic accents, and 6–14 px geometry.
+- Thinking is now a violet reasoning surface with a gradient rail and micro-label typography.
+- Tool activity uses a mono path, cyan verb, icon tiles, and a run group header.
+- Task header and composer use Bytos panel surfaces, gradient rails, and focus rings.
+- Settings, History, Marketplace, MCP, and Worktrees use the same card and status language.
+- Version reset to 2.1.0 as the reference baseline.
+
 ## [4.1.26]
 
 ### Changed

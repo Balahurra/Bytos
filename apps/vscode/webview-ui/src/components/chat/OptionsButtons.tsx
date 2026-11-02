@@ -1,25 +1,35 @@
 import { AskResponseRequest } from "@shared/proto/bytos/task"
 import { useState } from "react"
 import styled from "styled-components"
-import { CODE_BLOCK_BG_COLOR } from "@/components/common/CodeBlock"
 import { TaskServiceClient } from "@/services/grpc-client"
 
 const OptionButton = styled.button<{ $isSelected?: boolean; $isNotSelectable?: boolean }>`
-	padding: 8px 12px;
-	background: ${(props) => (props.$isSelected ? "var(--vscode-focusBorder)" : CODE_BLOCK_BG_COLOR)};
-	color: ${(props) => (props.$isSelected ? "white" : "var(--vscode-input-foreground)")};
-	border: 1px solid var(--vscode-editorGroup-border);
-	border-radius: 2px;
+	padding: 9px 12px;
+	background: ${(props) =>
+		props.$isSelected ? "linear-gradient(90deg, var(--bytos-blue), var(--bytos-cyan))" : "var(--bytos-panel)"};
+	color: ${(props) => (props.$isSelected ? "#ffffff" : "var(--bytos-text)")};
+	border: 1px solid
+		${(props) => (props.$isSelected ? "transparent" : "var(--bytos-border)")};
+	border-radius: var(--bytos-radius-sm);
 	cursor: ${(props) => (props.$isNotSelectable ? "default" : "pointer")};
 	text-align: left;
-	font-size: 12px;
+	font-family: var(--bytos-font-ui);
+	font-size: calc(var(--vscode-font-size, 13px) * 0.92);
+	font-weight: 560;
+	line-height: 1.35;
+	transition:
+		border-color var(--bytos-duration) var(--bytos-ease),
+		background var(--bytos-duration) var(--bytos-ease),
+		transform var(--bytos-duration) var(--bytos-ease);
 
 	${(props) =>
 		!props.$isNotSelectable &&
 		`
 		&:hover {
-			background: var(--vscode-focusBorder);
-			color: white;
+			background: var(--bytos-panel-hover);
+			border-color: var(--bytos-border-accent);
+			color: var(--bytos-text);
+			transform: translateY(-1px);
 		}
 	`}
 `

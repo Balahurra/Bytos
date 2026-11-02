@@ -21,20 +21,23 @@ const HomeHeader = ({ shouldShowQuickWins = false }: HomeHeaderProps) => {
 
 	const isDecember = new Date().getMonth() === 11 // 11 = December (0-indexed)
 	const LogoComponent = isDecember ? BytosLogoSanta : BytosLogoVariable
-	const headingText = "What can I do for you?"
 
 	return (
-		<div className="flex flex-col items-center mb-5">
-			<div className="my-7">
+		<div className="bytos-home-header flex flex-col items-center mb-5">
+			<div className="bytos-home-mark my-7">
 				<LogoComponent className="size-20" environment={environment} />
 			</div>
+			<div className="bytos-label bytos-home-kicker mb-2">Bytos workspace</div>
 			<div className="text-center flex items-center justify-center px-4">
-				<h1 className="m-0 font-bold">{headingText}</h1>
+				<h1 className="bytos-home-title m-0">What should we build?</h1>
 			</div>
+			<p className="bytos-home-subtitle text-center mt-1.5 mb-0 px-6">
+				Plan, edit, run, and verify with a human in the loop.
+			</p>
 			{shouldShowQuickWins && (
 				<div className="mt-4">
 					<button
-						className="flex items-center gap-2 px-4 py-2 rounded-full border border-border-panel bg-white/2 hover:bg-list-background-hover transition-colors duration-150 ease-in-out text-code-foreground text-sm font-medium cursor-pointer"
+						className="bytos-tour-button flex items-center gap-2 px-4 py-2 rounded-full border border-border-panel transition-colors duration-150 ease-in-out text-code-foreground text-sm font-medium cursor-pointer"
 						onClick={handleTakeATour}
 						type="button">
 						Take a Tour

@@ -208,7 +208,7 @@ const ServerRow = ({
 	return (
 		<div className="mb-2.5">
 			<div
-				className={cn("flex bg-code-block-background p-2 gap-4 items-center", {
+				className={cn("bytos-mcp-card flex p-2 gap-4 items-center", {
 					"cursor-pointer": !server.error && isExpandable,
 				})}
 				onClick={handleRowClick}>
@@ -274,11 +274,8 @@ const ServerRow = ({
 					</TooltipContent>
 				</Tooltip>
 				<div
-					className={cn("h-2 w-2 ml-0.5 rounded-full", {
-						"bg-success": server.status === "connected",
-						"bg-warning": server.status === "connecting",
-						"bg-error": server.status === "disconnected",
-					})}
+					className="bytos-status-dot ml-0.5"
+					data-status={server.status === "connected" ? "success" : server.status === "connecting" ? "waiting" : "error"}
 				/>
 			</div>
 

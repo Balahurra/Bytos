@@ -376,7 +376,13 @@ Please help me resolve these merge conflicts, then complete the merge, and delet
 						{/* Worktrees List - current worktree first, then others */}
 						<div className="mt-4 flex flex-col gap-2">
 							{worktrees.map((worktree) => (
-								<div className="bytos-worktree-card p-4" data-current={worktree.isCurrent} key={worktree.path}>
+								<div
+									className={`p-4 rounded border ${
+										worktree.isCurrent
+											? "border-[var(--vscode-focusBorder)] bg-[var(--vscode-list-activeSelectionBackground)]"
+											: "border-[var(--vscode-panel-border)]"
+									}`}
+									key={worktree.path}>
 									{/* Branch name, badges, and action buttons - wraps on small screens */}
 									<div className="flex flex-wrap items-center justify-between gap-2 mb-1">
 										{/* Left side: branch name and badges */}

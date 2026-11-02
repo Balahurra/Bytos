@@ -1,14 +1,10 @@
 /* Import external CSS files */
 @import url("../../node_modules/@vscode/codicons/dist/codicon.css");
 @import url("../node_modules/@fontsource-variable/geist-mono/index.css");
-@import url("../node_modules/@fontsource-variable/manrope/index.css");
-@import url("../node_modules/@fontsource-variable/space-grotesk/index.css");
 
 /* Tailwind CSS */
 @import "tailwindcss";
 @import "./theme.css";
-@import "./styles/bytos-tokens.css";
-@import "./styles/bytos-ui.css";
 @plugin "tailwindcss-animate";
 @custom-variant dark (&:is(.dark *));
 

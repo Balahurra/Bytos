@@ -155,7 +155,7 @@ const UserMessage: React.FC<UserMessageProps> = ({ text, images, files, messageT
 
 	return (
 		<div
-			className={`bytos-user-card group relative p-2.5 my-1 rounded-xs ${
+			className={`group relative p-2.5 my-1 text-badge-foreground rounded-xs ${
 				messageTs && !isEditing ? "cursor-pointer pr-8" : ""
 			}`}
 			onClick={messageTs && !isEditing ? startEditing : undefined}
@@ -171,6 +171,7 @@ const UserMessage: React.FC<UserMessageProps> = ({ text, images, files, messageT
 			}
 			role={messageTs && !isEditing ? "button" : undefined}
 			style={{
+				backgroundColor: "var(--vscode-badge-background)",
 				whiteSpace: "pre-line",
 				wordWrap: "break-word",
 			}}
@@ -265,12 +266,9 @@ const UserMessage: React.FC<UserMessageProps> = ({ text, images, files, messageT
 					</div>
 				</div>
 			) : (
-				<>
-					<div className="bytos-user-label mb-1">You</div>
-					<span className="ph-no-capture text-sm" style={{ display: "block" }}>
-						{highlightedText}
-					</span>
-				</>
+				<span className="ph-no-capture text-sm" style={{ display: "block" }}>
+					{highlightedText}
+				</span>
 			)}
 			{!isEditing && ((images && images.length > 0) || (files && files.length > 0)) && (
 				<Thumbnails files={files ?? []} images={images ?? []} style={{ marginTop: "8px" }} />

@@ -146,7 +146,7 @@ const ContextWindow: React.FC<ContextWindowProgressProps> = ({
 	}
 
 	return (
-		<div className="bytos-context-bar flex flex-col mt-1.5" onMouseLeave={debounceCloseHover}>
+		<div className="flex flex-col mt-1.5" onMouseLeave={debounceCloseHover}>
 			<div className="flex gap-1 flex-row @max-xs:flex-col @max-xs:items-start items-center text-sm">
 				<div className="flex items-center gap-1.5 flex-1 whitespace-nowrap">
 					<span className="cursor-pointer text-sm" title="Current tokens used in this request">

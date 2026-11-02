@@ -10,23 +10,16 @@ interface FeaturedModelCardProps {
 }
 
 const CardContainer = styled.div<{ isSelected: boolean }>`
-	padding: 9px 11px;
-	margin-bottom: 5px;
-	border-radius: var(--bytos-radius-sm);
-	border: 1px solid
-		${(props) => (props.isSelected ? "color-mix(in oklab, var(--bytos-cyan) 48%, transparent)" : "var(--bytos-border)")};
-	background: ${(props) =>
-		props.isSelected ? "color-mix(in oklab, var(--bytos-canvas) 90%, var(--bytos-cyan) 10%)" : "var(--bytos-panel)"};
+	padding: 2px 4px;
+	margin-bottom: 2px;
+	border-radius: 3px;
+	border: 1px solid var(--vscode-textLink-foreground);
+	opacity: ${(props) => (props.isSelected ? 1 : 0.6)};
 	cursor: pointer;
-	transition:
-		border-color var(--bytos-duration) var(--bytos-ease),
-		background var(--bytos-duration) var(--bytos-ease),
-		transform var(--bytos-duration) var(--bytos-ease);
 
 	&:hover {
-		border-color: var(--bytos-border-accent);
-		background: var(--bytos-panel-hover);
-		transform: translateY(-1px);
+		background-color: var(--vscode-list-hoverBackground);
+		opacity: 1;
 	}
 `
 
@@ -34,38 +27,32 @@ const ModelHeader = styled.div`
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	gap: 8px;
 `
 
 const ModelName = styled.div`
-	font-family: var(--bytos-font-display);
-	font-weight: 600;
-	font-size: calc(var(--vscode-font-size, 13px) * 0.98);
-	letter-spacing: -0.005em;
-	line-height: 1.3;
+	font-weight: 500;
+	font-size: 12px;
+	line-height: 1.2;
 `
 
 const Label = styled.span`
-	font-family: var(--bytos-font-mono);
-	font-size: calc(var(--vscode-font-size, 13px) * 0.7);
-	color: color-mix(in oklab, var(--bytos-cyan) 76%, var(--bytos-text) 24%);
+	font-size: 10px;
+	color: var(--vscode-textLink-foreground);
 	text-transform: uppercase;
-	letter-spacing: 0.05em;
+	letter-spacing: 0.5px;
 	font-weight: 500;
-	white-space: nowrap;
 `
 
 const Description = styled.div`
-	margin-top: 3px;
-	font-family: var(--bytos-font-ui);
-	font-size: calc(var(--vscode-font-size, 13px) * 0.84);
-	color: var(--bytos-muted);
-	line-height: 1.45;
+	margin-top: 0px;
+	font-size: 11px;
+	color: var(--vscode-descriptionForeground);
+	line-height: 1.2;
 `
 
 const FeaturedModelCard: React.FC<FeaturedModelCardProps> = ({ displayName, description, onClick, isSelected, label }) => {
 	return (
-		<CardContainer className="bytos-model-card" data-selected={isSelected} isSelected={isSelected} onClick={onClick}>
+		<CardContainer isSelected={isSelected} onClick={onClick}>
 			<ModelHeader>
 				<ModelName>{displayName}</ModelName>
 				<Label>{label}</Label>

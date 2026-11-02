@@ -220,28 +220,27 @@ export const RequestStartRow: React.FC<RequestStartRowProps> = ({
 	return (
 		<div>
 			{apiReqState === "pre" && shouldShowActivities && (
-				<div className="bytos-tool-group">
-					<div className="flex flex-col gap-0.5 w-full min-h-1">
-						{currentActivities.map((activity, _) => (
-							<div className="bytos-tool-row bytos-tool-row-active" key={activity.text}>
-								<span className="bytos-tool-icon">
-									<activity.icon className="size-2.5" />
-								</span>
-								<span className="bytos-tool-path">
+				<div className="flex items-center text-description w-full text-sm">
+					<div className="ml-1 flex-1 w-full h-full">
+						<div className="flex flex-col gap-0.5 w-full min-h-1">
+							{currentActivities.map((activity, _) => (
+								<div className="flex items-center gap-2 h-auto w-full overflow-hidden" key={activity.text}>
+									<activity.icon className="size-2 text-foreground shrink-0" />
 									<TypewriterText speed={15} text={activity.text} />
-								</span>
-							</div>
-						))}
+								</div>
+							))}
+						</div>
 					</div>
 				</div>
 			)}
 			{reasoningContent &&
 				(!hasCost ? (
-					// Still streaming - show the reasoning shimmer
-					<div className="bytos-thinking">
-						<div className="inline-flex justify-baseline items-center gap-2 text-left select-none px-0 w-full">
-							<span className="bytos-thinking-dot" />
-							<span className="bytos-thinking-stream">Thinking...</span>
+					// Still streaming - show "Thinking..." text with shimmer
+					<div className="ml-1 pl-0 mb-1 -mt-1.25 pt-1">
+						<div className="inline-flex justify-baseline gap-0.5 text-left select-none px-0 w-full">
+							<span className="animate-shimmer bg-linear-90 from-foreground to-description bg-[length:200%_100%] bg-clip-text text-transparent text-[13px] leading-none">
+								Thinking...
+							</span>
 						</div>
 					</div>
 				) : (

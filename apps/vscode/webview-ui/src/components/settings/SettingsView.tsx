@@ -209,9 +209,12 @@ const SettingsView = ({ navigationRequest, onDone }: SettingsViewProps) => {
 						<TooltipTrigger>
 							<div
 								className={cn(
-									"bytos-settings-nav-item whitespace-nowrap overflow-hidden h-12 sm:py-3 box-border flex items-center text-foreground p-4 cursor-pointer gap-2",
-								)}
-								data-active={activeTab === tab.id}>
+									"whitespace-nowrap overflow-hidden h-12 sm:py-3 box-border flex items-center border-l-2 border-transparent text-foreground opacity-70 bg-transparent hover:bg-list-hover p-4 cursor-pointer gap-2",
+									{
+										"opacity-100 border-l-2 border-l-foreground border-t-0 border-r-0 border-b-0 bg-selection":
+											activeTab === tab.id,
+									},
+								)}>
 								<tab.icon className="w-4 h-4" />
 								<span className="hidden sm:block">{tab.name}</span>
 							</div>
@@ -251,7 +254,7 @@ const SettingsView = ({ navigationRequest, onDone }: SettingsViewProps) => {
 
 			<div className="flex flex-1 overflow-hidden">
 				<TabList
-					className="bytos-settings-nav shrink-0 flex flex-col overflow-y-auto border-r border-sidebar-background"
+					className="shrink-0 flex flex-col overflow-y-auto border-r border-sidebar-background"
 					onValueChange={setActiveTab}
 					value={activeTab}>
 					{SETTINGS_TABS.filter((tab) => !tab.hidden?.({ user: bytosUser, activeOrganization })).map(renderTabItem)}

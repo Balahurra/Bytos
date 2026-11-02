@@ -324,18 +324,15 @@ const MarketplaceStyles = () => (
 			display: flex;
 			align-items: center;
 			gap: 12px;
-			margin-bottom: 8px;
-			padding-bottom: 6px;
-			border-bottom: 1px solid var(--bytos-border);
+			margin-bottom: 6px;
+			padding-bottom: 5px;
+			border-bottom: 1px solid var(--vscode-panel-border);
 		}
 
 		.marketplace-section-title {
-			font-family: var(--bytos-font-display);
-			font-size: calc(var(--vscode-font-size) * 0.8);
+			font-size: calc(var(--vscode-font-size) * 0.92);
 			font-weight: 600;
-			letter-spacing: 0.08em;
-			text-transform: uppercase;
-			color: var(--bytos-muted);
+			color: var(--vscode-foreground);
 			margin: 0;
 		}
 
@@ -356,22 +353,13 @@ const MarketplaceStyles = () => (
 			gap: 10px;
 			align-items: start;
 			min-height: 42px;
-			padding: 11px 13px;
-			border: 1px solid var(--bytos-border);
-			border-radius: var(--bytos-radius-md);
-			background: var(--bytos-panel);
-			transition:
-				border-color var(--bytos-duration) var(--bytos-ease),
-				background var(--bytos-duration) var(--bytos-ease),
-				transform var(--bytos-duration) var(--bytos-ease),
-				box-shadow var(--bytos-duration) var(--bytos-ease);
+			padding: 9px 10px;
+			border: 1px solid var(--vscode-panel-border);
+			background: var(--vscode-sideBar-background);
 		}
 
 		.marketplace-row:hover {
-			border-color: var(--bytos-border-accent);
-			background: var(--bytos-panel-hover);
-			transform: translateY(-1px);
-			box-shadow: var(--bytos-shadow-card);
+			background: var(--vscode-list-hoverBackground);
 		}
 
 		.marketplace-row-main {
@@ -384,10 +372,8 @@ const MarketplaceStyles = () => (
 			gap: 7px;
 			min-width: 0;
 			color: var(--vscode-foreground);
-			font-family: var(--bytos-font-display);
-			font-size: calc(var(--vscode-font-size) * 1.02);
-			font-weight: 600;
-			letter-spacing: -0.005em;
+			font-size: var(--vscode-font-size);
+			font-weight: 500;
 			line-height: 1.35;
 		}
 
@@ -400,10 +386,9 @@ const MarketplaceStyles = () => (
 
 		.marketplace-row-description {
 			margin-top: 2px;
-			color: var(--bytos-muted);
-			font-family: var(--bytos-font-ui);
+			color: var(--vscode-descriptionForeground);
 			font-size: calc(var(--vscode-font-size) * 0.9);
-			line-height: 1.45;
+			line-height: 1.35;
 			display: -webkit-box;
 			-webkit-line-clamp: 2;
 			-webkit-box-orient: vertical;
@@ -435,15 +420,11 @@ const MarketplaceStyles = () => (
 			gap: 4px;
 			max-width: 100%;
 			min-width: 0;
-			padding: 2px 7px;
-			border-radius: var(--bytos-radius-pill);
-			border: 1px solid color-mix(in oklab, var(--bytos-cyan) 22%, transparent);
-			background: var(--bytos-cyan-soft);
-			color: color-mix(in oklab, var(--bytos-cyan) 76%, var(--vscode-foreground) 24%);
-			font-family: var(--bytos-font-mono);
-			font-size: calc(var(--vscode-font-size) * 0.72);
-			letter-spacing: 0.04em;
-			text-transform: uppercase;
+			padding: 1px 5px;
+			border-radius: 2px;
+			border: 1px solid var(--vscode-badge-background);
+			background: color-mix(in srgb, var(--vscode-badge-background) 20%, transparent);
+			color: var(--vscode-descriptionForeground);
 			white-space: normal;
 			overflow-wrap: anywhere;
 			word-break: break-word;

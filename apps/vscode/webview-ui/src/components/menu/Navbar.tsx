@@ -1,6 +1,5 @@
 import { HistoryIcon, PlusIcon, PuzzleIcon, SettingsIcon } from "lucide-react"
 import { useMemo } from "react"
-import BytosLogoVariable from "@/assets/BytosLogoVariable"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { useExtensionState } from "../../context/ExtensionStateContext"
@@ -56,19 +55,15 @@ export const Navbar = ({ startNewTask }: NavbarProps) => {
 
 	return (
 		<nav
-			className="bytos-nav flex-none inline-flex justify-end gap-2 mb-1 z-10 border-none items-center mr-4!"
+			className="flex-none inline-flex justify-end bg-transparent gap-2 mb-1 z-10 border-none items-center mr-4!"
 			id="bytos-navbar-container">
-			<div className="mr-auto flex items-center gap-1.5 pl-1">
-				<BytosLogoVariable className="size-4" />
-				<span className="bytos-display text-[10px] font-semibold uppercase tracking-[0.1em] text-description">Bytos</span>
-			</div>
 			{SETTINGS_TABS.map((tab) => (
 				<Tooltip key={`navbar-tooltip-${tab.id}`}>
 					<TooltipContent side="bottom">{tab.tooltip}</TooltipContent>
 					<TooltipTrigger asChild>
 						<Button
 							aria-label={tab.tooltip}
-							className="bytos-nav-item p-0 h-7"
+							className="p-0 h-7"
 							data-testid={`tab-${tab.id}`}
 							key={`navbar-button-${tab.id}`}
 							onClick={() => tab.navigate()}

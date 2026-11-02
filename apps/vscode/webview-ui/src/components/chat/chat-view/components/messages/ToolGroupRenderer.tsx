@@ -171,12 +171,9 @@ export const ToolGroupRenderer = memo(({ messages, allMessages, isLastGroup }: T
 	}
 
 	return (
-		<div className="bytos-tool-group">
+		<div className={cn("px-4 py-2 ml-1 text-description")}>
 			{/* Header */}
-			<div className="bytos-tool-group-title">
-				<span>{summary}</span>
-				<span className="bytos-tool-count">{allTools.length}</span>
-			</div>
+			<div className="text-[13px] text-description font-semibold mb-1">{summary}:</div>
 
 			{/* Content - unified list of completed + active tools */}
 			<div className="min-w-0">
@@ -194,18 +191,16 @@ export const ToolGroupRenderer = memo(({ messages, allMessages, isLastGroup }: T
 					if (isActive && activityText) {
 						return (
 							<div className="min-w-0" key={tool.ts}>
+								{/* ACTIVE "READING..." ITEM STYLING - Modify vertical spacing here via py-0 and -my-0.5 */}
 								<Button
-									className="bytos-tool-row bytos-tool-row-active w-full max-w-full px-1 disabled:opacity-100"
+									className="flex items-center gap-[3px] text-[13px] text-description py-[1px] min-w-0 max-w-full px-0 leading-tight -my-0.5"
 									disabled
 									size="icon"
 									variant="text">
-									<span className="bytos-tool-icon">
-										<info.icon className="size-2.5" />
-									</span>
-									<span className="bytos-tool-verb">{info.label.split(":")[0].split(" ")[0]}</span>
-									<span className="bytos-tool-path flex-1 text-left">
+									<info.icon className="opacity-70 shrink-0 size-[12px]" />
+									<span className="flex-1 min-w-0 whitespace-nowrap overflow-hidden text-ellipsis text-left text-[13px]">
 										<TypewriterText speed={15} text={activityText} />
-									</span>
+									</span>{" "}
 								</Button>
 							</div>
 						)
@@ -215,24 +210,26 @@ export const ToolGroupRenderer = memo(({ messages, allMessages, isLastGroup }: T
 					return (
 						<div className="min-w-0" key={tool.ts}>
 							<Button
-								className="bytos-tool-row group w-full max-w-full px-1 cursor-pointer"
+								className="flex items-center gap-[3px] cursor-pointer text-[13px] text-description py-[1px] hover:text-link min-w-0 max-w-full px-0 leading-tight -my-0.5"
 								onClick={() => (isExpandable ? handleItemToggle(tool.ts) : handleOpenFile(info.path))}
 								size="icon"
 								variant="text">
-								<span className="bytos-tool-icon">
-									<info.icon className="size-2.5" />
-								</span>
-								<span className="bytos-tool-verb">{info.label.split(":")[0].split(" ")[0]}</span>
+								<info.icon className="opacity-70 shrink-0 size-[12px]" />
 								<span
-									className={cn("bytos-tool-path flex-1 text-left", {
-										"[direction:rtl]": !info.displayText,
-									})}>
+									className={cn(
+										"flex-1 min-w-0 whitespace-nowrap overflow-hidden text-ellipsis text-left [direction:rtl] text-[13px]",
+										{
+											"[direction:ltr]": !!info.displayText,
+										},
+									)}>
 									{(info.displayText || cleanPathPrefix(info.path)) + "\u200E"}
 								</span>
 							</Button>
 							{/* Expanded content for folders/search/definitions - file lists only */}
 							{isExpandable && isItemExpanded && content && (
-								<pre className="bytos-tool-detail max-h-40 overflow-auto">{content}</pre>
+								<pre className="m-1 ml-4 text-xs opacity-80 whitespace-pre-wrap break-words p-2 max-h-40 overflow-auto rounded-xs">
+									{content}
+								</pre>
 							)}
 						</div>
 					)

@@ -10,7 +10,6 @@
 
 <p align="center">
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-4F8CFF.svg" /></a>
-  <img alt="Version" src="https://img.shields.io/badge/version-2.1.0-22D3EE.svg" />
   <a href="https://github.com/bytos/bytos/actions"><img alt="Build" src="https://img.shields.io/badge/build-passing-22D3EE.svg" /></a>
   <img alt="Bun" src="https://img.shields.io/badge/runtime-Bun%201.4-8B5CF6.svg" />
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-strict-3178C6.svg" />

@@ -17,7 +17,7 @@ describe("ThinkingRow", () => {
 
 		const title = screen.getByText("Thinking...")
 		expect(title).toBeInTheDocument()
-		expect(title).toHaveClass("bytos-thinking-stream")
+		expect(title).toHaveClass("animate-shimmer")
 		expect(screen.getByText("Inspecting files...")).toBeInTheDocument()
 	})
 

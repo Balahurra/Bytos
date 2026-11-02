@@ -497,7 +497,7 @@ const HistoryView = ({ onDone }: HistoryViewProps) => {
 			</div>
 
 			{/* HISTORY ITEMS */}
-			<div className="bytos-history flex-grow overflow-y-auto m-0 w-full py-2">
+			<div className="flex-grow overflow-y-auto m-0 w-full py-2">
 				<GroupedVirtuoso
 					className="flex-grow overflow-y-scroll"
 					components={{
@@ -510,7 +510,7 @@ const HistoryView = ({ onDone }: HistoryViewProps) => {
 					}}
 					endReached={loadMoreTaskHistory}
 					groupContent={(index) => (
-						<div className="bytos-history-group-label bytos-label px-4 py-2 sticky top-0 z-10 bg-sidebar-background border-b-border-panel">
+						<div className="px-4 py-2 text-xs font-bold uppercase tracking-wide sticky top-0 z-10 text-description bg-sidebar-background border-b-border-panel">
 							{groupLabels[index]}
 						</div>
 					)}

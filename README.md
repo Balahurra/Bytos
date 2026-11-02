@@ -107,11 +107,11 @@ Requirements: **Bun 1.4.2** and **Node.js 22+**.
 
 ```bash
 bun install
-bun run build:sdk      # build the shared SDK packages
-bun run build:webview  # build the VS Code webview (from apps/vscode)
-bun run types          # typecheck every workspace
-bun run test           # unit tests
-bun run lint           # Biome
+bun run build:sdk                    # build the shared SDK packages
+cd apps/vscode && bun run build:webview   # build the VS Code webview
+bun run types                        # typecheck every workspace
+bun run test                         # unit tests
+bun run lint                         # Biome
 ```
 
 Useful entry points:
@@ -119,7 +119,8 @@ Useful entry points:
 ```bash
 bun run cli            # terminal UI in development mode
 bun run code           # VS Code extension in development mode
-bun run build          # full production build
+bun run build          # build the SDK and CLI
+cd apps/vscode && bun run package   # production VSIX
 ```
 
 ## Repository conventions

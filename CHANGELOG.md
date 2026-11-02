@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.28]
+
+### Changed
+
+- The separate **Terminal** settings tab has been removed. Terminal execution mode, shell integration timeout, terminal reuse, and default terminal profile now live inside **General** settings.
+- Navigating to the terminal settings target now opens General and highlights the terminal section.
+
 ## [4.1.27]
 
 ### Added

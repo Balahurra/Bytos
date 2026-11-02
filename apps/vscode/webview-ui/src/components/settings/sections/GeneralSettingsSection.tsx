@@ -4,6 +4,7 @@ import { useExtensionState } from "@/context/ExtensionStateContext"
 import PreferredLanguageSetting from "../PreferredLanguageSetting"
 import Section from "../Section"
 import { updateSetting } from "../utils/settingsHandlers"
+import TerminalSettingsSection from "./TerminalSettingsSection"
 
 interface GeneralSettingsSectionProps {
 	renderSectionHeader: (tabId: string) => JSX.Element | null
@@ -60,6 +61,9 @@ const GeneralSettingsSection = ({ renderSectionHeader }: GeneralSettingsSectionP
 					</p>
 				</div>
 			</Section>
+
+			{/* Terminal settings live inside General; there is no separate Terminal tab. */}
+			<TerminalSettingsSection renderSectionHeader={() => null} />
 		</div>
 	)
 }

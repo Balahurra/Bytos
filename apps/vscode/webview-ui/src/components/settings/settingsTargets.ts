@@ -9,7 +9,7 @@ export const SETTINGS_NAVIGATION_TARGETS = {
 		elementId: featureSettingElementId("checkpoints"),
 		focusElementId: featureSettingControlId("checkpoints"),
 	},
-	terminal: { tabId: "terminal" },
+	terminal: { tabId: "general", elementId: "terminal-settings-section" },
 	general: { tabId: "general" },
 	about: { tabId: "about" },
 	debug: { tabId: "debug" },

@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.1.40]
+
+### Changed
+
+- The composer’s **+** button now uses the generic label **“Add attachment”** (dialog action: **“Attach”**). One dialog still lists every supported image, document, code, video/audio and 3D/CAD format, and multiple mixed files can be selected in a single action.
+
 ## [4.1.39]
 
 ### Added

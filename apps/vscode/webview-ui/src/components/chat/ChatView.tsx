@@ -2,8 +2,9 @@ import { combineApiRequests } from "@shared/combineApiRequests"
 import { combineCommandSequences } from "@shared/combineCommandSequences"
 import { combineHookSequences } from "@shared/combineHookSequences"
 import { getApiMetrics, getLastApiReqTotalTokens } from "@shared/getApiMetrics"
-import { BooleanRequest, StringRequest } from "@shared/proto/bytos/common"
-import { useCallback, useEffect, useMemo, useRef } from "react"
+import { StringRequest } from "@shared/proto/bytos/common"
+import { SelectFilesRequest } from "@shared/proto/bytos/file"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useMount } from "react-use"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import { useShowNavbar } from "@/context/PlatformContext"
@@ -229,16 +230,32 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 	// Cloud sessions always auto-approve; local auto-approve settings don't apply there.
 	const hideAutoApprove =
 		!!currentCloudTask || (messages.length === 0 && cloudSessionsEnabled && cloudTaskTarget?.target === "cloud")
+	const [cloudAttachmentNotice, setCloudAttachmentNotice] = useState<string | null>(null)
+
+	useEffect(() => {
+		if (!imagesOnly) {
+			setCloudAttachmentNotice(null)
+		}
+	}, [imagesOnly])
 
 	const selectFilesAndImages = useCallback(async () => {
 		try {
-			const response = await FileServiceClient.selectFiles(
-				BooleanRequest.create({
-					value: selectedModelInfo.supportsImages,
+			const response = await FileServiceClient.selectFilesWithOptions(
+				SelectFilesRequest.create({
+					supportsImages: !!selectedModelInfo.supportsImages,
+					imagesOnly,
 				}),
 			)
-			if (response && imagesOnly) {
+			if (response && imagesOnly && response.values2.length > 0) {
+				// Defence in depth: the picker filters cloud selections to images,
+				// but a stale/older host could still return file paths. Never drop
+				// them silently.
+				setCloudAttachmentNotice(
+					"Cloud sessions can only attach images. Use @mention for files that live in the repository.",
+				)
 				response.values2 = []
+			} else {
+				setCloudAttachmentNotice(null)
 			}
 			if (
 				response &&
@@ -440,6 +457,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 				/>
 				<QueuedPrompts items={queuedPrompts} />
 				<InputSection
+					attachmentNotice={cloudAttachmentNotice}
 					chatState={chatState}
 					messageHandlers={messageHandlers}
 					placeholderText={placeholderText}

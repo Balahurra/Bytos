@@ -8,9 +8,11 @@ import { Logger } from "@/shared/services/Logger"
 
 /**
  * Supports processing of images and other file types
- * For models which don't support images, will not allow them to be selected
+ * For models which don't support images, will not allow them to be selected.
+ * `imagesOnly` is used by cloud sessions, whose sandbox cannot read local file
+ * paths: only inline images are selectable there.
  */
-export async function selectFiles(imagesAllowed: boolean): Promise<{ images: string[]; files: string[] }> {
+export async function selectFiles(imagesAllowed: boolean, imagesOnly = false): Promise<{ images: string[]; files: string[] }> {
 	const IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp", "gif", "bmp", "svg", "avif"] // browser-decodable images
 	const OTHER_FILE_EXTENSIONS = [
 		// Documents / data
@@ -120,7 +122,11 @@ export async function selectFiles(imagesAllowed: boolean): Promise<{ images: str
 		canSelectMany: true,
 		openLabel: "Attach",
 		filters: {
-			files: imagesAllowed ? [...IMAGE_EXTENSIONS, ...OTHER_FILE_EXTENSIONS] : OTHER_FILE_EXTENSIONS,
+			files: imagesOnly
+				? IMAGE_EXTENSIONS
+				: imagesAllowed
+					? [...IMAGE_EXTENSIONS, ...OTHER_FILE_EXTENSIONS]
+					: OTHER_FILE_EXTENSIONS,
 		},
 	})
 

@@ -192,6 +192,47 @@ describe("InputSection", () => {
 		mockCloudState.mockReturnValue({})
 	})
 
+	it("refuses to send attached files during an active cloud task and says why", () => {
+		mockTurnState.mockReturnValue({ phase: "idle", seq: 1 })
+		mockCloudState.mockReturnValue({
+			currentCloudTask: { status: "running" },
+			bytosMessages: [{ ts: 1, type: "say", say: "task", text: "task" }],
+		})
+		const handleSendMessage = vi.fn().mockResolvedValue(undefined)
+
+		render(
+			<InputSection
+				chatState={makeChatState({ sendingDisabled: false, selectedFiles: ["/home/me/notes.md"] })}
+				messageHandlers={{ handleSendMessage } as unknown as MessageHandlers}
+				placeholderText="Type a message"
+				scrollBehavior={makeScrollBehavior()}
+				selectFilesAndImages={vi.fn()}
+				shouldDisableFilesAndImages={false}
+			/>,
+		)
+
+		expect(screen.getByLabelText("composer")).toBeDisabled()
+		expect(screen.getByRole("status")).toHaveTextContent("Attached files can't be sent to a cloud sandbox")
+		mockCloudState.mockReturnValue({})
+	})
+
+	it("renders an attachment selection notice", () => {
+		mockCloudState.mockReturnValue({})
+		render(
+			<InputSection
+				attachmentNotice="Cloud sessions can only attach images."
+				chatState={makeChatState({ sendingDisabled: false })}
+				messageHandlers={{} as MessageHandlers}
+				placeholderText="Type a message"
+				scrollBehavior={makeScrollBehavior()}
+				selectFilesAndImages={vi.fn()}
+				shouldDisableFilesAndImages={false}
+			/>,
+		)
+
+		expect(screen.getByRole("status")).toHaveTextContent("Cloud sessions can only attach images.")
+	})
+
 	it("keeps submit disabled while a cloud sandbox is still provisioning", () => {
 		mockTurnState.mockReturnValue({ phase: "streaming", seq: 1 })
 		mockCloudState.mockReturnValue({

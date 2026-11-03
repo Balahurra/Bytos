@@ -33,6 +33,8 @@ service FileService {
 
   // Select images and other files from the file system and returns as data URLs & paths respectively
   rpc selectFiles(BooleanRequest) returns (StringArrays);
+  // Select attachments with explicit local/cloud capabilities.
+  rpc selectFilesWithOptions(SelectFilesRequest) returns (StringArrays);
 
   // Convert URIs to workspace-relative paths
   rpc getRelativePaths(RelativePathsRequest) returns (RelativePaths);
@@ -93,6 +95,11 @@ service FileService {
 }
 
 // Response for refreshRules operation
+message SelectFilesRequest {
+  bool supports_images = 1;
+  bool images_only = 2;
+}
+
 message RefreshedRules {
   BytosRulesToggles global_bytos_rules_toggles = 1;
   BytosRulesToggles local_bytos_rules_toggles = 2;

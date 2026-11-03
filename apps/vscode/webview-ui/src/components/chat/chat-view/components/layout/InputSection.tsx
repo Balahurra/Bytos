@@ -12,6 +12,8 @@ interface InputSectionProps {
 	placeholderText: string
 	shouldDisableFilesAndImages: boolean
 	selectFilesAndImages: () => Promise<void>
+	/** Transient notice for attachment selection (e.g. cloud images-only). */
+	attachmentNotice?: string | null
 }
 
 /**
@@ -24,6 +26,7 @@ export const InputSection: React.FC<InputSectionProps> = ({
 	placeholderText,
 	shouldDisableFilesAndImages,
 	selectFilesAndImages,
+	attachmentNotice,
 }) => {
 	const {
 		activeQuote,
@@ -56,8 +59,9 @@ export const InputSection: React.FC<InputSectionProps> = ({
 	// The task-target panel above the composer shows what is still missing.
 	const cloudTargetIncomplete = cloudSelectedForNewTask && !isCloudTargetReady(cloudTaskTarget)
 	// Local file paths cannot be read from a cloud sandbox. Refuse the send
-	// rather than silently dropping the attachments from the request.
-	const cloudFilesUnsupported = cloudSelectedForNewTask && selectedFiles.length > 0
+	// rather than silently dropping the attachments from the request. This also
+	// covers an already-running cloud task.
+	const cloudFilesUnsupported = (cloudSelectedForNewTask || !!currentCloudTask) && selectedFiles.length > 0
 	// A provisioning sandbox has no session to queue a follow-up on yet; the draft stays in the composer.
 	const submitDisabled =
 		(sendingDisabled && !allowSubmitWhileDisabled) ||
@@ -71,6 +75,11 @@ export const InputSection: React.FC<InputSectionProps> = ({
 				<p className="mx-[15px] mt-[10px] mb-0 text-[11px] leading-snug text-description" role="status">
 					Attached files can't be sent to a cloud sandbox. Remove them, or mention them in the prompt and let the agent
 					read them from the repository.
+				</p>
+			)}
+			{attachmentNotice && (
+				<p className="mx-[15px] mt-[10px] mb-0 text-[11px] leading-snug text-description" role="status">
+					{attachmentNotice}
 				</p>
 			)}
 			{activeQuote && (

@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.1.41]
+
+### Fixed
+
+- Cloud sessions no longer silently drop selected local files. The attachment picker now receives the session capability and shows only images for cloud targets.
+- If an older host still returns a file path for a cloud session, the composer shows a notice and suggests `@mention`ing repository files instead of dropping them silently.
+- The “attached files can’t be sent to a cloud sandbox” guard now also covers already-running cloud tasks, not only new cloud tasks.
+- Added an additive `selectFilesWithOptions` RPC so the webview can pass `imagesOnly` without changing the existing `selectFiles` contract.
+
 ## [4.1.40]
 
 ### Changed

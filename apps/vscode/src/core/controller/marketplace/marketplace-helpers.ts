@@ -48,8 +48,7 @@ type SpawnResult = {
 	stderr: string
 }
 
-const MARKETPLACE_CATALOG_URL =
-	process.env.BYTOS_MARKETPLACE_CATALOG_URL?.trim() || "https://cline.github.io/marketplace/catalog.json"
+const MARKETPLACE_CATALOG_URL = process.env.BYTOS_MARKETPLACE_CATALOG_URL?.trim() || ""
 const OFFICIAL_PLUGINS_REPO = "https://github.com/bytos/plugins.git"
 const INSTALL_COMMAND_TIMEOUT_MS = 120_000
 const MAX_OUTPUT_CHARS = 12_000
@@ -121,6 +120,12 @@ function sanitizeEntry(raw: unknown): MarketplaceEntry | undefined {
 }
 
 export async function fetchMarketplaceCatalog(): Promise<MarketplaceCatalog> {
+	// No default remote catalog: Bytos does not depend on a third-party
+	// marketplace. Operators can point BYTOS_MARKETPLACE_CATALOG_URL at their
+	// own catalog; otherwise the marketplace surfaces only local/installed data.
+	if (!MARKETPLACE_CATALOG_URL) {
+		return MarketplaceCatalog.create({ entries: [] })
+	}
 	const response = await fetch(MARKETPLACE_CATALOG_URL, {
 		headers: { Accept: "application/json" },
 	})

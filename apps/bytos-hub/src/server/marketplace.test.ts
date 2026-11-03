@@ -929,15 +929,41 @@ describe("marketplace installer", () => {
 				headers: { "content-type": "application/json" },
 			});
 		});
+		const previousUrl = process.env.BYTOS_MARKETPLACE_CATALOG_URL;
+		process.env.BYTOS_MARKETPLACE_CATALOG_URL = "https://marketplace.example.test/catalog.json";
 
-		await expect(fetchMarketplaceCatalog(fetchImpl)).resolves.toEqual({
-			version: 1,
-			entries: [],
-		});
-		expect(fetchImpl).toHaveBeenCalledWith(
-			"https://cline.github.io/marketplace/catalog.json",
-			{ headers: { Accept: "application/json" } },
-		);
+		try {
+			await expect(fetchMarketplaceCatalog(fetchImpl)).resolves.toEqual({
+				version: 1,
+				entries: [],
+			});
+			expect(fetchImpl).toHaveBeenCalledWith(
+				"https://marketplace.example.test/catalog.json",
+				{ headers: { Accept: "application/json" } },
+			);
+		} finally {
+			if (previousUrl === undefined) {
+				delete process.env.BYTOS_MARKETPLACE_CATALOG_URL;
+			} else {
+				process.env.BYTOS_MARKETPLACE_CATALOG_URL = previousUrl;
+			}
+		}
+	})
+
+	it("returns an empty catalog when no Bytos catalog URL is configured", async () => {
+		const fetchImpl = vi.fn();
+		const previousUrl = process.env.BYTOS_MARKETPLACE_CATALOG_URL;
+		delete process.env.BYTOS_MARKETPLACE_CATALOG_URL;
+
+		try {
+			const catalog = (await fetchMarketplaceCatalog(fetchImpl)) as { entries: unknown[] }
+			expect(catalog.entries).toEqual([])
+			expect(fetchImpl).not.toHaveBeenCalled()
+		} finally {
+			if (previousUrl !== undefined) {
+				process.env.BYTOS_MARKETPLACE_CATALOG_URL = previousUrl
+			}
+		}
 	});
 
 	it("surfaces marketplace catalog upstream failures", async () => {
@@ -947,9 +973,19 @@ describe("marketplace installer", () => {
 				statusText: "Service Unavailable",
 			});
 		});
+		const previousUrl = process.env.BYTOS_MARKETPLACE_CATALOG_URL;
+		process.env.BYTOS_MARKETPLACE_CATALOG_URL = "https://marketplace.example.test/catalog.json";
 
-		await expect(fetchMarketplaceCatalog(fetchImpl)).rejects.toThrow(
-			"Failed to fetch marketplace catalog: 503 Service Unavailable",
-		);
+		try {
+			await expect(fetchMarketplaceCatalog(fetchImpl)).rejects.toThrow(
+				"Failed to fetch marketplace catalog: 503 Service Unavailable",
+			);
+		} finally {
+			if (previousUrl === undefined) {
+				delete process.env.BYTOS_MARKETPLACE_CATALOG_URL;
+			} else {
+				process.env.BYTOS_MARKETPLACE_CATALOG_URL = previousUrl;
+			}
+		}
 	});
 });

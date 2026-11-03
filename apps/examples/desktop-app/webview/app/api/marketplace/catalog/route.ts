@@ -1,6 +1,4 @@
-const MARKETPLACE_CATALOG_URL =
-	process.env.BYTOS_MARKETPLACE_CATALOG_URL?.trim() ||
-	"https://cline.github.io/marketplace/catalog.json";
+const MARKETPLACE_CATALOG_URL = process.env.BYTOS_MARKETPLACE_CATALOG_URL?.trim() || "";
 
 export const dynamic = "force-static";
 
@@ -17,6 +15,9 @@ const EMPTY_MARKETPLACE_CATALOG = {
 };
 
 export async function GET() {
+	if (!MARKETPLACE_CATALOG_URL) {
+		return Response.json(EMPTY_MARKETPLACE_CATALOG)
+	}
 	try {
 		const response = await fetch(MARKETPLACE_CATALOG_URL, {
 			headers: { Accept: "application/json" },

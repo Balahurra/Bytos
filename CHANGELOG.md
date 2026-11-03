@@ -1,10 +1,19 @@
 # Changelog
 
+## [4.1.45]
+
+### Changed
+
+- Removed the implicit Cline marketplace catalog dependency. Bytos no longer fetches `cline.github.io` by default; the marketplace catalog is empty unless `BYTOS_MARKETPLACE_CATALOG_URL` points at a Bytos/self-hosted catalog.
+- The marketplace UI, local installed entries, MCP management, and install/uninstall engine remain intact. Skills/MCP/plugins can still be installed from local files or a configured catalog.
+- Applied the same optional-catalog behavior to the Bytos hub and desktop sidecar.
+- MCP Installed and Auto Phase MCP selection continue to work entirely from local data even when no catalog is configured.
+
 ## [4.1.44]
 
 ### Fixed
 
-- **Failed to fetch marketplace catalog: 404 Not Found** in Customize → MCP installed (and Auto Phase MCP selection). The rebrand had pointed the catalog at the non-existent `bytos.github.io` host; the default is now the valid `cline.github.io/marketplace/catalog.json`, with `BYTOS_MARKETPLACE_CATALOG_URL` still available as an override.
+- **Failed to fetch marketplace catalog: 404 Not Found** in Customize → MCP installed (and Auto Phase MCP selection). The rebrand had pointed the catalog at a non-existent host; catalog fetching is now optional and must be configured with `BYTOS_MARKETPLACE_CATALOG_URL`.
 - A marketplace catalog failure no longer blocks or errors the MCP **Installed** tab. Catalog errors are shown only in the Marketplace tab, while locally installed MCP servers remain usable.
 - Applied the same catalog URL fix to the Bytos hub and desktop sidecar defaults.
 

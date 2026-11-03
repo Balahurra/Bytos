@@ -91,9 +91,16 @@ type CatalogLoader = () => Promise<unknown>;
 const MAX_OUTPUT_CHARS = 12_000;
 const INSTALL_COMMAND_TIMEOUT_MS = 120_000;
 const OFFICIAL_PLUGINS_REPO = "https://github.com/bytos/plugins.git";
-const MARKETPLACE_CATALOG_URL =
-	process.env.BYTOS_MARKETPLACE_CATALOG_URL?.trim() ||
-	"https://cline.github.io/marketplace/catalog.json";
+const EMPTY_MARKETPLACE_CATALOG = {
+	version: 1,
+	generatedAt: new Date(0).toISOString(),
+	baseUrl: "",
+	counts: { total: 0, plugins: 0, skills: 0, mcps: 0 },
+	tags: [],
+	entries: [] as unknown[],
+};
+const resolveMarketplaceCatalogUrl = (): string =>
+	process.env.BYTOS_MARKETPLACE_CATALOG_URL?.trim() || "";
 const SECRET_PATTERN =
 	/(api[_ -]?key|access[_ -]?token|refresh[_ -]?token|auth(?:orization)?[_ -]?token|token|secret|password|authorization|credential)/i;
 const SECRET_KEY_VALUE_PATTERN =
@@ -106,7 +113,11 @@ const SECRET_AUTHORIZATION_VALUE_PATTERN =
 export async function fetchMarketplaceCatalog(
 	fetchImpl: CatalogFetch = fetch,
 ): Promise<unknown> {
-	const response = await fetchImpl(MARKETPLACE_CATALOG_URL, {
+	const catalogUrl = resolveMarketplaceCatalogUrl();
+	if (!catalogUrl) {
+		return EMPTY_MARKETPLACE_CATALOG;
+	}
+	const response = await fetchImpl(catalogUrl, {
 		headers: { Accept: "application/json" },
 	});
 	if (!response.ok) {

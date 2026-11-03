@@ -1,3 +1,4 @@
+import { ATTACHMENT_LIMITS } from "@shared/attachments"
 import fs from "fs/promises"
 import sizeOf from "image-size"
 import * as path from "path"
@@ -10,8 +11,54 @@ import { Logger } from "@/shared/services/Logger"
  * For models which don't support images, will not allow them to be selected
  */
 export async function selectFiles(imagesAllowed: boolean): Promise<{ images: string[]; files: string[] }> {
-	const IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp"] // supported by anthropic and openrouter
-	const OTHER_FILE_EXTENSIONS = ["xml", "json", "txt", "log", "md", "docx", "ipynb", "pdf", "xlsx", "csv"]
+	const IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp", "gif", "bmp", "svg", "avif"] // browser-decodable images
+	const OTHER_FILE_EXTENSIONS = [
+		// Documents / data
+		"xml",
+		"json",
+		"jsonc",
+		"txt",
+		"log",
+		"md",
+		"mdx",
+		"docx",
+		"ipynb",
+		"pdf",
+		"xlsx",
+		"csv",
+		"tsv",
+		// Source / config
+		"ts",
+		"tsx",
+		"js",
+		"jsx",
+		"py",
+		"go",
+		"rs",
+		"java",
+		"kt",
+		"c",
+		"h",
+		"cpp",
+		"cc",
+		"hpp",
+		"cs",
+		"rb",
+		"php",
+		"sh",
+		"bash",
+		"ps1",
+		"yaml",
+		"yml",
+		"toml",
+		"ini",
+		"env",
+		"html",
+		"css",
+		"scss",
+		"sql",
+		"dockerfile",
+	]
 
 	const showDialogueResponse = await HostProvider.window.showOpenDialogue({
 		canSelectMany: true,
@@ -40,11 +87,14 @@ export async function selectFiles(imagesAllowed: boolean): Promise<{ images: str
 				// Convert Node.js Buffer to Uint8Array
 				const uint8Array = new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength)
 				const dimensions = sizeOf(uint8Array) // Get dimensions from Uint8Array
-				if (dimensions.width! > 7680 || dimensions.height! > 7680) {
-					Logger.warn(`Image dimensions exceed 7500px, skipping: ${filePath}`)
+				if (
+					dimensions.width! > ATTACHMENT_LIMITS.maxImageSourceDimension ||
+					dimensions.height! > ATTACHMENT_LIMITS.maxImageSourceDimension
+				) {
+					Logger.warn(`Image dimensions exceed ${ATTACHMENT_LIMITS.maxImageSourceDimension}px, skipping: ${filePath}`)
 					HostProvider.window.showMessage({
 						type: ShowMessageType.ERROR,
-						message: `Image too large: ${path.basename(filePath)} was skipped (dimensions exceed 7500px).`,
+						message: `Image too large: ${path.basename(filePath)} was skipped (dimensions exceed ${ATTACHMENT_LIMITS.maxImageSourceDimension}px).`,
 					})
 					return null
 				}
@@ -66,7 +116,7 @@ export async function selectFiles(imagesAllowed: boolean): Promise<{ images: str
 		// for standard models we will check the size of the file to ensure its not too large
 		try {
 			const stats = await fs.stat(filePath)
-			if (stats.size > 20 * 1000 * 1024) {
+			if (stats.size > ATTACHMENT_LIMITS.maxFileBytes) {
 				Logger.warn(`File too large, skipping: ${filePath}`)
 				HostProvider.window.showMessage({
 					type: ShowMessageType.ERROR,
@@ -112,6 +162,14 @@ function getMimeType(filePath: string): string {
 			return "image/jpeg"
 		case ".webp":
 			return "image/webp"
+		case ".gif":
+			return "image/gif"
+		case ".bmp":
+			return "image/bmp"
+		case ".svg":
+			return "image/svg+xml"
+		case ".avif":
+			return "image/avif"
 		default:
 			throw new Error(`Unsupported file type: ${ext}`)
 	}

@@ -6,6 +6,7 @@ import { convertProtoToApiProvider } from "@/shared/proto-conversions/models/api
 import { DEFAULT_BROWSER_SETTINGS } from "../../../shared/BrowserSettings"
 import { Controller } from ".."
 import { normalizeOpenaiReasoningEffort } from "../state/reasoningEffort"
+import { resolveRequestAttachments } from "./request-attachments"
 
 /**
  * Creates a new task with the given text and optional images
@@ -79,13 +80,7 @@ export async function newTask(controller: Controller, request: NewTaskRequest): 
 		}
 		cloudTarget = { repoUrl, branch: request.cloudBranch?.trim() || undefined }
 	}
-	const taskId = await controller.initTask(
-		request.text,
-		request.images,
-		request.files,
-		undefined,
-		filteredTaskSettings,
-		cloudTarget,
-	)
+	const { images, files } = resolveRequestAttachments(request.attachments, request.images, request.files)
+	const taskId = await controller.initTask(request.text, images, files, undefined, filteredTaskSettings, cloudTarget)
 	return String.create({ value: taskId || "" })
 }

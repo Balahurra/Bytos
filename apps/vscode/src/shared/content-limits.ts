@@ -1,10 +1,12 @@
+import { ATTACHMENT_LIMITS } from "./attachments"
+
 /**
  * Content size limits to prevent massive files/responses from bricking conversations.
  * 400KB ≈ ~100,000 tokens, which is a reasonable limit for context.
  */
 
 /** Maximum content size in bytes (400KB) */
-const MAX_CONTENT_SIZE_BYTES = 400 * 1024
+const MAX_CONTENT_SIZE_BYTES = ATTACHMENT_LIMITS.maxTextBytes
 
 /**
  * Format bytes into a human-readable string (e.g., "1.5 MB", "400 KB").

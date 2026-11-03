@@ -1,5 +1,21 @@
 # Changelog
 
+## [4.1.34]
+
+### Added
+
+- **GIF, BMP, SVG and AVIF** images can now be attached alongside PNG/JPEG/WEBP. Browser-decodable formats are normalized to WEBP before sending.
+- Source and config files such as TypeScript, JavaScript, Python, Go, Rust, Java, C/C++, YAML, TOML, HTML, CSS and SQL can be selected from the attachment picker.
+- The composer shows the attachment count and warns before sending when images exceed the per-image or total model media budget.
+- A typed `ChatAttachment` list is now sent alongside the legacy images/files arrays. Existing clients keep working; unsupported future kinds are ignored explicitly instead of being treated as text.
+
+### Changed
+
+- Attachment limits (20 per message, 20 MB per file, 400 KB text, 7500 px, 5/6/8 MB media) live in one shared module used by the extension and webview.
+- Images are downscaled and compressed in the webview before sending, so large photos and banners no longer silently turn into an omitted-media placeholder.
+- The picker and composer now share the same 7500 px limit (previously the picker allowed 7680 px).
+- Files that cannot be decoded by the browser are rejected with a clear message instead of being attached as unsupported bytes.
+
 ## [4.1.33]
 
 ### Fixed

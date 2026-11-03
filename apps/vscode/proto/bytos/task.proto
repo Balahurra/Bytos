@@ -47,6 +47,19 @@ service TaskService {
   rpc deleteAllTaskHistory(EmptyRequest) returns (DeleteAllTaskHistoryCount);
 }
 
+// A chat attachment in a transport-neutral form. Kept additive so older
+// clients can keep sending images/files only.
+message ChatAttachment {
+  // text | image | document | video | audio | model3d
+  string kind = 1;
+  string name = 2;
+  optional string mime_type = 3;
+  optional string path = 4;
+  // Data URL (images) or base64 payload for future media kinds.
+  optional string data = 5;
+  int64 size = 6;
+}
+
 // Request message for creating a new task
 message NewTaskRequest {
   Metadata metadata = 1;
@@ -58,6 +71,8 @@ message NewTaskRequest {
   optional string execution_target = 6;
   optional string cloud_repo_url = 7;
   optional string cloud_branch = 8;
+  // Additive typed attachment list; images/files above remain for compatibility.
+  repeated ChatAttachment attachments = 9;
 }
 
 // Request message for toggling task favorite status
@@ -135,6 +150,8 @@ message AskResponseRequest {
   string text = 3;
   repeated string images = 4;
   repeated string files = 5;
+  // Additive typed attachment list; images/files above remain for compatibility.
+  repeated ChatAttachment attachments = 6;
 }
 
 // Request for editing a past user message and regenerating the conversation after it

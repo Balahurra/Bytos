@@ -10,6 +10,7 @@ import { useShowNavbar } from "@/context/PlatformContext"
 import { useNormalizedApiConfiguration } from "@/hooks/useNormalizedApiConfiguration"
 import { FileServiceClient, UiServiceClient } from "@/services/grpc-client"
 import { Navbar } from "../menu/Navbar"
+import { getDataUrlBase64Length, normalizeImagesForAttachment } from "./attachment-image-normalization"
 import AutoApproveBar from "./auto-approve-menu/AutoApproveBar"
 // Import utilities and hooks from the new structure
 import {
@@ -249,14 +250,16 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 				const availableSlots = MAX_IMAGES_AND_FILES_PER_MESSAGE - currentTotal
 
 				if (availableSlots > 0) {
-					// Prioritize images first
-					const imagesToAdd = Math.min(response.values1.length, availableSlots)
-					if (imagesToAdd > 0) {
-						setSelectedImages((prevImages) => [...prevImages, ...response.values1.slice(0, imagesToAdd)])
+					// Prioritize images first, normalized to the SDK media budget.
+					const imageCandidates = response.values1.slice(0, availableSlots)
+					const existingImageBytes = selectedImages.reduce((sum, image) => sum + getDataUrlBase64Length(image), 0)
+					const { images } = await normalizeImagesForAttachment(imageCandidates, existingImageBytes)
+					if (images.length > 0) {
+						setSelectedImages((prevImages) => [...prevImages, ...images.map((image) => image.dataUrl)])
 					}
 
 					// Use remaining slots for files
-					const remainingSlots = availableSlots - imagesToAdd
+					const remainingSlots = availableSlots - images.length
 					if (remainingSlots > 0) {
 						setSelectedFiles((prevFiles) => [...prevFiles, ...response.values2.slice(0, remainingSlots)])
 					}
@@ -265,7 +268,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 		} catch (error) {
 			console.error("Error selecting images & files:", error)
 		}
-	}, [selectedModelInfo.supportsImages, imagesOnly])
+	}, [selectedModelInfo.supportsImages, imagesOnly, selectedImages, selectedFiles])
 
 	const shouldDisableFilesAndImages = selectedImages.length + selectedFiles.length >= MAX_IMAGES_AND_FILES_PER_MESSAGE
 

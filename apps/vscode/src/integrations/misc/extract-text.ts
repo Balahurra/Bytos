@@ -4,6 +4,7 @@ import * as iconv from "iconv-lite"
 import { isBinaryFile } from "isbinaryfile"
 import * as chardet from "jschardet"
 import * as path from "path"
+import { ATTACHMENT_LIMITS } from "@/shared/attachments"
 import { truncateContent } from "@/shared/content-limits"
 import { Logger } from "@/shared/services/Logger"
 import { sanitizeNotebookForLLM } from "./notebook-utils"
@@ -60,8 +61,8 @@ async function callTextExtractionFunctions(filePath: string): Promise<string> {
 		default:
 			// Check file size with stat() first - faster than reading entire file for size check
 			const fileStat = await fs.stat(filePath)
-			if (fileStat.size > 20 * 1000 * 1024) {
-				// 20MB limit (20 * 1000 * 1024 bytes, decimal MB)
+			if (fileStat.size > ATTACHMENT_LIMITS.maxFileBytes) {
+				// 20MB limit (decimal MB)
 				throw new Error(`File is too large to read into context.`)
 			}
 			const fileBuffer = await fs.readFile(filePath)

@@ -1,3 +1,4 @@
+import { buildChatAttachments } from "@shared/attachments"
 import type { BytosMessage } from "@shared/ExtensionMessage"
 import { EmptyRequest, StringRequest } from "@shared/proto/bytos/common"
 import { AskResponseRequest, NewTaskRequest } from "@shared/proto/bytos/task"
@@ -13,6 +14,10 @@ function formatDraftText(text: string, activeQuote: string | null): string {
 		return text
 	}
 	return `[context] \n>  ${activeQuote} \n[/context] \n\n ${text}`
+}
+
+function attachmentsFor(images: readonly string[], files: readonly string[]) {
+	return buildChatAttachments(images, files)
 }
 
 // `/compact` and its aliases `/smol` and `/newtask` run a real SDK manual
@@ -230,6 +235,7 @@ export function useMessageHandlers(messages: BytosMessage[], chatState: ChatStat
 						text: messageToSend,
 						images: submittedImages,
 						files: submittedFiles,
+						attachments: attachmentsFor(submittedImages, submittedFiles),
 					})
 					trackPromptSubmitted(true)
 					const { id, optimisticMessage } = beginPendingResponse({
@@ -272,6 +278,7 @@ export function useMessageHandlers(messages: BytosMessage[], chatState: ChatStat
 						// Local file paths cannot be read from a cloud sandbox; the composer
 						// refuses a cloud send while files are attached.
 						files: runInCloud ? [] : files,
+						attachments: attachmentsFor(images, runInCloud ? [] : files),
 						...(runInCloud
 							? {
 									executionTarget: "cloud",
@@ -306,6 +313,7 @@ export function useMessageHandlers(messages: BytosMessage[], chatState: ChatStat
 							text: messageToSend,
 							images,
 							files,
+							attachments: attachmentsFor(images, files),
 						}),
 					)
 					messageSent = true
@@ -323,6 +331,7 @@ export function useMessageHandlers(messages: BytosMessage[], chatState: ChatStat
 								text: messageToSend,
 								images,
 								files,
+								attachments: attachmentsFor(images, files),
 							}),
 							{ showPendingMessage: turnState?.phase !== "streaming" },
 						)
@@ -359,6 +368,7 @@ export function useMessageHandlers(messages: BytosMessage[], chatState: ChatStat
 										text: messageToSend,
 										images,
 										files,
+										attachments: attachmentsFor(images, files),
 									}),
 									{ showPendingMessage },
 								)
@@ -395,6 +405,7 @@ export function useMessageHandlers(messages: BytosMessage[], chatState: ChatStat
 								text: messageToSend,
 								images,
 								files,
+								attachments: attachmentsFor(images, files),
 							}),
 							{
 								showPendingMessage: turnState?.phase === "completed" || turnState?.phase === "awaiting_followup",
@@ -512,7 +523,15 @@ export function useMessageHandlers(messages: BytosMessage[], chatState: ChatStat
 					const responseType = invocation.type === "reject" ? "noButtonClicked" : "yesButtonClicked"
 					await TaskServiceClient.askResponse(
 						AskResponseRequest.create(
-							hasContent ? { responseType, text, images: draft.images, files: draft.files } : { responseType },
+							hasContent
+								? {
+										responseType,
+										text,
+										images: draft.images,
+										files: draft.files,
+										attachments: attachmentsFor(draft.images, draft.files),
+									}
+								: { responseType },
 						),
 					)
 					chatState.consumeDraftSnapshot(draft)

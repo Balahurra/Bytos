@@ -1,3 +1,4 @@
+import { buildChatAttachments } from "@shared/attachments"
 import { CLOUD_CREATION_UNCONFIRMED_ERROR_CODE } from "@shared/cloud/cloud-sessions"
 import type { BytosMessage, TurnState } from "@shared/ExtensionMessage"
 import { act, renderHook } from "@testing-library/react"
@@ -606,6 +607,7 @@ describe("useMessageHandlers — send routing", () => {
 			text: "try a different approach",
 			images: ["image.png"],
 			files: ["notes.txt"],
+			attachments: buildChatAttachments(["image.png"], ["notes.txt"]),
 		})
 		expect(askResponse).not.toHaveBeenCalledWith(expect.objectContaining({ responseType: "yesButtonClicked" }))
 		expect(setPendingUserMessage).toHaveBeenCalledWith(
@@ -1250,6 +1252,7 @@ describe("useMessageHandlers — send routing", () => {
 			text: `[context] \n>  ${draft.activeQuote} \n[/context] \n\n ${draft.text}`,
 			images: draft.images,
 			files: draft.files,
+			attachments: buildChatAttachments(draft.images, draft.files),
 		})
 		expect(consumeDraftSnapshot).toHaveBeenCalledWith(draft)
 	})

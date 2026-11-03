@@ -1,3 +1,4 @@
+import { ATTACHMENT_LIMITS } from "@shared/attachments"
 import { mentionRegex, mentionRegexGlobal } from "@shared/context-mentions"
 import { EmptyRequest, StringRequest } from "@shared/proto/bytos/common"
 import { FileSearchRequest, FileSearchType, RelativePathsRequest } from "@shared/proto/bytos/file"
@@ -42,6 +43,7 @@ import {
 	validateSlashCommand,
 } from "@/utils/slash-commands"
 import BytosRulesToggleModal from "../bytos-rules/BytosRulesToggleModal"
+import { getDataUrlBase64Length, normalizeImagesForAttachment } from "./attachment-image-normalization"
 import { getModeToggleDraftAction } from "./chat-textarea-mode-toggle"
 import ServersToggleModal from "./ServersToggleModal"
 
@@ -51,8 +53,11 @@ const getImageDimensions = (dataUrl: string): Promise<{ width: number; height: n
 	return new Promise((resolve, reject) => {
 		const img = new Image()
 		img.onload = () => {
-			if (img.naturalWidth > 7500 || img.naturalHeight > 7500) {
-				reject(new Error("Image dimensions exceed maximum allowed size of 7500px."))
+			if (
+				img.naturalWidth > ATTACHMENT_LIMITS.maxImageSourceDimension ||
+				img.naturalHeight > ATTACHMENT_LIMITS.maxImageSourceDimension
+			) {
+				reject(new Error(`Image dimensions exceed the ${ATTACHMENT_LIMITS.maxImageSourceDimension}px processing limit.`))
 			} else {
 				resolve({ width: img.naturalWidth, height: img.naturalHeight })
 			}
@@ -275,6 +280,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 
 		const [shownTooltipMode, setShownTooltipMode] = useState<PhaseSelection | null>(null)
 		const [autoPhaseNotice, setAutoPhaseNotice] = useState<string | null>(null)
+		const [attachmentNotice, setAttachmentNotice] = useState<string | null>(null)
 		// Selecting Auto Phase only opens a confirmation warning; the runner starts
 		// after the user explicitly allows it.
 		const [autoPhasePending, setAutoPhasePending] = useState(false)
@@ -304,6 +310,37 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 		// badge and a notice offers to switch models. Unknown capability data fails open, like core does.
 		const modelSupportsImages = selectedModelInfo.supportsImages !== false
 		const unsupportedImagesAttached = selectedImages.length > 0 && !modelSupportsImages
+		const selectedAttachmentCount = selectedImages.length + selectedFiles.length
+		const imageEncodedBytes = useMemo(() => selectedImages.map(getDataUrlBase64Length), [selectedImages])
+		const oversizedImageCount = imageEncodedBytes.filter((bytes) => bytes > ATTACHMENT_LIMITS.maxImageEncodedBytes).length
+		const totalImageEncodedBytes = imageEncodedBytes.reduce((sum, bytes) => sum + bytes, 0)
+		const imagesOverBudget = oversizedImageCount > 0 || totalImageEncodedBytes > ATTACHMENT_LIMITS.maxTotalMediaBytes
+
+		const addNormalizedImages = useCallback(
+			async (candidates: readonly string[]): Promise<number> => {
+				if (candidates.length === 0) {
+					return 0
+				}
+				const existingBytes = selectedImages.reduce((sum, image) => sum + getDataUrlBase64Length(image), 0)
+				const { images, skipped } = await normalizeImagesForAttachment(candidates, existingBytes)
+				if (images.length > 0) {
+					setSelectedImages((previous) =>
+						[...previous, ...images.map((image) => image.dataUrl)].slice(0, MAX_IMAGES_AND_FILES_PER_MESSAGE),
+					)
+				}
+				if (skipped.length > 0) {
+					setAttachmentNotice(
+						skipped.length === 1
+							? skipped[0]
+							: `${skipped[0]} (${skipped.length - 1} more image${skipped.length - 1 === 1 ? "" : "s"} skipped.)`,
+					)
+				} else {
+					setAttachmentNotice(null)
+				}
+				return images.length
+			},
+			[selectedImages],
+		)
 
 		// Fetch git commits when Git is selected or when typing a hash
 		useEffect(() => {
@@ -921,7 +958,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 					return
 				}
 
-				const acceptedTypes = ["png", "jpeg", "webp"] // supported by anthropic and openrouter (jpg is just a file extension but the image will be recognized as jpeg)
+				const acceptedTypes = ["png", "jpeg", "webp", "gif", "bmp", "svg+xml", "avif"] // browser-decodable; normalized before send
 				const imageItems = Array.from(items).filter((item) => {
 					const [type, subtype] = item.type.split("/")
 					return type === "image" && acceptedTypes.includes(subtype)
@@ -967,8 +1004,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 						const availableSlots = MAX_IMAGES_AND_FILES_PER_MESSAGE - filesAndImagesLength
 
 						if (availableSlots > 0) {
-							const imagesToAdd = Math.min(dataUrls.length, availableSlots)
-							setSelectedImages((prevImages) => [...prevImages, ...dataUrls.slice(0, imagesToAdd)])
+							void addNormalizedImages(dataUrls.slice(0, availableSlots))
 						}
 					} else {
 						console.warn("No valid images were processed")
@@ -977,6 +1013,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 			},
 			[
 				shouldDisableFilesAndImages,
+				addNormalizedImages,
 				setSelectedImages,
 				selectedImages,
 				selectedFiles,
@@ -1425,7 +1462,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 			// --- 3. Image Drop Handling ---
 			// Only proceed if it wasn't a VSCode resource or plain text drop
 			const files = Array.from(e.dataTransfer.files)
-			const acceptedTypes = ["png", "jpeg", "webp"]
+			const acceptedTypes = ["png", "jpeg", "webp", "gif", "bmp", "svg+xml", "avif"]
 			const imageFiles = files.filter((file) => {
 				const [type, subtype] = file.type.split("/")
 				return type === "image" && acceptedTypes.includes(subtype)
@@ -1443,8 +1480,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 				const availableSlots = MAX_IMAGES_AND_FILES_PER_MESSAGE - filesAndImagesLength
 
 				if (availableSlots > 0) {
-					const imagesToAdd = Math.min(dataUrls.length, availableSlots)
-					setSelectedImages((prevImages) => [...prevImages, ...dataUrls.slice(0, imagesToAdd)])
+					void addNormalizedImages(dataUrls.slice(0, availableSlots))
 				}
 			} else {
 				console.warn("No valid images were processed")
@@ -1546,12 +1582,16 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 					onDrop={onDrop}>
 					{showDimensionError && (
 						<div className="absolute inset-2.5 bg-[rgba(var(--vscode-errorForeground-rgb),0.1)] border-2 border-error rounded-xs flex items-center justify-center z-10 pointer-events-none">
-							<span className="text-error font-bold text-xs text-center">Image dimensions exceed 7500px</span>
+							<span className="text-error font-bold text-xs text-center">
+								Image dimensions exceed the {ATTACHMENT_LIMITS.maxImageSourceDimension}px processing limit
+							</span>
 						</div>
 					)}
 					{showUnsupportedFileError && (
 						<div className="absolute inset-2.5 bg-[rgba(var(--vscode-errorForeground-rgb),0.1)] border-2 border-error rounded-xs flex items-center justify-center z-10 pointer-events-none">
-							<span className="text-error font-bold text-xs">Files other than images are currently disabled</span>
+							<span className="text-error font-bold text-xs">
+								Only PNG, JPEG, WEBP and GIF images can be dropped. Use the + button for documents.
+							</span>
 						</div>
 					)}
 					{showSlashCommandsMenu && (
@@ -1743,6 +1783,36 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 							</button>{" "}
 							or remove {selectedImages.length === 1 ? "it" : "them"}.
 						</span>
+					</div>
+				)}
+				{imagesOverBudget && (
+					<div
+						className="flex items-center gap-1.5 px-3.5 pb-1.5 text-xs"
+						data-testid="images-over-budget-notice"
+						role="status"
+						style={{ color: "var(--vscode-editorWarning-foreground)" }}>
+						<TriangleAlertIcon className="shrink-0" size={12} />
+						<span className="min-w-0">
+							{oversizedImageCount > 0
+								? `${oversizedImageCount} image${oversizedImageCount === 1 ? "" : "s"} exceed the ${ATTACHMENT_LIMITS.maxImageEncodedBytes / (1024 * 1024)} MB per-image model limit.`
+								: `Attached images total ${(totalImageEncodedBytes / (1024 * 1024)).toFixed(1)} MB, above the ${ATTACHMENT_LIMITS.maxTotalMediaBytes / (1024 * 1024)} MB model limit.`}{" "}
+							They may be omitted from the request; remove them or choose a model with a larger media budget.
+						</span>
+					</div>
+				)}
+				{attachmentNotice && (
+					<div
+						className="flex items-center gap-1.5 px-3.5 pb-1.5 text-xs"
+						data-testid="attachment-notice"
+						role="alert"
+						style={{ color: "var(--vscode-errorForeground)" }}>
+						<TriangleAlertIcon className="shrink-0" size={12} />
+						<span className="min-w-0">{attachmentNotice}</span>
+					</div>
+				)}
+				{selectedAttachmentCount > 0 && (
+					<div className="px-3.5 pb-1 text-[10px] text-description flex justify-end" data-testid="attachment-count">
+						{selectedAttachmentCount} / {MAX_IMAGES_AND_FILES_PER_MESSAGE} attachments
 					</div>
 				)}
 				{autoPhaseNotice && (

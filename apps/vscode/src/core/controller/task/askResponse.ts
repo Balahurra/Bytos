@@ -3,6 +3,7 @@ import { AskResponseRequest } from "@shared/proto/bytos/task"
 import { Logger } from "@/shared/services/Logger"
 import { BytosAskResponse } from "../../../shared/WebviewMessage"
 import { Controller } from ".."
+import { resolveRequestAttachments } from "./request-attachments"
 
 /**
  * Handles a response from the webview for a previous ask operation
@@ -36,7 +37,8 @@ export async function askResponse(controller: Controller, request: AskResponseRe
 		}
 
 		// Call the task's handler for webview responses
-		await controller.task.handleWebviewAskResponse(responseType, request.text, request.images, request.files)
+		const { images, files } = resolveRequestAttachments(request.attachments, request.images, request.files)
+		await controller.task.handleWebviewAskResponse(responseType, request.text, images, files)
 
 		return Empty.create()
 	} catch (error) {

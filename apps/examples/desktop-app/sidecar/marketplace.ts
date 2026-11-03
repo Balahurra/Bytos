@@ -93,7 +93,7 @@ const INSTALL_COMMAND_TIMEOUT_MS = 120_000;
 const OFFICIAL_PLUGINS_REPO = "https://github.com/bytos/plugins.git";
 const MARKETPLACE_CATALOG_URL =
 	process.env.BYTOS_MARKETPLACE_CATALOG_URL?.trim() ||
-	"https://bytos.github.io/marketplace/catalog.json";
+	"https://cline.github.io/marketplace/catalog.json";
 const SECRET_PATTERN =
 	/(api[_ -]?key|access[_ -]?token|refresh[_ -]?token|auth(?:orization)?[_ -]?token|token|secret|password|authorization|credential)/i;
 const SECRET_KEY_VALUE_PATTERN =

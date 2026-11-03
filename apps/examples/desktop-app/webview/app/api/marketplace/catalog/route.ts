@@ -1,6 +1,6 @@
 const MARKETPLACE_CATALOG_URL =
 	process.env.BYTOS_MARKETPLACE_CATALOG_URL?.trim() ||
-	"https://bytos.github.io/marketplace/catalog.json";
+	"https://cline.github.io/marketplace/catalog.json";
 
 export const dynamic = "force-static";
 

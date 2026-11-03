@@ -48,7 +48,8 @@ type SpawnResult = {
 	stderr: string
 }
 
-const MARKETPLACE_CATALOG_URL = "https://bytos.github.io/marketplace/catalog.json"
+const MARKETPLACE_CATALOG_URL =
+	process.env.BYTOS_MARKETPLACE_CATALOG_URL?.trim() || "https://cline.github.io/marketplace/catalog.json"
 const OFFICIAL_PLUGINS_REPO = "https://github.com/bytos/plugins.git"
 const INSTALL_COMMAND_TIMEOUT_MS = 120_000
 const MAX_OUTPUT_CHARS = 12_000

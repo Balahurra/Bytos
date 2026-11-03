@@ -935,7 +935,7 @@ describe("marketplace installer", () => {
 			entries: [],
 		});
 		expect(fetchImpl).toHaveBeenCalledWith(
-			"https://bytos.github.io/marketplace/catalog.json",
+			"https://cline.github.io/marketplace/catalog.json",
 			{ headers: { Accept: "application/json" } },
 		);
 	});

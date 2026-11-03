@@ -1010,27 +1010,40 @@ const MarketplaceView = ({ initialType = "skill", onDone }: MarketplaceViewProps
 	const [selectedTag, setSelectedTag] = useState<string | null>(null)
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
+	const [catalogError, setCatalogError] = useState<string | null>(null)
 
 	const refresh = useCallback(async () => {
 		setLoading(true)
 		setError(null)
-		try {
-			const [catalog, local] = await Promise.all([
-				MarketplaceServiceClient.getMarketplaceCatalog(EmptyRequest.create({})),
-				MarketplaceServiceClient.listMarketplaceLocalInstalledEntries(EmptyRequest.create({})),
-			])
-			const entries = catalog.entries.filter((entry) => isVisiblePrimitiveType(entry.type))
-			setCatalogEntries(entries)
-			setLocalEntries(local.entries.filter((entry) => isVisiblePrimitiveType(entry.type)))
-			const installed = await MarketplaceServiceClient.listMarketplaceInstalledEntries(
-				MarketplaceEntriesRequest.create({ entries }),
-			)
-			setInstalledKeys(new Set(installed.installedKeys))
-		} catch (err) {
-			setError(err instanceof Error ? err.message : String(err))
-		} finally {
-			setLoading(false)
+		setCatalogError(null)
+		const [catalogResult, localResult] = await Promise.allSettled([
+			MarketplaceServiceClient.getMarketplaceCatalog(EmptyRequest.create({})),
+			MarketplaceServiceClient.listMarketplaceLocalInstalledEntries(EmptyRequest.create({})),
+		])
+
+		if (localResult.status === "fulfilled") {
+			setLocalEntries(localResult.value.entries.filter((entry) => isVisiblePrimitiveType(entry.type)))
+		} else {
+			setError(localResult.reason instanceof Error ? localResult.reason.message : String(localResult.reason))
 		}
+
+		if (catalogResult.status === "fulfilled") {
+			const entries = catalogResult.value.entries.filter((entry) => isVisiblePrimitiveType(entry.type))
+			setCatalogEntries(entries)
+			try {
+				const installed = await MarketplaceServiceClient.listMarketplaceInstalledEntries(
+					MarketplaceEntriesRequest.create({ entries }),
+				)
+				setInstalledKeys(new Set(installed.installedKeys))
+			} catch (err) {
+				setError(err instanceof Error ? err.message : String(err))
+			}
+		} else {
+			setCatalogEntries([])
+			setInstalledKeys(new Set())
+			setCatalogError(catalogResult.reason instanceof Error ? catalogResult.reason.message : String(catalogResult.reason))
+		}
+		setLoading(false)
 	}, [])
 
 	useEffect(() => {
@@ -1258,6 +1271,9 @@ const MarketplaceView = ({ initialType = "skill", onDone }: MarketplaceViewProps
 
 						<div className="marketplace-primitive-description">{primitive.description}</div>
 						{error && <div className="marketplace-error">{error}</div>}
+						{catalogError && currentSection === "marketplace" && (
+							<div className="marketplace-error">{catalogError}</div>
+						)}
 
 						{loading ? (
 							<div className="marketplace-loading">

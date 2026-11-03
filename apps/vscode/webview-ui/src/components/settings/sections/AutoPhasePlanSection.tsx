@@ -244,13 +244,32 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 		[persistPlan],
 	)
 
+	/** Clear the saved plan (and its stored keys). History and tasks are untouched. */
+	const deleteAllPhases = useCallback(async () => {
+		setSaving(true)
+		setStatus(null)
+		try {
+			await StateServiceClient.saveAutoPhasePlan(AutoPhasePlan.create({ phases: [] }))
+			setPhaseList([])
+			setStatus({ kind: "info", text: "All phases deleted. History and tasks were not changed." })
+		} catch (error) {
+			setStatus({
+				kind: "error",
+				text: error instanceof Error ? error.message : "Could not delete the Auto Phase Plan.",
+			})
+		} finally {
+			setSaving(false)
+		}
+	}, [])
+
 	return (
 		<div id="auto-phase-plan-page">
 			{renderSectionHeader("auto-phase-plan")}
 			<Section>
 				<p className="text-sm text-description m-0">
 					Define up to {MAX_PHASES} phases. Each phase runs as its own Act-mode task, in order, with its own provider,
-					API key, and model.
+					API key, and model. Approval prompts use the global Auto-approve settings from the chat panel; there are no
+					per-phase approval settings.
 				</p>
 
 				{loading ? (
@@ -412,6 +431,15 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 									}}>
 									{status.text}
 								</span>
+							)}
+							{phaseList.length > 0 && (
+								<VSCodeButton
+									appearance="secondary"
+									disabled={saving || loading}
+									onClick={() => void deleteAllPhases()}
+									title="Delete all phases from the plan. History and tasks are not affected.">
+									Delete all phases
+								</VSCodeButton>
 							)}
 							<VSCodeButton appearance="primary" disabled={saving || loading} onClick={() => persistPlan()}>
 								{saving ? "Saving…" : "Done"}

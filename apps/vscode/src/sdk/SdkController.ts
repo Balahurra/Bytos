@@ -200,6 +200,14 @@ interface CloudTarget {
 	branch?: string
 }
 
+/** Mutable state of one Auto Phase run, surfaced to the composer as progress. */
+interface AutoPhaseRun {
+	cancelled: boolean
+	currentIndex: number
+	total: number
+	taskIds: string[]
+}
+
 // ---------------------------------------------------------------------------
 // Controller
 // ---------------------------------------------------------------------------
@@ -234,7 +242,7 @@ export class Controller {
 	private readonly providerCatalog: ProviderCatalog
 	private readonly providerConfigStoreSubscription: Disposable
 	private providerConfigStatePostScheduled = false
-	private autoPhaseRun: { cancelled: boolean; currentIndex: number; taskIds: string[] } | null = null
+	private autoPhaseRun: AutoPhaseRun | null = null
 	private autoPhasePromise: Promise<void> | null = null
 	// Debounces/coalesces postStateToWebview() calls — see StatePostDebouncer.
 	private static readonly STATE_POST_DEBOUNCE_MS = 50
@@ -1584,8 +1592,9 @@ export class Controller {
 			throw new Error("Auto Phase Plan has no runnable phases. Add a prompt, provider, and model first.")
 		}
 
-		const run = { cancelled: false, currentIndex: 0, taskIds: [] as string[] }
+		const run: AutoPhaseRun = { cancelled: false, currentIndex: 0, total: phases.length, taskIds: [] }
 		this.autoPhaseRun = run
+		void this.postStateToWebview()
 		this.autoPhasePromise = this.runAutoPhase(phases, run)
 			.catch((error) => {
 				const message = error instanceof Error ? error.message : String(error)
@@ -1615,10 +1624,7 @@ export class Controller {
 		}
 	}
 
-	private async runAutoPhase(
-		phases: AutoPhasePrompt[],
-		run: { cancelled: boolean; currentIndex: number; taskIds: string[] },
-	): Promise<void> {
+	private async runAutoPhase(phases: AutoPhasePrompt[], run: AutoPhaseRun): Promise<void> {
 		const previousMode = this.stateManager.getGlobalSettingsKey("mode")
 		const previousConfig = { ...this.stateManager.getApiConfiguration() }
 		const providerSnapshots = new Map<string, { apiKey?: string; baseUrl?: string }>()
@@ -1701,10 +1707,7 @@ export class Controller {
 		}
 	}
 
-	private async waitForAutoPhaseTask(
-		taskId: string,
-		run: { cancelled: boolean; currentIndex: number; taskIds: string[] },
-	): Promise<void> {
+	private async waitForAutoPhaseTask(taskId: string, run: AutoPhaseRun): Promise<void> {
 		const deadline = Date.now() + 2 * 60 * 60 * 1000
 		while (!run.cancelled) {
 			if (this.task?.taskId && this.task.taskId !== taskId) {
@@ -2879,6 +2882,12 @@ export class Controller {
 				taskHistory: processedTaskHistory,
 				turnState: this.turnStateTracker.get(),
 				autoPhaseRunning: this.autoPhaseRun !== null,
+				autoPhaseProgress: this.autoPhaseRun
+					? {
+							current: Math.min(this.autoPhaseRun.currentIndex + 1, this.autoPhaseRun.total),
+							total: this.autoPhaseRun.total,
+						}
+					: undefined,
 				queuedPrompts,
 				cloudSessionsAvailable: isCloudSessionsFeatureAvailable(),
 				cloudSessionsEnabled: isCloudSessionsFeatureEnabled(),

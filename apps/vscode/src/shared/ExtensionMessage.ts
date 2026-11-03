@@ -66,6 +66,11 @@ export interface ExtensionState {
 	 * uses it to keep the Auto Phase selector active across phase tasks.
 	 */
 	autoPhaseRunning?: boolean
+	/** 1-based phase progress while Auto Phase is running, e.g. { current: 3, total: 10 }. */
+	autoPhaseProgress?: {
+		current: number
+		total: number
+	}
 	/**
 	 * Follow-up prompts submitted while the active agent turn is still running.
 	 * These are owned by the SDK pending-prompt queue and are sent after the

@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.1.32]
+
+### Added
+
+- Selecting **Auto Phase** now opens an in-chat warning with **Allow** and **Deny** buttons. The plan only starts after Allow, and the warning notes when a running task will be stopped first.
+- While Auto Phase is running, the composer shows green phase progress (for example `3/10`) and a **Stop all** button that stops the current phase and every phase after it.
+- The Auto Phase Plan page now has a **Delete all phases** button. It clears the saved phases and their keys only; History and tasks are untouched.
+
+### Changed
+
+- The composer's three-way switch shows **Auto** instead of the clipped "Auto Phase" label, and its active color is now green instead of blue.
+- Auto Phase phases continue to use the global Auto-approve settings from the chat panel; there are no per-phase approval settings.
+
 ## [4.1.31]
 
 ### Added

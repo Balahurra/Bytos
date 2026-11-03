@@ -94,13 +94,16 @@ interface GitCommit {
 
 const PLAN_MODE_COLOR = "var(--vscode-activityWarningBadge-background)"
 const ACT_MODE_COLOR = "var(--vscode-focusBorder)"
+// Auto Phase is an automatic green "run" state, distinct from blue Act.
+const AUTO_MODE_COLOR = "var(--vscode-charts-green, #2ea043)"
 
 type PhaseSelection = "plan" | "act" | "auto"
 
 const PHASE_OPTIONS: ReadonlyArray<{ id: PhaseSelection; label: string }> = [
 	{ id: "plan", label: "Plan" },
 	{ id: "act", label: "Act" },
-	{ id: "auto", label: "Auto Phase" },
+	// Short label so the three-way switch never clips "Auto Phase".
+	{ id: "auto", label: "Auto" },
 ]
 
 const SwitchContainer = styled.div`
@@ -124,7 +127,7 @@ const Slider = styled.div.withConfig({
 	height: 100%;
 	width: 33.3333%;
 	background-color: ${(props) =>
-		props.phase === "plan" ? PLAN_MODE_COLOR : props.phase === "act" ? ACT_MODE_COLOR : "var(--vscode-button-background)"};
+		props.phase === "plan" ? PLAN_MODE_COLOR : props.phase === "act" ? ACT_MODE_COLOR : AUTO_MODE_COLOR};
 	transition: transform 0.2s ease;
 	transform: translateX(${(props) => (props.phase === "act" ? "100%" : props.phase === "auto" ? "200%" : "0%")});
 `
@@ -238,6 +241,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 			cloudModelId,
 			turnState,
 			autoPhaseRunning,
+			autoPhaseProgress,
 		} = useExtensionState()
 		// Cloud sessions are Act-only (like the desktop app and the cloud dashboard).
 		// While a cloud task is shown, or a new task is about to run in the cloud,
@@ -271,12 +275,16 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 
 		const [shownTooltipMode, setShownTooltipMode] = useState<PhaseSelection | null>(null)
 		const [autoPhaseNotice, setAutoPhaseNotice] = useState<string | null>(null)
+		// Selecting Auto Phase only opens a confirmation warning; the runner starts
+		// after the user explicitly allows it.
+		const [autoPhasePending, setAutoPhasePending] = useState(false)
 		// Keep the visible three-way phase selector in sync with the host. While the
 		// Auto Phase runner is executing the saved plan the selector stays on Auto;
 		// afterwards it falls back to the host's Plan/Act mode.
 		useEffect(() => {
 			if (autoPhaseRunning) {
 				setPhaseSelection("auto")
+				setAutoPhasePending(false)
 			} else {
 				setPhaseSelection((current) => (current === "auto" ? mode : current))
 			}
@@ -1116,6 +1124,27 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 			})()
 		}, [cloudActOnly, mode, inputValue, selectedImages, selectedFiles, setInputValue, setSelectedImages, setSelectedFiles])
 
+		const startAutoPhase = useCallback(() => {
+			setAutoPhasePending(false)
+			setPhaseSelection("auto")
+			setAutoPhaseNotice(null)
+			void StateServiceClient.startAutoPhase(EmptyRequest.create({})).catch((error) => {
+				setPhaseSelection(mode)
+				setAutoPhaseNotice(error instanceof Error ? error.message : "Auto Phase could not start.")
+			})
+		}, [mode])
+
+		const cancelAutoPhase = useCallback(() => {
+			void StateServiceClient.cancelAutoPhase(EmptyRequest.create({})).catch((error) => {
+				setAutoPhaseNotice(error instanceof Error ? error.message : "Auto Phase could not be stopped.")
+			})
+		}, [])
+
+		const denyAutoPhase = useCallback(() => {
+			setAutoPhasePending(false)
+			setAutoPhaseNotice(null)
+		}, [])
+
 		const handlePhaseSelect = useCallback(
 			(next: PhaseSelection) => {
 				if (cloudActOnly) {
@@ -1125,25 +1154,17 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 					if (autoPhaseRunning) {
 						return
 					}
-					if (
-						turnState?.phase === "streaming" ||
-						turnState?.phase === "awaiting_approval" ||
-						turnState?.phase === "awaiting_followup"
-					) {
-						setAutoPhaseNotice("Finish or cancel the current task before starting Auto Phase.")
-						return
-					}
-					setPhaseSelection("auto")
+					// Never start automatically: show the warning and wait for
+					// an explicit Allow. This also covers selecting Auto while a
+					// task is still running.
+					setAutoPhasePending(true)
 					setAutoPhaseNotice(null)
-					void StateServiceClient.startAutoPhase(EmptyRequest.create({})).catch((error) => {
-						setPhaseSelection(mode)
-						setAutoPhaseNotice(error instanceof Error ? error.message : "Auto Phase could not start.")
-					})
 					return
 				}
 
+				setAutoPhasePending(false)
 				if (phaseSelection === "auto") {
-					void StateServiceClient.cancelAutoPhase(EmptyRequest.create({})).catch(() => {})
+					cancelAutoPhase()
 				}
 				setPhaseSelection(next)
 				setAutoPhaseNotice(null)
@@ -1152,7 +1173,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 				}
 				onModeToggle()
 			},
-			[autoPhaseRunning, cloudActOnly, mode, onModeToggle, phaseSelection, turnState?.phase],
+			[autoPhaseRunning, cancelAutoPhase, cloudActOnly, mode, onModeToggle, phaseSelection],
 		)
 
 		useShortcut(usePlatform().togglePlanActKeys, onModeToggle, { disableTextInputs: false }) // important that we don't disable the text input here
@@ -1490,6 +1511,33 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 
 		return (
 			<div>
+				{autoPhasePending && (
+					<div
+						aria-label="Auto Phase confirmation"
+						className="mx-3.5 mt-2 rounded-sm border p-2 flex items-center gap-2 text-xs"
+						role="alertdialog"
+						style={{
+							borderColor: "var(--vscode-inputValidation-warningBorder)",
+							backgroundColor:
+								"var(--vscode-inputValidation-warningBackground, var(--vscode-textBlockQuote-background))",
+							color: "var(--vscode-foreground)",
+						}}>
+						<TriangleAlertIcon className="shrink-0" size={15} />
+						<span className="flex-1">
+							Auto Phase will start the saved plan at phase 1 and run every phase automatically as its own Act task.{" "}
+							{turnState?.phase === "streaming" ||
+							turnState?.phase === "awaiting_approval" ||
+							turnState?.phase === "awaiting_followup"
+								? "The task that is currently running will be stopped first. "
+								: ""}
+							Allow?
+						</span>
+						<VSCodeButton onClick={startAutoPhase}>Allow</VSCodeButton>
+						<VSCodeButton appearance="secondary" onClick={denyAutoPhase}>
+							Deny
+						</VSCodeButton>
+					</div>
+				)}
 				<div
 					className="relative flex transition-colors ease-in-out duration-100 px-3.5 py-2.5"
 					onDragEnter={handleDragEnter}
@@ -1762,6 +1810,25 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 							</ModelContainer>
 						</ButtonGroup>
 					</div>
+					{phaseSelection === "auto" && autoPhaseProgress && (
+						<div className="flex items-center gap-2 mr-2 shrink-0">
+							<span
+								className="text-xs font-semibold"
+								data-testid="auto-phase-progress"
+								style={{ color: AUTO_MODE_COLOR }}
+								title={`Auto Phase ${autoPhaseProgress.current} of ${autoPhaseProgress.total}`}>
+								{autoPhaseProgress.current}/{autoPhaseProgress.total}
+							</span>
+							<VSCodeButton
+								appearance="secondary"
+								className="shrink-0"
+								data-testid="auto-phase-stop-all"
+								onClick={cancelAutoPhase}
+								title="Stop all phases">
+								Stop all
+							</VSCodeButton>
+						</div>
+					)}
 					{!cloudActOnly && (
 						<Tooltip>
 							<TooltipContent

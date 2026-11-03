@@ -14,6 +14,7 @@ import { isVscodeMcpToolName, toVscodeMcpToolName } from "./mcp-tool-name"
 export function buildToolPolicies(
 	_settings: AutoApprovalSettings,
 	mcpHub?: McpHub,
+	mcpServerNames?: readonly string[],
 ): Record<string, { enabled?: boolean; autoApprove?: boolean }> {
 	const policies: Record<string, { enabled?: boolean; autoApprove?: boolean }> = {}
 
@@ -29,7 +30,11 @@ export function buildToolPolicies(
 	set(["fetch_web_content", "web_fetch", "web_search"])
 
 	if (mcpHub) {
+		const allowed = mcpServerNames === undefined ? undefined : new Set(mcpServerNames)
 		for (const server of mcpHub.getServers()) {
+			if (allowed !== undefined && !allowed.has(server.name)) {
+				continue
+			}
 			for (const tool of server.tools ?? []) {
 				const sdkName = toVscodeMcpToolName({ serverName: server.name, toolName: tool.name })
 				policies[sdkName] = { autoApprove: false }

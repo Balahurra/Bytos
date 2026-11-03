@@ -1,12 +1,16 @@
+import { buildChatAttachments } from "@shared/attachments"
 import { EmptyRequest } from "@shared/proto/bytos/common"
+import { SelectFilesRequest } from "@shared/proto/bytos/file"
 import { AutoPhasePlan, AutoPhasePlanPhase } from "@shared/proto/bytos/state"
 import { VSCodeButton, VSCodeDropdown, VSCodeOption } from "@vscode/webview-ui-toolkit/react"
 import { Check, ChevronDown, ChevronRight, Copy, Eraser, Plus, Trash2 } from "lucide-react"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import type { ProviderId } from "@/context/ExtensionStateContext"
+import { getDataUrlBase64Length, normalizeImagesForAttachment } from "@/components/chat/attachment-image-normalization"
+import Thumbnails from "@/components/common/Thumbnails"
+import { type ProviderId, useExtensionState } from "@/context/ExtensionStateContext"
 import { useProviderListings } from "@/hooks/useProviderListings"
 import { useProviderModels } from "@/hooks/useProviderModels"
-import { StateServiceClient } from "@/services/grpc-client"
+import { FileServiceClient, StateServiceClient } from "@/services/grpc-client"
 import { ApiKeyField } from "../common/ApiKeyField"
 import { ModelInfoView } from "../common/ModelInfoView"
 import { CLINE_PASS_DEFAULT_MODEL_ID, CLINE_PASS_MODELS, clinePassFallbackModelInfo } from "../providers/clinePassModels"
@@ -14,6 +18,7 @@ import Section from "../Section"
 import { getSavedApiKeyMask, sanitizeMaskedApiKeyInput } from "../utils/apiKeyMasking"
 
 const MAX_PHASES = 10
+const MAX_PHASE_ATTACHMENTS = 20
 const CLINE_PASS_PROVIDER_ID = "bytos-pass"
 
 interface AutoPhasePlanSectionProps {
@@ -29,6 +34,10 @@ interface PhaseDraft {
 	apiKeyTouched: boolean
 	apiKeyLength: number
 	expanded: boolean
+	images: string[]
+	files: string[]
+	mcpServers: string[]
+	mcpServersExplicit: boolean
 }
 
 interface StatusMessage {
@@ -37,6 +46,12 @@ interface StatusMessage {
 }
 
 function createDraft(phase: AutoPhasePlanPhase, expanded = false): PhaseDraft {
+	const images = (phase.attachments ?? [])
+		.filter((attachment) => attachment.kind === "image" && attachment.data)
+		.map((attachment) => attachment.data as string)
+	const files = (phase.attachments ?? [])
+		.filter((attachment) => attachment.kind !== "image" && attachment.path)
+		.map((attachment) => attachment.path as string)
 	return {
 		id: phase.id || `auto-phase-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
 		prompt: phase.prompt ?? "",
@@ -46,6 +61,10 @@ function createDraft(phase: AutoPhasePlanPhase, expanded = false): PhaseDraft {
 		apiKeyTouched: false,
 		apiKeyLength: phase.apiKeyLength ?? 0,
 		expanded,
+		images,
+		files,
+		mcpServers: phase.mcpServers ?? [],
+		mcpServersExplicit: phase.mcpServersExplicit === true,
 	}
 }
 
@@ -63,6 +82,9 @@ function toPlan(phases: PhaseDraft[]): AutoPhasePlan {
 				modelId: phase.modelId,
 				apiKey: phase.apiKeyTouched ? phase.apiKey : undefined,
 				apiKeyLength: phase.apiKeyLength,
+				mcpServers: phase.mcpServers,
+				mcpServersExplicit: phase.mcpServersExplicit,
+				attachments: buildChatAttachments(phase.images, phase.files),
 			}),
 		),
 	})
@@ -121,12 +143,100 @@ const PhaseModelSettings = ({ phase, onChange }: { phase: PhaseDraft; onChange: 
 	)
 }
 
+const PhaseMcpSelector = ({
+	phase,
+	servers,
+	onChange,
+}: {
+	phase: PhaseDraft
+	servers: ReadonlyArray<{ name: string; disabled?: boolean }>
+	onChange: (patch: Partial<PhaseDraft>) => void
+}) => {
+	const [open, setOpen] = useState(false)
+	const selected = phase.mcpServersExplicit
+		? phase.mcpServers
+		: servers.filter((server) => !server.disabled).map((server) => server.name)
+
+	const toggle = (name: string) => {
+		const next = selected.includes(name) ? selected.filter((entry) => entry !== name) : [...selected, name]
+		onChange({ mcpServers: next, mcpServersExplicit: true })
+	}
+
+	return (
+		<div className="relative inline-flex">
+			<VSCodeButton
+				appearance="icon"
+				aria-label="Select MCP servers for this phase"
+				onClick={() => setOpen(!open)}
+				title="Select MCP servers for this phase">
+				<i className="codicon codicon-server" style={{ fontSize: "12.5px" }} />
+			</VSCodeButton>
+			{open && (
+				<div
+					aria-label="Phase MCP servers"
+					className="absolute right-0 top-6 z-30 w-64 rounded-sm border border-[var(--vscode-panel-border)] bg-[var(--vscode-editor-background)] p-2 text-xs shadow-lg"
+					role="dialog">
+					<div className="flex items-center justify-between mb-2">
+						<span className="font-medium">MCP servers for this phase</span>
+						<button
+							className="text-link bg-transparent border-0 cursor-pointer"
+							onClick={() => setOpen(false)}
+							type="button">
+							Close
+						</button>
+					</div>
+					{servers.length === 0 ? (
+						<div className="text-description">No MCP servers configured.</div>
+					) : (
+						<div className="flex flex-col gap-1 max-h-56 overflow-y-auto">
+							{servers.map((server) => (
+								<label className="flex items-center gap-2" key={server.name}>
+									<input
+										checked={selected.includes(server.name)}
+										disabled={server.disabled}
+										onChange={() => toggle(server.name)}
+										type="checkbox"
+									/>
+									<span className={server.disabled ? "text-description" : ""}>
+										{server.name}
+										{server.disabled ? " (disabled)" : ""}
+									</span>
+								</label>
+							))}
+						</div>
+					)}
+					<div className="flex justify-end gap-3 mt-2">
+						<button
+							className="text-link bg-transparent border-0 cursor-pointer"
+							onClick={() => onChange({ mcpServers: [], mcpServersExplicit: true })}
+							type="button">
+							Clear
+						</button>
+						<button
+							className="text-link bg-transparent border-0 cursor-pointer"
+							onClick={() =>
+								onChange({
+									mcpServers: servers.filter((server) => !server.disabled).map((server) => server.name),
+									mcpServersExplicit: true,
+								})
+							}
+							type="button">
+							All enabled
+						</button>
+					</div>
+				</div>
+			)}
+		</div>
+	)
+}
+
 const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps) => {
 	const [phaseList, setPhaseList] = useState<PhaseDraft[]>([])
 	const [loading, setLoading] = useState(true)
 	const [saving, setSaving] = useState(false)
 	const [status, setStatus] = useState<StatusMessage | null>(null)
 	const { providers } = useProviderListings()
+	const { mcpServers } = useExtensionState()
 
 	const providerOptions = useMemo(() => {
 		const options = (providers ?? [])
@@ -177,6 +287,44 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 		setPhaseList((current) => current.map((phase) => (phase.id === id ? { ...phase, ...patch } : phase)))
 	}, [])
 
+	const addPhaseAttachments = useCallback(
+		async (phaseId: string) => {
+			const phase = phaseList.find((entry) => entry.id === phaseId)
+			if (!phase) {
+				return
+			}
+			const available = MAX_PHASE_ATTACHMENTS - (phase.images.length + phase.files.length)
+			if (available <= 0) {
+				setStatus({ kind: "info", text: `This phase already has ${MAX_PHASE_ATTACHMENTS} attachments.` })
+				return
+			}
+			try {
+				const response = await FileServiceClient.selectFilesWithOptions(
+					SelectFilesRequest.create({ supportsImages: true, imagesOnly: false }),
+				)
+				const existingImageBytes = phase.images.reduce((sum, image) => sum + getDataUrlBase64Length(image), 0)
+				const { images } = await normalizeImagesForAttachment(response.values1.slice(0, available), existingImageBytes)
+				const remaining = available - images.length
+				const files = response.values2.slice(0, Math.max(0, remaining))
+				updatePhase(phaseId, {
+					images: [...phase.images, ...images.map((image) => image.dataUrl)].slice(0, MAX_PHASE_ATTACHMENTS),
+					files: [...phase.files, ...files].slice(0, MAX_PHASE_ATTACHMENTS),
+				})
+				setStatus(
+					images.length + files.length > 0
+						? { kind: "info", text: "Attachments added to this phase. Press Done to save the plan." }
+						: null,
+				)
+			} catch (error) {
+				setStatus({
+					kind: "error",
+					text: error instanceof Error ? error.message : "Could not add phase attachments.",
+				})
+			}
+		},
+		[phaseList, updatePhase],
+	)
+
 	const addPhase = useCallback(() => {
 		setPhaseList((current) => {
 			if (current.length >= MAX_PHASES) {
@@ -193,6 +341,10 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 					apiKeyTouched: false,
 					apiKeyLength: 0,
 					expanded: true,
+					images: [],
+					files: [],
+					mcpServers: [],
+					mcpServersExplicit: true,
 				},
 			]
 		})
@@ -300,6 +452,18 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 										<div className="ml-auto flex items-center gap-1">
 											<VSCodeButton
 												appearance="icon"
+												aria-label="Add attachment"
+												onClick={() => void addPhaseAttachments(phase.id)}
+												title="Add attachment">
+												<Plus size={14} />
+											</VSCodeButton>
+											<PhaseMcpSelector
+												onChange={(patch) => updatePhase(phase.id, patch)}
+												phase={phase}
+												servers={mcpServers}
+											/>
+											<VSCodeButton
+												appearance="icon"
 												aria-label="Copy prompt"
 												onClick={() => copyPrompt(phase.prompt)}
 												title="Copy prompt">
@@ -345,6 +509,24 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 													value={phase.prompt}
 												/>
 											</div>
+
+											{(phase.images.length > 0 || phase.files.length > 0) && (
+												<Thumbnails
+													files={phase.files}
+													images={phase.images}
+													setFiles={(updater) =>
+														updatePhase(phase.id, {
+															files: typeof updater === "function" ? updater(phase.files) : updater,
+														})
+													}
+													setImages={(updater) =>
+														updatePhase(phase.id, {
+															images:
+																typeof updater === "function" ? updater(phase.images) : updater,
+														})
+													}
+												/>
+											)}
 
 											<div className="flex flex-col gap-2">
 												<label className="font-medium" htmlFor={`auto-phase-provider-${phase.id}`}>

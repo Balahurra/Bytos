@@ -59,6 +59,8 @@ export class McpHubToolProvider {
 
 export interface VscodeExtraToolsOptions {
 	cwd?: string
+	/** Per-session MCP allowlist. undefined = all servers, [] = no MCP tools. */
+	mcpServerNames?: readonly string[]
 	/**
 	 * Lazy factory for the VscodeTerminalManager.
 	 * When provided, the custom `run_commands` tool replaces the SDK's
@@ -73,8 +75,12 @@ export interface VscodeExtraToolsOptions {
 
 export async function createVscodeExtraTools(mcpHub: McpHub, options?: VscodeExtraToolsOptions): Promise<AgentTool[]> {
 	const provider = new McpHubToolProvider(mcpHub)
+	const allowedServerNames = options?.mcpServerNames === undefined ? undefined : new Set(options.mcpServerNames)
+	const servers = mcpHub
+		.getServers()
+		.filter((server) => allowedServerNames === undefined || allowedServerNames.has(server.name))
 	const mcpTools = await Promise.all(
-		mcpHub.getServers().map(async (server) => {
+		servers.map(async (server) => {
 			try {
 				return await createMcpTools({
 					serverName: server.name,

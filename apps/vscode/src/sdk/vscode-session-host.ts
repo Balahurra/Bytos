@@ -156,6 +156,7 @@ export class VscodeSessionHost implements SdkSessionHost {
 			}
 			const extraTools = await createVscodeExtraTools(options.mcpHub, {
 				cwd: inputWithRemoteConfig.config.cwd,
+				mcpServerNames: inputWithRemoteConfig.config.mcpServerNames,
 				getTerminalManager: options.getTerminalManager,
 				vscodeTerminalExecutionMode: getEffectiveTerminalExecutionMode(requestedTerminalExecutionMode),
 				foregroundCommands: options.foregroundCommands,

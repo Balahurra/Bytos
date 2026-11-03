@@ -121,4 +121,42 @@ describe("createVscodeExtraTools", () => {
 		expect(tools[0]?.name.length).toBeLessThanOrEqual(64)
 		expect(tools[0]?.name).toContain("__")
 	})
+
+	it("limits MCP tools to the per-phase allowlist", async () => {
+		const mcpHub = {
+			getServers: () => [
+				{
+					name: "allowed",
+					config: JSON.stringify({ type: "stdio", command: "allowed" }),
+					status: "connected",
+					tools: [{ name: "run", inputSchema: { type: "object", properties: {} } }],
+				},
+				{
+					name: "blocked",
+					config: JSON.stringify({ type: "stdio", command: "blocked" }),
+					status: "connected",
+					tools: [{ name: "run", inputSchema: { type: "object", properties: {} } }],
+				},
+			],
+		}
+
+		const tools = await createVscodeExtraTools(mcpHub as never, { mcpServerNames: ["allowed"] })
+
+		expect(tools.map((tool) => tool.name)).toEqual(["allowed__run"])
+	})
+
+	it("returns no MCP tools for an explicit empty allowlist", async () => {
+		const mcpHub = {
+			getServers: () => [
+				{
+					name: "server",
+					config: JSON.stringify({ type: "stdio", command: "server" }),
+					status: "connected",
+					tools: [{ name: "run", inputSchema: { type: "object", properties: {} } }],
+				},
+			],
+		}
+
+		await expect(createVscodeExtraTools(mcpHub as never, { mcpServerNames: [] })).resolves.toEqual([])
+	})
 })

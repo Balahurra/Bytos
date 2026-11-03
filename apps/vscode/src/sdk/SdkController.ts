@@ -1551,6 +1551,7 @@ export class Controller {
 		historyItem?: HistoryItem,
 		taskSettings?: Partial<Settings>,
 		cloudTarget?: CloudTarget,
+		mcpServerNames?: string[],
 	): Promise<string | undefined> {
 		if (cloudTarget) {
 			// Register the cloud start before the first await so a Cancel that
@@ -1572,7 +1573,9 @@ export class Controller {
 		this.turnStateTracker.set("streaming")
 		// Clear the previous turn's completion signal so this turn's phase is computed fresh.
 		this.messageTranslatorState.clearTurnOutcome()
-		return this.taskStart.initTask(prompt, images, files, historyItem, taskSettings)
+		return mcpServerNames === undefined
+			? this.taskStart.initTask(prompt, images, files, historyItem, taskSettings)
+			: this.taskStart.initTask(prompt, images, files, historyItem, taskSettings, mcpServerNames)
 	}
 
 	/**
@@ -1680,7 +1683,26 @@ export class Controller {
 				this.stateManager.setApiConfiguration(phaseConfig)
 				this.stateManager.setGlobalState("mode", "act")
 
-				const taskId = await this.initTask(phase.prompt, [], [], undefined)
+				const phaseImages = phase.attachments
+					.filter((attachment) => attachment.kind === "image" && attachment.data)
+					.map((attachment) => attachment.data as string)
+				const phaseFiles = phase.attachments
+					.filter((attachment) => attachment.kind !== "image" && attachment.path)
+					.map((attachment) => attachment.path as string)
+				// Legacy plans (before per-phase MCP selection) keep the old
+				// "all servers" behavior; explicit plans use their own allowlist,
+				// including an empty list meaning no MCP.
+				const phaseMcpServers = phase.mcpServersExplicit ? phase.mcpServers : undefined
+
+				const taskId = await this.initTask(
+					phase.prompt,
+					phaseImages,
+					phaseFiles,
+					undefined,
+					undefined,
+					undefined,
+					phaseMcpServers,
+				)
 				if (!taskId) {
 					throw new Error(`Phase ${index + 1} could not start a task.`)
 				}

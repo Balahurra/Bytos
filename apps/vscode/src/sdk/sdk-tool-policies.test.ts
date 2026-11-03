@@ -70,4 +70,18 @@ describe("isToolAutoApproved", () => {
 
 		expect(policies[longName]).toEqual({ autoApprove: false })
 	})
+
+	it("only registers policies for the phase allowlist", () => {
+		const mcpHub = {
+			getServers: () => [
+				{ name: "allowed", tools: [{ name: "run" }] },
+				{ name: "blocked", tools: [{ name: "run" }] },
+			],
+		}
+
+		const policies = buildToolPolicies(DEFAULT_AUTO_APPROVAL_SETTINGS, mcpHub as never, ["allowed"])
+
+		expect(policies["allowed__run"]).toEqual({ autoApprove: false })
+		expect(policies["blocked__run"]).toBeUndefined()
+	})
 })

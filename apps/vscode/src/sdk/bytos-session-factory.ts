@@ -72,6 +72,8 @@ export interface SessionConfigInput {
 	historyItem?: HistoryItem
 	/** Task-specific settings overrides */
 	taskSettings?: Partial<Settings>
+	/** Per-session MCP server allowlist. undefined = all servers, [] = none. */
+	mcpServerNames?: string[]
 	/** Working directory */
 	cwd: string
 	/** Workspace root */
@@ -90,7 +92,7 @@ export interface ActiveSession {
 	/** The session ID */
 	sessionId: string
 	/** The config used to start the active session. */
-	startConfig?: Pick<CoreSessionConfig, "providerId" | "modelId">
+	startConfig?: Pick<CoreSessionConfig, "providerId" | "modelId" | "mcpServerNames">
 	/**
 	 * The mode the session's tools were built for. It can differ from the
 	 * persisted mode setting while a start or rebuild is in flight, so mode
@@ -1232,6 +1234,8 @@ export async function buildSessionConfig(input: SessionConfigInput): Promise<Cor
 		// Use the extension's extractors for PDF/DOCX/XLSX and native PDF media
 		// instead of the SDK's raw UTF-8 file reader.
 		userFileContentLoader: loadUserFileContentForChat,
+		// Per-phase Auto Phase allowlist: undefined = all, [] = no MCP tools.
+		...(input.mcpServerNames !== undefined ? { mcpServerNames: input.mcpServerNames } : {}),
 	}
 
 	return config

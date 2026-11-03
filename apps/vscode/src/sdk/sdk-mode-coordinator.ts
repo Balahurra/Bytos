@@ -250,6 +250,7 @@ export class SdkModeCoordinator {
 			const config = await this.options.sessionConfigBuilder.build({
 				cwd,
 				mode: newMode,
+				mcpServerNames: activeSession.startConfig?.mcpServerNames,
 			})
 			Logger.log(
 				`[SdkController] Mode rebuild config: mode=${newMode}, provider=${config.providerId}, model=${config.modelId}, hasApiKey=${!!config.apiKey}`,

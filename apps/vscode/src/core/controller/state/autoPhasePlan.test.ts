@@ -1,4 +1,4 @@
-import { AutoPhasePlan, AutoPhasePlanPhase } from "@shared/proto/bytos/state"
+import { AutoPhaseAttachment, AutoPhasePlan, AutoPhasePlanPhase } from "@shared/proto/bytos/state"
 import { describe, expect, it } from "vitest"
 import { MAX_AUTO_PHASES, readAutoPhasePlan, readAutoPhasePlanWithKeys, saveAutoPhasePlan } from "@/core/auto-phase/plan-store"
 import type { StateManager } from "@/core/storage/StateManager"
@@ -105,5 +105,51 @@ describe("auto phase plan store", () => {
 
 		expect(saved.phases).toHaveLength(MAX_AUTO_PHASES)
 		expect(saved.phases[MAX_AUTO_PHASES - 1]?.id).toBe(`p${MAX_AUTO_PHASES - 1}`)
+	})
+
+	it("keeps MCP allowlists and attachments per phase", () => {
+		const { stateManager } = createFakeStateManager()
+
+		saveAutoPhasePlan(
+			stateManager,
+			AutoPhasePlan.create({
+				phases: [
+					phase("a", {
+						mcpServers: ["github"],
+						mcpServersExplicit: true,
+						attachments: [
+							AutoPhaseAttachment.create({
+								kind: "image",
+								name: "shot.png",
+								mimeType: "image/png",
+								data: "data:image/png;base64,AAAA",
+								size: 4,
+							}),
+							AutoPhaseAttachment.create({
+								kind: "text",
+								name: "notes.md",
+								mimeType: "text/markdown",
+								path: "/tmp/notes.md",
+							}),
+						],
+					}),
+					phase("b", { mcpServers: [], mcpServersExplicit: true }),
+				],
+			}),
+		)
+
+		const plan = readAutoPhasePlan(stateManager)
+		expect(plan.phases[0]?.mcpServers).toEqual(["github"])
+		expect(plan.phases[0]?.mcpServersExplicit).toBe(true)
+		expect(plan.phases[0]?.attachments.map((attachment) => [attachment.kind, attachment.path])).toEqual([
+			["image", undefined],
+			["text", "/tmp/notes.md"],
+		])
+		expect(plan.phases[1]?.mcpServers).toEqual([])
+		expect(plan.phases[1]?.mcpServersExplicit).toBe(true)
+
+		const withKeys = readAutoPhasePlanWithKeys(stateManager)
+		expect(withKeys[0]?.attachments).toHaveLength(2)
+		expect(withKeys[1]?.attachments).toHaveLength(0)
 	})
 })

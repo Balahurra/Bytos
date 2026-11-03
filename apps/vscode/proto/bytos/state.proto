@@ -493,6 +493,15 @@ message TestConnectionResult {
 }
 
 // Auto Phase Plan
+message AutoPhaseAttachment {
+  string kind = 1;
+  string name = 2;
+  optional string mime_type = 3;
+  optional string path = 4;
+  optional string data = 5;
+  int64 size = 6;
+}
+
 message AutoPhasePlanPhase {
   string id = 1;
   string prompt = 2;
@@ -502,6 +511,11 @@ message AutoPhasePlanPhase {
   optional string api_key = 5;
   // Read-only: length of the stored key so the UI can show a mask.
   int32 api_key_length = 6;
+  // Per-phase MCP server allowlist. An explicit empty list means "no MCP".
+  repeated string mcp_servers = 7;
+  // False for plans saved before per-phase MCP selection existed.
+  bool mcp_servers_explicit = 8;
+  repeated AutoPhaseAttachment attachments = 9;
 }
 
 message AutoPhasePlan {

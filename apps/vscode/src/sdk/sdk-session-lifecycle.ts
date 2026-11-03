@@ -228,7 +228,9 @@ export class SdkSessionLifecycle {
 
 		const autoApprovalSettings = StateManager.get().getGlobalSettingsKey("autoApprovalSettings")
 		const toolPolicies =
-			!hostOverride && autoApprovalSettings ? buildToolPolicies(autoApprovalSettings, this.options.mcpHub) : undefined
+			!hostOverride && autoApprovalSettings
+				? buildToolPolicies(autoApprovalSettings, this.options.mcpHub, startInput.config?.mcpServerNames)
+				: undefined
 
 		const sdkHost = hostOverride ?? (await this.getOrCreateSharedHost())
 		if (!shouldContinue()) {
@@ -249,6 +251,7 @@ export class SdkSessionLifecycle {
 				? {
 						providerId: startInput.config.providerId,
 						modelId: startInput.config.modelId,
+						mcpServerNames: startInput.config.mcpServerNames,
 					}
 				: undefined,
 			mode: toSessionMode(startInput.config?.mode),
@@ -358,6 +361,7 @@ export class SdkSessionLifecycle {
 				? {
 						providerId: input.start.config.providerId,
 						modelId: input.start.config.modelId,
+						mcpServerNames: input.start.config.mcpServerNames,
 					}
 				: activeSession.startConfig,
 			mode: toSessionMode(input.start?.config?.mode) ?? activeSession.mode,

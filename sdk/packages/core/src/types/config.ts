@@ -272,6 +272,11 @@ export interface CoreSessionConfig
 	extensionContext?: ExtensionContext;
 	extraTools?: AgentTool[];
 	/**
+	 * Per-session MCP server allowlist. undefined means every enabled server;
+	 * an explicit empty array means the session gets no MCP tools.
+	 */
+	mcpServerNames?: string[];
+	/**
 	 * Host-provided loader for attached files. Returning `{ type: "media" }`
 	 * lets the host send a file natively (e.g. a PDF) instead of text.
 	 */

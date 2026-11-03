@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.1.42]
+
+### Added
+
+- **Per-phase attachments in Auto Phase Plan.** Every phase now has the composer’s attach button and its own attachment list; images and files are sent only with that phase’s task.
+- **Per-phase MCP server selection.** Every phase has the same MCP server icon as the composer and its own allowlist. A phase only sees the servers it selected; an explicit empty selection means no MCP tools for that phase.
+- The Auto Phase runner passes the phase’s attachments and MCP allowlist into `initTask`, and session rebuilds preserve the allowlist.
+
+### Compatibility
+
+- Plans saved before this change keep the old behavior until their MCP selection is edited: legacy phases use all currently enabled MCP servers. New phases start with an explicit empty allowlist.
+
 ## [4.1.41]
 
 ### Fixed

@@ -62,7 +62,11 @@ export class SdkMcpCoordinator {
 			const cwd = await this.options.getWorkspaceRoot()
 			const modeValue = this.options.stateManager.getGlobalSettingsKey("mode")
 			const mode: Mode = modeValue === "plan" || modeValue === "act" ? modeValue : "act"
-			const config = await this.options.sessionConfigBuilder.build({ cwd, mode })
+			const config = await this.options.sessionConfigBuilder.build({
+				cwd,
+				mode,
+				mcpServerNames: activeSession.startConfig?.mcpServerNames,
+			})
 			config.sessionId = oldSessionId
 
 			const initialMessages = await this.options.loadInitialMessages(oldManager, oldSessionId)

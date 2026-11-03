@@ -67,6 +67,7 @@ export class SdkTaskStartCoordinator {
 		files?: string[],
 		historyItem?: HistoryItem,
 		taskSettings?: Partial<Settings>,
+		mcpServerNames?: string[],
 	): Promise<string | undefined> {
 		Logger.log(`[SdkController] initTask called: "${prompt?.substring(0, 50)}"`)
 		let taskSessionId: string | undefined
@@ -87,6 +88,7 @@ export class SdkTaskStartCoordinator {
 					files,
 					historyItem,
 					taskSettings,
+					mcpServerNames,
 					cwd,
 					mode,
 				})

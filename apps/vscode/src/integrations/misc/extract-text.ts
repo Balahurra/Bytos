@@ -75,13 +75,23 @@ async function callTextExtractionFunctions(filePath: string): Promise<string> {
 }
 
 async function extractTextFromPDF(filePath: string): Promise<string> {
+	const fileStat = await fs.stat(filePath)
+	if (fileStat.size > ATTACHMENT_LIMITS.maxFileBytes) {
+		throw new Error(`PDF is too large to read into context (${ATTACHMENT_LIMITS.maxFileBytes} byte limit).`)
+	}
 	const [{ default: pdf }, dataBuffer] = await Promise.all([
 		// @ts-expect-error-next-line
 		import("pdf-parse/lib/pdf-parse"),
 		fs.readFile(filePath),
 	])
 	const data = await pdf(dataBuffer)
-	return data.text
+	const text = data.text?.trim() ?? ""
+	if (!text) {
+		throw new Error(
+			"No extractable text found in this PDF. It may be a scanned/image-only PDF; OCR is not enabled in this build.",
+		)
+	}
+	return text
 }
 
 async function extractTextFromDOCX(filePath: string): Promise<string> {

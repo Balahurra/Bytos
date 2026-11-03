@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.1.35]
+
+### Fixed
+
+- PDF, DOCX, XLSX and notebook attachments now use the extension's text extractors instead of the SDK's raw UTF-8 reader. Previously binary office/PDF files could fail with “Cannot read binary file into context.”
+- PDFs larger than the context limit and image-only PDFs now report a clear error instead of silently attaching empty content.
+
+### Added
+
+- **Native PDF input** for models whose catalog advertises `pdf` support. The PDF is sent as document media instead of flattened text; models without PDF support keep the text-extraction fallback.
+- The host-provided user-file loader can now return native media blocks, which is the foundation for video/audio attachments in later phases.
+
 ## [4.1.34]
 
 ### Added

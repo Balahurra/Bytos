@@ -6,12 +6,13 @@
  */
 
 import type * as LlmsProviders from "@bytos/llms";
+import type { UserFileContent } from "@bytos/shared";
 
 export async function buildInitialUserContent(
 	userMessage: string,
 	userImages?: string[],
 	userFiles?: string[],
-	userFileContentLoader?: (path: string) => Promise<string>,
+	userFileContentLoader?: (path: string) => Promise<UserFileContent>,
 ): Promise<string | LlmsProviders.ContentBlock[]> {
 	const imageBlocks = buildImageBlocks(userImages);
 	const fileTextBlocks = await buildUserFileContentBlock(
@@ -117,8 +118,8 @@ function parseDataUrlImage(
 
 async function buildUserFileContentBlock(
 	userFiles?: string[],
-	userFileContentLoader?: (path: string) => Promise<string>,
-): Promise<LlmsProviders.FileContent[] | undefined> {
+	userFileContentLoader?: (path: string) => Promise<UserFileContent>,
+): Promise<LlmsProviders.ContentBlock[] | undefined> {
 	if (!userFiles || userFiles.length === 0) {
 		return undefined;
 	}
@@ -131,29 +132,30 @@ async function buildUserFileContentBlock(
 			);
 		});
 
-	const contents = await Promise.all(
-		userFiles.map(async (filePath) => {
-			const normalizedPath = filePath.replace(/\\/g, "/");
-			try {
-				const content = await loader(filePath);
-				return {
+	const contentBlocks: LlmsProviders.ContentBlock[] = [];
+
+	for (const filePath of userFiles) {
+		const normalizedPath = filePath.replace(/\\/g, "/");
+		try {
+			const content = await loader(filePath);
+			if (typeof content === "string") {
+				contentBlocks.push({
 					type: "file",
 					path: normalizedPath,
 					content,
-				} satisfies LlmsProviders.FileContent;
-			} catch (error) {
-				const message = error instanceof Error ? error.message : String(error);
-				return {
-					type: "file",
-					path: normalizedPath,
-					content: `Error fetching content: ${message}`,
-				} satisfies LlmsProviders.FileContent;
+				});
+			} else {
+				contentBlocks.push(content);
 			}
-		}),
-	);
-
-	if (contents.length === 0) {
-		return undefined;
+		} catch (error) {
+			const message = error instanceof Error ? error.message : String(error);
+			contentBlocks.push({
+				type: "file",
+				path: normalizedPath,
+				content: `Error fetching content: ${message}`,
+			});
+		}
 	}
-	return contents;
+
+	return contentBlocks.length > 0 ? contentBlocks : undefined;
 }

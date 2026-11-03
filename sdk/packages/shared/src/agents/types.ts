@@ -36,6 +36,9 @@ import {
 	ReasoningEffortSchema,
 } from "../llms/reasoning-options";
 
+/** A file either flattens to text or is sent as native media. */
+export type UserFileContent = string | { type: "media"; media: GeneratedMedia };
+
 export {
 	REASONING_LEVELS,
 	type ReasoningEffort,
@@ -772,8 +775,12 @@ export interface AgentConfig {
 	/**
 	 * Optional runtime file-content loader used when user files are attached.
 	 * When omitted, attached files will be represented as loader errors.
+	 *
+	 * Returning a `{ type: "media" }` part lets the host send a file natively
+	 * (for example a PDF to a model that accepts document input) instead of
+	 * flattening it to text.
 	 */
-	userFileContentLoader?: (path: string) => Promise<string>;
+	userFileContentLoader?: (path: string) => Promise<UserFileContent>;
 	/**
 	 * Optional metadata merged into every tool execution context.
 	 * Hosts can use this to thread runtime-specific identifiers such as session IDs.

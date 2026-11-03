@@ -14,6 +14,7 @@ import type {
 	SessionExecutionConfig,
 	SessionPromptConfig,
 	SessionWorkspaceConfig,
+	UserFileContent,
 } from "@bytos/shared";
 import type { ToolRoutingRule } from "../extensions/tools/model-tool-routing";
 import type { TeamEvent } from "../extensions/tools/team";
@@ -270,6 +271,11 @@ export interface CoreSessionConfig
 	telemetry?: ITelemetryService;
 	extensionContext?: ExtensionContext;
 	extraTools?: AgentTool[];
+	/**
+	 * Host-provided loader for attached files. Returning `{ type: "media" }`
+	 * lets the host send a file natively (e.g. a PDF) instead of text.
+	 */
+	userFileContentLoader?: (path: string) => Promise<UserFileContent>;
 	pluginPaths?: string[];
 	/**
 	 * Additional Agent Plugins v1 package roots. Paths are resolved by the

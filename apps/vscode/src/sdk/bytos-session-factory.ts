@@ -54,6 +54,7 @@ import { createProviderConfigStore, resolveRuntimeModelSelection } from "./model
 import { getProviderSettingsManager } from "./provider-migration"
 import { buildSapProviderConfig, type SapProviderConfig } from "./sap-config"
 import type { SdkSessionHost } from "./session-host"
+import { loadUserFileContentForChat } from "./user-file-content-loader"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -1228,6 +1229,9 @@ export async function buildSessionConfig(input: SessionConfigInput): Promise<Cor
 			logger: sdkLogger,
 		},
 		hooks: buildAgentHooks(StateManager.get()),
+		// Use the extension's extractors for PDF/DOCX/XLSX and native PDF media
+		// instead of the SDK's raw UTF-8 file reader.
+		userFileContentLoader: loadUserFileContentForChat,
 	}
 
 	return config

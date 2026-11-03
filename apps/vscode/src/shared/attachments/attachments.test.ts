@@ -24,14 +24,14 @@ describe("attachment limits", () => {
 })
 
 describe("attachment feature flags", () => {
-	it("defaults every rollout flag to off", () => {
-		for (const value of Object.values(ATTACHMENT_FEATURE_FLAGS)) {
-			expect(value).toBe(false)
-		}
+	it("keeps unshipped rollout flags off", () => {
+		expect(ATTACHMENT_FEATURE_FLAGS.videoAudio).toBe(false)
+		expect(ATTACHMENT_FEATURE_FLAGS.model3d).toBe(false)
+		expect(ATTACHMENT_FEATURE_FLAGS.binary3dConverters).toBe(false)
 	})
 
 	it("reports flags through the helper", () => {
-		expect(isAttachmentFeatureEnabled("nativePdf")).toBe(false)
+		expect(isAttachmentFeatureEnabled("nativePdf")).toBe(true)
 		expect(isAttachmentFeatureEnabled("videoAudio")).toBe(false)
 		expect(isAttachmentFeatureEnabled("model3d")).toBe(false)
 	})

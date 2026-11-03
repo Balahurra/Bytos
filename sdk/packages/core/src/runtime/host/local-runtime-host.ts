@@ -908,7 +908,8 @@ export class LocalRuntimeHost implements RuntimeHost {
 			extensions,
 			hookErrorMode: configWithProvider.hookErrorMode,
 			initialMessages: bootstrap.effectiveInput.initialMessages,
-			userFileContentLoader: loadUserFileContent,
+			userFileContentLoader:
+				configWithProvider.userFileContentLoader ?? loadUserFileContent,
 			toolPolicies: bootstrap.toolPolicies,
 			requestToolApproval: bootstrap.requestToolApproval
 				? async (request) => {

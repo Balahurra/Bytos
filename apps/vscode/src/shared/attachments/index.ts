@@ -33,8 +33,8 @@ export type AttachmentFeature = "imageNormalization" | "nativePdf" | "videoAudio
  * enables its feature.
  */
 export const ATTACHMENT_FEATURE_FLAGS: Record<AttachmentFeature, boolean> = {
-	imageNormalization: false,
-	nativePdf: false,
+	imageNormalization: true,
+	nativePdf: true,
 	videoAudio: false,
 	model3d: false,
 	binary3dConverters: false,

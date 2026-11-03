@@ -35,10 +35,11 @@ describe("resolveRequestAttachments", () => {
 		expect(resolved.files).toEqual(["/tmp/notes.md", "/tmp/report.pdf"])
 	})
 
-	it("ignores reserved media kinds until their transport phase lands", () => {
+	it("keeps video/audio paths for the media loader and ignores unsupported 3D kinds", () => {
 		const resolved = resolveRequestAttachments(
 			[
 				attachment({ kind: "video", name: "clip.mp4", path: "/tmp/clip.mp4" }),
+				attachment({ kind: "audio", name: "voice.mp3", path: "/tmp/voice.mp3" }),
 				attachment({ kind: "model3d", name: "scene.glb", path: "/tmp/scene.glb" }),
 				attachment({ kind: "text", name: "keep.md", path: "/tmp/keep.md" }),
 			],
@@ -46,7 +47,7 @@ describe("resolveRequestAttachments", () => {
 			[],
 		)
 
-		expect(resolved).toEqual({ images: [], files: ["/tmp/keep.md"] })
+		expect(resolved).toEqual({ images: [], files: ["/tmp/clip.mp4", "/tmp/voice.mp3", "/tmp/keep.md"] })
 	})
 
 	it("infers the kind from the name when the client omits it", () => {

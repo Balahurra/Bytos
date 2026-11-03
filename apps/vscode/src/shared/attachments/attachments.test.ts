@@ -13,6 +13,7 @@ describe("attachment limits", () => {
 		expect(ATTACHMENT_LIMITS).toMatchObject({
 			maxPerMessage: 20,
 			maxFileBytes: 20 * 1000 * 1024,
+			maxMediaFileBytes: 200 * 1000 * 1024,
 			maxTextBytes: 400 * 1024,
 			maxImageDimension: 7500,
 			maxImageSourceDimension: 20000,
@@ -25,7 +26,6 @@ describe("attachment limits", () => {
 
 describe("attachment feature flags", () => {
 	it("keeps unshipped rollout flags off", () => {
-		expect(ATTACHMENT_FEATURE_FLAGS.videoAudio).toBe(false)
 		expect(ATTACHMENT_FEATURE_FLAGS.model3d).toBe(false)
 		expect(ATTACHMENT_FEATURE_FLAGS.binary3dConverters).toBe(false)
 	})
@@ -33,7 +33,7 @@ describe("attachment feature flags", () => {
 	it("reports flags through the helper", () => {
 		expect(isAttachmentFeatureEnabled("nativePdf")).toBe(true)
 		expect(isAttachmentFeatureEnabled("pdfOcr")).toBe(true)
-		expect(isAttachmentFeatureEnabled("videoAudio")).toBe(false)
+		expect(isAttachmentFeatureEnabled("videoAudio")).toBe(true)
 		expect(isAttachmentFeatureEnabled("model3d")).toBe(false)
 	})
 })

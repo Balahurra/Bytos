@@ -30,15 +30,13 @@ export function resolveRequestAttachments(
 			}
 			continue
 		}
-		if (kind === "text" || kind === "document") {
+		if (kind === "text" || kind === "document" || kind === "video" || kind === "audio") {
 			if (attachment.path) {
 				resolvedFiles.push(attachment.path)
 			}
 			continue
 		}
-		// video/audio/model3d are reserved for the phases that add real
-		// transport support. Dropping them here is explicit instead of silently
-		// treating a binary as text.
+		// model3d is reserved for the phase that adds real 3D transport support.
 		Logger.warn(`[Attachments] Ignoring unsupported attachment kind "${kind}" (${attachment.name || "unnamed"})`)
 	}
 

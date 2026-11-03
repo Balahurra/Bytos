@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.1.37]
+
+### Added
+
+- **Video and audio attachments.** MP4/M4V/WebM/MOV and MP3/WAV/M4A/OGG/FLAC files can be selected in the attachment picker (up to 200 MB).
+- Models that advertise `video` or `audio` input receive the file as native media when it fits the 8 MB inline-media budget.
+- Video fallback: when native video is unavailable, Bytos samples up to 4 frames with `ffmpeg` and sends them as image attachments plus duration/resolution/codec metadata.
+- Audio fallback: when native audio is unavailable, Bytos uses an installed Whisper CLI (`whisper` or `whisper-ctranslate2`) to transcribe the file.
+- Missing ffmpeg/Whisper tools produce a clear error naming the tool and install command instead of attaching unusable bytes.
+
 ## [4.1.36]
 
 ### Added

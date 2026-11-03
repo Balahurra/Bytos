@@ -27,7 +27,13 @@ import type {
 } from "../extensions/contribution-registry";
 import type { HookControl } from "../hooks/contracts";
 import type { GeneratedMedia } from "../llms/media";
-import type { Message, MessageWithMetadata } from "../llms/messages";
+import type {
+	ImageContent,
+	MediaContent,
+	Message,
+	MessageWithMetadata,
+	TextContent,
+} from "../llms/messages";
 import type { ModelInfo } from "../llms/model-info";
 import { ModelInfoSchema } from "../llms/model-info";
 import type { ModelTool } from "../llms/model-tools";
@@ -36,8 +42,12 @@ import {
 	ReasoningEffortSchema,
 } from "../llms/reasoning-options";
 
-/** A file either flattens to text or is sent as native media. */
-export type UserFileContent = string | { type: "media"; media: GeneratedMedia };
+/** A file either flattens to text or contributes native media/image blocks. */
+export type UserFileContentBlock = TextContent | ImageContent | MediaContent;
+export type UserFileContent =
+	| string
+	| UserFileContentBlock
+	| UserFileContentBlock[];
 
 export {
 	REASONING_LEVELS,
@@ -953,7 +963,7 @@ export const AgentConfigSchema = z.object({
 	userFileContentLoader: z
 		.function()
 		.input([z.string()])
-		.output(z.promise(z.string()))
+		.output(z.promise(z.unknown()))
 		.optional(),
 	toolContextMetadata: z.record(z.string(), z.unknown()).optional(),
 	execution: z

@@ -9,6 +9,8 @@ export const ATTACHMENT_LIMITS = {
 	maxPerMessage: 20,
 	/** Maximum size of a non-image file accepted by the picker/extractor (decimal MB). */
 	maxFileBytes: 20 * 1000 * 1024,
+	/** Larger source cap for video/audio that is processed with external tools. */
+	maxMediaFileBytes: 200 * 1000 * 1024,
 	/** Maximum extracted text retained per file before truncation. */
 	maxTextBytes: 400 * 1024,
 	/** Canonical image dimension limit (UI and SDK). */
@@ -36,7 +38,7 @@ export const ATTACHMENT_FEATURE_FLAGS: Record<AttachmentFeature, boolean> = {
 	imageNormalization: true,
 	nativePdf: true,
 	pdfOcr: true,
-	videoAudio: false,
+	videoAudio: true,
 	model3d: false,
 	binary3dConverters: false,
 }

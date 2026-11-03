@@ -58,7 +58,18 @@ export async function selectFiles(imagesAllowed: boolean): Promise<{ images: str
 		"scss",
 		"sql",
 		"dockerfile",
+		// Media
+		"mp4",
+		"m4v",
+		"webm",
+		"mov",
+		"mp3",
+		"wav",
+		"m4a",
+		"ogg",
+		"flac",
 	]
+	const MEDIA_EXTENSIONS = ["mp4", "m4v", "webm", "mov", "mp3", "wav", "m4a", "ogg", "flac"]
 
 	const showDialogueResponse = await HostProvider.window.showOpenDialogue({
 		canSelectMany: true,
@@ -116,11 +127,13 @@ export async function selectFiles(imagesAllowed: boolean): Promise<{ images: str
 		// for standard models we will check the size of the file to ensure its not too large
 		try {
 			const stats = await fs.stat(filePath)
-			if (stats.size > ATTACHMENT_LIMITS.maxFileBytes) {
+			const isMedia = MEDIA_EXTENSIONS.includes(fileExtension)
+			const maxBytes = isMedia ? ATTACHMENT_LIMITS.maxMediaFileBytes : ATTACHMENT_LIMITS.maxFileBytes
+			if (stats.size > maxBytes) {
 				Logger.warn(`File too large, skipping: ${filePath}`)
 				HostProvider.window.showMessage({
 					type: ShowMessageType.ERROR,
-					message: `File too large: ${path.basename(filePath)} was skipped (size exceeds 20MB).`,
+					message: `File too large: ${path.basename(filePath)} was skipped (size exceeds ${isMedia ? "200MB" : "20MB"}).`,
 				})
 				return null
 			}

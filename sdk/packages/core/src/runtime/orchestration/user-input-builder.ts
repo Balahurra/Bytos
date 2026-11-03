@@ -144,6 +144,8 @@ async function buildUserFileContentBlock(
 					path: normalizedPath,
 					content,
 				});
+			} else if (Array.isArray(content)) {
+				contentBlocks.push(...content);
 			} else {
 				contentBlocks.push(content);
 			}

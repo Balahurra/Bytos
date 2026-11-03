@@ -24,6 +24,7 @@ import { useExtensionState } from "@/context/ExtensionStateContext"
 import { MarketplaceServiceClient, McpServiceClient } from "@/services/grpc-client"
 import { Tab, TabContent, TabList, TabTrigger } from "../common/Tab"
 import ViewHeader from "../common/ViewHeader"
+import AutoPhaseMcpSelection from "../mcp/configuration/AutoPhaseMcpSelection"
 import AddRemoteServerForm from "../mcp/configuration/tabs/add-server/AddRemoteServerForm"
 import ServersToggleList, { type MarketplaceMcpMetadata } from "../mcp/configuration/tabs/installed/ServersToggleList"
 import { entryMatchesLocalEntry, localEntryKey } from "./marketplaceMatch"
@@ -768,6 +769,7 @@ const McpManagementPanel = ({
 
 	return (
 		<section className="marketplace-section">
+			<AutoPhaseMcpSelection />
 			{showHeader && (
 				<div className="marketplace-section-header">
 					<h3 className="marketplace-section-title">Installed MCP Servers</h3>

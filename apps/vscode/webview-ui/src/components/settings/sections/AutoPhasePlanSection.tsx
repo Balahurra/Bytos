@@ -1,4 +1,4 @@
-import { buildChatAttachments } from "@shared/attachments"
+﻿import { buildChatAttachments } from "@shared/attachments"
 import { EmptyRequest } from "@shared/proto/bytos/common"
 import { SelectFilesRequest } from "@shared/proto/bytos/file"
 import { AutoPhasePlan, AutoPhasePlanPhase } from "@shared/proto/bytos/state"
@@ -136,96 +136,9 @@ const PhaseModelSettings = ({ phase, onChange }: { phase: PhaseDraft; onChange: 
 					</VSCodeOption>
 				))}
 			</VSCodeDropdown>
-			{isLoading && <span className="text-xs text-description">Loading models…</span>}
+			{isLoading && <span className="text-xs text-description">Loading modelsâ€¦</span>}
 			{error && <span className="text-xs text-[var(--vscode-errorForeground)]">{error}</span>}
 			{selectedModelInfo && <ModelInfoView isPopup modelInfo={selectedModelInfo} selectedModelId={selectedModelId} />}
-		</div>
-	)
-}
-
-const PhaseMcpSelector = ({
-	phase,
-	servers,
-	onChange,
-}: {
-	phase: PhaseDraft
-	servers: ReadonlyArray<{ name: string; disabled?: boolean }>
-	onChange: (patch: Partial<PhaseDraft>) => void
-}) => {
-	const [open, setOpen] = useState(false)
-	const selected = phase.mcpServersExplicit
-		? phase.mcpServers
-		: servers.filter((server) => !server.disabled).map((server) => server.name)
-
-	const toggle = (name: string) => {
-		const next = selected.includes(name) ? selected.filter((entry) => entry !== name) : [...selected, name]
-		onChange({ mcpServers: next, mcpServersExplicit: true })
-	}
-
-	return (
-		<div className="relative inline-flex">
-			<VSCodeButton
-				appearance="icon"
-				aria-label="Select MCP servers for this phase"
-				onClick={() => setOpen(!open)}
-				title="Select MCP servers for this phase">
-				<i className="codicon codicon-server" style={{ fontSize: "12.5px" }} />
-			</VSCodeButton>
-			{open && (
-				<div
-					aria-label="Phase MCP servers"
-					className="absolute right-0 top-6 z-30 w-64 rounded-sm border border-[var(--vscode-panel-border)] bg-[var(--vscode-editor-background)] p-2 text-xs shadow-lg"
-					role="dialog">
-					<div className="flex items-center justify-between mb-2">
-						<span className="font-medium">MCP servers for this phase</span>
-						<button
-							className="text-link bg-transparent border-0 cursor-pointer"
-							onClick={() => setOpen(false)}
-							type="button">
-							Close
-						</button>
-					</div>
-					{servers.length === 0 ? (
-						<div className="text-description">No MCP servers configured.</div>
-					) : (
-						<div className="flex flex-col gap-1 max-h-56 overflow-y-auto">
-							{servers.map((server) => (
-								<label className="flex items-center gap-2" key={server.name}>
-									<input
-										checked={selected.includes(server.name)}
-										disabled={server.disabled}
-										onChange={() => toggle(server.name)}
-										type="checkbox"
-									/>
-									<span className={server.disabled ? "text-description" : ""}>
-										{server.name}
-										{server.disabled ? " (disabled)" : ""}
-									</span>
-								</label>
-							))}
-						</div>
-					)}
-					<div className="flex justify-end gap-3 mt-2">
-						<button
-							className="text-link bg-transparent border-0 cursor-pointer"
-							onClick={() => onChange({ mcpServers: [], mcpServersExplicit: true })}
-							type="button">
-							Clear
-						</button>
-						<button
-							className="text-link bg-transparent border-0 cursor-pointer"
-							onClick={() =>
-								onChange({
-									mcpServers: servers.filter((server) => !server.disabled).map((server) => server.name),
-									mcpServersExplicit: true,
-								})
-							}
-							type="button">
-							All enabled
-						</button>
-					</div>
-				</div>
-			)}
 		</div>
 	)
 }
@@ -236,7 +149,7 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 	const [saving, setSaving] = useState(false)
 	const [status, setStatus] = useState<StatusMessage | null>(null)
 	const { providers } = useProviderListings()
-	const { mcpServers } = useExtensionState()
+	const { navigateToMcp, setAutoPhaseMcpTarget } = useExtensionState()
 
 	const providerOptions = useMemo(() => {
 		const options = (providers ?? [])
@@ -377,16 +290,30 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 					})),
 				)
 				setStatus({ kind: "info", text: message })
+				return true
 			} catch (error) {
 				setStatus({
 					kind: "error",
 					text: error instanceof Error ? error.message : "Could not save Auto Phase Plan.",
 				})
+				return false
 			} finally {
 				setSaving(false)
 			}
 		},
 		[phaseList],
+	)
+
+	const openPhaseMcpSettings = useCallback(
+		async (phaseId: string, phaseNumber: number) => {
+			const saved = await persistPlan("Plan saved. Select MCP servers in Customize → MCP.")
+			if (!saved) {
+				return
+			}
+			navigateToMcp("configure")
+			setAutoPhaseMcpTarget({ phaseId, phaseNumber })
+		},
+		[navigateToMcp, persistPlan, setAutoPhaseMcpTarget],
 	)
 
 	const savePrompt = useCallback(
@@ -425,7 +352,7 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 				</p>
 
 				{loading ? (
-					<div className="text-sm text-description py-4">Loading Auto Phase Plan…</div>
+					<div className="text-sm text-description py-4">Loading Auto Phase Planâ€¦</div>
 				) : (
 					<div className="flex flex-col gap-3">
 						{phaseList.length === 0 && (
@@ -447,7 +374,7 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 										<span className="font-medium">Phase {index + 1}</span>
 										<span className="text-xs text-description truncate">
 											{providerLabel(provider)}
-											{phase.modelId ? ` · ${phase.modelId}` : ""}
+											{phase.modelId ? ` Â· ${phase.modelId}` : ""}
 										</span>
 										<div className="ml-auto flex items-center gap-1">
 											<VSCodeButton
@@ -457,11 +384,13 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 												title="Add attachment">
 												<Plus size={14} />
 											</VSCodeButton>
-											<PhaseMcpSelector
-												onChange={(patch) => updatePhase(phase.id, patch)}
-												phase={phase}
-												servers={mcpServers}
-											/>
+											<VSCodeButton
+												appearance="icon"
+												aria-label="Select MCP servers for this phase"
+												onClick={() => void openPhaseMcpSettings(phase.id, index + 1)}
+												title="Select MCP servers for this phase">
+												<i className="codicon codicon-server" style={{ fontSize: "12.5px" }} />
+											</VSCodeButton>
 											<VSCodeButton
 												appearance="icon"
 												aria-label="Copy prompt"
@@ -505,7 +434,7 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 													className="w-full min-h-[90px] resize-y box-border rounded-sm border border-[var(--vscode-input-border)] bg-[var(--vscode-input-background)] text-[var(--vscode-input-foreground)] p-2 text-sm"
 													id={`auto-phase-prompt-${phase.id}`}
 													onChange={(event) => updatePhase(phase.id, { prompt: event.target.value })}
-													placeholder="Describe what this phase should do…"
+													placeholder="Describe what this phase should doâ€¦"
 													value={phase.prompt}
 												/>
 											</div>
@@ -624,7 +553,7 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 								</VSCodeButton>
 							)}
 							<VSCodeButton appearance="primary" disabled={saving || loading} onClick={() => persistPlan()}>
-								{saving ? "Saving…" : "Done"}
+								{saving ? "Savingâ€¦" : "Done"}
 							</VSCodeButton>
 						</div>
 					</div>

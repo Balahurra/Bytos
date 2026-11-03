@@ -74,6 +74,7 @@ export interface ExtensionStateContextType extends ExtensionState {
 	showMarketplace: boolean
 	showMcp: boolean
 	mcpTab?: McpViewTab
+	autoPhaseMcpTarget?: { phaseId: string; phaseNumber: number }
 	showSettings: boolean
 	settingsNavigationRequest?: SettingsNavigationRequest
 	settingsInitialModelTab?: "recommended" | "free"
@@ -120,6 +121,7 @@ export interface ExtensionStateContextType extends ExtensionState {
 	setShowMarketplace: (value: boolean) => void
 	setShowMcp: (value: boolean) => void
 	setMcpTab: (tab?: McpViewTab) => void
+	setAutoPhaseMcpTarget: (target?: { phaseId: string; phaseNumber: number }) => void
 
 	// Navigation functions
 	navigateToMarketplace: () => void
@@ -155,6 +157,7 @@ export const ExtensionStateContextProvider: React.FC<{
 	const [showMarketplace, setShowMarketplace] = useState(false)
 	const [showMcp, setShowMcp] = useState(false)
 	const [mcpTab, setMcpTab] = useState<McpViewTab | undefined>(undefined)
+	const [autoPhaseMcpTarget, setAutoPhaseMcpTarget] = useState<{ phaseId: string; phaseNumber: number } | undefined>(undefined)
 	const [showSettings, setShowSettings] = useState(false)
 	const [settingsNavigationRequest, setSettingsNavigationRequest] = useState<SettingsNavigationRequest | undefined>(undefined)
 	const [settingsInitialModelTab, setSettingsInitialModelTab] = useState<"recommended" | "free" | undefined>(undefined)
@@ -170,6 +173,7 @@ export const ExtensionStateContextProvider: React.FC<{
 	}, [setShowMcp, setMcpTab])
 	const closeMarketplaceView = useCallback(() => {
 		setShowMarketplace(false)
+		setAutoPhaseMcpTarget(undefined)
 	}, [])
 
 	// Hide functions
@@ -867,6 +871,7 @@ export const ExtensionStateContextProvider: React.FC<{
 		showMarketplace,
 		showMcp,
 		mcpTab,
+		autoPhaseMcpTarget,
 		showSettings,
 		settingsNavigationRequest,
 		settingsInitialModelTab,
@@ -919,6 +924,7 @@ export const ExtensionStateContextProvider: React.FC<{
 		setHuggingFaceModels,
 		setShowMarketplace,
 		setShowMcp,
+		setAutoPhaseMcpTarget,
 		closeMcpView,
 		setGlobalBytosRulesToggles: (toggles) =>
 			setState((prevState) => ({

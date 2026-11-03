@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.1.43]
+
+### Changed
+
+- The Auto Phase Plan MCP button now saves the plan and opens **Customize → MCP** instead of showing a local popup.
+- While that MCP view is open, an Auto Phase banner selects servers for the originating phase only. Selections are saved immediately to that phase’s allowlist; global MCP enabled/disabled state is not changed.
+- Adding a new MCP server from the same screen makes it available for the phase selection list.
+- “Back to Auto Phase Plan” returns to the plan; other phases keep their own selections.
+
+### Fixed
+
+- Closing the MCP/Customize view clears the phase-selection target, so a later normal MCP visit cannot accidentally edit an Auto Phase phase.
+
 ## [4.1.42]
 
 ### Added

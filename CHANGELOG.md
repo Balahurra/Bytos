@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.1.36]
+
+### Added
+
+- **Optional OCR fallback for scanned PDFs.** When Poppler (`pdftoppm` or `mutool`) and Tesseract OCR are on `PATH`, Bytos renders the first pages and OCRs them instead of returning empty PDF text.
+- OCR is limited to 10 pages at 200 DPI by default, runs with per-command timeouts, and cleans up its temporary files.
+- If the OCR toolchain is not installed, the existing clear error remains and names the required tools plus installation commands for macOS, Linux and Windows.
+
 ## [4.1.35]
 
 ### Fixed

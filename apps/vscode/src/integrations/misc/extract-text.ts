@@ -4,10 +4,11 @@ import * as iconv from "iconv-lite"
 import { isBinaryFile } from "isbinaryfile"
 import * as chardet from "jschardet"
 import * as path from "path"
-import { ATTACHMENT_LIMITS } from "@/shared/attachments"
+import { ATTACHMENT_LIMITS, isAttachmentFeatureEnabled } from "@/shared/attachments"
 import { truncateContent } from "@/shared/content-limits"
 import { Logger } from "@/shared/services/Logger"
 import { sanitizeNotebookForLLM } from "./notebook-utils"
+import { describeOcrRequirement, ocrPdfWithExternalTools } from "./pdf-ocr"
 
 export async function detectEncoding(fileBuffer: Buffer, fileExtension?: string): Promise<string> {
 	const detected = chardet.detect(fileBuffer)
@@ -86,12 +87,20 @@ async function extractTextFromPDF(filePath: string): Promise<string> {
 	])
 	const data = await pdf(dataBuffer)
 	const text = data.text?.trim() ?? ""
-	if (!text) {
-		throw new Error(
-			"No extractable text found in this PDF. It may be a scanned/image-only PDF; OCR is not enabled in this build.",
-		)
+	if (text) {
+		return text
 	}
-	return text
+
+	if (isAttachmentFeatureEnabled("pdfOcr")) {
+		const ocrText = await ocrPdfWithExternalTools(filePath)
+		if (ocrText?.trim()) {
+			return ocrText
+		}
+	}
+
+	throw new Error(
+		`No extractable text found in this PDF. It may be a scanned/image-only PDF, and OCR produced no text. ${describeOcrRequirement()}`,
+	)
 }
 
 async function extractTextFromDOCX(filePath: string): Promise<string> {

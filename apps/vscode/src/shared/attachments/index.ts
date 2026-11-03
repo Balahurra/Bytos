@@ -25,7 +25,7 @@ export const ATTACHMENT_LIMITS = {
 
 export type AttachmentLimit = keyof typeof ATTACHMENT_LIMITS
 
-export type AttachmentFeature = "imageNormalization" | "nativePdf" | "videoAudio" | "model3d" | "binary3dConverters"
+export type AttachmentFeature = "imageNormalization" | "nativePdf" | "pdfOcr" | "videoAudio" | "model3d" | "binary3dConverters"
 
 /**
  * Rollout switches for attachment work. Everything defaults to off so the
@@ -35,6 +35,7 @@ export type AttachmentFeature = "imageNormalization" | "nativePdf" | "videoAudio
 export const ATTACHMENT_FEATURE_FLAGS: Record<AttachmentFeature, boolean> = {
 	imageNormalization: true,
 	nativePdf: true,
+	pdfOcr: true,
 	videoAudio: false,
 	model3d: false,
 	binary3dConverters: false,

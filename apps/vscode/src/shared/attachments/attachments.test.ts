@@ -32,6 +32,7 @@ describe("attachment feature flags", () => {
 
 	it("reports flags through the helper", () => {
 		expect(isAttachmentFeatureEnabled("nativePdf")).toBe(true)
+		expect(isAttachmentFeatureEnabled("pdfOcr")).toBe(true)
 		expect(isAttachmentFeatureEnabled("videoAudio")).toBe(false)
 		expect(isAttachmentFeatureEnabled("model3d")).toBe(false)
 	})

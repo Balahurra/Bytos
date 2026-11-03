@@ -6,6 +6,7 @@ import type { ApiConfiguration } from "@shared/api"
 import {
 	ATTACHMENT_LIMITS,
 	ATTACHMENT_MIME_BY_EXTENSION,
+	classifyAttachment,
 	getAttachmentExtension,
 	isAttachmentFeatureEnabled,
 } from "@shared/attachments"
@@ -13,6 +14,7 @@ import { getProviderModelIdKey } from "@shared/storage/provider-keys"
 import { StateManager } from "@/core/storage/StateManager"
 import { extractTextFromFile } from "@/integrations/misc/extract-text"
 import { describeMediaToolRequirement, extractVideoFrames, transcribeAudio } from "@/integrations/misc/media-attachments"
+import { summarizeModel3d } from "@/integrations/misc/model3d-attachments"
 import { Logger } from "@/shared/services/Logger"
 import { toSdkProviderId } from "./model-catalog/sdk-provider-id"
 
@@ -180,6 +182,13 @@ export async function loadUserFileContentForChat(filePath: string): Promise<User
 
 	if (extension === "mp3" || extension === "wav" || extension === "m4a" || extension === "ogg" || extension === "flac") {
 		return loadAudio(filePath)
+	}
+
+	if (classifyAttachment(filePath) === "model3d") {
+		if (!isAttachmentFeatureEnabled("model3d")) {
+			throw new Error(`3D attachment support is disabled in this build (${path.basename(filePath)}).`)
+		}
+		return summarizeModel3d(filePath)
 	}
 
 	return extractTextFromFile(filePath)

@@ -30,13 +30,12 @@ export function resolveRequestAttachments(
 			}
 			continue
 		}
-		if (kind === "text" || kind === "document" || kind === "video" || kind === "audio") {
+		if (kind === "text" || kind === "document" || kind === "video" || kind === "audio" || kind === "model3d") {
 			if (attachment.path) {
 				resolvedFiles.push(attachment.path)
 			}
 			continue
 		}
-		// model3d is reserved for the phase that adds real 3D transport support.
 		Logger.warn(`[Attachments] Ignoring unsupported attachment kind "${kind}" (${attachment.name || "unnamed"})`)
 	}
 

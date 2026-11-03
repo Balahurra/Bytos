@@ -68,6 +68,14 @@ export async function selectFiles(imagesAllowed: boolean): Promise<{ images: str
 		"m4a",
 		"ogg",
 		"flac",
+		// 3D (text and GLB summaries)
+		"obj",
+		"mtl",
+		"stl",
+		"ply",
+		"gltf",
+		"glb",
+		"dae",
 	]
 	const MEDIA_EXTENSIONS = ["mp4", "m4v", "webm", "mov", "mp3", "wav", "m4a", "ogg", "flac"]
 

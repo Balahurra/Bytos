@@ -39,7 +39,7 @@ export const ATTACHMENT_FEATURE_FLAGS: Record<AttachmentFeature, boolean> = {
 	nativePdf: true,
 	pdfOcr: true,
 	videoAudio: true,
-	model3d: false,
+	model3d: true,
 	binary3dConverters: false,
 }
 

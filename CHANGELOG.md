@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.1.38]
+
+### Added
+
+- **3D asset summaries** for OBJ/MTL, ASCII and binary STL, PLY, glTF (.gltf), GLB and COLLADA (.dae).
+- The model receives a bounded summary instead of raw geometry: vertex/triangle/face counts, object/group/material names, animation names, scene/node counts, glTF buffers/textures and a bounding box where available.
+- GLB files are parsed from their JSON chunk only; embedded binary payloads are never sent to the model.
+- 3D files can be selected from the attachment picker (20 MB limit).
+
+### Changed
+
+- Binary formats reserved for the converter phase (FBX, BLEND, DWG, DXF, STEP, IGES, etc.) are rejected with a clear “export to glTF/GLB/OBJ/STL” message instead of being read as text.
+
 ## [4.1.37]
 
 ### Added

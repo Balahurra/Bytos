@@ -191,4 +191,21 @@ describe("loadUserFileContentForChat", () => {
 
 		await expect(loadUserFileContentForChat(audioPath)).resolves.toBe("[Audio transcript: voice.wav]\nhello from audio")
 	})
+
+	it("summarizes text 3D models", async () => {
+		const modelPath = join(tempDir, "cube.obj")
+		writeFileSync(modelPath, ["v 0 0 0", "v 1 0 0", "v 0 1 0", "f 1 2 3"].join("\n"))
+
+		const content = await loadUserFileContentForChat(modelPath)
+
+		expect(content).toContain("format: OBJ")
+		expect(content).toContain("triangles: 1")
+	})
+
+	it("rejects binary 3D formats that belong to the converter phase", async () => {
+		const modelPath = join(tempDir, "scene.fbx")
+		writeFileSync(modelPath, Buffer.from([0, 1, 2, 3]))
+
+		await expect(loadUserFileContentForChat(modelPath)).rejects.toThrow(/not supported yet/i)
+	})
 })

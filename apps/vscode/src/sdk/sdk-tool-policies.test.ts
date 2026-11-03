@@ -1,6 +1,7 @@
 import { DEFAULT_AUTO_APPROVAL_SETTINGS } from "@shared/AutoApprovalSettings"
 import { describe, expect, it } from "vitest"
-import { isToolAutoApproved } from "./sdk-tool-policies"
+import { toVscodeMcpToolName } from "./mcp-tool-name"
+import { buildToolPolicies, isToolAutoApproved } from "./sdk-tool-policies"
 
 describe("isToolAutoApproved", () => {
 	it("does not auto-approve command tools by default", () => {
@@ -36,5 +37,37 @@ describe("isToolAutoApproved", () => {
 		}
 
 		expect(isToolAutoApproved("firecrawl__scrape", settings)).toBe(false)
+	})
+
+	it("recognizes truncated MCP tool names produced by the VS Code bridge", () => {
+		const settings = {
+			...DEFAULT_AUTO_APPROVAL_SETTINGS,
+			actions: { ...DEFAULT_AUTO_APPROVAL_SETTINGS.actions, useMcp: true },
+		}
+		const longName = toVscodeMcpToolName({
+			serverName: "a-server-with-a-very-long-name-indeed",
+			toolName: "a-tool-with-a-very-long-name-indeed-too",
+		})
+
+		expect(isToolAutoApproved(longName, settings)).toBe(true)
+	})
+
+	it("forces every MCP tool through the approval callback, including truncated names", () => {
+		const longName = toVscodeMcpToolName({
+			serverName: "a-server-with-a-very-long-name-indeed",
+			toolName: "a-tool-with-a-very-long-name-indeed-too",
+		})
+		const mcpHub = {
+			getServers: () => [
+				{
+					name: "a-server-with-a-very-long-name-indeed",
+					tools: [{ name: "a-tool-with-a-very-long-name-indeed-too" }],
+				},
+			],
+		}
+
+		const policies = buildToolPolicies(DEFAULT_AUTO_APPROVAL_SETTINGS, mcpHub as never)
+
+		expect(policies[longName]).toEqual({ autoApprove: false })
 	})
 })

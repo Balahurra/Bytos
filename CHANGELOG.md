@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.1.33]
+
+### Fixed
+
+- MCP tool discovery no longer depends on re-reading the settings file. A transient read failure, a missing first-run file, or a remotely discovered server could previously return an empty tool list, so the agent never saw the server's tools.
+- MCP tools are now always exposed under the `server__tool` naming convention. Long server/tool names used to lose the separator, which broke MCP call rendering and made those tools bypass the MCP auto-approval toggle.
+- Sessions wait briefly (bounded) for MCP servers to finish their initial connection before building the tool list, and pick up late connections through the existing tool-list refresh.
+- A dropped MCP connection (crashed stdio process or closed remote transport) is re-established from the latest settings before the next tool call instead of failing with a stale-connection error.
+- MCP tool calls are no longer silently retried by the generic tool layer, because MCP tools can have side effects.
+
 ## [4.1.32]
 
 ### Added

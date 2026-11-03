@@ -4,6 +4,7 @@ import type { VscodeTerminalManager } from "@/hosts/vscode/terminal/VscodeTermin
 import type { McpHub } from "@/services/mcp/McpHub"
 import { resolveMcpServerTimeoutMs } from "@/services/mcp/timeout"
 import { Logger } from "@/shared/services/Logger"
+import { toVscodeMcpToolName } from "./mcp-tool-name"
 import type { SdkForegroundCommandCoordinator } from "./sdk-foreground-command-coordinator"
 import { createVscodeRunCommandsTool, VSCODE_FOREGROUND_RUN_COMMANDS_TIMEOUT_MS } from "./vscode-run-commands-tool"
 
@@ -42,6 +43,11 @@ export class McpHubToolProvider {
 		arguments?: Record<string, unknown>
 		context?: AgentToolContext
 	}): Promise<unknown> {
+		// A session keeps its tool snapshot for its whole lifetime. If the
+		// server process crashed or a remote transport dropped, reconnect from
+		// the latest settings before running the call instead of failing with a
+		// stale-connection error.
+		await this.mcpHub.ensureConnected(request.serverName)
 		const ulid = `sdk-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
 		return this.mcpHub.callTool(request.serverName, request.toolName, request.arguments ?? {}, ulid, request.context?.signal)
 	}
@@ -73,9 +79,14 @@ export async function createVscodeExtraTools(mcpHub: McpHub, options?: VscodeExt
 				return await createMcpTools({
 					serverName: server.name,
 					provider,
+					nameTransform: toVscodeMcpToolName,
 					// Keep the tool wrapper timeout in agreement with the MCP
 					// request timeout: both derive from the server's config.
 					timeoutMs: resolveMcpServerTimeoutMs(server.config),
+					// MCP tools may have side effects (create issue, send message,
+					// ...), so a failed call must go back to the agent instead of
+					// being silently retried by the generic tool layer.
+					retryable: false,
 				})
 			} catch (error) {
 				Logger.warn(

@@ -1,5 +1,6 @@
 import type { AutoApprovalSettings } from "@shared/AutoApprovalSettings"
 import type { McpHub } from "@/services/mcp/McpHub"
+import { isVscodeMcpToolName, toVscodeMcpToolName } from "./mcp-tool-name"
 
 /**
  * Build SDK `toolPolicies` for tools governed by Bytos's auto-approval UI.
@@ -30,7 +31,7 @@ export function buildToolPolicies(
 	if (mcpHub) {
 		for (const server of mcpHub.getServers()) {
 			for (const tool of server.tools ?? []) {
-				const sdkName = `${server.name}__${tool.name}`
+				const sdkName = toVscodeMcpToolName({ serverName: server.name, toolName: tool.name })
 				policies[sdkName] = { autoApprove: false }
 			}
 		}
@@ -87,6 +88,5 @@ function isBrowserTool(toolName: string): boolean {
 
 /** MCP tools are registered by `createMcpTools` under `serverName__toolName`. */
 function isMcpToolName(toolName: string): boolean {
-	const separatorIndex = toolName.indexOf("__")
-	return separatorIndex > 0 && separatorIndex + 2 < toolName.length
+	return isVscodeMcpToolName(toolName)
 }

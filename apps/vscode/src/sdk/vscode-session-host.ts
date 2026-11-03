@@ -147,6 +147,13 @@ export class VscodeSessionHost implements SdkSessionHost {
 				? await remoteConfigIntegration.applyToStartSessionInput(input)
 				: input
 			const requestedTerminalExecutionMode = StateManager.get().getGlobalStateKey("vscodeTerminalExecutionMode")
+			// Give MCP servers a short, bounded chance to finish connecting so the
+			// first task already has the user's MCP tools. Late connections are
+			// picked up by the tool-list-change rebuild.
+			const mcpReady = await options.mcpHub.waitUntilReady?.()
+			if (mcpReady === false) {
+				Logger.log("[VscodeSessionHost] MCP servers are still connecting; session starts without waiting further")
+			}
 			const extraTools = await createVscodeExtraTools(options.mcpHub, {
 				cwd: inputWithRemoteConfig.config.cwd,
 				getTerminalManager: options.getTerminalManager,

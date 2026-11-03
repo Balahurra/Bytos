@@ -75,6 +75,22 @@ const LIST_CHANGED_MAX_WAIT_MS = 2000
 const LIST_CHANGED_MAX_RETRIES = 3
 const LIST_CHANGED_RETRY_BASE_DELAY_MS = 1000
 
+/**
+ * Read the Bytos-specific `autoApprove` list from a server's stored config.
+ * Best-effort by design: tool discovery must never fail because this optional
+ * setting is absent or the stored JSON is stale.
+ */
+function readAutoApproveFromServerConfig(configJson: string): string[] {
+	try {
+		const parsed = JSON.parse(configJson) as { autoApprove?: unknown }
+		return Array.isArray(parsed.autoApprove)
+			? parsed.autoApprove.filter((entry): entry is string => typeof entry === "string")
+			: []
+	} catch {
+		return []
+	}
+}
+
 export class McpHub {
 	getMcpServersPath: () => Promise<string>
 	private getSettingsDirectoryPath: () => Promise<string>
@@ -86,6 +102,10 @@ export class McpHub {
 	private fileWatchers: Map<string, FSWatcher> = new Map()
 	connections: McpConnection[] = []
 	isConnecting = false
+	/** Resolves when the constructor's first connection pass settles. */
+	private initializationPromise: Promise<void> = Promise.resolve()
+	/** Coalesces concurrent runtime reconnects for the same server. */
+	private readonly ensureConnectionInFlight = new Map<string, Promise<boolean>>()
 	/**
 	 * Fingerprint of the connection-relevant view of the settings file as of the
 	 * watcher's last reconciliation.
@@ -162,8 +182,113 @@ export class McpHub {
 		this.clientVersion = clientVersion
 		this.telemetryService = telemetryService
 		this.mcpOAuthManager = new McpOAuthManager(() => this.getMcpSettingsFilePath())
-		this.watchMcpSettingsFile()
-		this.initializeMcpServers()
+		void this.watchMcpSettingsFile().catch((error) => {
+			Logger.error("Failed to start MCP settings watcher:", error)
+		})
+		this.initializationPromise = this.initializeMcpServers().catch((error) => {
+			Logger.error("Failed to initialize MCP servers:", error)
+		})
+	}
+
+	/**
+	 * Wait (bounded) for the initial MCP connection pass so a session that
+	 * starts immediately after activation still receives the user's MCP tools.
+	 * A slow or offline server must never block chat startup, so this resolves
+	 * after at most `timeoutMs`; the session then picks tools up through the
+	 * regular tool-list-change rebuild.
+	 */
+	async waitUntilReady(timeoutMs = 3000): Promise<boolean> {
+		const deadline = Date.now() + Math.max(0, timeoutMs)
+		let timer: ReturnType<typeof setTimeout> | undefined
+		const timedOut = new Promise<boolean>((resolve) => {
+			const remaining = Math.max(0, deadline - Date.now())
+			if (remaining === 0) {
+				resolve(false)
+				return
+			}
+			timer = setTimeout(() => resolve(false), remaining)
+			timer.unref?.()
+		})
+
+		let ready = false
+		try {
+			ready = await Promise.race([this.initializationPromise.then(() => true), timedOut])
+		} finally {
+			if (timer) {
+				clearTimeout(timer)
+			}
+		}
+
+		// Also let an in-flight settings reconciliation finish, but never past
+		// the same deadline.
+		while (this.isConnecting && Date.now() < deadline) {
+			await new Promise((resolve) => setTimeout(resolve, 50))
+		}
+		return ready && !this.isConnecting
+	}
+
+	/**
+	 * Make sure a configured server is connected before a runtime tool call.
+	 *
+	 * A chat session snapshots its tool list when it starts. If the server
+	 * process has since crashed (stdio) or a remote transport has dropped, the
+	 * tool wrapper would otherwise fail with a stale-connection error. This
+	 * reconnects from the latest settings file and coalesces concurrent calls.
+	 */
+	async ensureConnected(serverName: string): Promise<boolean> {
+		if (this.isConnectionUsable(serverName)) {
+			return true
+		}
+		const inFlight = this.ensureConnectionInFlight.get(serverName)
+		if (inFlight) {
+			return inFlight
+		}
+		const attempt = this.reconnectForRuntime(serverName).finally(() => {
+			this.ensureConnectionInFlight.delete(serverName)
+		})
+		this.ensureConnectionInFlight.set(serverName, attempt)
+		return attempt
+	}
+
+	private isConnectionUsable(serverName: string): boolean {
+		const connection = this.connections.find((conn) => conn.server.name === serverName)
+		return !!connection && !connection.server.disabled && connection.server.status === "connected" && !!connection.client
+	}
+
+	private async reconnectForRuntime(serverName: string): Promise<boolean> {
+		const existing = this.connections.find((conn) => conn.server.name === serverName)
+		if (existing?.server.disabled) {
+			return false
+		}
+		// A settings reconciliation may already be rebuilding connections. Let
+		// it finish rather than opening a competing connection for this server.
+		const deadline = Date.now() + 3000
+		while (this.isConnecting && Date.now() < deadline) {
+			await new Promise((resolve) => setTimeout(resolve, 50))
+		}
+		if (this.isConnectionUsable(serverName)) {
+			return true
+		}
+		try {
+			const settings = await this.readAndValidateMcpSettingsFile()
+			const config = (settings?.mcpServers as Record<string, McpServerConfig> | undefined)?.[serverName]
+			if (!config || config.disabled) {
+				return false
+			}
+			Logger.log(`[McpHub] Reconnecting MCP server "${serverName}" before a runtime tool call`)
+			this.isConnecting = true
+			try {
+				await this.connectToServer(serverName, config, "internal")
+			} finally {
+				this.isConnecting = false
+			}
+			await this.notifyWebviewOfServerChanges()
+			return this.isConnectionUsable(serverName)
+		} catch (error) {
+			const message = error instanceof Error ? error.message : String(error)
+			Logger.warn(`[McpHub] Could not reconnect MCP server "${serverName}" for a tool call: ${message}`)
+			return false
+		}
 	}
 
 	getServers(): McpServer[] {
@@ -887,11 +1012,12 @@ export class McpHub {
 				timeout: resolveMcpServerTimeoutMs(connection.server.config),
 			})
 
-			// Get autoApprove settings
-			const settingsPath = await getMcpSettingsFilePathHelper(await this.getSettingsDirectoryPath())
-			const content = await fs.readFile(settingsPath, "utf-8")
-			const config = JSON.parse(content)
-			const autoApproveConfig = config.mcpServers[serverName]?.autoApprove || []
+			// Attach the Bytos-specific auto-approve flags from the connection's
+			// current config. This used to re-read the settings file here, which
+			// meant a transient read/parse failure (another window writing the
+			// file, a first-run file that does not exist yet, a server discovered
+			// through remote config) silently discarded the entire tool list.
+			const autoApproveConfig = readAutoApproveFromServerConfig(connection.server.config)
 
 			// Mark tools as always allowed based on settings
 			const tools = (response?.tools || []).map((tool) => ({

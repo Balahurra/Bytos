@@ -13,6 +13,15 @@ export interface StartSessionResult {
 	sessionId: string
 }
 
+// MCP tool construction is pure (no VS Code host services), so tests can use
+// the real implementation instead of a stub. The VS Code runtime builder
+// depends on it to expose McpHub tools to the agent.
+export { createMcpTools } from "../../../../sdk/packages/core/src/extensions/mcp/tools"
+export type {
+	McpResourceReadResult,
+	McpToolDescriptor,
+	McpToolProvider,
+} from "../../../../sdk/packages/core/src/extensions/mcp/types"
 export {
 	MAX_COMMAND_OUTPUT_CHARS,
 	truncateCommandOutput,

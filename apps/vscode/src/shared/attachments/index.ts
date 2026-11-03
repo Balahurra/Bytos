@@ -40,7 +40,7 @@ export const ATTACHMENT_FEATURE_FLAGS: Record<AttachmentFeature, boolean> = {
 	pdfOcr: true,
 	videoAudio: true,
 	model3d: true,
-	binary3dConverters: false,
+	binary3dConverters: true,
 }
 
 export function isAttachmentFeatureEnabled(feature: AttachmentFeature): boolean {

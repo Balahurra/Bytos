@@ -202,10 +202,10 @@ describe("loadUserFileContentForChat", () => {
 		expect(content).toContain("triangles: 1")
 	})
 
-	it("rejects binary 3D formats that belong to the converter phase", async () => {
+	it("rejects binary 3D formats when no converter is installed", async () => {
 		const modelPath = join(tempDir, "scene.fbx")
 		writeFileSync(modelPath, Buffer.from([0, 1, 2, 3]))
 
-		await expect(loadUserFileContentForChat(modelPath)).rejects.toThrow(/not supported yet/i)
+		await expect(loadUserFileContentForChat(modelPath)).rejects.toThrow(/Blender.*Assimp/i)
 	})
 })

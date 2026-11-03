@@ -71,13 +71,13 @@ function listNames(names: Iterable<string>): string {
 	return `${shown.join(", ")}${unique.length > shown.length ? ` (+${unique.length - shown.length} more)` : ""}`
 }
 
-async function readSource(filePath: string): Promise<Buffer> {
+async function readSource(filePath: string, maxSourceBytes = MAX_SOURCE_BYTES): Promise<Buffer> {
 	const stat = await fs.stat(filePath)
 	if (!stat.isFile()) {
 		throw new Error("Path is not a file.")
 	}
-	if (stat.size > MAX_SOURCE_BYTES) {
-		throw new Error(`3D file is too large to summarize (limit ${MAX_SOURCE_BYTES} bytes).`)
+	if (stat.size > maxSourceBytes) {
+		throw new Error(`3D file is too large to summarize (limit ${maxSourceBytes} bytes).`)
 	}
 	return fs.readFile(filePath)
 }
@@ -351,9 +351,56 @@ function summarizeDae(text: string, fileName: string): string {
 	].join("\n")
 }
 
-const SUPPORTED_EXTENSIONS = new Set(["obj", "mtl", "stl", "ply", "gltf", "glb", "dae"])
+function summarizeDxf(text: string, fileName: string): string {
+	const entityPatterns: Array<[string, RegExp]> = [
+		["lines", /^\s*LINE\s*$/gim],
+		["polylines", /^\s*(?:LWPOLYLINE|POLYLINE)\s*$/gim],
+		["circles", /^\s*CIRCLE\s*$/gim],
+		["arcs", /^\s*ARC\s*$/gim],
+		["splines", /^\s*SPLINE\s*$/gim],
+		["3d faces", /^\s*3DFACE\s*$/gim],
+		["meshes", /^\s*MESH\s*$/gim],
+		["inserts", /^\s*INSERT\s*$/gim],
+		["texts", /^\s*(?:TEXT|MTEXT)\s*$/gim],
+		["dimensions", /^\s*DIMENSION\s*$/gim],
+		["hatches", /^\s*HATCH\s*$/gim],
+	]
+	const counts = entityPatterns.map(([label, pattern]) => `${label}: ${(text.match(pattern) ?? []).length}`).join(", ")
+	const versionMatch = text.match(/\$ACADVER\s*\r?\n\s*1\s*\r?\n\s*([^\r\n]+)/i)
+	return [
+		`[3D/CAD summary: ${fileName}]`,
+		"format: DXF",
+		`version: ${versionMatch?.[1]?.trim() ?? "unknown"}`,
+		`entities: ${counts}`,
+		`layers: ${(text.match(/^\s*LAYER\s*$/gim) ?? []).length}`,
+		`blocks: ${(text.match(/^\s*BLOCK\s*$/gim) ?? []).length}`,
+	].join("\n")
+}
 
-export async function summarizeModel3d(filePath: string): Promise<string> {
+function summarizeUnityAsset(text: string, fileName: string): string {
+	const count = (pattern: RegExp): number => (text.match(pattern) ?? []).length
+	return [
+		`[Game asset summary: ${fileName}]`,
+		"format: Unity YAML asset",
+		`documents: ${count(/^--- !u!/gm)}`,
+		`game objects: ${count(/^\s*GameObject:\s*$/gm)}`,
+		`transforms: ${count(/^\s*Transform:\s*$/gm)}`,
+		`mesh filters: ${count(/^\s*MeshFilter:\s*$/gm)}`,
+		`mesh renderers: ${count(/^\s*MeshRenderer:\s*$/gm)}`,
+		`mono behaviours: ${count(/^\s*MonoBehaviour:\s*$/gm)}`,
+		`animators: ${count(/^\s*Animator:\s*$/gm)}`,
+		`animation clips: ${count(/^\s*AnimationClip:\s*$/gm)}`,
+		`materials: ${count(/^\s*Material:\s*$/gm)}`,
+	].join("\n")
+}
+
+const SUPPORTED_EXTENSIONS = new Set(["obj", "mtl", "stl", "ply", "gltf", "glb", "dae", "dxf", "unity", "prefab"])
+
+export interface Model3dSummaryOptions {
+	maxSourceBytes?: number
+}
+
+export async function summarizeModel3d(filePath: string, options: Model3dSummaryOptions = {}): Promise<string> {
 	const extension = path.extname(filePath).toLowerCase().replace(/^\./, "")
 	const fileName = path.basename(filePath)
 	if (!SUPPORTED_EXTENSIONS.has(extension)) {
@@ -362,7 +409,7 @@ export async function summarizeModel3d(filePath: string): Promise<string> {
 		)
 	}
 
-	const buffer = await readSource(filePath)
+	const buffer = await readSource(filePath, options.maxSourceBytes)
 	let summary: string
 	switch (extension) {
 		case "obj":
@@ -397,6 +444,13 @@ export async function summarizeModel3d(filePath: string): Promise<string> {
 			break
 		case "dae":
 			summary = summarizeDae(assertText(buffer, extension), fileName)
+			break
+		case "dxf":
+			summary = summarizeDxf(assertText(buffer, extension), fileName)
+			break
+		case "unity":
+		case "prefab":
+			summary = summarizeUnityAsset(assertText(buffer, extension), fileName)
 			break
 		default:
 			throw new Error(`Unsupported 3D format ".${extension}".`)

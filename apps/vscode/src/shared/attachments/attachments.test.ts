@@ -25,8 +25,8 @@ describe("attachment limits", () => {
 })
 
 describe("attachment feature flags", () => {
-	it("keeps unshipped rollout flags off", () => {
-		expect(ATTACHMENT_FEATURE_FLAGS.binary3dConverters).toBe(false)
+	it("enables the shipped attachment phases", () => {
+		expect(ATTACHMENT_FEATURE_FLAGS.binary3dConverters).toBe(true)
 	})
 
 	it("reports flags through the helper", () => {
@@ -34,6 +34,7 @@ describe("attachment feature flags", () => {
 		expect(isAttachmentFeatureEnabled("pdfOcr")).toBe(true)
 		expect(isAttachmentFeatureEnabled("videoAudio")).toBe(true)
 		expect(isAttachmentFeatureEnabled("model3d")).toBe(true)
+		expect(isAttachmentFeatureEnabled("binary3dConverters")).toBe(true)
 	})
 })
 

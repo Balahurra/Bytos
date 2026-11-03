@@ -34,6 +34,7 @@ const INCLUDE_PATTERNS = [
 	"src/integrations/misc/pdf-ocr.test.ts",
 	"src/integrations/misc/media-attachments.test.ts",
 	"src/integrations/misc/model3d-attachments.test.ts",
+	"src/integrations/misc/model3d-converter.test.ts",
 	"src/shared/vsCodeSelectorUtils.test.ts",
 	"src/core/storage/remote-config/**/*.test.ts",
 	"src/shared/model-catalog/provider-helpers.test.ts",

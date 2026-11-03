@@ -76,8 +76,45 @@ export async function selectFiles(imagesAllowed: boolean): Promise<{ images: str
 		"gltf",
 		"glb",
 		"dae",
+		"dxf",
+		"unity",
+		"prefab",
+		// Binary 3D/CAD (external converters)
+		"fbx",
+		"blend",
+		"3ds",
+		"dwg",
+		"step",
+		"stp",
+		"iges",
+		"igs",
+		"uasset",
+		"umap",
 	]
 	const MEDIA_EXTENSIONS = ["mp4", "m4v", "webm", "mov", "mp3", "wav", "m4a", "ogg", "flac"]
+	const LARGE_SOURCE_EXTENSIONS = [
+		...MEDIA_EXTENSIONS,
+		"obj",
+		"mtl",
+		"stl",
+		"ply",
+		"gltf",
+		"glb",
+		"dae",
+		"dxf",
+		"unity",
+		"prefab",
+		"fbx",
+		"blend",
+		"3ds",
+		"dwg",
+		"step",
+		"stp",
+		"iges",
+		"igs",
+		"uasset",
+		"umap",
+	]
 
 	const showDialogueResponse = await HostProvider.window.showOpenDialogue({
 		canSelectMany: true,
@@ -135,7 +172,7 @@ export async function selectFiles(imagesAllowed: boolean): Promise<{ images: str
 		// for standard models we will check the size of the file to ensure its not too large
 		try {
 			const stats = await fs.stat(filePath)
-			const isMedia = MEDIA_EXTENSIONS.includes(fileExtension)
+			const isMedia = LARGE_SOURCE_EXTENSIONS.includes(fileExtension)
 			const maxBytes = isMedia ? ATTACHMENT_LIMITS.maxMediaFileBytes : ATTACHMENT_LIMITS.maxFileBytes
 			if (stats.size > maxBytes) {
 				Logger.warn(`File too large, skipping: ${filePath}`)

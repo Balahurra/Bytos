@@ -14,7 +14,7 @@ import { getProviderModelIdKey } from "@shared/storage/provider-keys"
 import { StateManager } from "@/core/storage/StateManager"
 import { extractTextFromFile } from "@/integrations/misc/extract-text"
 import { describeMediaToolRequirement, extractVideoFrames, transcribeAudio } from "@/integrations/misc/media-attachments"
-import { summarizeModel3d } from "@/integrations/misc/model3d-attachments"
+import { summarizeModel3dAsset } from "@/integrations/misc/model3d-converter"
 import { Logger } from "@/shared/services/Logger"
 import { toSdkProviderId } from "./model-catalog/sdk-provider-id"
 
@@ -188,7 +188,7 @@ export async function loadUserFileContentForChat(filePath: string): Promise<User
 		if (!isAttachmentFeatureEnabled("model3d")) {
 			throw new Error(`3D attachment support is disabled in this build (${path.basename(filePath)}).`)
 		}
-		return summarizeModel3d(filePath)
+		return summarizeModel3dAsset(filePath)
 	}
 
 	return extractTextFromFile(filePath)

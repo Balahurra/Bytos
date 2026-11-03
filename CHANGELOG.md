@@ -1,5 +1,23 @@
 # Changelog
 
+## [4.1.39]
+
+### Added
+
+- **Binary 3D/CAD conversion** through external tools detected on PATH:
+  - Blender headless for BLEND/FBX/3DS → temporary GLB
+  - Assimp for FBX/3DS → temporary GLB/glTF
+  - FreeCADCmd for STEP/STP/IGES/IGS → temporary STL
+  - LibreDWG (`dwg2dxf`) for DWG → DXF summary
+- DXF, Unity `.unity` and `.prefab` assets are summarized directly (entities/layers/blocks, GameObjects/components/animations).
+- Unreal `.uasset`/`.umap` files get explicit guidance to export glTF/GLB/FBX.
+- 3D/CAD sources can be up to 200 MB; converted output is size-checked (100 MB) and summarized with the existing 3D summarizer.
+
+### Safety
+
+- Converters run out-of-process with timeouts, no shell, temp-directory isolation, and guaranteed cleanup.
+- Conversion failures surface a per-format install hint and never damage chat state.
+
 ## [4.1.38]
 
 ### Added

@@ -42,23 +42,23 @@ for (const profile of profiles) {
 
 		await helper.configureMockProvider(page, sidebar)
 
-		await page.getByRole("button", { name: "Settings", exact: true }).click()
-		await sidebar.getByTestId("tab-general").click()
+		const settings = await helper.openSettings(page)
+		await settings.getByTestId("tab-general").click()
 
-		const executionMode = sidebar.locator("#terminal-execution-mode")
+		const executionMode = settings.locator("#terminal-execution-mode")
 		await expect(executionMode).toBeVisible()
 		await executionMode.click()
-		await sidebar.getByRole("option", { name: "Background Exec" }).click()
+		await settings.getByRole("option", { name: "Background Exec" }).click()
 
-		const terminalProfile = sidebar.locator("#default-terminal-profile")
+		const terminalProfile = settings.locator("#default-terminal-profile")
 		await terminalProfile.click()
-		await sidebar.getByRole("option", { name: profile.profileName, exact: true }).click()
+		await settings.getByRole("option", { name: profile.profileName, exact: true }).click()
 
 		await expect(executionMode).toHaveAttribute("current-value", "backgroundExec")
 		await expect(terminalProfile).toHaveAttribute("current-value", profile.profileId)
 		await page.screenshot({ path: testInfo.outputPath("powershell-background-settings.png"), fullPage: true })
 
-		await sidebar.getByRole("button", { name: "Done" }).click()
+		await settings.getByRole("button", { name: "Done" }).click()
 		const inputbox = sidebar.getByTestId("chat-input")
 		await inputbox.fill("powershell_background_request")
 		await sidebar.getByTestId("send-button").click()

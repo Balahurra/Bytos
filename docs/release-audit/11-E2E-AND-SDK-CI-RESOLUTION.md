@@ -50,6 +50,22 @@ selectors, **B (outdated expected behavior)** for the file-edit approval flow
 and provider-backed chat setup. No **C (product regression)** was found: the
 product's current behaviour is coherent and the tests were stale.
 
+### Second verification pass (Linux/macOS)
+
+The first CI run of the rewritten suite exposed three cross-platform issues
+that Windows could not show:
+
+1. **E2E hook fixture mode.** `workspace-hooks/.bytosrules/hooks/UserPromptSubmit`
+   was committed as `100644`; Linux/macOS could not execute it, so
+   `hook-ran.json` was never written. Fixed by recording `100755` in Git.
+2. **Settings frame on macOS.** Clicking the workbench Settings action can open
+   the settings webview in a different frame; asserting inside the cached chat
+   frame failed. `openSettings(page)` now clicks the action and finds the frame
+   that actually contains `#api-provider`.
+3. **Brittle editor selection.** `div:nth-child(4) > span > span` timed out and
+   forced Playwright retries. Selection now goes through Monaco's accessibility
+   textbox (`press("ControlOrMeta+a")`), which is stable on all platforms.
+
 ### SDK TUI
 
 The unauthenticated tests relied on the production default endpoint
@@ -81,6 +97,9 @@ not the product to the tests.
 ## 5. Playwright changes
 
 - `utils/helpers.ts`
+  - New `openSettings(page)`: clicks the Settings action and locates the frame
+    containing `#api-provider` (the settings webview can land in the sidebar or
+    an editor frame depending on platform/layout).
   - New `configureMockProvider(page, sidebar)`: opens Settings, selects the
     OpenAI Compatible provider, sets `http://localhost:7777/api/v1`, the mock
     token, and model `test-model`, waits for the deterministic persisted-key
@@ -88,6 +107,8 @@ not the product to the tests.
   - A persistence barrier replaces arbitrary sleeps: the API-key field shows
     its saved mask only after the debounced write round-trips.
   - Removed the obsolete `signin()` flow.
+- `utils/common.ts`: editor selection uses Monaco's accessibility textbox
+  instead of the brittle CSS line selector.
 - `auth.test.ts` rewritten around the real workflow: chat-first start →
   configure provider in Settings → return to chat → reopen Settings and verify
   the stored key is masked.
@@ -142,7 +163,7 @@ annotations are non-fatal; the job still reports success.
 
 | Check | Command | Result |
 |---|---|---|
-| Full extension E2E | `bun run e2e` (apps/vscode) | **PASS** — 14 passed (setup + 13 tests; the Store-PowerShell-7 case is skipped by design) |
+| Full extension E2E | `bun run e2e` (apps/vscode) | **PASS** — 14 passed, no retries (setup + 13 tests; the Store-PowerShell-7 case is skipped by design) |
 | File edit + PowerShell subset | `bun run e2e -- --grep "File Edit|PowerShell 5.1"` | **PASS** — 4 passed |
 | Extension typecheck | `bun run check-types` | **PASS** |
 | CLI typecheck | `bun run typecheck` (apps/cli) | **PASS** |

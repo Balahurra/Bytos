@@ -252,6 +252,35 @@ export class E2ETestHelper {
 		}
 	}
 
+	private async findFrameContaining(page: Page, selector: string, timeoutMs = 30_000): Promise<Frame> {
+		const deadline = Date.now() + timeoutMs
+		while (Date.now() < deadline) {
+			for (const frame of page.frames()) {
+				if (frame.isDetached()) continue
+				try {
+					if ((await frame.locator(selector).count()) > 0) return frame
+				} catch {
+					// The frame navigated while probing; try the next one.
+				}
+			}
+			await new Promise((resolve) => setTimeout(resolve, 100))
+		}
+		throw new Error(`Bytos Settings did not open (no frame contains ${selector})`)
+	}
+
+	/**
+	 * Open Bytos Settings and return the frame that actually hosts it.
+	 *
+	 * The sidebar title-bar action lives in the workbench frame, and the
+	 * settings webview can land in the sidebar or in an editor frame depending
+	 * on the platform/layout. Locate it by its provider selector instead of
+	 * assuming which frame it uses.
+	 */
+	public async openSettings(page: Page): Promise<Frame> {
+		await page.getByRole("button", { name: "Settings", exact: true }).first().click()
+		return this.findFrameContaining(page, "#api-provider")
+	}
+
 	/**
 	 * Configure the deterministic E2E provider.
 	 *
@@ -264,19 +293,18 @@ export class E2ETestHelper {
 	 * key field is replaced by its saved mask, which is asserted below.
 	 */
 	public async configureMockProvider(page: Page, sidebar: Frame): Promise<void> {
-		await page.getByRole("button", { name: "Settings", exact: true }).click()
-		await expect(sidebar.getByText("Settings", { exact: true })).toBeVisible()
+		const settings = await this.openSettings(page)
 
-		await sidebar.locator("#api-provider").locator("input").click()
-		await sidebar.getByRole("option", { name: "OpenAI Compatible", exact: true }).click()
+		await settings.locator("#api-provider").locator("input").click()
+		await settings.getByRole("option", { name: "OpenAI Compatible", exact: true }).click()
 
-		await sidebar.getByPlaceholder("Enter base URL...").first().locator("input").fill("http://localhost:7777/api/v1")
+		await settings.getByPlaceholder("Enter base URL...").first().locator("input").fill("http://localhost:7777/api/v1")
 
 		const apiKey = "test-personal-token"
-		const apiKeyField = sidebar.getByRole("textbox", { name: "OpenAI Compatible API Key" }).first()
+		const apiKeyField = settings.getByRole("textbox", { name: "OpenAI Compatible API Key" }).first()
 		await apiKeyField.fill(apiKey)
 
-		const modelField = sidebar.getByPlaceholder("Enter Model ID...").first().locator("input")
+		const modelField = settings.getByPlaceholder("Enter Model ID...").first().locator("input")
 		await modelField.fill("test-model")
 		await modelField.blur()
 
@@ -284,7 +312,7 @@ export class E2ETestHelper {
 		// character). Seeing the mask proves the debounced write completed.
 		await expect(apiKeyField).toHaveValue("\u2022".repeat(apiKey.length))
 
-		await sidebar.getByRole("button", { name: "Done" }).click()
+		await settings.getByRole("button", { name: "Done" }).click()
 		await expect(sidebar.getByTestId("chat-input")).toBeVisible()
 		await expect(sidebar.getByText(/openai-compat:test-model/)).toBeVisible()
 	}

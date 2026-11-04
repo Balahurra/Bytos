@@ -8,8 +8,11 @@ export const openTab = async (_page: Page, tabName: string) => {
 }
 
 export const addSelectedCodeToBytosWebview = async (_page: Page) => {
-	await _page.locator("div:nth-child(4) > span > span").first().click()
-	await _page.getByRole("textbox", { name: "The editor is not accessible" }).press("ControlOrMeta+a")
+	// Select through Monaco's accessibility textarea: it is stable across
+	// platforms, whereas clicking a DOM line is brittle (the failing macOS /
+	// multi-root runs timed out on the CSS locator).
+	const editorText = _page.getByRole("textbox", { name: "The editor is not accessible" })
+	await editorText.press("ControlOrMeta+a")
 
 	// Open Code Actions via keyboard for cross-platform reliability
 	await _page.keyboard.press("ControlOrMeta+.")

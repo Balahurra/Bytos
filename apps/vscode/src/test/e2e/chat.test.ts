@@ -73,20 +73,20 @@ e2e.describe("Checkpoint settings", () => {
 		await helper.configureMockProvider(page, sidebar)
 
 		const openSettings = async () => {
-			await page.getByRole("button", { name: "Settings" }).first().click()
-			await expect(sidebar.getByText("Settings", { exact: true })).toBeVisible()
-			await sidebar.getByRole("tab").nth(1).click()
-			await expect(sidebar.getByText("Feature Settings", { exact: true })).toBeVisible()
+			settings = await helper.openSettings(page)
+			await settings.getByRole("tab").nth(1).click()
+			await expect(settings.getByText("Feature Settings", { exact: true })).toBeVisible()
 		}
-		const checkpoints = sidebar.getByText("Checkpoints", { exact: true }).locator("..").getByRole("switch")
-		const checkpointSetting = sidebar.locator("#checkpoints-setting")
+		let settings: import("@playwright/test").Frame
 		const inputbox = sidebar.getByTestId("chat-input")
 
 		await openSettings()
+		const checkpoints = settings.getByText("Checkpoints", { exact: true }).locator("..").getByRole("switch")
+		const checkpointSetting = settings.locator("#checkpoints-setting")
 		await expect(checkpoints).toBeChecked()
 		await checkpoints.click()
 		await expect(checkpoints).not.toBeChecked()
-		await sidebar.getByRole("button", { name: "Done" }).click()
+		await settings.getByRole("button", { name: "Done" }).click()
 
 		await inputbox.fill("message without checkpoints")
 		await sidebar.getByTestId("send-button").click()

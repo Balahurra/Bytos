@@ -12,13 +12,11 @@ e2e("Views - can configure a provider key in Settings and return to Chat", async
 	await helper.configureMockProvider(page, sidebar)
 
 	// Re-open Settings and confirm the key was stored as a mask.
-	await page.getByRole("button", { name: "Settings", exact: true }).click()
-	await expect(sidebar.getByText("Settings", { exact: true })).toBeVisible()
-
-	const keyField = sidebar.getByRole("textbox", { name: "OpenAI Compatible API Key" }).first()
+	const settings = await helper.openSettings(page)
+	const keyField = settings.getByRole("textbox", { name: "OpenAI Compatible API Key" }).first()
 	await expect(keyField).toHaveValue("\u2022".repeat("test-personal-token".length))
 
-	await sidebar.getByRole("button", { name: "Done" }).click()
+	await settings.getByRole("button", { name: "Done" }).click()
 	await expect(sidebar.getByTestId("chat-input")).toBeVisible()
 	await expect(sidebar.getByText(/openai-compat:test-model/)).toBeVisible()
 })

@@ -1,6 +1,6 @@
 import net from "node:net"
-import { expect } from "@playwright/test"
-import { e2e } from "./utils/helpers"
+import { expect, type Frame, type Page } from "@playwright/test"
+import { E2ETestHelper, e2e } from "./utils/helpers"
 
 async function waitForPortListening(port: number, timeoutMs: number): Promise<void> {
 	const deadline = Date.now() + timeoutMs
@@ -20,15 +20,11 @@ async function waitForPortListening(port: number, timeoutMs: number): Promise<vo
 	throw new Error(`Nothing listening on port ${port} after ${timeoutMs}ms`)
 }
 
-async function navigateToCodexProvider(
-	page: import("@playwright/test").Page,
-	sidebar: import("@playwright/test").Frame,
-): Promise<void> {
-	await page.getByRole("button", { name: "Settings", exact: true }).click()
-	await expect(sidebar.getByText("Settings", { exact: true })).toBeVisible()
-	await sidebar.locator("#api-provider").locator("input").click()
-	await sidebar.getByTestId("provider-option-openai-codex").click()
-	await expect(sidebar.getByRole("button", { name: "Sign in to OpenAI Codex" })).toBeVisible()
+async function navigateToCodexProvider(helper: E2ETestHelper, page: Page, _sidebar: Frame): Promise<void> {
+	const settings = await helper.openSettings(page)
+	await settings.locator("#api-provider").locator("input").click()
+	await settings.getByTestId("provider-option-openai-codex").click()
+	await expect(settings.getByRole("button", { name: "Sign in to OpenAI Codex" })).toBeVisible()
 }
 
 async function occupy(host: string, port: number): Promise<net.Server> {
@@ -40,7 +36,7 @@ async function occupy(host: string, port: number): Promise<net.Server> {
 	return srv
 }
 
-e2e("Codex sign-in fails fast with a port-in-use toast when 1455 is occupied", async ({ page, sidebar }) => {
+e2e("Codex sign-in fails fast with a port-in-use toast when 1455 is occupied", async ({ helper, page, sidebar }) => {
 	// Occupy the fixed Codex OAuth callback port on both loopback families so
 	// the extension host cannot bind it regardless of how it resolves localhost.
 	const blockers: net.Server[] = []
@@ -52,7 +48,7 @@ e2e("Codex sign-in fails fast with a port-in-use toast when 1455 is occupied", a
 	expect(blockers.length).toBeGreaterThan(0)
 
 	try {
-		await navigateToCodexProvider(page, sidebar)
+		await navigateToCodexProvider(helper, page, sidebar)
 
 		const signInButton = sidebar.getByRole("button", { name: "Sign in to OpenAI Codex" })
 		await expect(signInButton).toBeVisible()
@@ -68,21 +64,24 @@ e2e("Codex sign-in fails fast with a port-in-use toast when 1455 is occupied", a
 	}
 })
 
-e2e("Codex sign-in with port free binds the callback server and surfaces OAuth redirect errors", async ({ page, sidebar }) => {
-	await navigateToCodexProvider(page, sidebar)
+e2e(
+	"Codex sign-in with port free binds the callback server and surfaces OAuth redirect errors",
+	async ({ helper, page, sidebar }) => {
+		await navigateToCodexProvider(helper, page, sidebar)
 
-	const signInButton = sidebar.getByRole("button", { name: "Sign in to OpenAI Codex" })
-	await expect(signInButton).toBeVisible()
-	await signInButton.click()
+		const signInButton = sidebar.getByRole("button", { name: "Sign in to OpenAI Codex" })
+		await expect(signInButton).toBeVisible()
+		await signInButton.click()
 
-	// The SDK binds the callback server before opening the browser; prove the
-	// real port-free wiring by simulating the OAuth redirect the browser
-	// would deliver. An `error` callback settles regardless of state.
-	await waitForPortListening(1455, 15_000)
-	const response = await fetch("http://localhost:1455/auth/callback?error=access_denied")
-	expect(response.status).toBe(400)
+		// The SDK binds the callback server before opening the browser; prove the
+		// real port-free wiring by simulating the OAuth redirect the browser
+		// would deliver. An `error` callback settles regardless of state.
+		await waitForPortListening(1455, 15_000)
+		const response = await fetch("http://localhost:1455/auth/callback?error=access_denied")
+		expect(response.status).toBe(400)
 
-	await expect(page.locator(".notifications-toasts").getByText(/OAuth error: access_denied/)).toBeVisible({
-		timeout: 15_000,
-	})
-})
+		await expect(page.locator(".notifications-toasts").getByText(/OAuth error: access_denied/)).toBeVisible({
+			timeout: 15_000,
+		})
+	},
+)

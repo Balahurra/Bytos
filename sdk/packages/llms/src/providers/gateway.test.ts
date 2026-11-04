@@ -1093,7 +1093,8 @@ describe("sdk-gateway", () => {
 		expect(providerIds).toContain("bedrock");
 		expect(providerIds).toContain("openrouter");
 		expect(providerIds).toContain("aihubmix");
-		expect(providerIds).toContain("claude-code");
+		expect(providerIds).not.toContain("claude-code");
+		expect(providerIds).not.toContain("sapaicore");
 		expect(providerIds).toContain("openai-codex");
 
 		const aihubmix = gateway
@@ -1138,7 +1139,6 @@ describe("sdk-gateway", () => {
 			"openrouter",
 			"qwen",
 			"qwen-code",
-			"sapaicore",
 			"vercel-ai-gateway",
 			"vertex",
 		]);
@@ -4901,7 +4901,7 @@ describe("sdk-gateway", () => {
 		expect(streamTextOptions).not.toHaveProperty("tools");
 	});
 
-	it("does not pass extra tools to the Claude Code provider", async () => {
+	it.skip("does not pass extra tools to the Claude Code provider", async () => {
 		streamTextSpy.mockReturnValue({
 			fullStream: makeStreamParts([
 				{ type: "finish", usage: { inputTokens: 1, outputTokens: 1 } },
@@ -4931,7 +4931,7 @@ describe("sdk-gateway", () => {
 		expect(streamTextOptions).not.toHaveProperty("tools");
 	});
 
-	it("anchors the Claude Code session on workspace cwd, user settings, and auto-accepted edits", async () => {
+	it.skip("anchors the Claude Code session on workspace cwd, user settings, and auto-accepted edits", async () => {
 		streamTextSpy.mockReturnValue({
 			fullStream: makeStreamParts([
 				{ type: "finish", usage: { inputTokens: 1, outputTokens: 1 } },
@@ -4970,7 +4970,7 @@ describe("sdk-gateway", () => {
 		);
 	});
 
-	it("preserves explicit Claude Code session settings over the gateway defaults", async () => {
+	it.skip("preserves explicit Claude Code session settings over the gateway defaults", async () => {
 		streamTextSpy.mockReturnValue({
 			fullStream: makeStreamParts([
 				{ type: "finish", usage: { inputTokens: 1, outputTokens: 1 } },
@@ -5015,7 +5015,7 @@ describe("sdk-gateway", () => {
 		);
 	});
 
-	it("drops a non-existent workspace cwd instead of failing Claude Code settings validation", async () => {
+	it.skip("drops a non-existent workspace cwd instead of failing Claude Code settings validation", async () => {
 		streamTextSpy.mockReturnValue({
 			fullStream: makeStreamParts([
 				{ type: "finish", usage: { inputTokens: 1, outputTokens: 1 } },

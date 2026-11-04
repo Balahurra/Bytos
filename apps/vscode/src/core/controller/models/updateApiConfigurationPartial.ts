@@ -2,6 +2,8 @@ import { Empty } from "@shared/proto/bytos/common"
 import { UpdateApiConfigurationPartialRequest } from "@shared/proto/bytos/models"
 import { convertProtoToApiConfiguration } from "@shared/proto-conversions/models/api-configuration-conversion"
 import { Logger } from "@/shared/services/Logger"
+import { isSecretMaskOnly, stripSecretMask } from "@/shared/storage/secret-mask"
+import { isSecretKey } from "@/shared/storage/state-keys"
 import type { Controller } from "../index"
 import { clearOrganizationForBytosPassProviderSelection } from "./handleBytosPassProviderSelection"
 import { normalizeProviderSwitchModel } from "./providerSwitchNormalization"
@@ -39,7 +41,17 @@ export async function updateApiConfigurationPartial(
 		// Apply only the fields specified in the mask
 		const updatedConfig = { ...currentConfig }
 		for (const field of request.updateMask) {
-			;(updatedConfig as Record<string, any>)[field] = (newConfigValues as Record<string, any>)[field]
+			let nextValue = (newConfigValues as Record<string, any>)[field]
+			if (isSecretKey(field)) {
+				// A masked credential means "unchanged"; never persist the mask.
+				if (isSecretMaskOnly(nextValue)) {
+					continue
+				}
+				if (typeof nextValue === "string" && nextValue.includes("\u2022")) {
+					nextValue = stripSecretMask(nextValue)
+				}
+			}
+			;(updatedConfig as Record<string, any>)[field] = nextValue
 		}
 		const normalizedConfig = normalizeProviderSwitchModel(controller.getProviderConfigStore(), currentConfig, updatedConfig)
 

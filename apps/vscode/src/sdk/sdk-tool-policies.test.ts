@@ -4,8 +4,27 @@ import { toVscodeMcpToolName } from "./mcp-tool-name"
 import { buildToolPolicies, isToolAutoApproved } from "./sdk-tool-policies"
 
 describe("isToolAutoApproved", () => {
+	it("does not auto-approve any privileged category by default", () => {
+		for (const tool of ["read_files", "editor", "apply_patch", "run_commands", "fetch_web_content", "firecrawl__scrape"]) {
+			expect(isToolAutoApproved(tool, DEFAULT_AUTO_APPROVAL_SETTINGS)).toBe(false)
+		}
+	})
+
+	it("does not auto-approve unknown or future tools", () => {
+		expect(isToolAutoApproved("some_future_tool", DEFAULT_AUTO_APPROVAL_SETTINGS)).toBe(false)
+		expect(isToolAutoApproved("skills", DEFAULT_AUTO_APPROVAL_SETTINGS)).toBe(false)
+	})
+
 	it("does not auto-approve command tools by default", () => {
 		expect(isToolAutoApproved("run_commands", DEFAULT_AUTO_APPROVAL_SETTINGS)).toBe(false)
+	})
+
+	it("builds a fail-closed wildcard policy and only exempts interaction tools", () => {
+		const policies = buildToolPolicies(DEFAULT_AUTO_APPROVAL_SETTINGS)
+		expect(policies["*"]).toEqual({ autoApprove: false })
+		expect(policies.ask_question).toEqual({ autoApprove: true })
+		expect(policies.submit_and_exit).toEqual({ autoApprove: true })
+		expect(policies.skills).toBeUndefined()
 	})
 
 	it("uses executeSafeCommands as the single command approval flag", () => {

@@ -27,7 +27,7 @@ const GeneralSettingsSection = ({ renderSectionHeader }: GeneralSettingsSectionP
 						<TooltipTrigger asChild>
 							<div className="flex items-center gap-2 mb-[5px]">
 								<VSCodeCheckbox
-									checked={telemetrySetting !== "disabled"}
+									checked={telemetrySetting === "enabled"}
 									disabled={remoteConfigSettings?.telemetrySetting === "disabled"}
 									onChange={(e: any) => {
 										const checked = e.target.checked === true
@@ -47,7 +47,7 @@ const GeneralSettingsSection = ({ renderSectionHeader }: GeneralSettingsSectionP
 						See our{" "}
 						<VSCodeLink
 							className="text-inherit"
-							href="https://docs.bytos.dev/more-info/telemetry"
+							href="https://github.com/bytos/bytos"
 							style={{ fontSize: "inherit", textDecoration: "underline" }}>
 							telemetry overview
 						</VSCodeLink>{" "}

@@ -1,5 +1,14 @@
-import { createDefaultExecutors, type ToolExecutors } from "@bytos/core"
-import * as path from "path"
+/*
+ * Copyright 2026 Cline Bot Inc.
+ * Bytos modifications Copyright 2026 Bytos contributors.
+ *
+ * Modified from the Cline project (https://github.com/cline/cline), Apache-2.0.
+ * Changes by Bytos: failed file reads that target a path outside the workspace
+ * boundary are rejected before the host is asked to read the file.
+ * See NOTICE and apps/vscode/THIRD-PARTY-NOTICES.txt.
+ */
+
+import { createDefaultExecutors, resolveWorkspacePath, type ToolExecutors } from "@bytos/core"
 
 type FileReadExecutor = NonNullable<ToolExecutors["readFile"]>
 
@@ -18,10 +27,11 @@ export function createWorkspaceFileReadExecutor(getWorkspaceRoot: () => Promise<
 		throw new Error("SDK default executors did not provide a readFile executor")
 	}
 	return async (request, context) => {
-		if (request.path.startsWith("bytos://cache/") || path.isAbsolute(request.path)) {
+		if (request.path.startsWith("bytos://cache/")) {
 			return readFile(request, context)
 		}
 		const workspaceRoot = await getWorkspaceRoot()
-		return readFile({ ...request, path: path.resolve(workspaceRoot, request.path) }, context)
+		const resolvedPath = await resolveWorkspacePath(workspaceRoot, request.path)
+		return readFile({ ...request, path: resolvedPath }, { ...context, cwd: workspaceRoot })
 	}
 }

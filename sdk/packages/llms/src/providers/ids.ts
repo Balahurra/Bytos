@@ -1,3 +1,13 @@
+/*
+ * Copyright 2026 Cline Bot Inc.
+ * Bytos modifications Copyright 2026 Bytos contributors.
+ *
+ * Modified from the Cline project (https://github.com/cline/cline), Apache-2.0.
+ * Changes by Bytos: the provider ID list drops the vendors removed from this
+ * build and adds the Bytos aliases used by the settings UI.
+ * See NOTICE and apps/vscode/THIRD-PARTY-NOTICES.txt.
+ */
+
 /**
  * Built-in provider IDs
  *
@@ -87,9 +97,21 @@ export const PROVIDER_ID_ALIASES: Record<string, BuiltInProviderId> = {
 	"sap-ai-core": BUILT_IN_PROVIDER.SAPAICORE,
 };
 
+/**
+ * Providers whose upstream SDKs cannot be redistributed in the free BYOK
+ * build. They remain in the enum for config compatibility but are not
+ * advertised or loadable.
+ */
+export const BYOK_EXCLUDED_PROVIDER_IDS = new Set<string>([
+	"claude-code",
+	"sapaicore",
+]);
+
 export const BUILT_IN_PROVIDER_IDS = [
 	...new Set([...Object.values(BUILT_IN_PROVIDER), ...GENERATED_PROVIDER_IDS]),
-] as readonly BuiltInProviderId[];
+].filter(
+	(id) => !BYOK_EXCLUDED_PROVIDER_IDS.has(id),
+) as readonly BuiltInProviderId[];
 
 /** Check if a string is a valid built-in provider ID */
 export function isBuiltInProviderId(id: string): id is BuiltInProviderId {

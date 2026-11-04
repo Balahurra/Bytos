@@ -1,3 +1,13 @@
+/*
+ * Copyright 2026 Cline Bot Inc.
+ * Bytos modifications Copyright 2026 Bytos contributors.
+ *
+ * Modified from the Cline project (https://github.com/cline/cline), Apache-2.0.
+ * Changes by Bytos: the SDK-backed controller adds Bytos session, checkpoint,
+ * credential, and Auto Phase wiring on top of the classic SDK session bridge.
+ * See NOTICE and apps/vscode/THIRD-PARTY-NOTICES.txt.
+ */
+
 // Replaces classic src/core/controller/index.ts (see origin/main)
 //
 // The SDK-backed Controller. It provides the same interface as the classic
@@ -35,6 +45,7 @@ import { isSecretKey, type Settings } from "@shared/storage/state-keys"
 import type { Mode } from "@shared/storage/types"
 import type { TelemetrySetting } from "@shared/TelemetrySetting"
 import type { BytosCheckpointRestore } from "@shared/WebviewMessage"
+import { BytosEndpoint } from "@/config"
 import { type AutoPhasePrompt, readAutoPhasePlanWithKeys } from "@/core/auto-phase/plan-store"
 import { parseMentions } from "@/core/mentions"
 import { ensureMcpServersDirectoryExists } from "@/core/storage/disk"
@@ -794,22 +805,28 @@ export class Controller {
 		// config polling timer (enterprise policy enforcement). The timer must
 		// start after auth is restored so remote config can identify the user's
 		// organization and apply org-level policies.
-		this.authService
-			.restoreRefreshTokenAndRetrieveAuthInfo()
-			.then(async () => {
-				try {
-					await this.refreshRemoteConfig()
-				} catch (err) {
-					Logger.error("[SdkController] Initial remote config refresh failed:", err)
-				}
-				this.startRemoteConfigTimer()
-			})
-			.catch((err) => {
-				Logger.error("[SdkController] Failed to restore auth state:", err)
-			})
-			.finally(() => {
-				this.resolveInitialRemoteConfigReady()
-			})
+		if (BytosEndpoint.isSelfHosted()) {
+			this.authService
+				.restoreRefreshTokenAndRetrieveAuthInfo()
+				.then(async () => {
+					try {
+						await this.refreshRemoteConfig()
+					} catch (err) {
+						Logger.error("[SdkController] Initial remote config refresh failed:", err)
+					}
+					this.startRemoteConfigTimer()
+				})
+				.catch((err) => {
+					Logger.error("[SdkController] Failed to restore auth state:", err)
+				})
+				.finally(() => {
+					this.resolveInitialRemoteConfigReady()
+				})
+		} else {
+			// Free BYOK build: no remote authentication, organization policy,
+			// or Bytos backend. Session starts must not wait on any network call.
+			this.resolveInitialRemoteConfigReady()
+		}
 
 		Logger.log("[SdkController] Initialized with SDK adapter layer + gRPC bridge + auth services")
 	}
@@ -902,6 +919,9 @@ export class Controller {
 	}
 
 	async refreshRemoteConfig(options: { force?: boolean } = {}): Promise<boolean> {
+		if (!BytosEndpoint.isSelfHosted()) {
+			return false
+		}
 		const userId = this.authService.getInfo().user?.uid ?? "signed-out"
 		const organizationId = this.authService.getActiveOrganizationId() ?? "no-org"
 		return this.remoteConfigRefreshCoordinator.refresh(`${userId}:${organizationId}`, options)
@@ -924,6 +944,9 @@ export class Controller {
 	}
 
 	private async ensureRemoteConfigForSessionStart(): Promise<void> {
+		if (!BytosEndpoint.isSelfHosted()) {
+			return
+		}
 		const startedAt = Date.now()
 		await this.waitForInitialRemoteConfig()
 		let refreshed = false

@@ -55,7 +55,7 @@ const AboutSection = ({ version, extensionVariant, renderSectionHeader }: AboutS
 
 					<h3 className="text-md font-semibold">Resources</h3>
 					<p>
-						<VSCodeLink href="https://docs.bytos.dev/">Documentation</VSCodeLink>
+						<VSCodeLink href="https://github.com/bytos/bytos">Documentation</VSCodeLink>
 						{" • "}
 						<VSCodeLink href="https://bytos.dev/">https://bytos.dev</VSCodeLink>
 					</p>

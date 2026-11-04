@@ -151,6 +151,7 @@ export {
 	isAutoUpdateEnabledGlobally,
 	isModelToolEnabledGlobally,
 	isPluginDisabledGlobally,
+	isTelemetryOptedInGlobally,
 	isTelemetryOptedOutGlobally,
 	isToolDisabledGlobally,
 	readCompactionModeGlobally,

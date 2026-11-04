@@ -1,3 +1,15 @@
+/*
+ * Copyright 2026 Cline Bot Inc.
+ * Bytos modifications Copyright 2026 Bytos contributors.
+ *
+ * Modified from the Cline project (https://github.com/cline/cline), Apache-2.0.
+ * Changes by Bytos: provider credentials are added to and removed from the
+ * host-provided credential store (VS Code SecretStorage) instead of being
+ * written to a plaintext providers.json, and legacy plaintext credentials are
+ * migrated and verified before the old file is rewritten.
+ * See NOTICE and apps/vscode/THIRD-PARTY-NOTICES.txt.
+ */
+
 import {
 	chmodSync,
 	existsSync,
@@ -38,6 +50,173 @@ function nowIso(): string {
 export interface ProviderSettingsManagerOptions {
 	filePath?: string;
 	dataDir?: string;
+	/**
+	 * Optional credential backend. The VS Code host supplies a SecretStorage
+	 * adapter; CLI and standalone hosts leave this undefined and retain the
+	 * file-backed behavior.
+	 */
+	credentials?: ProviderCredentialStore;
+}
+
+/**
+ * Credential fields that must never be persisted in providers.json when a
+ * host provides a secure credential store.
+ */
+export interface ProviderCredentials {
+	apiKey?: string;
+	auth?: {
+		apiKey?: string;
+		accessToken?: string;
+		refreshToken?: string;
+	};
+	aws?: {
+		accessKey?: string;
+		secretKey?: string;
+		sessionToken?: string;
+	};
+	sap?: {
+		clientId?: string;
+		clientSecret?: string;
+	};
+	headers?: Record<string, string>;
+}
+
+export interface ProviderCredentialStore {
+	get(providerId: string): ProviderCredentials | undefined;
+	set(providerId: string, credentials: ProviderCredentials): void;
+	delete(providerId: string): void;
+	flush?(): Promise<void>;
+}
+
+let defaultProviderCredentialStore: ProviderCredentialStore | undefined;
+
+/**
+ * Install the process-wide credential backend. Called once by the VS Code host
+ * before any ProviderSettingsManager is constructed.
+ */
+export function setProviderCredentialStore(
+	store: ProviderCredentialStore | undefined,
+): void {
+	defaultProviderCredentialStore = store;
+}
+
+export function getProviderCredentialStore():
+	| ProviderCredentialStore
+	| undefined {
+	return defaultProviderCredentialStore;
+}
+
+function hasAnyCredential(credentials: ProviderCredentials): boolean {
+	return Boolean(
+		credentials.apiKey ||
+			credentials.auth?.apiKey ||
+			credentials.auth?.accessToken ||
+			credentials.auth?.refreshToken ||
+			credentials.aws?.accessKey ||
+			credentials.aws?.secretKey ||
+			credentials.aws?.sessionToken ||
+			credentials.sap?.clientId ||
+			credentials.sap?.clientSecret ||
+			(credentials.headers && Object.keys(credentials.headers).length > 0),
+	);
+}
+
+function splitProviderCredentials(settings: ProviderSettings): {
+	settings: ProviderSettings;
+	credentials: ProviderCredentials;
+} {
+	const credentials: ProviderCredentials = {};
+	const next: ProviderSettings = { ...settings };
+
+	if (settings.apiKey) {
+		credentials.apiKey = settings.apiKey;
+		delete next.apiKey;
+	}
+	if (settings.auth) {
+		const auth = { ...settings.auth };
+		const secretAuth: NonNullable<ProviderCredentials["auth"]> = {};
+		if (auth.apiKey) {
+			secretAuth.apiKey = auth.apiKey;
+			delete auth.apiKey;
+		}
+		if (auth.accessToken) {
+			secretAuth.accessToken = auth.accessToken;
+			delete auth.accessToken;
+		}
+		if (auth.refreshToken) {
+			secretAuth.refreshToken = auth.refreshToken;
+			delete auth.refreshToken;
+		}
+		if (hasAnyCredential({ auth: secretAuth })) {
+			credentials.auth = secretAuth;
+		}
+		next.auth = auth;
+	}
+	if (settings.aws) {
+		const aws = { ...settings.aws };
+		const secretAws: NonNullable<ProviderCredentials["aws"]> = {};
+		if (aws.accessKey) {
+			secretAws.accessKey = aws.accessKey;
+			delete aws.accessKey;
+		}
+		if (aws.secretKey) {
+			secretAws.secretKey = aws.secretKey;
+			delete aws.secretKey;
+		}
+		if (aws.sessionToken) {
+			secretAws.sessionToken = aws.sessionToken;
+			delete aws.sessionToken;
+		}
+		if (hasAnyCredential({ aws: secretAws })) {
+			credentials.aws = secretAws;
+		}
+		next.aws = aws;
+	}
+	if (settings.sap) {
+		const sap = { ...settings.sap };
+		const secretSap: NonNullable<ProviderCredentials["sap"]> = {};
+		if (sap.clientId) {
+			secretSap.clientId = sap.clientId;
+			delete sap.clientId;
+		}
+		if (sap.clientSecret) {
+			secretSap.clientSecret = sap.clientSecret;
+			delete sap.clientSecret;
+		}
+		if (hasAnyCredential({ sap: secretSap })) {
+			credentials.sap = secretSap;
+		}
+		next.sap = sap;
+	}
+	if (settings.headers && Object.keys(settings.headers).length > 0) {
+		credentials.headers = { ...settings.headers };
+		delete next.headers;
+	}
+
+	return { settings: next, credentials };
+}
+
+function mergeProviderCredentials(
+	settings: ProviderSettings,
+	credentials: ProviderCredentials | undefined,
+): ProviderSettings {
+	if (!credentials) {
+		return settings;
+	}
+	return {
+		...settings,
+		...(credentials.apiKey ? { apiKey: credentials.apiKey } : {}),
+		...(credentials.auth
+			? { auth: { ...settings.auth, ...credentials.auth } }
+			: {}),
+		...(credentials.aws
+			? { aws: { ...settings.aws, ...credentials.aws } }
+			: {}),
+		...(credentials.sap
+			? { sap: { ...settings.sap, ...credentials.sap } }
+			: {}),
+		...(credentials.headers ? { headers: credentials.headers } : {}),
+	};
 }
 
 export interface SaveProviderSettingsOptions {
@@ -132,10 +311,12 @@ function inferLegacyDataDir(filePath: string): string | undefined {
 export class ProviderSettingsManager {
 	private readonly filePath: string;
 	private readonly dataDir?: string;
+	private readonly credentials?: ProviderCredentialStore;
 
 	constructor(options: ProviderSettingsManagerOptions = {}) {
 		this.filePath = options.filePath ?? resolveProviderSettingsPath();
 		this.dataDir = options.dataDir ?? inferLegacyDataDir(this.filePath);
+		this.credentials = options.credentials ?? defaultProviderCredentialStore;
 		if (this.dataDir || !options.filePath) {
 			migrateLegacyProviderSettings({
 				providerSettingsManager: this,
@@ -169,12 +350,13 @@ export class ProviderSettingsManager {
 			const parsed = JSON.parse(raw) as unknown;
 			const result = StoredProviderSettingsSchema.safeParse(parsed);
 			if (result.success) {
-				registerConfiguredProvidersFromSettings(result.data);
-				const bytosAuth = result.data.providers["bytos"]?.settings?.auth;
+				const merged = this.withStoredCredentials(result.data);
+				registerConfiguredProvidersFromSettings(merged);
+				const bytosAuth = merged.providers["bytos"]?.settings?.auth;
 				sdkDebug(
-					`providers.read providers=[${Object.keys(result.data.providers).join(",")}] lastUsed=${result.data.lastUsedProvider ?? "none"} bytosAuthPresent=${!!bytosAuth?.accessToken} bytosAccessTokenHash=${hashSecret(bytosAuth?.accessToken)} bytosRefreshTokenHash=${hashSecret(bytosAuth?.refreshToken)}`,
+					`providers.read providers=[${Object.keys(merged.providers).join(",")}] lastUsed=${merged.lastUsedProvider ?? "none"} bytosAuthPresent=${!!bytosAuth?.accessToken} bytosAccessTokenHash=${hashSecret(bytosAuth?.accessToken)} bytosRefreshTokenHash=${hashSecret(bytosAuth?.refreshToken)}`,
 				);
-				return result.data;
+				return merged;
 			}
 		} catch {
 			// Invalid content falls back to a clean state.
@@ -185,6 +367,7 @@ export class ProviderSettingsManager {
 
 	write(state: StoredProviderSettings): void {
 		const normalized = StoredProviderSettingsSchema.parse(state);
+		const persisted = this.withoutStoredCredentials(normalized);
 		const dir = dirname(this.filePath);
 		if (!existsSync(dir)) {
 			mkdirSync(dir, { recursive: true, mode: 0o700 });
@@ -195,7 +378,7 @@ export class ProviderSettingsManager {
 		// as empty settings — indistinguishable from being logged out.
 		const tempPath = `${this.filePath}.${process.pid}.tmp`;
 		try {
-			writeFileSync(tempPath, `${JSON.stringify(normalized, null, 2)}\n`, {
+			writeFileSync(tempPath, `${JSON.stringify(persisted, null, 2)}\n`, {
 				encoding: "utf8",
 				mode: 0o600,
 			});
@@ -210,7 +393,63 @@ export class ProviderSettingsManager {
 		} catch {
 			// Ignore — Windows does not support POSIX chmod.
 		}
-		registerConfiguredProvidersFromSettings(normalized);
+		registerConfiguredProvidersFromSettings(persisted);
+	}
+
+	/**
+	 * Merge credentials from the host secret store into settings read from disk.
+	 * Without a credential store this is a no-op (CLI/standalone behavior).
+	 */
+	private withStoredCredentials(
+		state: StoredProviderSettings,
+	): StoredProviderSettings {
+		if (!this.credentials) {
+			return state;
+		}
+		return {
+			...state,
+			providers: Object.fromEntries(
+				Object.entries(state.providers).map(([providerId, entry]) => [
+					providerId,
+					{
+						...entry,
+						settings: mergeProviderCredentials(
+							entry.settings,
+							this.credentials?.get(providerId),
+						),
+					},
+				]),
+			),
+		};
+	}
+
+	/**
+	 * Remove credential fields before writing providers.json. The values are
+	 * handed to the host secret store instead. Without a credential store this
+	 * is a no-op (CLI/standalone behavior).
+	 */
+	private withoutStoredCredentials(
+		state: StoredProviderSettings,
+	): StoredProviderSettings {
+		if (!this.credentials) {
+			return state;
+		}
+		return {
+			...state,
+			providers: Object.fromEntries(
+				Object.entries(state.providers).map(([providerId, entry]) => {
+					const { settings, credentials } = splitProviderCredentials(
+						entry.settings,
+					);
+					if (hasAnyCredential(credentials)) {
+						this.credentials?.set(providerId, credentials);
+					} else {
+						this.credentials?.delete(providerId);
+					}
+					return [providerId, { ...entry, settings }];
+				}),
+			),
+		};
 	}
 
 	saveProviderSettings(

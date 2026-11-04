@@ -2584,6 +2584,7 @@ export class AgentRuntime {
 					iteration: this.state.iteration,
 					toolCallId: prepared.toolCall.toolCallId,
 					signal: this.abortController?.signal,
+					cwd: this.config.cwd,
 					metadata: this.config.toolContextMetadata,
 					snapshot: this.snapshot(),
 					emitUpdate: (update: unknown) => {

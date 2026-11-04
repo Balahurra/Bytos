@@ -197,7 +197,7 @@ export class OpenTelemetryTelemetryProvider implements ITelemetryProvider {
 	public isEnabled(): boolean {
 		return (
 			this.bypassUserSettings ||
-			(StateManager.get().getGlobalSettingsKey("telemetrySetting") !== "disabled" && this.telemetrySettings.hostEnabled)
+			(StateManager.get().getGlobalSettingsKey("telemetrySetting") === "enabled" && this.telemetrySettings.hostEnabled)
 		)
 	}
 

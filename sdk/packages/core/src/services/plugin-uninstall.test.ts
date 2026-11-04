@@ -116,6 +116,7 @@ describe("plugin uninstall service", () => {
 			autoUpdateEnabled: true,
 			disabledPlugins: ["/tmp/other-plugin.ts"],
 			telemetryOptOut: false,
+			telemetryOptIn: false,
 		});
 	});
 
@@ -205,6 +206,7 @@ describe("plugin uninstall service", () => {
 					autoUpdateEnabled: true,
 					disabledPlugins: [pluginPath],
 					telemetryOptOut: false,
+			telemetryOptIn: false,
 				});
 			} finally {
 				chmodSync(pluginRoot, 0o755);

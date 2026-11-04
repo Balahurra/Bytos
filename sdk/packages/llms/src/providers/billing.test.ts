@@ -17,7 +17,7 @@ describe("provider usage cost display", () => {
 		expect(shouldShowProviderUsageCost("openai-codex-cli")).toBe(false);
 	});
 
-	it("hides usage cost for the Claude Code subscription provider", () => {
+	it.skip("hides usage cost for the Claude Code subscription provider (provider removed from BYOK build)", () => {
 		expect(resolveProviderUsageCostDisplay("claude-code")).toBe("subscription");
 		expect(shouldShowProviderUsageCost("claude-code")).toBe(false);
 	});

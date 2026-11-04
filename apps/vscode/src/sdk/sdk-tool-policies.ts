@@ -1,3 +1,13 @@
+/*
+ * Copyright 2026 Cline Bot Inc.
+ * Bytos modifications Copyright 2026 Bytos contributors.
+ *
+ * Modified from the Cline project (https://github.com/cline/cline), Apache-2.0.
+ * Changes by Bytos: tool approval defaults are fail-closed; categories that are
+ * unknown to this build inherit the strictest policy instead of auto-approval.
+ * See NOTICE and apps/vscode/THIRD-PARTY-NOTICES.txt.
+ */
+
 import type { AutoApprovalSettings } from "@shared/AutoApprovalSettings"
 import type { McpHub } from "@/services/mcp/McpHub"
 import { isVscodeMcpToolName, toVscodeMcpToolName } from "./mcp-tool-name"
@@ -16,12 +26,24 @@ export function buildToolPolicies(
 	mcpHub?: McpHub,
 	mcpServerNames?: readonly string[],
 ): Record<string, { enabled?: boolean; autoApprove?: boolean }> {
-	const policies: Record<string, { enabled?: boolean; autoApprove?: boolean }> = {}
+	// Fail closed: any tool not explicitly listed below requires approval.
+	// The SDK merges "*" into every tool policy, so a newly added tool or a
+	// plugin-registered tool cannot execute automatically by default.
+	const policies: Record<string, { enabled?: boolean; autoApprove?: boolean }> = {
+		"*": { autoApprove: false },
+	}
 
 	const set = (tools: string[]) => {
 		for (const tool of tools) {
 			policies[tool] = { autoApprove: false }
 		}
+	}
+
+	// Non-privileged interaction tools do not modify the workspace or execute
+	// external code; requiring a second approval prompt for them would be
+	// confusing and would deadlock the question UI.
+	for (const tool of ["ask_question", "submit_and_exit"]) {
+		policies[tool] = { autoApprove: true }
 	}
 
 	set(["read_files", "read_file", "list_files", "list_code_definition_names", "search_codebase", "search_files"])

@@ -11,7 +11,8 @@ interface TelemetryStateManager {
 }
 
 export function telemetrySettingFromSharedGlobalSettings(): TelemetrySetting {
-	return readGlobalSettings().telemetryOptOut ? "disabled" : "enabled"
+	// Positive opt-in only: a missing marker is not consent.
+	return readGlobalSettings().telemetryOptIn === true ? "enabled" : "disabled"
 }
 
 function normalizeLegacyTelemetrySetting(value: TelemetrySetting | boolean | undefined): TelemetrySetting | undefined {

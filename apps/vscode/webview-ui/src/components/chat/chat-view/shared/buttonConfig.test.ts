@@ -148,7 +148,7 @@ describe("getButtonConfig", () => {
 				{
 					type: "ask",
 					ask: "tool",
-					text: JSON.stringify({ tool: "webFetch", path: "https://docs.bytos.dev" }),
+					text: JSON.stringify({ tool: "webFetch", path: "https://github.com/bytos/bytos" }),
 					ts: 2,
 				},
 				{

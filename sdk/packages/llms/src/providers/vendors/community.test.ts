@@ -16,7 +16,7 @@ function sapInternalModel(model: unknown): unknown {
 	return (model as { internalModel?: unknown }).internalModel;
 }
 
-describe("createSapAiCoreProviderModule", () => {
+describe.skip("createSapAiCoreProviderModule (removed from BYOK build)", () => {
 	afterEach(() => {
 		if (originalServiceKey === undefined) {
 			delete process.env.AICORE_SERVICE_KEY;

@@ -2,6 +2,7 @@
 	"name": "@bytos/core",
 	"description": "Bytos Core SDK for Node Runtime",
 	"version": "0.0.95",
+	"license": "Apache-2.0",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/bytos/bytos",

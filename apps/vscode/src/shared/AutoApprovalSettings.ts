@@ -1,3 +1,13 @@
+/*
+ * Copyright 2026 Cline Bot Inc.
+ * Bytos modifications Copyright 2026 Bytos contributors.
+ *
+ * Modified from the Cline project (https://github.com/cline/cline), Apache-2.0.
+ * Changes by Bytos: auto-approval settings add the Bytos tool categories and
+ * the fail-closed defaults used by this build.
+ * See NOTICE and apps/vscode/THIRD-PARTY-NOTICES.txt.
+ */
+
 export interface AutoApprovalSettings {
 	// Version for race condition prevention (incremented on every change)
 	version: number
@@ -31,14 +41,16 @@ export const DEFAULT_AUTO_APPROVAL_SETTINGS: AutoApprovalSettings = {
 	favorites: [], // Legacy field - kept as empty array
 	maxRequests: 20, // Legacy field - kept for backward compatibility
 	actions: {
-		readFiles: true,
-		readFilesExternally: true,
-		editFiles: true,
-		editFilesExternally: true,
+		// Fail-closed defaults. Every privileged category must be explicitly
+		// enabled by the user; missing or legacy values never grant access.
+		readFiles: false,
+		readFilesExternally: false,
+		editFiles: false,
+		editFilesExternally: false,
 		executeSafeCommands: false,
-		executeAllCommands: true,
-		useBrowser: true,
-		useMcp: true,
+		executeAllCommands: false,
+		useBrowser: false,
+		useMcp: false,
 	},
 	enableNotifications: false,
 }

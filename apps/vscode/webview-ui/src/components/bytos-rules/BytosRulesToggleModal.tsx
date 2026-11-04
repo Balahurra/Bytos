@@ -471,7 +471,7 @@ const BytosRulesToggleModal: React.FC = () => {
 									to include context and preferences for your projects or globally for every conversation.{" "}
 									<VSCodeLink
 										className="text-xs"
-										href="https://docs.bytos.dev/features/bytos-rules"
+										href="https://github.com/bytos/bytos"
 										style={{ display: "inline", fontSize: "inherit" }}>
 										Docs
 									</VSCodeLink>
@@ -481,9 +481,7 @@ const BytosRulesToggleModal: React.FC = () => {
 									Workflows allow you to define a series of steps to guide Bytos through a repetitive set of
 									tasks, such as deploying a service or submitting a PR. To invoke a workflow, type{" "}
 									<span className="text-foreground font-bold">/workflow-name</span> in the chat.{" "}
-									<VSCodeLink
-										className="text-xs inline"
-										href="https://docs.bytos.dev/features/slash-commands/workflows">
+									<VSCodeLink className="text-xs inline" href="https://github.com/bytos/bytos">
 										Docs
 									</VSCodeLink>
 								</p>
@@ -607,7 +605,7 @@ const BytosRulesToggleModal: React.FC = () => {
 									<span className="text-base">
 										Workflows are being deprecated. Use skills instead.{" "}
 										<VSCodeLink
-											href="https://docs.bytos.dev/customization/skills"
+											href="https://github.com/bytos/bytos"
 											style={{ display: "inline", fontSize: "inherit" }}>
 											Learn more
 										</VSCodeLink>
@@ -677,7 +675,7 @@ const BytosRulesToggleModal: React.FC = () => {
 											: "Toggle to enable/disable (chmod +x/-x)."}{" "}
 										<VSCodeLink
 											className="text-xs"
-											href="https://docs.bytos.dev/features/hooks"
+											href="https://github.com/bytos/bytos"
 											style={{ display: "inline", fontSize: "inherit" }}>
 											Docs
 										</VSCodeLink>

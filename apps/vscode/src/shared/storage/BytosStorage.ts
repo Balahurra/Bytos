@@ -205,6 +205,21 @@ export abstract class BytosSyncStorage<T = any> {
 		}
 	}
 
+	/**
+	 * Write multiple keys in one logical operation. Subclasses with a native
+	 * batch implementation (e.g. the file store) override this.
+	 */
+	public setBatch(entries: Record<string, T | undefined>): Thenable<void> {
+		for (const [key, value] of Object.entries(entries)) {
+			if (value === undefined) {
+				this.delete(key)
+			} else {
+				this.set(key, value)
+			}
+		}
+		return Promise.resolve()
+	}
+
 	protected abstract _get(key: string): T | undefined
 	protected abstract _set(key: string, value: T | undefined): void
 	protected abstract _delete(key: string): void

@@ -9,6 +9,8 @@ import {
 } from "@shared/proto-conversions/models/typeConversion"
 import { OpenaiReasoningEffort } from "@shared/storage/types"
 import { Logger } from "@/shared/services/Logger"
+import { isSecretMaskOnly, stripSecretMask } from "@/shared/storage/secret-mask"
+import { SecretKeys } from "@/shared/storage/state-keys"
 import type { Controller } from "../index"
 import { clearOrganizationForBytosPassProviderSelection } from "./handleBytosPassProviderSelection"
 import { normalizeProviderSwitchModel } from "./providerSwitchNormalization"
@@ -130,6 +132,17 @@ export async function updateApiConfigurationProto(
 			geminiActModeThinkingLevel: protoApiConfiguration.geminiActModeThinkingLevel,
 			planModeReasoningEffort: protoApiConfiguration.planModeReasoningEffort as OpenaiReasoningEffort | undefined,
 			actModeReasoningEffort: protoApiConfiguration.actModeReasoningEffort as OpenaiReasoningEffort | undefined,
+		}
+
+		// The legacy full-config RPC may still carry masks from older webviews.
+		// Drop masked secrets so they cannot overwrite real credentials.
+		for (const key of SecretKeys) {
+			const value = (convertedApiConfigurationFromProto as Record<string, unknown>)[key]
+			if (isSecretMaskOnly(value)) {
+				delete (convertedApiConfigurationFromProto as Record<string, unknown>)[key]
+			} else if (typeof value === "string" && value.includes("\u2022")) {
+				;(convertedApiConfigurationFromProto as Record<string, unknown>)[key] = stripSecretMask(value)
+			}
 		}
 
 		const previousApiConfiguration = controller.stateManager.getApiConfiguration()

@@ -15,6 +15,8 @@ export default defineConfig({
 			"src/integrations/misc/model3d-converter.test.ts",
 			"src/integrations/misc/process-files.test.ts",
 			"src/hosts/vscode/VscodeEditPreview.test.ts",
+			"src/hosts/vscode/vscode-secret-storage.test.ts",
+			"src/hosts/vscode/vscode-provider-credential-store.test.ts",
 			"src/shared/vsCodeSelectorUtils.test.ts",
 			"src/shared/net.test.ts",
 			"src/shared/proto-conversions/models/**/*.test.ts",

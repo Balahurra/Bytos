@@ -1,4 +1,15 @@
-﻿import path from "node:path"
+/*
+ * Copyright 2026 Cline Bot Inc.
+ * Bytos modifications Copyright 2026 Bytos contributors.
+ *
+ * Modified from the Cline project (https://github.com/cline/cline), Apache-2.0.
+ * Changes by Bytos: the webview content security policy drops 'unsafe-eval' and
+ * wildcard sources, and the host bridge is initialized before the webview is
+ * created.
+ * See NOTICE and apps/vscode/THIRD-PARTY-NOTICES.txt.
+ */
+
+import path from "node:path"
 import { Controller } from "@core/controller/index"
 import axios from "axios"
 import { readFile } from "fs/promises"
@@ -106,11 +117,15 @@ export abstract class WebviewProvider {
 				<meta name="theme-color" content="#000000">
 				<link rel="stylesheet" type="text/css" href="${stylesUrl}">
 				<meta http-equiv="Content-Security-Policy" content="default-src 'none';
-					connect-src https://*.posthog.com https://*.bytos.dev; 
-					font-src ${this.getCspSource()} data:; 
-					style-src ${this.getCspSource()} 'unsafe-inline'; 
-					img-src ${this.getCspSource()} https: data:; 
-					script-src 'nonce-${nonce}' 'unsafe-eval' ${this.getCspSource()};">
+					connect-src https://*.posthog.com;
+					font-src ${this.getCspSource()} data:;
+					style-src ${this.getCspSource()} 'unsafe-inline';
+					img-src ${this.getCspSource()} data:;
+					script-src 'nonce-${nonce}' ${this.getCspSource()};
+					object-src 'none';
+					base-uri 'none';
+					form-action 'none';
+					frame-src 'none';">
 				<title>Bytos</title>
 			</head>
 			<body>
@@ -193,10 +208,14 @@ export abstract class WebviewProvider {
 		const csp = [
 			"default-src 'none'",
 			`font-src ${this.getCspSource()}`,
-			`style-src ${this.getCspSource()} 'unsafe-inline' https://* http://${localServerUrl} http://0.0.0.0:${localPort}`,
-			`img-src ${this.getCspSource()} https: data:`,
-			`script-src 'unsafe-eval' https://* http://${localServerUrl} http://0.0.0.0:${localPort} 'nonce-${nonce}'`,
-			`connect-src https://* ws://${localServerUrl} ws://0.0.0.0:${localPort} http://${localServerUrl} http://0.0.0.0:${localPort}`,
+			`style-src ${this.getCspSource()} 'unsafe-inline' http://${localServerUrl} http://0.0.0.0:${localPort}`,
+			`img-src ${this.getCspSource()} data:`,
+			`script-src http://${localServerUrl} http://0.0.0.0:${localPort} 'nonce-${nonce}'`,
+			`connect-src ws://${localServerUrl} ws://0.0.0.0:${localPort} http://${localServerUrl} http://0.0.0.0:${localPort}`,
+			"object-src 'none'",
+			"base-uri 'none'",
+			"form-action 'none'",
+			"frame-src 'none'",
 		]
 
 		return /*html*/ `

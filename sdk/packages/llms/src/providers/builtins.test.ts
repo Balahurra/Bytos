@@ -12,6 +12,7 @@ import {
 	getGeneratedModelsForRuntimeProvider,
 	resolveProviderApiLineBaseUrl,
 } from "./builtins";
+import { BYOK_EXCLUDED_PROVIDER_IDS } from "./ids";
 import { getModelsForProvider, getProvider } from "./model-registry";
 import { GENERATED_PROVIDER_SPECS } from "./providers.generated";
 import { resolveAnthropicReasoningRequestPolicy } from "./routing/anthropic-compatible";
@@ -361,6 +362,10 @@ describe("built-in provider metadata", () => {
 		const builtinIds = new Set(BUILTIN_SPECS.map((spec) => spec.id));
 
 		for (const generatedId of generatedIds) {
+			if (BYOK_EXCLUDED_PROVIDER_IDS.has(generatedId)) {
+				expect(builtinIds.has(generatedId)).toBe(false);
+				continue;
+			}
 			expect(builtinIds.has(generatedId)).toBe(true);
 		}
 		expect(generatedIds.has("alibaba")).toBe(true);

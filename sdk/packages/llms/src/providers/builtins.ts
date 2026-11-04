@@ -1,3 +1,13 @@
+/*
+ * Copyright 2026 Cline Bot Inc.
+ * Bytos modifications Copyright 2026 Bytos contributors.
+ *
+ * Modified from the Cline project (https://github.com/cline/cline), Apache-2.0.
+ * Changes by Bytos: vendor SDK providers that require licenses unavailable for
+ * this distribution were removed from the built-in registry.
+ * See NOTICE and apps/vscode/THIRD-PARTY-NOTICES.txt.
+ */
+
 import {
 	BYTOS_DEFAULT_MODEL_ID,
 	type GatewayModelDefinition,
@@ -11,8 +21,8 @@ import {
 	type ProviderCapability,
 	type ProviderConfigField,
 } from "@bytos/shared";
-import { getGeneratedModelsForProvider } from "../catalog/catalog.generated-access";
 import { GENERATED_BYTOS_RECOMMENDED_MODELS } from "../catalog/bytos-recommended.generated";
+import { getGeneratedModelsForProvider } from "../catalog/catalog.generated-access";
 import { filterImageOutputModels } from "../catalog/model-filters";
 import {
 	isCanonicalModelIdForAliasRules,
@@ -354,6 +364,11 @@ function mergeBuiltinSpec(
 	return merged as BuiltinSpec;
 }
 
+const BYOK_EXCLUDED_PROVIDER_IDS = new Set<string>([
+	"claude-code",
+	"sapaicore",
+]);
+
 function mergeBuiltinSpecs(
 	generatedSpecs: readonly BuiltinSpec[],
 	overrides: readonly BuiltinSpecOverride[],
@@ -370,28 +385,30 @@ function mergeBuiltinSpecs(
 		(spec) => !overriddenIds.has(spec.id),
 	);
 
-	return [...mergedOverrides, ...generatedOnlySpecs].map((spec) => {
-		const transcription = (
-			BUILTIN_TRANSCRIPTION_TRANSPORTS as Readonly<
-				Record<
-					string,
-					{ transport: GatewayProviderMetadata["transcriptionTransport"] }
+	return [...mergedOverrides, ...generatedOnlySpecs]
+		.filter((spec) => !BYOK_EXCLUDED_PROVIDER_IDS.has(spec.id))
+		.map((spec) => {
+			const transcription = (
+				BUILTIN_TRANSCRIPTION_TRANSPORTS as Readonly<
+					Record<
+						string,
+						{ transport: GatewayProviderMetadata["transcriptionTransport"] }
+					>
 				>
-			>
-		)[spec.id];
-		return {
-			...spec,
-			modelOperationCapabilities:
-				spec.modelOperationCapabilities ??
-				BUILTIN_MODEL_OPERATION_CAPABILITIES[spec.id],
-			metadata: transcription
-				? {
-						...spec.metadata,
-						transcriptionTransport: transcription.transport,
-					}
-				: spec.metadata,
-		};
-	});
+			)[spec.id];
+			return {
+				...spec,
+				modelOperationCapabilities:
+					spec.modelOperationCapabilities ??
+					BUILTIN_MODEL_OPERATION_CAPABILITIES[spec.id],
+				metadata: transcription
+					? {
+							...spec.metadata,
+							transcriptionTransport: transcription.transport,
+						}
+					: spec.metadata,
+			};
+		});
 }
 
 function generatedModels(providerId: string): Record<string, ModelInfo> {
@@ -410,42 +427,6 @@ function firstGeneratedModelId(providerId: string): string {
 		generatedModelList[0] ??
 		""
 	);
-}
-
-function pickAnthropicModel(match: (id: string) => boolean): ModelInfo {
-	const entry = Object.entries(generatedModels("anthropic")).find(([id]) =>
-		match(id),
-	);
-	if (entry) {
-		return entry[1];
-	}
-	return {
-		id: "sonnet",
-		name: "Claude Sonnet",
-		capabilities: ["streaming", "reasoning"],
-	};
-}
-
-function buildClaudeCodeModels(): Record<string, ModelInfo> {
-	function toClaudeCodeModel(id: "opus" | "sonnet" | "haiku"): ModelInfo {
-		const source =
-			id === "opus"
-				? pickAnthropicModel((modelId) => modelId.includes("opus"))
-				: id === "haiku"
-					? pickAnthropicModel((modelId) => modelId.includes("haiku"))
-					: pickAnthropicModel((modelId) => modelId.includes("sonnet"));
-		return {
-			...source,
-			id,
-			name: `Claude ${id.charAt(0).toUpperCase()}${id.slice(1)}`,
-		};
-	}
-
-	return {
-		opus: toClaudeCodeModel("opus"),
-		sonnet: toClaudeCodeModel("sonnet"),
-		haiku: toClaudeCodeModel("haiku"),
-	};
 }
 
 function buildOpenAICodexModels(): Record<string, ModelInfo> {
@@ -1211,40 +1192,6 @@ const BUILTIN_SPEC_OVERRIDES: BuiltinSpecOverride[] = [
 		metadata: ANTHROPIC_ROUTING_METADATA,
 	},
 	{
-		id: "claude-code",
-		name: "Claude Code",
-		description: "Use Claude Code SDK with Claude Pro/Max subscription",
-		family: "claude-code",
-		// provider-tools: the Claude Code CLI executes its own native tools
-		// (Read/Write/Bash/...) inside the spawned agent session and cannot
-		// bridge externally-executed AI SDK tools. Without this capability the
-		// gateway sends Bytos's tool definitions (which the provider drops)
-		// while the CLI's own tools stay enabled with no approval plumbing —
-		// every write is refused and no prompt can appear (#13146).
-		// local-auth: the spawned CLI authenticates from its own credential
-		// store (the Claude Pro/Max subscription login), so no API key is
-		// read from provider settings. Without this capability configure UIs
-		// ask for a key and readiness checks refuse a keyless entry.
-		capabilities: ["reasoning", "provider-tools", "local-auth"],
-		defaultModelId: "sonnet",
-		modelsFactory: buildClaudeCodeModels,
-		docsUrl: "https://code.claude.com/docs/en/setup",
-		defaults: { baseUrl: "" },
-		configFields: [],
-		// Claude Code is typically authenticated with a Pro/Max subscription,
-		// where any dollar figure would be an API-rate estimate rather than a
-		// real charge. The CLI does report a cost when it runs on API-key
-		// billing, but the provider cannot tell the two apart from here, so
-		// prefer not showing a number over showing a misleading one.
-		metadata: {
-			usageCostDisplay: "subscription",
-			// The `local-auth` credentials live wherever this executable keeps
-			// them, so hosts probe it (and point at `docsUrl`) before offering
-			// the provider. See `resolveProviderLocalCli`.
-			localCliCommand: "claude",
-		},
-	},
-	{
 		id: "gemini",
 		name: "Google Gemini",
 		description: "Google Gemini API",
@@ -1339,18 +1286,6 @@ const BUILTIN_SPEC_OVERRIDES: BuiltinSpecOverride[] = [
 		defaultModelId: "default",
 		apiKeyEnv: ["DIFY_API_KEY"],
 		modelsFactory: () => ({}),
-	},
-	{
-		id: "sapaicore",
-		name: "SAP AI Core",
-		description: "SAP AI Core inference and orchestration platform",
-		family: "sap-ai-core",
-		client: "ai-sdk-community",
-		capabilities: ["tools", "reasoning", "prompt-cache"],
-		defaultModelId: "anthropic--claude-3.5-sonnet",
-		apiKeyEnv: ["AICORE_SERVICE_KEY", "VCAP_SERVICES"],
-		modelsProviderId: "sapaicore",
-		metadata: ANTHROPIC_ROUTING_METADATA,
 	},
 	...OPENAI_COMPATIBLE_SPEC_OVERRIDES,
 ];

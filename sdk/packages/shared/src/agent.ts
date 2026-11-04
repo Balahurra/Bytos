@@ -559,6 +559,11 @@ export interface AgentRuntimeConfig {
 	 * tracks the agent transcript.
 	 */
 	sessionId?: string;
+	/**
+	 * Session working directory. Tools that resolve filesystem paths must use
+	 * this value, not process.cwd(), so the workspace boundary is authoritative.
+	 */
+	cwd?: string;
 	agentId?: string;
 	/**
 	 * Agent conversation/transcript identifier.

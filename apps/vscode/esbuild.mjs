@@ -11,6 +11,9 @@ const watch = process.argv.includes("--watch")
 const standalone = process.argv.includes("--standalone")
 const e2eBuild = process.argv.includes("--e2e-build")
 const destDir = standalone ? "dist-standalone" : "dist"
+// Optional, release-only input graph used by the licensing gate. It does not
+// change the emitted bundle; it only asks esbuild to describe its inputs.
+const licenseMetafile = process.env.BYTOS_LICENSE_METAFILE?.trim()
 
 /**
  * @type {import('esbuild').Plugin}
@@ -158,6 +161,7 @@ const baseConfig = {
 	sourcesContent: false,
 	platform: "node",
 	target: "node22.15",
+	...(licenseMetafile ? { metafile: true } : {}),
 	banner: {
 		js: "const _importMetaUrl=require('url').pathToFileURL(__filename)",
 	},
@@ -209,7 +213,11 @@ async function main() {
 	if (watch) {
 		await extensionCtx.watch()
 	} else {
-		await extensionCtx.rebuild()
+		const result = await extensionCtx.rebuild()
+		if (licenseMetafile && result.metafile) {
+			fs.writeFileSync(licenseMetafile, `${JSON.stringify(result.metafile, null, 2)}\n`, "utf8")
+			console.log(`[esbuild] wrote license input graph: ${licenseMetafile}`)
+		}
 		await extensionCtx.dispose()
 	}
 }

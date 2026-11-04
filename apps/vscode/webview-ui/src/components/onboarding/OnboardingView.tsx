@@ -20,15 +20,14 @@ import WelcomeView from "../welcome/WelcomeView"
 import { setPendingBytosPassSubscribe } from "./bytosPassSubscribe"
 import {
 	BYTOSPASS_GROUP,
-	getCapabilities,
 	getBytosUIOnboardingGroups,
+	getCapabilities,
 	getOnboardingGroupDisplayName,
 	getPriceRange,
 	getSpeedLabel,
 	type OnboardingModelsByGroup,
 } from "./data-models"
 import { getUserTypeSelections, NEW_USER_TYPE, STEP_CONFIG } from "./data-steps"
-import { useOnboardingModels } from "./useOnboardingModels"
 
 type OnboardingPage =
 	| "user_type"
@@ -697,21 +696,10 @@ const OnboardingWelcomeFallback = () => {
 }
 
 const OnboardingView = () => {
-	const { status, models } = useOnboardingModels()
-
-	if (status === "loading") {
-		return (
-			<div className="fixed inset-0 flex items-center justify-center">
-				<LoaderCircleIcon className="animate-spin" />
-			</div>
-		)
-	}
-
-	if (status === "empty") {
-		return <OnboardingWelcomeFallback />
-	}
-
-	return <OnboardingViewContent onboardingModels={models} />
+	// Free BYOK release: account creation, BytosPass, credits, and cloud
+	// onboarding are not part of this build. Go straight to local provider
+	// configuration; no Bytos backend is contacted.
+	return <WelcomeView />
 }
 
 export default OnboardingView

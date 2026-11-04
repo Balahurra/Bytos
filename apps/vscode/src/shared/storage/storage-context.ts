@@ -1,8 +1,18 @@
+/*
+ * Copyright 2026 Cline Bot Inc.
+ * Bytos modifications Copyright 2026 Bytos contributors.
+ *
+ * Modified from the Cline project (https://github.com/cline/cline), Apache-2.0.
+ * Changes by Bytos: provider credentials are resolved through the host
+ * credential store (VS Code SecretStorage) instead of plaintext state.
+ * See NOTICE and apps/vscode/THIRD-PARTY-NOTICES.txt.
+ */
+
 import fsSync from "node:fs"
 import os from "node:os"
 import path from "node:path"
 import { BytosFileStorage } from "./BytosFileStorage"
-import { BytosMemento } from "./BytosStorage"
+import { BytosMemento, BytosSyncStorage } from "./BytosStorage"
 
 /**
  * The storage backend context object used by StateManager and other components.
@@ -25,8 +35,8 @@ export interface StorageContext {
 	 */
 	readonly globalStateBackingStore: BytosFileStorage
 
-	/** Secrets — API keys and other sensitive values. File uses restricted permissions (0o600). */
-	readonly secrets: BytosFileStorage<string>
+	/** Secrets — API keys and other sensitive values. The VS Code host uses SecretStorage. */
+	readonly secrets: BytosSyncStorage<string>
 
 	/** Workspace-scoped state — per-project toggles, rules, etc. */
 	readonly workspaceState: BytosFileStorage
@@ -61,6 +71,12 @@ export interface StorageContextOptions {
 	 * once the JetBrains client side is cleaned up.
 	 */
 	workspaceStorageDir?: string
+
+	/**
+	 * Optional secret backend. The VS Code host supplies a SecretStorage-backed
+	 * store; CLI and standalone hosts keep the file-backed implementation.
+	 */
+	secrets?: BytosSyncStorage<string>
 }
 
 const SETTINGS_SUBFOLDER = "data"
@@ -137,9 +153,11 @@ export function createStorageContext(opts: StorageContextOptions = {}): StorageC
 	return {
 		globalState,
 		globalStateBackingStore: globalState,
-		secrets: new BytosFileStorage<string>(path.join(dataDir, "secrets.json"), "Secrets", {
-			fileMode: 0o600, // Owner read/write only — protects API keys
-		}),
+		secrets:
+			opts.secrets ??
+			new BytosFileStorage<string>(path.join(dataDir, "secrets.json"), "Secrets", {
+				fileMode: 0o600, // Owner read/write only — protects API keys
+			}),
 		workspaceState: new BytosFileStorage(path.join(workspaceDir, "workspaceState.json"), "WorkspaceState"),
 		dataDir,
 		workspaceStoragePath: workspaceDir,

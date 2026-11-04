@@ -39,6 +39,7 @@ export {
 	type ShellExecutorOptions,
 } from "./bash";
 export { createEditorExecutor, type EditorExecutorOptions } from "./editor";
+export { resolveWorkspacePath, type WorkspacePathOptions } from "./path-safety";
 export {
 	createFileReadExecutor,
 	type FileReadExecutorOptions,

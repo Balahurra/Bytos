@@ -7,6 +7,7 @@ import {
 	type EditFileInput,
 	type EditorExecutor,
 	PatchActionType,
+	resolveWorkspacePath,
 } from "@bytos/core"
 import type { AgentToolContext } from "@bytos/shared"
 import * as fs from "fs/promises"
@@ -246,7 +247,7 @@ export class SdkDiffEditCoordinator {
 			throw new Error("editor input missing path or new_text")
 		}
 		const cwd = await this.options.getCwd()
-		const absolutePath = resolveEditPath(cwd, input.path)
+		const absolutePath = await resolveEditPath(cwd, input.path)
 		let originalContent: string | undefined
 		try {
 			originalContent = await fs.readFile(absolutePath, "utf-8")
@@ -288,8 +289,8 @@ export class SdkDiffEditCoordinator {
 		}
 		const [filePath, change] = first
 		await this.openPreview(toolCallId, {
-			absolutePath: resolveEditPath(cwd, filePath),
-			revealPath: resolveEditPath(cwd, change.movePath ?? filePath),
+			absolutePath: await resolveEditPath(cwd, filePath),
+			revealPath: await resolveEditPath(cwd, change.movePath ?? filePath),
 			displayPath: filePath,
 			editType: change.type === PatchActionType.ADD ? "create" : "modify",
 			leftContent: change.oldContent ?? "",
@@ -429,18 +430,9 @@ export function computeNewEditorContent(
 	return originalContent.replace(normalizedOldText, () => normalizedNewText)
 }
 
-/** Mirrors the SDK executor's resolveFilePath (restrictToCwd=true): absolute paths pass through. */
-function resolveEditPath(cwd: string, inputPath: string): string {
-	const isAbsoluteInput = path.isAbsolute(inputPath)
-	const resolved = isAbsoluteInput ? path.normalize(inputPath) : path.resolve(cwd, inputPath)
-	if (isAbsoluteInput) {
-		return resolved
-	}
-	const rel = path.relative(cwd, resolved)
-	if (rel.startsWith("..") || path.isAbsolute(rel)) {
-		throw new Error(`Path must stay within cwd: ${inputPath}`)
-	}
-	return resolved
+/** Use the SDK's centralized workspace containment check for previews. */
+async function resolveEditPath(cwd: string, inputPath: string): Promise<string> {
+	return resolveWorkspacePath(cwd, inputPath)
 }
 
 function delay(ms: number): Promise<void> {

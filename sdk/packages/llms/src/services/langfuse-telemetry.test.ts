@@ -264,7 +264,7 @@ describe("langfuse telemetry", () => {
 			globalSettingsPathRef.current = path.join(directory, "settings.json");
 			await fs.writeFile(
 				globalSettingsPathRef.current,
-				JSON.stringify({ telemetryOptOut: optedOut }),
+				JSON.stringify({ telemetryOptOut: optedOut, telemetryOptIn: !optedOut }),
 			);
 			vi.stubEnv("BYTOS_TRACE_SAMPLE_PERCENT", sample);
 			vi.stubEnv("BYTOS_TRACE_RECORD_CONTENT", "false");
@@ -476,7 +476,7 @@ describe("langfuse telemetry", () => {
 			expect(decision.isEnabled).toBe(false);
 		});
 
-		it("stays enabled when the settings file records no opt-out", async () => {
+		it("stays disabled when the settings file has no positive opt-in", async () => {
 			clearLangfuseEnv();
 			mockHostOtlpTracer();
 			process.env.BYTOS_TRACE_SAMPLE_PERCENT = "100";
@@ -492,7 +492,7 @@ describe("langfuse telemetry", () => {
 
 			const decision = await resolveAiSdkTelemetry("bytos", "task-a");
 
-			expect(decision.isEnabled).toBe(true);
+			expect(decision.isEnabled).toBe(false);
 		});
 
 		it("leaves the credentialed direct Langfuse path unaffected by the opt-out", async () => {

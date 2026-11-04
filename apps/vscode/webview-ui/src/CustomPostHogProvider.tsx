@@ -10,7 +10,7 @@ export function CustomPostHogProvider({ children }: { children: ReactNode }) {
 	// Skip PostHog entirely in self-hosted mode or when environment is unknown (safety fallback)
 	const isSelfHostedOrUnknown = !environment || environment === "selfHosted"
 
-	const isTelemetryEnabled = telemetrySetting !== "disabled"
+	const isTelemetryEnabled = telemetrySetting === "enabled"
 	const [isActive, setIsActive] = useState(false)
 
 	useEffect(() => {
@@ -25,8 +25,9 @@ export function CustomPostHogProvider({ children }: { children: ReactNode }) {
 			disable_session_recording: true,
 			capture_pageview: false,
 			capture_dead_clicks: false,
-			// Feature flags should work regardless of telemetry opt-out
-			advanced_disable_decide: false,
+			// Feature flag evaluation is a network request; it is only allowed
+			// after an explicit telemetry opt-in.
+			advanced_disable_decide: !isTelemetryEnabled,
 			// Autocapture should respect telemetry settings
 			autocapture: false,
 		})
@@ -40,8 +41,9 @@ export function CustomPostHogProvider({ children }: { children: ReactNode }) {
 
 		posthog.set_config({
 			before_send: (payload) => {
-				// Only filter out events if telemetry is disabled, but allow feature flag requests
-				if (!isTelemetryEnabled && payload?.event !== "$feature_flag_called") {
+				// No event, including feature-flag calls, leaves the webview
+				// unless the user explicitly enabled telemetry.
+				if (!isTelemetryEnabled) {
 					return null
 				}
 
@@ -59,13 +61,16 @@ export function CustomPostHogProvider({ children }: { children: ReactNode }) {
 			email: userInfo?.email,
 			name: userInfo?.displayName,
 		}
-		posthog.identify(distinctId, args)
+		if (!isTelemetryEnabled) {
+			if (!optedOut) {
+				posthog.opt_out_capturing()
+			}
+			return
+		}
 
-		if (isTelemetryEnabled && !optedIn) {
+		posthog.identify(distinctId, args)
+		if (!optedIn) {
 			posthog.opt_in_capturing()
-		} else if (!isTelemetryEnabled && !optedOut) {
-			// Then opt out of capturing other events
-			posthog.opt_out_capturing()
 		}
 	}, [isActive, isTelemetryEnabled, distinctId, version])
 

@@ -170,6 +170,35 @@ export function createDefaultExecutors() {
 	return { readFile: createFileReadExecutor() }
 }
 
+// Mirror of the SDK's workspace containment helper for adapter tests. Kept
+// dependency-light so the vitest stub does not pull the full core runtime.
+export async function resolveWorkspacePath(workspaceRoot: string, inputPath: string): Promise<string> {
+	const fs = await import("node:fs/promises")
+	const path = await import("node:path")
+	const root = await fs.realpath(workspaceRoot).catch(() => path.resolve(workspaceRoot))
+	let current = path.isAbsolute(inputPath) ? path.normalize(inputPath) : path.resolve(root, inputPath)
+	const missing: string[] = []
+	for (;;) {
+		try {
+			const real = await fs.realpath(current)
+			current = path.join(real, ...missing.reverse())
+			break
+		} catch (error) {
+			const code = (error as NodeJS.ErrnoException).code
+			if (code !== "ENOENT" && code !== "ENOTDIR") throw error
+			const parent = path.dirname(current)
+			if (parent === current) break
+			missing.push(path.basename(current))
+			current = parent
+		}
+	}
+	const rel = path.relative(root, current)
+	if (rel.startsWith("..") || path.isAbsolute(rel)) {
+		throw new Error(`Path is outside the workspace: ${inputPath}`)
+	}
+	return current
+}
+
 export interface SessionHistoryRecord {
 	id: string
 	metadata?: Record<string, unknown>

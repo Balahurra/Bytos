@@ -570,7 +570,7 @@ export const GENERATED_PROVIDER_SPECS: readonly BuiltinSpec[] = [
 		modelsProviderId: "bytos-pass",
 		defaultModelId: "bytos-pass/mimo-v2.6-flash",
 		apiKeyEnv: ["BYTOS_API_KEY"],
-		docsUrl: "https://docs.bytos.dev/getting-started/bytospass",
+		docsUrl: "https://github.com/bytos/bytos",
 		defaults: {
 			baseUrl: "https://api.bytos.dev/api/v1",
 		},

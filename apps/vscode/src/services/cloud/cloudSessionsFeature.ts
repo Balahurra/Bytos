@@ -1,3 +1,4 @@
+import { BytosEndpoint } from "@/config"
 import { StateManager } from "@/core/storage/StateManager"
 import { featureFlagsService } from "@/services/feature-flags"
 import { FeatureFlag } from "@/shared/services/feature-flags/feature-flags"
@@ -19,6 +20,11 @@ function readCloudSessionsOverride(): boolean | undefined {
 
 /** Whether the `ext-cloud-sessions` rollout makes cloud sessions available to this user. */
 export function isCloudSessionsFeatureAvailable(): boolean {
+	// Cloud sessions require the Bytos backend (api.bytos.dev) and an account.
+	// The free BYOK build is explicitly local-only.
+	if (!BytosEndpoint.isSelfHosted()) {
+		return false
+	}
 	return readCloudSessionsOverride() ?? featureFlagsService.getBooleanFlagEnabled(FeatureFlag.CLOUD_SESSIONS)
 }
 

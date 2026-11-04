@@ -236,19 +236,12 @@ describe("provider-ids", () => {
 		expect(Object.hasOwn(models, "glm-5.3")).toBe(true);
 	});
 
-	it("routes SAP AI Core through the SAP AI SDK provider factory", async () => {
-		await expect(getProvider("sapaicore")).resolves.toMatchObject({
-			id: "sapaicore",
-			name: "SAP AI Core",
-			client: "ai-sdk-community",
-			defaultModelId: "anthropic--claude-3.5-sonnet",
-		});
-
-		const registration = BUILTIN_PROVIDER_REGISTRATIONS.find(
-			(item) => item.manifest.id === "sapaicore",
-		);
-		await expect(registration?.loadProvider?.()).resolves.toMatchObject({
-			createProvider: createSapAiCoreProvider,
-		});
+	it("does not expose SAP AI Core in the free BYOK build", async () => {
+		await expect(getProvider("sapaicore")).resolves.toBeUndefined();
+		expect(
+			BUILTIN_PROVIDER_REGISTRATIONS.some(
+				(item) => item.manifest.id === "sapaicore",
+			),
+		).toBe(false);
 	});
 });

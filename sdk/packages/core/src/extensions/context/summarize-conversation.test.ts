@@ -303,7 +303,6 @@ describe("summarizeConversation", () => {
 	});
 
 	it.each([
-		"claude-code",
 		"openai-codex-cli",
 		"opencode",
 		"dify",

@@ -1,63 +1,17 @@
-import { AsyncLocalStorage } from "node:async_hooks";
-import type { EventEmitter } from "node:events";
-import { accessSync, existsSync, constants as fsConstants } from "node:fs";
-import { createRequire } from "node:module";
-import { delimiter, dirname, join } from "node:path";
 import type { GatewayResolvedProviderConfig } from "@bytos/shared";
+/*
+ * Copyright 2026 Cline Bot Inc.
+ * Bytos modifications Copyright 2026 Bytos contributors.
+ *
+ * Modified from the Cline project (https://github.com/cline/cline), Apache-2.0.
+ * Changes by Bytos: the MVP provider-manager core was reduced to the providers
+ * that ship in this build; Claude Code subscription, SAP AI Core, and other
+ * providers whose SDK licenses do not permit redistribution here were removed.
+ * See NOTICE and apps/vscode/THIRD-PARTY-NOTICES.txt.
+ */
 import { createDifyProvider } from "dify-ai-provider";
 import { resolveApiKey } from "../http";
 import type { ProviderFactoryResult } from "./types";
-
-type SapModel = Record<PropertyKey, unknown>;
-type ProcessListener = (...args: unknown[]) => void;
-
-const sapImportScope = new AsyncLocalStorage<Set<ProcessListener>>();
-
-// Loading the SAP provider loads @sap-cloud-sdk/util, which builds a winston
-// logger with `exceptionHandlers`. winston then installs a process-wide
-// "uncaughtException" listener that calls process.exit(1) three seconds after
-// ANY uncaught exception in the host -- including ones the host's own handler
-// caught and chose to survive. The SDK's disableExceptionLogger() cannot undo
-// it: @jerome-benoit/sap-ai-provider bundles a second, private copy of util.
-//
-// So remove exactly the listeners registered while evaluating the SAP modules,
-// attributed by async context: a host listener registered concurrently comes
-// from another context and is never touched. Only the import is wrapped --
-// construction and requests register nothing. Where async context does not
-// reach module evaluation (Bun), nothing is attributed and the handlers stay;
-// the Bun-run CLI and hub daemon treat uncaught exceptions as fatal anyway.
-//
-// The specifier is a literal so bundlers still include the package (a
-// computed one left the VSIX loading it from node_modules at runtime).
-async function importSapAiProvider(): Promise<
-	typeof import("@jerome-benoit/sap-ai-provider/v4")
-> {
-	const emitter = process as unknown as EventEmitter;
-	const owned = new Set<ProcessListener>();
-	const record = (event: string | symbol, listener: ProcessListener) => {
-		if (event === "uncaughtException" && sapImportScope.getStore() === owned) {
-			owned.add(listener);
-		}
-	};
-	emitter.on("newListener", record);
-	try {
-		return await sapImportScope.run(
-			owned,
-			() => import("@jerome-benoit/sap-ai-provider/v4"),
-		);
-	} finally {
-		emitter.removeListener("newListener", record);
-		for (const listener of owned) {
-			emitter.removeListener("uncaughtException", listener);
-		}
-	}
-}
-const SAP_SERVICE_KEY_METHODS = new Set<PropertyKey>([
-	"doGenerate",
-	"doStream",
-	"doEmbed",
-]);
-let sapServiceKeyQueue: Promise<void> = Promise.resolve();
 
 function readOptions(
 	config: GatewayResolvedProviderConfig,
@@ -65,119 +19,17 @@ function readOptions(
 	return (config.options as Record<string, unknown> | undefined) ?? {};
 }
 
-function findExecutableOnPath(name: string): string | undefined {
-	const extensions =
-		process.platform === "win32" ? [".exe", ".cmd", ".bat", ""] : [""];
-	for (const dir of (process.env.PATH ?? "").split(delimiter)) {
-		if (!dir) continue;
-		for (const ext of extensions) {
-			const candidate = join(dir, `${name}${ext}`);
-			try {
-				accessSync(candidate, fsConstants.X_OK);
-				return candidate;
-			} catch {
-				// not here; keep looking
-			}
-		}
-	}
-	return undefined;
-}
-
-// The agent SDK spawns a `claude` executable shipped in per-platform optional
-// packages (@anthropic-ai/claude-agent-sdk-<platform>-<arch>[-musl]). Those
-// are no longer installed by default (~250MB), so resolve an explicit path:
-// the bundled platform binary when present, otherwise a user-installed
-// Claude Code from PATH. The SDK's own resolution cannot be relied on here:
-// inside a Bun-compiled binary it anchors on the virtual bunfs, where
-// node_modules lookups never see packages on disk.
-function resolveClaudeExecutable(): string | undefined {
-	const suffixes =
-		process.platform === "linux"
-			? [
-					`${process.platform}-${process.arch}`,
-					`${process.platform}-${process.arch}-musl`,
-				]
-			: [`${process.platform}-${process.arch}`];
-	const executableName = process.platform === "win32" ? "claude.exe" : "claude";
-	// Anchor on the real executable location first so resolution works from
-	// compiled binaries; fall back to this module's location for plain node.
-	const anchors = [join(dirname(process.execPath), "noop.js"), import.meta.url];
-	for (const anchor of anchors) {
-		for (const suffix of suffixes) {
-			try {
-				const manifest = createRequire(anchor).resolve(
-					`@anthropic-ai/claude-agent-sdk-${suffix}/package.json`,
-				);
-				const executable = join(dirname(manifest), executableName);
-				accessSync(executable, fsConstants.X_OK);
-				return executable;
-			} catch {
-				// keep looking
-			}
-		}
-	}
-	return findExecutableOnPath("claude");
-}
-
 export async function createClaudeCodeProviderModule(
-	config: GatewayResolvedProviderConfig,
+	_config: GatewayResolvedProviderConfig,
 ): Promise<ProviderFactoryResult> {
-	// Dynamic import is intentional: ai-sdk-provider-claude-code is an
-	// optional peer dependency so default installs skip its ~250MB
-	// @anthropic-ai/claude-agent-sdk platform binary. It also runs
-	// createClaudeCode() at module scope, so loading lazily contains that
-	// side effect to actual Claude Code usage.
-	let createClaudeCode: typeof import("ai-sdk-provider-claude-code").createClaudeCode;
-	try {
-		({ createClaudeCode } = await import("ai-sdk-provider-claude-code"));
-	} catch (error) {
-		throw new Error(
-			"The Claude Code provider requires the optional 'ai-sdk-provider-claude-code' package. " +
-				"Install it alongside @bytos/llms to use this provider.",
-			{ cause: error },
-		);
-	}
-	const { cwd: workspaceCwd, ...options } = readOptions(config);
-	const defaultSettings: Record<string, unknown> = {
-		...((options.defaultSettings as Record<string, unknown> | undefined) ?? {}),
-	};
-	if (defaultSettings.pathToClaudeCodeExecutable === undefined) {
-		const executable = resolveClaudeExecutable();
-		if (executable !== undefined) {
-			defaultSettings.pathToClaudeCodeExecutable = executable;
-		}
-	}
-	// Hosts forward the workspace root as a top-level `cwd` option (e.g.
-	// @bytos/core's buildGatewayProviderOptions). Anchor the spawned agent
-	// session there; otherwise it inherits the host process cwd (`/` in GUI
-	// extension hosts) and refuses writes outside it. Guard on existence:
-	// the provider hard-fails settings validation for missing directories.
-	if (
-		defaultSettings.cwd === undefined &&
-		typeof workspaceCwd === "string" &&
-		workspaceCwd.length > 0 &&
-		existsSync(workspaceCwd)
-	) {
-		defaultSettings.cwd = workspaceCwd;
-	}
-	// The provider defaults settingSources to [] — the session would read
-	// neither ~/.claude/settings.json nor project .claude/settings.json, so
-	// user-configured permission rules silently never apply.
-	if (defaultSettings.settingSources === undefined) {
-		defaultSettings.settingSources = ["user", "project"];
-	}
-	// Bytos has no interactive permission prompt wired into the CLI session
-	// (no canUseTool), so anything not pre-approved is denied outright. In
-	// default mode that means every file write fails. acceptEdits
-	// auto-approves file edits under cwd while leaving command execution
-	// gated by the user's own Claude settings (loaded via settingSources).
-	if (defaultSettings.permissionMode === undefined) {
-		defaultSettings.permissionMode = "acceptEdits";
-	}
-	const provider = createClaudeCode({ ...options, defaultSettings });
-	return {
-		operations: { language: (modelId) => provider(modelId) },
-	};
+	// Removed from the free BYOK build: the Claude Code provider requires the
+	// proprietary @anthropic-ai/claude-agent-sdk, whose distribution terms
+	// cannot be satisfied by bundling it into a public VSIX. Keep the provider
+	// visible only if a future build ships the SDK under a compatible license.
+	throw new Error(
+		"The Claude Code subscription provider is not included in the BYOK build. " +
+			"Configure a BYOK provider (for example Anthropic) instead.",
+	);
 }
 
 export async function createOpenAICodexProviderModule(
@@ -272,171 +124,16 @@ export async function createDifyProviderModule(
 	};
 }
 
-function readStringOption(
-	options: Record<string, unknown>,
-	key: string,
-): string | undefined {
-	const value = options[key];
-	return typeof value === "string" && value.trim().length > 0
-		? value.trim()
-		: undefined;
-}
-
-function normalizeSapTokenBaseUrl(tokenUrl: string): string {
-	const trimmed = tokenUrl.replace(/\/+$/, "");
-	return trimmed.replace(/\/oauth\/token$/i, "");
-}
-
-function hasExplicitSapConnectionConfig(
-	config: GatewayResolvedProviderConfig,
-	options: Record<string, unknown>,
-): boolean {
-	return Boolean(
-		config.apiKey?.trim() ||
-			config.baseUrl?.trim() ||
-			readStringOption(options, "clientId") ||
-			readStringOption(options, "clientSecret") ||
-			readStringOption(options, "tokenUrl"),
-	);
-}
-
-function buildSapServiceKey(
-	config: GatewayResolvedProviderConfig,
-	options: Record<string, unknown>,
-): string | undefined {
-	const clientId = readStringOption(options, "clientId");
-	const clientSecret =
-		readStringOption(options, "clientSecret") ?? config.apiKey?.trim();
-	const tokenUrl = readStringOption(options, "tokenUrl");
-	const baseUrl = config.baseUrl?.trim();
-	if (!clientId || !clientSecret || !tokenUrl || !baseUrl) {
-		if (!hasExplicitSapConnectionConfig(config, options)) {
-			return undefined;
-		}
-		const missing = [
-			!clientId ? "sap.clientId" : undefined,
-			!clientSecret ? "sap.clientSecret" : undefined,
-			!tokenUrl ? "sap.tokenUrl" : undefined,
-			!baseUrl ? "baseUrl" : undefined,
-		].filter(Boolean);
-		throw new Error(
-			`SAP AI Core provider is missing required configuration: ${missing.join(
-				", ",
-			)}.`,
-		);
-	}
-	return JSON.stringify({
-		clientid: clientId,
-		clientsecret: clientSecret,
-		serviceurls: {
-			AI_API_URL: baseUrl.replace(/\/+$/, ""),
-		},
-		url: normalizeSapTokenBaseUrl(tokenUrl),
-	});
-}
-
-function resolveSapApi(options: Record<string, unknown>) {
-	const api = options.api;
-	if (api === "orchestration" || api === "foundation-models") {
-		return api;
-	}
-	if (options.useOrchestrationMode === false) {
-		return "foundation-models";
-	}
-	return "orchestration";
-}
-
-async function withSapServiceKey<T>(
-	serviceKey: string | undefined,
-	fn: () => T,
-): Promise<Awaited<T>> {
-	if (!serviceKey) {
-		return await fn();
-	}
-
-	const previousQueue = sapServiceKeyQueue.catch(() => {});
-	let releaseQueue!: () => void;
-	sapServiceKeyQueue = new Promise<void>((resolve) => {
-		releaseQueue = resolve;
-	});
-
-	await previousQueue;
-	const previous = process.env.AICORE_SERVICE_KEY;
-	process.env.AICORE_SERVICE_KEY = serviceKey;
-	try {
-		return await fn();
-	} finally {
-		restoreSapServiceKey(previous);
-		releaseQueue();
-	}
-}
-
-function shouldWrapSapServiceKeyMethod(property: PropertyKey): boolean {
-	return SAP_SERVICE_KEY_METHODS.has(property);
-}
-
-function restoreSapServiceKey(previous: string | undefined): void {
-	if (previous === undefined) {
-		delete process.env.AICORE_SERVICE_KEY;
-		return;
-	}
-	process.env.AICORE_SERVICE_KEY = previous;
-}
-
-function wrapSapModelWithServiceKey(
-	model: unknown,
-	serviceKey: string | undefined,
-): unknown {
-	if (!serviceKey || !model || typeof model !== "object") {
-		return model;
-	}
-	return new Proxy(model as SapModel, {
-		get(target, property, receiver) {
-			const value = Reflect.get(target, property, receiver);
-			if (
-				typeof value !== "function" ||
-				!shouldWrapSapServiceKeyMethod(property)
-			) {
-				return value;
-			}
-			return (...args: unknown[]) =>
-				withSapServiceKey(serviceKey, () => value.apply(target, args));
-		},
-	});
-}
-
 export async function createSapAiCoreProviderModule(
-	config: GatewayResolvedProviderConfig,
+	_config: GatewayResolvedProviderConfig,
 ): Promise<ProviderFactoryResult> {
-	const options = readOptions(config);
-	const serviceKey = buildSapServiceKey(config, options);
-
-	const deploymentId = readStringOption(options, "deploymentId");
-	const { createSAPAIProvider } = await importSapAiProvider();
-	const provider = createSAPAIProvider({
-		name: config.providerId,
-		...(deploymentId
-			? { deploymentId }
-			: { resourceGroup: readStringOption(options, "resourceGroup") }),
-		api: resolveSapApi(options),
-		...(typeof options.defaultSettings === "object" &&
-		options.defaultSettings !== null &&
-		!Array.isArray(options.defaultSettings)
-			? { defaultSettings: options.defaultSettings }
-			: {}),
-		requestConfig: {
-			headers: { "ai-client-type": "Bytos" },
-			// Standard bytos axios settings mirroring `getAxiosSettings()`
-			adapter: "fetch",
-			...(config.fetch ? { fetch: config.fetch } : {}),
-			maxBodyLength: Number.POSITIVE_INFINITY,
-			maxContentLength: Number.POSITIVE_INFINITY,
-		},
-	});
-	return {
-		operations: {
-			language: (modelId) =>
-				wrapSapModelWithServiceKey(provider(modelId), serviceKey),
-		},
-	};
+	// Removed from the free BYOK build: the SAP AI Core provider requires
+	// @jerome-benoit/sap-ai-provider and @sap-cloud-sdk, which are distributed
+	// under the SAP Developer License Agreement. That agreement is not
+	// compatible with bundling them into a public VSIX without a separate
+	// distribution review.
+	throw new Error(
+		"The SAP AI Core provider is not included in the BYOK build. " +
+			"Use a BYOK provider with your own API key instead.",
+	);
 }

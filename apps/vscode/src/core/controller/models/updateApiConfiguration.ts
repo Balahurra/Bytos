@@ -1,8 +1,19 @@
+/*
+ * Copyright 2026 Cline Bot Inc.
+ * Bytos modifications Copyright 2026 Bytos contributors.
+ *
+ * Modified from the Cline project (https://github.com/cline/cline), Apache-2.0.
+ * Changes by Bytos: provider configuration updates redact API keys before they
+ * are persisted or echoed back, and the legacy plaintext path is retired.
+ * See NOTICE and apps/vscode/THIRD-PARTY-NOTICES.txt.
+ */
+
 import { Empty } from "@shared/proto/bytos/common"
 import { convertProtoToApiProvider } from "@shared/proto-conversions/models/api-configuration-conversion"
 import { ApiHandlerOptions, ApiProvider } from "@/shared/api"
 import { UpdateApiConfigurationRequestNew } from "@/shared/proto/index.bytos"
 import { Logger } from "@/shared/services/Logger"
+import { isSecretMaskOnly, stripSecretMask } from "@/shared/storage/secret-mask"
 import { Secrets } from "@/shared/storage/state-keys"
 import type { Controller } from "../index"
 import { clearOrganizationForBytosPassProviderSelection } from "./handleBytosPassProviderSelection"
@@ -86,7 +97,11 @@ export async function updateApiConfiguration(controller: Controller, request: Up
 			// Process entries that are in the mask
 			for (const [key, value] of Object.entries(protoSecrets)) {
 				if (maskSecretsFields.has(key)) {
-					secrets[key as keyof Secrets] = value
+					if (isSecretMaskOnly(value)) {
+						continue
+					}
+					secrets[key as keyof Secrets] =
+						typeof value === "string" && value.includes("\u2022") ? stripSecretMask(value) : value
 				}
 			}
 		}

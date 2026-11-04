@@ -1,8 +1,17 @@
+/*
+ * Copyright 2026 Cline Bot Inc.
+ * Bytos modifications Copyright 2026 Bytos contributors.
+ *
+ * Modified from the Cline project (https://github.com/cline/cline), Apache-2.0.
+ * Changes by Bytos: attachment extraction covers additional binary formats
+ * (PDF, office documents, media) and normalizes their output.
+ * See NOTICE and apps/vscode/THIRD-PARTY-NOTICES.txt.
+ */
+
 import type ExcelJS from "exceljs"
 import fs from "fs/promises"
 import * as iconv from "iconv-lite"
 import { isBinaryFile } from "isbinaryfile"
-import * as chardet from "jschardet"
 import * as path from "path"
 import { ATTACHMENT_LIMITS, isAttachmentFeatureEnabled } from "@/shared/attachments"
 import { truncateContent } from "@/shared/content-limits"
@@ -11,12 +20,21 @@ import { sanitizeNotebookForLLM } from "./notebook-utils"
 import { describeOcrRequirement, ocrPdfWithExternalTools } from "./pdf-ocr"
 
 export async function detectEncoding(fileBuffer: Buffer, fileExtension?: string): Promise<string> {
-	const detected = chardet.detect(fileBuffer)
-	if (typeof detected === "string") {
-		return detected
+	// BOM checks cover the common UTF-16/UTF-8 cases without an LGPL detector.
+	if (fileBuffer.length >= 3 && fileBuffer[0] === 0xef && fileBuffer[1] === 0xbb && fileBuffer[2] === 0xbf) {
+		return "utf8"
 	}
-	if (detected && (detected as any).encoding) {
-		return (detected as any).encoding
+	if (fileBuffer.length >= 2 && fileBuffer[0] === 0xff && fileBuffer[1] === 0xfe) {
+		return "utf16-le"
+	}
+	if (fileBuffer.length >= 2 && fileBuffer[0] === 0xfe && fileBuffer[1] === 0xff) {
+		return "utf16-be"
+	}
+	try {
+		new TextDecoder("utf-8", { fatal: true }).decode(fileBuffer)
+		return "utf8"
+	} catch {
+		// Not valid UTF-8; fall through to the text/binary check.
 	}
 	if (fileExtension) {
 		const isBinary = await isBinaryFile(fileBuffer).catch(() => false)
@@ -24,7 +42,9 @@ export async function detectEncoding(fileBuffer: Buffer, fileExtension?: string)
 			throw new Error(`Cannot read text for file type: ${fileExtension}`)
 		}
 	}
-	return "utf8"
+	// Windows-1252 is a safe single-byte fallback for legacy text files and is
+	// supported by iconv-lite. It never throws on arbitrary bytes.
+	return "windows-1252"
 }
 
 export async function extractTextFromFile(filePath: string): Promise<string> {

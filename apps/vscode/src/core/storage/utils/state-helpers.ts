@@ -1,5 +1,6 @@
 import { ApiProvider } from "@shared/api"
 import type { BytosFileStorage } from "@shared/storage/BytosFileStorage"
+import type { BytosSyncStorage } from "@shared/storage/BytosStorage"
 import {
 	applyTransform,
 	GlobalStateAndSettingKeys,
@@ -19,9 +20,9 @@ import { StateManager } from "../StateManager"
 // ─── File-backed storage readers (used by StateManager) ────────────────────
 
 /**
- * Read secrets from a BytosFileStorage instance.
+ * Read secrets from a synchronous secret store (file-backed or SecretStorage).
  */
-export function readSecretsFromStorage(store: BytosFileStorage<string>): Secrets {
+export function readSecretsFromStorage(store: BytosSyncStorage<string>): Secrets {
 	return SecretKeys.reduce((acc, key) => {
 		acc[key] = store.get(key)
 		return acc

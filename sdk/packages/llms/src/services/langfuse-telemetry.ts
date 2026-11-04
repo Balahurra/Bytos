@@ -299,7 +299,10 @@ async function isTelemetryOptedOutGlobally(): Promise<boolean> {
 		return (error as NodeJS.ErrnoException)?.code !== "ENOENT";
 	}
 	try {
-		return JSON.parse(raw)?.telemetryOptOut === true;
+		const parsed = JSON.parse(raw) as { telemetryOptIn?: unknown; telemetryOptOut?: unknown };
+		// Positive opt-in only. A missing marker (including the legacy
+		// telemetryOptOut:false shape) means telemetry is disabled.
+		return parsed?.telemetryOptIn !== true || parsed?.telemetryOptOut === true;
 	} catch {
 		// Malformed settings (e.g. a torn read while the non-atomic writer is
 		// mid-rewrite) fail closed: a user who opted out must not start

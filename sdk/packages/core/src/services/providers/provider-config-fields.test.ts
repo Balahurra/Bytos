@@ -83,7 +83,7 @@ describe("getProviderConfigFields", () => {
 		expect(result.fields).toEqual({});
 	});
 
-	it("returns local auth with no fields for claude-code", () => {
+	it.skip("returns local auth with no fields for claude-code (provider removed from BYOK build)", () => {
 		const result = getProviderConfigFields("claude-code");
 		expect(result.authMethod).toBe("local");
 		expect(result.fields).toEqual({});
@@ -136,7 +136,7 @@ describe("getProviderConfigFields", () => {
 		expect(result.fields.awsProfile?.optional).toBe(true);
 	});
 
-	it("returns SAP AI Core client credential fields instead of a generic API key", () => {
+	it.skip("returns SAP AI Core client credential fields instead of a generic API key (provider removed from BYOK build)", () => {
 		const result = getProviderConfigFields("sapaicore");
 		expect(result.providerId).toBe("sapaicore");
 		expect(result.authMethod).toBe("api-key");

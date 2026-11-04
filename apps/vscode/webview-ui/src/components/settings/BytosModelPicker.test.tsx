@@ -45,6 +45,7 @@ vi.mock("@/services/grpc-client", () => ({
 	ModelsServiceClient: {
 		makeUnaryRequest: mocks.makeUnaryRequest,
 		updateApiConfigurationProto: mocks.updateApiConfigurationProto,
+		updateApiConfigurationPartial: vi.fn(async () => undefined),
 	},
 	StateServiceClient: {
 		toggleFavoriteModel: mocks.toggleFavoriteModel,

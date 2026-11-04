@@ -49,11 +49,6 @@ describe("provider readiness", () => {
 				provider: "openai-codex-cli",
 			} satisfies ProviderSettings),
 		).toBe(true);
-		expect(
-			isProviderSettingsUsable("claude-code", {
-				provider: "claude-code",
-			} satisfies ProviderSettings),
-		).toBe(true);
 	});
 
 	it("keeps local auth providers usable when a stale API key is stored", () => {
@@ -61,10 +56,10 @@ describe("provider readiness", () => {
 		// this value; entries written before local-auth existed carry a
 		// placeholder key that must stay usable.
 		expect(
-			isProviderSettingsUsable("claude-code", {
-				provider: "claude-code",
+			isProviderSettingsUsable("openai-codex-cli", {
+				provider: "openai-codex-cli",
 				apiKey: "unused-placeholder",
-				model: "sonnet",
+				model: "codex",
 			} satisfies ProviderSettings),
 		).toBe(true);
 	});
@@ -163,27 +158,6 @@ describe("provider readiness", () => {
 				gcp: { projectId: "test-project", region: "us-central1" },
 			} satisfies ProviderSettings),
 		).toBe(true);
-		expect(
-			isProviderSettingsUsable("sapaicore", {
-				provider: "sapaicore",
-				baseUrl: "https://api.ai.example.invalid",
-				sap: {
-					clientId: "client",
-					clientSecret: "secret",
-					tokenUrl: "https://example.com/token",
-				},
-			} satisfies ProviderSettings),
-		).toBe(true);
-		expect(
-			isProviderSettingsUsable("sapaicore", {
-				provider: "sapaicore",
-				sap: {
-					clientId: "client",
-					clientSecret: "secret",
-					tokenUrl: "https://example.com/token",
-				},
-			} satisfies ProviderSettings),
-		).toBe(false);
 	});
 
 	it("rejects migrated placeholder entries that only hold a default model", () => {
@@ -195,13 +169,6 @@ describe("provider readiness", () => {
 			isProviderSettingsUsable("qwen-code", {
 				provider: "qwen-code",
 				model: "qwen3-coder-plus",
-			} satisfies ProviderSettings),
-		).toBe(false);
-		expect(
-			isProviderSettingsUsable("sapaicore", {
-				provider: "sapaicore",
-				model: "anthropic--claude-4-sonnet",
-				sap: { useOrchestrationMode: true },
 			} satisfies ProviderSettings),
 		).toBe(false);
 	});

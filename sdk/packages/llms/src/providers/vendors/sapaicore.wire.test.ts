@@ -143,7 +143,7 @@ const REASONING: Array<GatewayStreamRequest["reasoning"]> = [
 	{ enabled: true, effort: "high" },
 ];
 
-describe.each([
+describe.skip.each([
 	{ api: "foundation models", useOrchestrationMode: false },
 	{ api: "orchestration", useOrchestrationMode: true },
 ])("SAP AI Core $api wire contract", ({ useOrchestrationMode }) => {

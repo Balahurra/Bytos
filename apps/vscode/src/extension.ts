@@ -1,8 +1,21 @@
+/*
+ * Copyright 2026 Cline Bot Inc.
+ * Bytos modifications Copyright 2026 Bytos contributors.
+ *
+ * Modified from the Cline project (https://github.com/cline/cline), Apache-2.0.
+ * Changes by Bytos: extension activation wires the credential store, the
+ * fail-closed tool policy layer, and the Bytos command IDs; the account,
+ * cloud-session, and marketplace-catalog boot paths were removed.
+ * See NOTICE and apps/vscode/THIRD-PARTY-NOTICES.txt.
+ */
+
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 
 import assert from "node:assert"
+import { setProviderCredentialStore } from "@bytos/core"
 import { disableCurrentDirectoryExecutableSearch } from "@bytos/shared"
+import { resolveProviderSettingsPath } from "@bytos/shared/storage"
 import * as vscode from "vscode"
 import { Logger } from "@/shared/services/Logger"
 import { sendAccountButtonClickedEvent } from "./core/controller/ui/subscribeToAccountButtonClicked"
@@ -49,13 +62,17 @@ import {
 import { DIFF_VIEW_URI_SCHEME, diffContentProvider } from "./hosts/vscode/VscodeDiffContentProvider"
 import { EDIT_PREVIEW_URI_SCHEME, editPreviewContentProvider, VscodeEditPreview } from "./hosts/vscode/VscodeEditPreview"
 import { VscodeWebviewProvider } from "./hosts/vscode/VscodeWebviewProvider"
+import { VscodeProviderCredentialStore } from "./hosts/vscode/vscode-provider-credential-store"
+import { migrateLegacySecretsFile, VscodeSecretStorage } from "./hosts/vscode/vscode-secret-storage"
 import { exportVSCodeStorageToSharedFiles } from "./hosts/vscode/vscode-to-file-migration"
 import { ExtensionRegistryInfo } from "./registry"
 import { AuthService, LogoutReason } from "./sdk/auth-service"
+import { migrateProviders } from "./sdk/provider-migration"
 import { telemetryService } from "./services/telemetry"
 import type { RolloutBundleActivation } from "./services/telemetry/rollout-metadata"
 import { LG_TASK_URI_PATH, SharedUriHandler, TASK_URI_PATH } from "./services/uri/SharedUriHandler"
 import { ShowMessageType } from "./shared/proto/host/window"
+import { SecretKeys } from "./shared/storage/state-keys"
 import { fileExistsAtPath } from "./utils/fs"
 
 export async function reportRolloutActivation(input: RolloutBundleActivation): Promise<void> {
@@ -65,26 +82,39 @@ export async function reportRolloutActivation(input: RolloutBundleActivation): P
 // This method is called when the VS Code extension is activated.
 // NOTE: This is VS Code specific - services that should be registered
 // for all-platform should be registered in common.ts.
+let secretStorageForShutdown: VscodeSecretStorage | undefined
+let providerCredentialsForShutdown: VscodeProviderCredentialStore | undefined
+
 export async function activate(context: vscode.ExtensionContext) {
 	const activationStartTime = performance.now()
 
 	// Before anything spawns with the workspace as cwd (rg, git, hooks, MCP).
 	disableCurrentDirectoryExecutableSearch()
 
-	// 1. Set up HostProvider for VSCode
+	// 1. Initialize secure credential storage before any state or provider code
+	// can read it. The VS Code host never writes provider secrets to JSON files.
+	const workspacePath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath
+	secretStorageForShutdown = await VscodeSecretStorage.create(context.secrets, SecretKeys)
+	providerCredentialsForShutdown = await VscodeProviderCredentialStore.create(context.secrets, resolveProviderSettingsPath())
+	setProviderCredentialStore(providerCredentialsForShutdown)
+
+	// 2. Set up HostProvider for VSCode
 	// IMPORTANT: This must be done before any service can be registered
 	setupHostProvider(context)
 
-	// 2. Clean up legacy data patterns within VSCode's native storage.
+	// 3. Clean up legacy data patterns within VSCode's native storage.
 	// Moves workspace→global keys, task history→file, custom instructions→rules, etc.
 	// Must run BEFORE the file export so we copy clean state.
 	await cleanupLegacyVSCodeStorage(context)
 
-	// 3. One-time export of VSCode's native storage to shared file-backed stores.
-	// After this, all platforms (VSCode, CLI, JetBrains) read from ~/.bytos/data/.
-	const workspacePath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath
-	const storageContext = createStorageContext({ workspacePath })
+	// 4. One-time export of VSCode's native storage to shared file-backed stores.
+	// Secrets go to SecretStorage; only non-secret state is written to
+	// ~/.bytos/data. Provider migration still reads the legacy secrets.json, so
+	// delete it only after that migration has completed.
+	const storageContext = createStorageContext({ workspacePath, secrets: secretStorageForShutdown })
 	await exportVSCodeStorageToSharedFiles(context, storageContext)
+	migrateProviders()
+	await migrateLegacySecretsFile(storageContext.dataDir, secretStorageForShutdown)
 	migrateOpenAiCompatibleBaseUrlToV1(storageContext)
 
 	// 4. Register services and perform common initialization
@@ -667,6 +697,10 @@ export async function deactivate() {
 	} finally {
 		// VSCode-specific services
 		disposeVscodeCommentReviewController()
+		// Make sure queued SecretStorage writes settle before the host exits.
+		await providerCredentialsForShutdown?.flush().catch(() => {})
+		await secretStorageForShutdown?.flush().catch(() => {})
+		secretStorageForShutdown?.dispose()
 	}
 }
 

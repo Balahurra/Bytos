@@ -14,6 +14,7 @@ import {
 	normalizeLineEndings,
 	normalizeNewFileLineEndings,
 } from "./line-endings";
+import { resolveWorkspacePath } from "./path-safety";
 
 /**
  * Options for the editor executor
@@ -37,31 +38,6 @@ export interface EditorExecutorOptions {
 	 * @default 200
 	 */
 	maxDiffLines?: number;
-}
-
-function resolveFilePath(
-	cwd: string,
-	inputPath: string,
-	restrictToCwd: boolean,
-): string {
-	const isAbsoluteInput = path.isAbsolute(inputPath);
-	const resolved = isAbsoluteInput
-		? path.normalize(inputPath)
-		: path.resolve(cwd, inputPath);
-	if (!restrictToCwd) {
-		return resolved;
-	}
-
-	// Absolute paths are accepted directly; cwd restriction applies to relative inputs.
-	if (isAbsoluteInput) {
-		return resolved;
-	}
-
-	const rel = path.relative(cwd, resolved);
-	if (rel.startsWith("..") || path.isAbsolute(rel)) {
-		throw new Error(`Path must stay within cwd: ${inputPath}`);
-	}
-	return resolved;
 }
 
 function countOccurrences(content: string, needle: string): number {
@@ -221,18 +197,14 @@ async function insertInFile(
 export function createEditorExecutor(
 	options: EditorExecutorOptions = {},
 ): EditorExecutor {
-	const {
-		encoding = "utf-8",
-		restrictToCwd = true,
-		maxDiffLines = 200,
-	} = options;
+	const { encoding = "utf-8", maxDiffLines = 200 } = options;
 
 	return async (
 		input: EditFileInput,
 		cwd: string,
 		_context: AgentToolContext,
 	): Promise<string> => {
-		const filePath = resolveFilePath(cwd, input.path, restrictToCwd);
+		const filePath = await resolveWorkspacePath(cwd, input.path);
 
 		if (input.insert_line != null) {
 			return insertInFile(

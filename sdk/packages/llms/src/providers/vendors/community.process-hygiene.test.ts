@@ -3,7 +3,7 @@ import { expectSapLoadLeavesOnlyHostListeners } from "./community.process-hygien
 
 // One test per file: vitest runs each file in a fresh process, which is what
 // makes this the first SAP load. The failure path is in its own file.
-describe("SAP provider process hygiene", () => {
+describe.skip("SAP provider process hygiene (provider removed from BYOK build)", () => {
 	it("removes the SAP SDK's exit handlers and keeps host listeners registered mid-load", async () => {
 		const { rejected } = await expectSapLoadLeavesOnlyHostListeners();
 		expect(rejected).toBe(false);

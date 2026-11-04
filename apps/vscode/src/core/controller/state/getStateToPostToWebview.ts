@@ -1,3 +1,13 @@
+/*
+ * Copyright 2026 Cline Bot Inc.
+ * Bytos modifications Copyright 2026 Bytos contributors.
+ *
+ * Modified from the Cline project (https://github.com/cline/cline), Apache-2.0.
+ * Changes by Bytos: the state sent to the webview never contains provider API
+ * keys; only masks and configured/not-configured flags are serialized.
+ * See NOTICE and apps/vscode/THIRD-PARTY-NOTICES.txt.
+ */
+
 // Extracted from classic src/core/controller/index.ts (see origin/main)
 //
 // Standalone function to build ExtensionState from a Controller instance.
@@ -16,6 +26,7 @@ import { getDistinctId } from "@/services/logging/distinctId"
 import { getExtensionVariant } from "@/services/telemetry/rollout-metadata"
 import { getLatestAnnouncementId } from "@/utils/announcements"
 import { getBytosOnboardingModels } from "../models/getBytosOnboardingModels"
+import { redactApiConfigurationForWebview } from "./redactApiConfiguration"
 
 /**
  * Builds the ExtensionState object to push to the webview.
@@ -131,7 +142,7 @@ export async function getStateToPostToWebview(controller: {
 	return {
 		version,
 		extensionVariant: getExtensionVariant(),
-		apiConfiguration,
+		apiConfiguration: redactApiConfigurationForWebview(apiConfiguration),
 		currentTaskItem,
 		bytosMessages,
 		checkpointRestoreInput,

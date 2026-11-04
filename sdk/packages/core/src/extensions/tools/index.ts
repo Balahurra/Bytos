@@ -53,6 +53,7 @@ export {
 	type ShellExecutorOptions,
 	type WebFetchExecutorOptions,
 } from "./executors/index";
+export { resolveWorkspacePath, type WorkspacePathOptions } from "./executors/path-safety";
 export {
 	MAX_COMMAND_OUTPUT_CHARS,
 	truncateCommandOutput,

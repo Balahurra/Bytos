@@ -61,6 +61,10 @@ export type GlobalPlanActMode = z.infer<typeof GlobalPlanActModeSchema>;
 export const GlobalSettingsSchema = z
 	.object({
 		telemetryOptOut: z.boolean().default(false).catch(false),
+		// Positive consent marker. Missing/false means telemetry is disabled;
+		// telemetryOptOut is retained for backwards compatibility with older
+		// clients and is always written together with this field.
+		telemetryOptIn: z.boolean().default(false).catch(false),
 		autoUpdateEnabled: z.boolean().default(true).catch(true),
 		compactionStrategy: GlobalCompactionStrategySchema.optional(),
 		compactionEnabled: z.boolean().optional().catch(undefined),
@@ -76,6 +80,7 @@ export const GlobalSettingsSchema = z
 	.transform((settings) => {
 		const normalized: {
 			telemetryOptOut: boolean;
+			telemetryOptIn: boolean;
 			autoUpdateEnabled: boolean;
 			compactionStrategy?: GlobalCompactionStrategy;
 			compactionEnabled?: boolean;
@@ -89,6 +94,7 @@ export const GlobalSettingsSchema = z
 		} = {
 			autoUpdateEnabled: settings.autoUpdateEnabled,
 			telemetryOptOut: settings.telemetryOptOut,
+			telemetryOptIn: settings.telemetryOptIn && !settings.telemetryOptOut,
 		};
 		if (settings.compactionStrategy) {
 			normalized.compactionStrategy = settings.compactionStrategy;
@@ -244,9 +250,16 @@ export function setTelemetryOptOutGlobally(
 		{
 			...readGlobalSettings(),
 			telemetryOptOut,
+			telemetryOptIn: !telemetryOptOut,
 		},
 		options,
 	);
+}
+
+/** Telemetry is enabled only by an explicit positive opt-in. */
+export function isTelemetryOptedInGlobally(): boolean {
+	const settings = readGlobalSettings();
+	return settings.telemetryOptIn === true && settings.telemetryOptOut !== true;
 }
 
 export function isAutoUpdateEnabledGlobally(): boolean {

@@ -9,6 +9,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import type { AgentToolContext } from "@bytos/shared";
+import { resolveWorkspacePath } from "./path-safety";
 import type { ApplyPatchInput } from "../schemas";
 import type { ApplyPatchExecutor } from "../types";
 import {
@@ -56,24 +57,12 @@ export interface ApplyPatchExecutorOptions {
 	restrictToCwd?: boolean;
 }
 
-function resolveFilePath(
+async function resolveFilePath(
 	cwd: string,
 	inputPath: string,
-	restrictToCwd: boolean,
-): string {
-	const isAbsoluteInput = path.isAbsolute(inputPath);
-	const resolved = isAbsoluteInput
-		? path.normalize(inputPath)
-		: path.resolve(cwd, inputPath);
-	if (!restrictToCwd || isAbsoluteInput) {
-		return resolved;
-	}
-
-	const rel = path.relative(cwd, resolved);
-	if (rel.startsWith("..") || path.isAbsolute(rel)) {
-		throw new DiffError(`Path must stay within cwd: ${inputPath}`);
-	}
-	return resolved;
+	_restrictToCwd: boolean,
+): Promise<string> {
+	return resolveWorkspacePath(cwd, inputPath);
 }
 
 function splitPatchInputLines(input: string): string[] {
@@ -216,7 +205,7 @@ async function loadFiles(
 	const eols: Record<string, LineEnding> = {};
 
 	for (const filePath of filesToLoad) {
-		const absolutePath = resolveFilePath(cwd, filePath, restrictToCwd);
+		const absolutePath = await resolveFilePath(cwd, filePath, restrictToCwd);
 		let fileContent: string;
 		try {
 			fileContent = await fs.readFile(absolutePath, encoding);
@@ -233,7 +222,7 @@ async function loadFiles(
 	for (const filePath of extractFilesForOperations(lines, [
 		PATCH_MARKERS.ADD,
 	])) {
-		const absolutePath = resolveFilePath(cwd, filePath, restrictToCwd);
+		const absolutePath = await resolveFilePath(cwd, filePath, restrictToCwd);
 		try {
 			files[filePath] = await fs.readFile(absolutePath, encoding);
 		} catch {
@@ -322,7 +311,7 @@ async function applyChanges(
 	const touched: string[] = [];
 
 	for (const [filePath, change] of Object.entries(changes)) {
-		const sourceAbsPath = resolveFilePath(cwd, filePath, restrictToCwd);
+		const sourceAbsPath = await resolveFilePath(cwd, filePath, restrictToCwd);
 		switch (change.type) {
 			case PatchActionType.DELETE:
 				await fs.rm(sourceAbsPath, { force: true });
@@ -344,7 +333,7 @@ async function applyChanges(
 				}
 
 				if (change.movePath) {
-					const moveAbsPath = resolveFilePath(
+					const moveAbsPath = await resolveFilePath(
 						cwd,
 						change.movePath,
 						restrictToCwd,

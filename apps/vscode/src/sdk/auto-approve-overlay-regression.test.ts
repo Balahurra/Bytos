@@ -135,6 +135,18 @@ describe("auto-approve settings after New Task (#13260)", () => {
 	})
 
 	it("freezes forever if the overlay outlives the task view (the failure mode the fix prevents)", async () => {
+		// The test models a user who explicitly enabled reads/browser; the
+		// product defaults are now fail-closed, so seed the values under test.
+		stateManager.setGlobalState("autoApprovalSettings", {
+			...DEFAULT_AUTO_APPROVAL_SETTINGS,
+			actions: {
+				...DEFAULT_AUTO_APPROVAL_SETTINGS.actions,
+				readFiles: true,
+				useBrowser: true,
+			},
+		})
+		webviewSettings = resolveSettings()
+
 		// Same start: mid-task toggle populates the overlay.
 		task = makeTaskProxy("task-1")
 		await clickCheckbox("editFiles", false)

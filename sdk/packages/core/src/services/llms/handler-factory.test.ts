@@ -545,7 +545,7 @@ describe("createAgentModelFromConfig", () => {
 		);
 	});
 
-	it("forwards SAP AI Core settings as gateway provider options", async () => {
+	it.skip("forwards SAP AI Core settings as gateway provider options (provider removed from BYOK build)", async () => {
 		const { createAgentModelFromConfig } = await import("./handler-factory");
 
 		createAgentModelFromConfig(

@@ -2769,9 +2769,6 @@ describe("listLocalProviders", () => {
 				localCli: { command: "custom", docsUrl: "https://example.com/cli" },
 			});
 			expect(
-				providers.find((p) => p.id === "claude-code")?.auth.localCli?.command,
-			).toBe("claude");
-			expect(
 				providers.find((p) => p.id === "openai-codex-cli")?.auth.localCli
 					?.command,
 			).toBe("codex");

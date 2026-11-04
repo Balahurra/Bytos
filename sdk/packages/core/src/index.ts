@@ -610,6 +610,7 @@ export {
 	isAutoUpdateEnabledGlobally,
 	isModelToolEnabledGlobally,
 	isPluginDisabledGlobally,
+	isTelemetryOptedInGlobally,
 	isTelemetryOptedOutGlobally,
 	isToolDisabledGlobally,
 	readCompactionModeGlobally,
@@ -768,7 +769,13 @@ export {
 	type MigrateLegacyProviderSettingsResult,
 	migrateLegacyProviderSettings,
 } from "./services/storage/provider-settings-legacy-migration";
-export { ProviderSettingsManager } from "./services/storage/provider-settings-manager";
+export {
+	getProviderCredentialStore,
+	type ProviderCredentialStore,
+	type ProviderCredentials,
+	ProviderSettingsManager,
+	setProviderCredentialStore,
+} from "./services/storage/provider-settings-manager";
 export { SqliteSessionStore } from "./services/storage/sqlite-session-store";
 export {
 	SqliteTeamStore,
@@ -1007,6 +1014,8 @@ export {
 	createDefaultTools,
 	createDefaultToolsWithPreset,
 	createEditorExecutor,
+	resolveWorkspacePath,
+	type WorkspacePathOptions,
 	createShellExecutor,
 	createShellTool,
 	createToolPoliciesWithPreset,

@@ -11,6 +11,7 @@ import { createInterface } from "node:readline";
 import { Readable } from "node:stream";
 import type { AgentToolContext } from "@bytos/shared";
 import { resolveExistingFilePath } from "@bytos/shared/storage";
+import { resolveWorkspacePath } from "./path-safety";
 import {
 	TOOL_RESULT_CACHE_MISS,
 	ToolResultCache,
@@ -228,9 +229,15 @@ export function createFileReadExecutor(
 				context.signal,
 			);
 		}
-		const initialPath = path.isAbsolute(filePath)
-			? path.normalize(filePath)
-			: path.resolve(process.cwd(), filePath);
+		const workspaceRoot = context.cwd?.trim();
+		// Hosts that execute file tools must provide context.cwd; when they do,
+		// every path is checked against the canonical workspace. Legacy/unit
+		// callers without a context cwd retain the old process.cwd resolution.
+		const initialPath = workspaceRoot
+			? await resolveWorkspacePath(workspaceRoot, filePath)
+			: path.isAbsolute(filePath)
+				? path.normalize(filePath)
+				: path.resolve(process.cwd(), filePath);
 		// Tolerate Unicode-whitespace mismatches (e.g. macOS Sonoma+
 		// screenshot paths where the on-disk filename contains U+202F but
 		// the caller's string has a regular space).

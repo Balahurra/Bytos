@@ -1,9 +1,0 @@
-{
-	"shortcuts": [
-		{
-			"label": "Build & Link CLI",
-			"command": "bun -F @bytos/cli build && bun -F @bytos/cli link",
-			"icon": "play"
-		}
-	]
-}

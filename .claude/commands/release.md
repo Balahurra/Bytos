@@ -1,1 +1,0 @@
-../../.bytosrules/workflows/release.md

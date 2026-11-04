@@ -1,1 +1,0 @@
-../../.bytosrules/workflows/hotfix-release.md

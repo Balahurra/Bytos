@@ -277,7 +277,14 @@ export class E2ETestHelper {
 	 * assuming which frame it uses.
 	 */
 	public async openSettings(page: Page): Promise<Frame> {
-		await page.getByRole("button", { name: "Settings", exact: true }).first().click()
+		const bytosSettings = page
+			.getByRole("toolbar", { name: "Bytos actions" })
+			.getByRole("button", { name: "Settings", exact: true })
+		if ((await bytosSettings.count()) > 0) {
+			await bytosSettings.first().click()
+		} else {
+			await page.getByRole("button", { name: "Settings", exact: true }).first().click()
+		}
 		return this.findFrameContaining(page, "#api-provider")
 	}
 

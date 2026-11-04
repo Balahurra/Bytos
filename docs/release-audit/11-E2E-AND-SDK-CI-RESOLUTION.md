@@ -97,9 +97,11 @@ not the product to the tests.
 ## 5. Playwright changes
 
 - `utils/helpers.ts`
-  - New `openSettings(page)`: clicks the Settings action and locates the frame
-    containing `#api-provider` (the settings webview can land in the sidebar or
-    an editor frame depending on platform/layout).
+  - New `openSettings(page)`: clicks the Settings action **inside the
+    `Bytos actions` view toolbar** (the first workbench "Settings" button can
+    open VS Code's own settings on macOS) and locates the frame containing
+    `#api-provider` (the settings webview can land in the sidebar or an editor
+    frame depending on platform/layout).
   - New `configureMockProvider(page, sidebar)`: opens Settings, selects the
     OpenAI Compatible provider, sets `http://localhost:7777/api/v1`, the mock
     token, and model `test-model`, waits for the deterministic persisted-key

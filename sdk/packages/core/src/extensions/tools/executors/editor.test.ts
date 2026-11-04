@@ -14,7 +14,7 @@ async function withTempFile(
 	content: string,
 	run: (filePath: string, dir: string) => Promise<void>,
 ): Promise<void> {
-	const dir = await fs.mkdtemp(path.join(os.tmpdir(), "agents-editor-"));
+	const dir = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "agents-editor-")));
 	const filePath = path.join(dir, "example.txt");
 	await fs.writeFile(filePath, content, "utf-8");
 	try {
@@ -26,7 +26,7 @@ async function withTempFile(
 
 describe("createEditorExecutor", () => {
 	it("creates a missing file when edit is used", async () => {
-		const dir = await fs.mkdtemp(path.join(os.tmpdir(), "agents-editor-"));
+		const dir = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "agents-editor-")));
 		const filePath = path.join(dir, "example.txt");
 
 		try {
@@ -54,7 +54,7 @@ describe("createEditorExecutor", () => {
 	});
 
 	it("inserts before a one-based line and appends at the EOF boundary", async () => {
-		const dir = await fs.mkdtemp(path.join(os.tmpdir(), "agents-editor-"));
+		const dir = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "agents-editor-")));
 		const filePath = path.join(dir, "example.txt");
 		await fs.writeFile(filePath, "one\ntwo", "utf-8");
 
@@ -231,7 +231,7 @@ describe("createEditorExecutor", () => {
 	// The CRLF branch is exercised for real by Windows CI, where os.EOL is
 	// "\r\n" (github.com/bytos/bytos/issues/13504).
 	it("creates new files with the platform-native line ending", async () => {
-		const dir = await fs.mkdtemp(path.join(os.tmpdir(), "agents-editor-"));
+		const dir = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "agents-editor-")));
 		const filePath = path.join(dir, "fresh.txt");
 
 		try {
@@ -283,7 +283,7 @@ describe("createEditorExecutor", () => {
 	});
 
 	it("rejects insert_line 0 with the valid one-based boundary range", async () => {
-		const dir = await fs.mkdtemp(path.join(os.tmpdir(), "agents-editor-"));
+		const dir = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "agents-editor-")));
 		const filePath = path.join(dir, "example.txt");
 		await fs.writeFile(filePath, "one\ntwo", "utf-8");
 

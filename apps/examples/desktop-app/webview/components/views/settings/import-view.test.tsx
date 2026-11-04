@@ -94,6 +94,16 @@ describe("ImportContent", () => {
 		expect(text).toContain("Claude Code");
 		expect(text).toContain("3 sessions found · 1 already imported");
 		expect(text).toContain("No sessions found");
+	});
+
+	it("marks a tool that is not installed as not detected", async () => {
+		invoke.mockResolvedValue({
+			installedTools: ["claude-code"],
+			sessions: [session("claude-code")],
+		});
+		await render();
+		const text = container.textContent ?? "";
+		expect(text).toContain("Claude Code");
 		expect(text).toContain("Not detected on this machine");
 	});
 

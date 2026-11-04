@@ -85,7 +85,7 @@ describe("onboarding model helpers", () => {
 		});
 	});
 
-	it("marks the Claude Code provider as local auth", () => {
+	it("does not mark the removed Claude Code provider as local auth", () => {
 		expect(
 			toProviderEntry({
 				id: "claude-code",
@@ -95,7 +95,7 @@ describe("onboarding model helpers", () => {
 		).toMatchObject({
 			id: "claude-code",
 			isOAuth: false,
-			isLocalAuth: true,
+			isLocalAuth: false,
 		});
 	});
 
@@ -194,9 +194,15 @@ describe("local-auth setup routing", () => {
 	// Routing must follow the capability; the descriptor is only for probing.
 	// Otherwise it falls through to the API-key form, which renders no fields
 	// for a local-auth provider.
-	it("routes a local-auth provider with no CLI descriptor to local setup", () => {
+	it("routes a local-auth provider with a CLI descriptor to local setup", () => {
+		// getLocalCliInfo is mocked to undefined in this suite: routing must
+		// follow the capability, not the descriptor.
+		expect(resolveProviderSetupRoute("openai-codex-cli")).toBe("local_cli");
+	});
+
+	it("routes the removed Claude Code provider through API-key setup", () => {
 		expect(getLocalCliInfo("claude-code")).toBeUndefined();
-		expect(resolveProviderSetupRoute("claude-code")).toBe("local_cli");
+		expect(resolveProviderSetupRoute("claude-code")).toBe("api_key");
 	});
 
 	it("routes OAuth and API-key providers unchanged", () => {

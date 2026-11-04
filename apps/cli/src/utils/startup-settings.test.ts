@@ -10,6 +10,7 @@ function makeSettings(overrides: Partial<GlobalSettings> = {}): GlobalSettings {
 	return {
 		autoUpdateEnabled: true,
 		telemetryOptOut: false,
+		telemetryOptIn: false,
 		...overrides,
 	};
 }

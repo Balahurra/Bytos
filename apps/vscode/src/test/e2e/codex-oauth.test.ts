@@ -20,13 +20,15 @@ async function waitForPortListening(port: number, timeoutMs: number): Promise<vo
 	throw new Error(`Nothing listening on port ${port} after ${timeoutMs}ms`)
 }
 
-async function navigateToCodexProvider(sidebar: import("@playwright/test").Frame): Promise<void> {
-	await sidebar.getByText("Bring my own API key").click()
-	await sidebar.getByRole("button", { name: "Continue" }).click()
-	const providerSelectorInput = sidebar.getByTestId("provider-selector-input")
-	await providerSelectorInput.click({ delay: 100 })
-	await providerSelectorInput.pressSequentially("chatgpt", { delay: 50 })
-	await sidebar.getByTestId("provider-option-openai-codex").click({ delay: 100 })
+async function navigateToCodexProvider(
+	page: import("@playwright/test").Page,
+	sidebar: import("@playwright/test").Frame,
+): Promise<void> {
+	await page.getByRole("button", { name: "Settings", exact: true }).click()
+	await expect(sidebar.getByText("Settings", { exact: true })).toBeVisible()
+	await sidebar.locator("#api-provider").locator("input").click()
+	await sidebar.getByTestId("provider-option-openai-codex").click()
+	await expect(sidebar.getByRole("button", { name: "Sign in to OpenAI Codex" })).toBeVisible()
 }
 
 async function occupy(host: string, port: number): Promise<net.Server> {
@@ -50,7 +52,7 @@ e2e("Codex sign-in fails fast with a port-in-use toast when 1455 is occupied", a
 	expect(blockers.length).toBeGreaterThan(0)
 
 	try {
-		await navigateToCodexProvider(sidebar)
+		await navigateToCodexProvider(page, sidebar)
 
 		const signInButton = sidebar.getByRole("button", { name: "Sign in to OpenAI Codex" })
 		await expect(signInButton).toBeVisible()
@@ -67,7 +69,7 @@ e2e("Codex sign-in fails fast with a port-in-use toast when 1455 is occupied", a
 })
 
 e2e("Codex sign-in with port free binds the callback server and surfaces OAuth redirect errors", async ({ page, sidebar }) => {
-	await navigateToCodexProvider(sidebar)
+	await navigateToCodexProvider(page, sidebar)
 
 	const signInButton = sidebar.getByRole("button", { name: "Sign in to OpenAI Codex" })
 	await expect(signInButton).toBeVisible()

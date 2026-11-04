@@ -81,7 +81,7 @@ e2e("History - hides cost estimates for subscription-billed tasks", async ({ app
 
 	await E2ETestHelper.openBytosSidebar(page)
 	const sidebar = await helper.getSidebar(page)
-	await helper.signin(sidebar)
+	await helper.configureMockProvider(page, sidebar)
 
 	// Recent-task chips in the empty chat view (HistoryPreview)
 	await expect(sidebar.getByText("Recent")).toBeVisible()

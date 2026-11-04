@@ -8,10 +8,45 @@
 // ---------------------------------------------------------------------------
 
 import { cpSync, mkdirSync, mkdtempSync } from "node:fs";
+import { createServer } from "node:http";
+import type { AddressInfo } from "node:net";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-export const TEST_SUITE_ROOT = new URL("../", import.meta.url).pathname;
+export const TEST_SUITE_ROOT = fileURLToPath(new URL("../", import.meta.url));
+
+/**
+ * Deterministic stand-in for the (unavailable) production Bytos API.
+ *
+ * Unauthenticated CLI tests must exercise the real HTTP/auth path without a
+ * public DNS lookup or a live backend. Every request to this server answers
+ * 401 with the same JSON envelope the real API uses, so the CLI's
+ * authorization handling is exercised end to end.
+ */
+const unauthorizedApiServer = createServer((request, response) => {
+	if (process.env.BYTOS_TUI_TEST_VERBOSE === "1") {
+		console.error(`[mock-401] ${request.method} ${request.url}`)
+	}
+	response.writeHead(401, {
+		"Content-Type": "application/json",
+		"WWW-Authenticate": 'Bearer realm="bytos"',
+	});
+	response.end(JSON.stringify({ success: false, error: "Unauthorized" }));
+});
+
+await new Promise<void>((resolve, reject) => {
+	unauthorizedApiServer.once("error", reject);
+	unauthorizedApiServer.listen(0, "127.0.0.1", resolve);
+});
+
+const unauthorizedAddress = unauthorizedApiServer.address() as AddressInfo;
+
+export const UNAUTHORIZED_API_BASE_URL = `http://127.0.0.1:${unauthorizedAddress.port}`;
+
+// Do not keep the test worker alive after its tests finish.
+unauthorizedApiServer.unref();
+process.once("exit", () => unauthorizedApiServer.close());
 
 let envCounter = 0;
 
@@ -124,6 +159,9 @@ export function bytosEnv(
 				}),
 		BYTOS_SESSION_DATA_DIR: path.join(dataDir, "sessions"),
 		BYTOS_TEAM_DATA_DIR: path.join(dataDir, "teams"),
+		// Unauthenticated tests must never reach public DNS. Point them at the
+		// local 401 server so the CLI exercises its real auth-failure path.
+		...(isAuthenticated ? {} : { BYTOS_API_BASE_URL: UNAUTHORIZED_API_BASE_URL }),
 		BYTOS_DISABLE_BYTOS_PASS_NOTICE: "1",
 		NO_UPDATE_NOTIFIER: "1",
 		BYTOS_NO_AUTO_UPDATE: "1",

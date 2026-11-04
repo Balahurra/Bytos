@@ -1,9 +1,9 @@
 import { expect } from "@playwright/test"
 import { e2e } from "./utils/helpers"
 
-e2e("Chat - can send messages and switch between modes", async ({ helper, sidebar }) => {
+e2e("Chat - can send messages and switch between modes", async ({ helper, page, sidebar }) => {
 	// Sign in
-	await helper.signin(sidebar)
+	await helper.configureMockProvider(page, sidebar)
 
 	// Submit a message
 	const inputbox = sidebar.getByTestId("chat-input")
@@ -70,7 +70,7 @@ e2e.describe("Checkpoint settings", () => {
 	e2e.describe.configure({ timeout: 180_000 })
 
 	e2e("enabling during a turn applies after the queued message", async ({ helper, page, server, sidebar }) => {
-		await helper.signin(sidebar)
+		await helper.configureMockProvider(page, sidebar)
 
 		const openSettings = async () => {
 			await page.getByRole("button", { name: "Settings" }).first().click()

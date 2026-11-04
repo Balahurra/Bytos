@@ -91,7 +91,7 @@ import { e2e } from "./utils/helpers"
 
 e2e("Test description", async ({ sidebar, helper, page }) => {
   // Sign in to Bytos
-  await helper.signin(sidebar)
+  await helper.configureMockProvider(page, sidebar)
   
   // Test interactions
   const inputbox = sidebar.getByTestId("chat-input")
@@ -128,7 +128,7 @@ The test fixtures provide the following objects:
 #### Authentication
 ```typescript
 // Sign in with test API key
-await helper.signin(sidebar)
+await helper.configureMockProvider(page, sidebar)
 ```
 
 #### Chat Interactions
@@ -240,7 +240,7 @@ The test environment includes:
 5. **Test both success and error cases:**
    ```typescript
    // Test successful flow
-   await helper.signin(sidebar)
+   await helper.configureMockProvider(page, sidebar)
    
    // Test error handling
    await expect(sidebar.getByText("API Request Failed")).toBeVisible()

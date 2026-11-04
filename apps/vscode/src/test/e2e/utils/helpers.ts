@@ -252,23 +252,41 @@ export class E2ETestHelper {
 		}
 	}
 
-	public async signin(webview: Frame): Promise<void> {
-		await webview.getByRole("button", { name: "Login to Bytos" }).click({ delay: 100 })
+	/**
+	 * Configure the deterministic E2E provider.
+	 *
+	 * The BYOK build has no Bytos provider and no onboarding flow: a fresh
+	 * install opens the chat view directly. Tests point the OpenAI Compatible
+	 * provider at the local mock API (`http://localhost:7777/api/v1`) with the
+	 * mock server's known token, so chat turns never touch public DNS.
+	 *
+	 * The wait is deterministic: once the debounced save round-trips, the API
+	 * key field is replaced by its saved mask, which is asserted below.
+	 */
+	public async configureMockProvider(page: Page, sidebar: Frame): Promise<void> {
+		await page.getByRole("button", { name: "Settings", exact: true }).click()
+		await expect(sidebar.getByText("Settings", { exact: true })).toBeVisible()
 
-		// Verify start up page is no longer visible
-		await expect(webview.getByRole("button", { name: "Login to Bytos" })).not.toBeVisible()
+		await sidebar.locator("#api-provider").locator("input").click()
+		await sidebar.getByRole("option", { name: "OpenAI Compatible", exact: true }).click()
 
-		const closeButton = webview.getByRole("button", { name: "Close" })
-		let shouldCloseModal = false
-		try {
-			await closeButton.waitFor({ state: "visible", timeout: 5_000 })
-			shouldCloseModal = true
-		} catch {
-			// No blocking modal appeared after sign-in.
-		}
-		if (shouldCloseModal) {
-			await closeButton.click({ delay: 50 })
-		}
+		await sidebar.getByPlaceholder("Enter base URL...").first().locator("input").fill("http://localhost:7777/api/v1")
+
+		const apiKey = "test-personal-token"
+		const apiKeyField = sidebar.getByRole("textbox", { name: "OpenAI Compatible API Key" }).first()
+		await apiKeyField.fill(apiKey)
+
+		const modelField = sidebar.getByPlaceholder("Enter Model ID...").first().locator("input")
+		await modelField.fill("test-model")
+		await modelField.blur()
+
+		// Persistence barrier: the stored key comes back masked (one bullet per
+		// character). Seeing the mask proves the debounced write completed.
+		await expect(apiKeyField).toHaveValue("\u2022".repeat(apiKey.length))
+
+		await sidebar.getByRole("button", { name: "Done" }).click()
+		await expect(sidebar.getByTestId("chat-input")).toBeVisible()
+		await expect(sidebar.getByText(/openai-compat:test-model/)).toBeVisible()
 	}
 
 	public static async openBytosSidebar(page: Page): Promise<void> {

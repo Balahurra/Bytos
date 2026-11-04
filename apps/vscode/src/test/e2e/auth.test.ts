@@ -1,51 +1,24 @@
 import { expect } from "@playwright/test"
 import { e2e } from "./utils/helpers"
 
-// Test for setting up API keys
-e2e("Views - can set up API keys and navigate to Settings from Chat", async ({ sidebar }) => {
-	// Use the page object to interact with editor outside the sidebar
-	// Verify initial state
-	await expect(sidebar.getByRole("button", { name: "Login to Bytos" })).toBeVisible()
-	await expect(sidebar.getByText("Bring my own API key")).toBeVisible()
+// The BYOK build opens the chat view directly; provider credentials live in
+// Settings → API Configuration. This test covers the real setup path: switch
+// the provider, enter the key, return to chat, and verify the key persisted
+// (the field shows its saved mask on the next visit).
+e2e("Views - can configure a provider key in Settings and return to Chat", async ({ helper, page, sidebar }) => {
+	// Initial state: chat is ready without an onboarding screen.
+	await expect(sidebar.getByTestId("chat-input")).toBeVisible()
 
-	// Navigate to API key setup
-	await sidebar.getByText("Bring my own API key").click()
-	await sidebar.getByRole("button", { name: "Continue" }).click()
+	await helper.configureMockProvider(page, sidebar)
 
-	const providerSelectorInput = sidebar.getByTestId("provider-selector-input")
+	// Re-open Settings and confirm the key was stored as a mask.
+	await page.getByRole("button", { name: "Settings", exact: true }).click()
+	await expect(sidebar.getByText("Settings", { exact: true })).toBeVisible()
 
-	// Verify provider selector is visible
-	await expect(providerSelectorInput).toBeVisible()
+	const keyField = sidebar.getByRole("textbox", { name: "OpenAI Compatible API Key" }).first()
+	await expect(keyField).toHaveValue("\u2022".repeat("test-personal-token".length))
 
-	// Test Bytos provider option
-	await providerSelectorInput.click({ delay: 100 })
-	// Wait for dropdown to appear and find Bytos option
-	await expect(sidebar.getByTestId("provider-option-bytos")).toBeVisible()
-	await sidebar.getByTestId("provider-option-bytos").click({ delay: 100 })
-	await expect(sidebar.getByRole("button", { name: "Sign Up with Bytos" })).toBeVisible()
-
-	// Switch to OpenRouter and complete setup
-	await providerSelectorInput.click({ delay: 100 })
-	await sidebar.getByTestId("provider-option-openrouter").click({ delay: 100 })
-
-	const apiKeyInput = sidebar.getByRole("textbox", {
-		name: "OpenRouter API Key",
-	})
-	await apiKeyInput.fill("test-api-key")
-	await expect(apiKeyInput).toHaveValue("test-api-key")
-	await apiKeyInput.click({ delay: 100 })
-	await sidebar.getByRole("button", { name: "Continue" }).click()
-
-	await expect(sidebar.getByRole("button", { name: "Login to Bytos" })).not.toBeVisible()
-
-	// Verify start up page is no longer visible
-	await expect(apiKeyInput).not.toBeVisible()
-	await expect(providerSelectorInput).not.toBeVisible()
-
-	// Verify you are now in the chat page after setup was completed.
-	// bytos logo container
-	const bytosLogo = sidebar.locator(".size-20")
-	await expect(bytosLogo).toBeVisible()
-	const chatInputBox = sidebar.getByTestId("chat-input")
-	await expect(chatInputBox).toBeVisible()
+	await sidebar.getByRole("button", { name: "Done" }).click()
+	await expect(sidebar.getByTestId("chat-input")).toBeVisible()
+	await expect(sidebar.getByText(/openai-compat:test-model/)).toBeVisible()
 })

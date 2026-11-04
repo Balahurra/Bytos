@@ -40,13 +40,13 @@ for (const profile of profiles) {
 			e2e.skip(!hasStoreAlias || hasPreferredInstall, "Requires a Store-only PowerShell 7 installation")
 		}
 
-		await helper.signin(sidebar)
+		await helper.configureMockProvider(page, sidebar)
 
 		await page.getByRole("button", { name: "Settings", exact: true }).click()
-		await sidebar.getByTestId("tab-terminal").click()
-		await expect(sidebar.getByText("Terminal Settings", { exact: true })).toBeVisible()
+		await sidebar.getByTestId("tab-general").click()
 
 		const executionMode = sidebar.locator("#terminal-execution-mode")
+		await expect(executionMode).toBeVisible()
 		await executionMode.click()
 		await sidebar.getByRole("option", { name: "Background Exec" }).click()
 

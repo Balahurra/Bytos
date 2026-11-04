@@ -1,4 +1,4 @@
-import { describe, expect, it } from "bun:test";
+import { describe, expect, it } from "vitest";
 import { buildInitialUserContent } from "./user-input-builder";
 
 describe("buildInitialUserContent", () => {

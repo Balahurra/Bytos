@@ -120,54 +120,65 @@ filters are correct once the three root causes are fixed.
 
 ## 7. Linux GitHub Actions results
 
-**NOT RUN with these fixes yet.** The fixes are prepared and locally validated;
-they require an authorized push to be verified on `ubuntu-latest`. The previous
-run (`4296002`) failed with exactly the root causes above and no new failures.
+Verified on run [`41929354820`](https://github.com/Balahurra/Bytos/actions/runs/41929354820)
+(commit `680674b`): **every job passed.**
 
-| Check | Status |
-|---|---|
-| Quality Checks | PASS (before and after the removal commit; no change in this patch set) |
-| Linux unit tests | **NOT RUN post-fix** (pending authorized push) |
-| Windows unit tests | PASS in the previous run (`All unit test files passed`) |
-| Extension integration (Linux) | PASS in the previous run |
-| Extension integration (Windows) | PASS in the previous run (`219 passing`, host exit 0; EBUSY is a non-fatal cleanup warning) |
-| Platform integration | **NOT RUN post-fix** (pending authorized push) |
-| Webview tests | PASS in the previous run |
-| Aggregate `test` | **NOT RUN post-fix** (it only mirrors its dependencies) |
+| Job | Result | Evidence |
+|---|---|---|
+| Detect Changes | **PASS** | - |
+| Quality Checks | **PASS** | typecheck + lint + build |
+| vscode test (ubuntu-latest) | **PASS** | Unit Tests (bun) - Linux: `Files: 89  Pass: 1198  Fail: 0`; Vitest: 118 files passed; integration: 223 passing; webview: 80 files passed |
+| vscode test (windows-latest) | **PASS** | Vitest: 118 files passed; unit: `All unit test files passed`; integration: 219 passing, host exit 0; webview: 80 files passed |
+| test-platform-integration | **PASS** | recorded-session replay and standalone orchestration succeeded |
+| test (aggregate gate) | **PASS** | dependencies all success |
+| qlty | **PASS** | coverage upload |
 
-This section will be replaced with the real job conclusions after the
-authorized verification run.
+The 12 Linux hook failures are gone; the 8 Windows short-path failures are
+gone; the recorded-session serialization failure is gone.
 
 ## 8. Integration test results
 
-Local Windows: **PASS on retry** (219 passing / 1 pending, exit 0; the first
-attempt hit an 8 s `getOpenTabs` focus timeout). CI Windows: **PASS** in the
-previous run. Linux integration: **PASS** in the previous run.
+| Environment | Result |
+|---|---|
+| Linux CI | **PASS** - 223 passing |
+| Windows CI | **PASS** - 219 passing / 1 pending, host exit 0 |
+| Windows local (run 1) | **FAIL** - 218 passing / 1 failing (`getOpenTabs` 8 s focus timeout; flake) |
+| Windows local (run 2) | **PASS** - 219 passing / 1 pending, exit 0 |
+
+The `EBUSY: ... rmdir vscode-test-…` line still appears on Windows but the
+runner exits 0; it is a cleanup warning, not a failure.
 
 ## 9. Remaining problems
 
 | Item | Status |
 |---|---|
-| `bytos-rules.test.ts` symlink test on this local Windows account | **BLOCKED locally** - `EPERM: symlink`; the account lacks the Windows symlink privilege. It is not a CI blocker: Ubuntu passes it, and the Windows runner executes as an administrator where symlink creation is allowed. |
-| Local test-platform orchestrator | **BLOCKED** by the Node 26 / better-sqlite3 toolchain mismatch. The exact serialization bug was reproduced and fixed at the encoder level instead. |
+| `bytos-rules.test.ts` symlink test on this local Windows account | **BLOCKED locally** - `EPERM: symlink`; the account lacks the Windows symlink privilege. Ubuntu and the Windows CI runner pass it. |
+| Local test-platform orchestrator | **BLOCKED** by the Node 26 / better-sqlite3 toolchain mismatch. The exact serialization bug was reproduced and fixed at the encoder level; full orchestration passed in CI. |
 | Local proto lint | **BLOCKED** - `buf` is not installed locally. CI Quality Checks runs it and passes. |
-| Windows `EBUSY` cleanup warning | Non-fatal; the runner exits 0. Cosmetic only. |
+| Windows `EBUSY` cleanup warning | Non-fatal; runner exits 0. Cosmetic only. |
 | Workflow YAML | No changes required; the existing matrix, caching, filters and retry logic are correct. |
 
 ## 10. Final CI readiness
 
 | Check | Status |
 |---|---|
-| Quality Checks | PASS (existing) |
-| Linux Unit Tests | **PENDING CI** - root cause fixed, local Linux execution unavailable by design |
-| Windows Unit Tests | PASS (existing) |
-| Extension Integration Tests | PASS (existing) |
-| Platform Integration Tests | **PENDING CI** - exact serializer failure reproduced and fixed locally |
-| Webview Tests | PASS (existing) |
-| Typecheck | PASS |
-| Lint | PASS (Biome; proto lint verified by CI) |
-| Build | PASS |
+| Quality Checks | **PASS** |
+| Linux Unit Tests | **PASS** - 1,198 passed / 0 failed |
+| Windows Unit Tests | **PASS** |
+| Extension Integration Tests | **PASS** (Linux 223, Windows 219) |
+| Platform Integration Tests | **PASS** |
+| Webview Tests | **PASS** |
+| Typecheck | **PASS** |
+| Lint | **PASS** |
+| Build | **PASS** |
 
-Locally: every root cause that can execute on Windows is fixed and validated.
-Linux verification is **pending an authorized push**. No workflow was disabled,
-no test was skipped, and no assertion was weakened.
+`ext-vscode-test` is genuinely green on both operating systems. No workflow was
+disabled, no test was skipped, and no assertion was weakened.
+
+## 11. Other workflows (separate from the required gate)
+
+| Workflow | Status | Root cause / action |
+|---|---|---|
+| `sdk-test` | **PARTIAL** - Quality Checks failed on `@bytos/core:typecheck`: `user-input-builder.test.ts` imported `bun:test` while the package runs vitest. | Fixed in this pass: the import is now `vitest`; the test passes locally and `bun run typecheck` in `sdk/packages/core` exits 0. Pending the next authorized CI run. |
+| `ext-vscode-test-e2e` | **FAIL (pre-existing, unrelated)** | Fails since the first pushed commit. The Playwright suites target UI text that no longer exists in the BYOK webview (e.g. `Bring my own API key` appears only in the E2E files). The first failure is `auth.test.ts:8` waiting for `Login to Bytos`; the remaining failures cascade from the same stale onboarding flow. This is a test-maintenance task, not a regression from the CI fixes; it is reported separately and was not weakened or disabled. |
+

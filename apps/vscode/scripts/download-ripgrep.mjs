@@ -6,7 +6,7 @@
  * and extracts them to dist-standalone/ripgrep-binaries/
  */
 
-import { exec } from "child_process"
+import { exec, execFile } from "child_process"
 import fs from "fs"
 import https from "https"
 import path from "path"
@@ -16,6 +16,7 @@ import { promisify } from "util"
 import { createGunzip } from "zlib"
 
 const execAsync = promisify(exec)
+const execFileAsync = promisify(execFile)
 
 const RIPGREP_VERSION = "14.1.1"
 const OUTPUT_DIR = "dist-standalone/ripgrep-binaries"
@@ -65,36 +66,37 @@ const PLATFORMS = [
 async function downloadFile(url, destPath) {
 	return new Promise((resolve, reject) => {
 		console.log(`  Downloading: ${url}`)
-		const file = fs.createWriteStream(destPath)
 
 		https
 			.get(url, (response) => {
 				if (response.statusCode === 302 || response.statusCode === 301) {
-					// Handle redirect
-					return downloadFile(response.headers.location, destPath).then(resolve).catch(reject)
+					// Handle redirect before opening the destination: opening a
+					// stream here would leave an unclosed handle on the same path
+					// while the redirect target downloads into it. On Windows that
+					// lock makes the archive unreadable to the extractor.
+					response.resume()
+					downloadFile(response.headers.location, destPath).then(resolve).catch(reject)
+					return
 				}
 
 				if (response.statusCode !== 200) {
+					response.resume()
 					reject(new Error(`Failed to download: ${response.statusCode} ${response.statusMessage}`))
 					return
 				}
 
-				response.pipe(file)
-
-				file.on("finish", () => {
-					file.close()
-					resolve()
-				})
+				const file = fs.createWriteStream(destPath)
+				pipeline(response, file)
+					.then(resolve)
+					.catch((err) => {
+						fs.unlink(destPath, () => {}) // Delete the file on error
+						reject(err)
+					})
 			})
 			.on("error", (err) => {
 				fs.unlink(destPath, () => {}) // Delete the file on error
 				reject(err)
 			})
-
-		file.on("error", (err) => {
-			fs.unlink(destPath, () => {}) // Delete the file on error
-			reject(err)
-		})
 	})
 }
 
@@ -121,9 +123,27 @@ async function extractZip(zipPath, destDir) {
 	console.log(`  Extracting zip to: ${destDir}`)
 
 	try {
-		// Use -o to overwrite existing files without prompting
-		await execAsync(`unzip -o -q "${zipPath}" -d "${destDir}"`)
+		// Work with absolute paths and a clean destination: a stale partial
+		// extraction must never be mistaken for a successful one.
+		const absoluteZip = path.resolve(zipPath)
+		const absoluteDest = path.resolve(destDir)
+		fs.rmSync(absoluteDest, { recursive: true, force: true })
+		fs.mkdirSync(absoluteDest, { recursive: true })
 
+		if (process.platform === "win32") {
+			// Windows has no `unzip`; use the in-box Expand-Archive. Pass the
+			// script as an argument array so paths never go through cmd quoting.
+			const ps = (value) => `'${String(value).replace(/'/g, "''")}'`
+			await execFileAsync("powershell", [
+				"-NoProfile",
+				"-NonInteractive",
+				"-Command",
+				`Expand-Archive -LiteralPath ${ps(absoluteZip)} -DestinationPath ${ps(absoluteDest)} -Force`,
+			])
+		} else {
+			// Use -o to overwrite existing files without prompting
+			await execAsync(`unzip -o -q "${absoluteZip}" -d "${absoluteDest}"`)
+		}
 		// Find the extracted directory (usually ripgrep-VERSION-arch)
 		const items = fs.readdirSync(destDir)
 		const extractedDir = items.find((item) => item.startsWith("ripgrep-"))

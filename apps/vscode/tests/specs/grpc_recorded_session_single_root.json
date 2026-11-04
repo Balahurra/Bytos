@@ -56,6 +56,7 @@
 			"isStreaming": false,
 			"request": {
 				"message": {
+					"attachments": [],
 					"text": "Hello, Bytos!",
 					"images": [],
 					"files": []

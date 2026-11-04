@@ -269,7 +269,7 @@ describe("SdkDiffEditCoordinator", () => {
 	}
 
 	beforeEach(async () => {
-		tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "diff-edit-test-"))
+		tempDir = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "diff-edit-test-")))
 		previews = []
 		previewTweak = undefined
 		backgroundEdit = false

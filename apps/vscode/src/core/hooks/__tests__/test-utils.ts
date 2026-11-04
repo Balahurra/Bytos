@@ -605,9 +605,10 @@ export async function loadFixture(fixtureName: string, destDir: string): Promise
 			const destFile = path.join(destHooksDir, file)
 			await fs.copyFile(sourceFile, destFile)
 
-			// Set executable permission (not needed on Windows)
-			const stats = await fs.stat(sourceFile)
-			await fs.chmod(destFile, stats.mode)
+			// Hook fixtures are executable in the repository. Force the bit on
+			// Unix checkouts too: Git on Windows does not preserve it, and a
+			// 0644 hook fails silently at `sh -c <path>`.
+			await fs.chmod(destFile, 0o755)
 		}
 	}
 }

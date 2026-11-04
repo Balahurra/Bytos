@@ -12,7 +12,7 @@ describe("createWorkspaceFileReadExecutor", () => {
 	const readFile = createWorkspaceFileReadExecutor(async () => workspaceRoot)
 
 	beforeEach(async () => {
-		workspaceRoot = await fs.mkdtemp(path.join(os.tmpdir(), "read-executor-test-"))
+		workspaceRoot = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "read-executor-test-")))
 		await fs.mkdir(path.join(workspaceRoot, "src"))
 		await fs.writeFile(path.join(workspaceRoot, "src", "app.ts"), "line one\nline two\n")
 	})

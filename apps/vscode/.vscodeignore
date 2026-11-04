@@ -19,7 +19,7 @@ testing-platform/node_modules/**
 standalone/**/node_modules/**
 src/**
 standalone/**
-# Build/dev tooling and inputs — bundled into dist/extension.js, not needed in the VSIX.
+# Build/dev tooling and inputs â€” bundled into dist/extension.js, not needed in the VSIX.
 bunfig.toml
 esbuild.mjs
 knip.json
@@ -68,21 +68,50 @@ evals/
 buf.yaml
 .bytosrules/
 
+# Build metadata that is not read at runtime. The walkthrough, README, NOTICE,
+# LICENSE, THIRD-PARTY-NOTICES.txt and PRIVACY.md are intentionally packaged;
+# everything else here is generated or development-only.
+.env.example
+.gitleaks.toml
+biome.json
+vitest.config.ts
+playwright.config.ts
+knip.json
+tsconfig*.json
+skills-lock.json
+e2e-build.mjs
+test-results/
+coverage/**
+webview-ui/coverage/**
+webview-ui/.vite-port
+
 # Ignore all webview-ui files except the build directory (https://github.com/microsoft/vscode-webview-ui-toolkit-samples/blob/main/frameworks/hello-world-react-cra/.vscodeignore)
 webview-ui/src/**
 webview-ui/public/**
-webview-ui/index.html
+# webview-ui/index.html is the Vite dev-server template. The extension loads
+# webview-ui/build/index.html at runtime; the root copy is never read, and one
+# of the two copies is required in the VSIX.
+**/webview-ui/index.html
 webview-ui/README.md
 webview-ui/package.json
 webview-ui/package-lock.json
 webview-ui/components.json
 webview-ui/tailwind.config.mjs
 webview-ui/tsconfig*.json
+webview-ui/vitest.config.*
 webview-ui/.storybook/**
-webview-ui/build/index.html
 webview-ui/node_modules/**
-skills-lock.json
 **/.gitignore
+
+# Webview chunks that are never loaded at runtime. Vite emits this live HMR
+# helper during `bun run dev:webview`; the production webview never imports it.
+webview-ui/build/assets/live.js
+webview-ui/build/assets/live.js.map
+
+
+# Source maps are already excluded by **/*.map above; this also covers maps
+# that end up flattened inside the webview build.
+webview-ui/build/**/*.map
 
 # Ignore docs
 docs/**

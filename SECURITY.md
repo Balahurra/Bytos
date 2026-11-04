@@ -9,7 +9,7 @@ fixes at our discretion.
 
 Please report security issues privately through GitHub:
 
-<https://github.com/bytos/bytos/security/advisories/new>
+<https://github.com/Balahurra/Bytos/security/advisories/new>
 
 If you cannot use GitHub, email <security@bytos.dev>.
 

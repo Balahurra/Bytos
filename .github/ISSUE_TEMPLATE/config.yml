@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
     - name: ✨ Feature Request
-      url: https://github.com/bytos/bytos/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop
+      url: https://github.com/Balahurra/Bytos/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop
       about: Share and vote on feature requests for Bytos
     - name: 👋 Bytos Discord
-      url: https://github.com/bytos/bytos/discussions
+      url: https://github.com/Balahurra/Bytos/discussions
       about: Join our community discussions for discussions and support

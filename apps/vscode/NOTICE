@@ -1,0 +1,28 @@
+Bytos
+Copyright 2026 Bytos contributors
+
+Bytos includes software derived from the Cline open-source project.
+
+Original project: Cline
+Original repository: https://github.com/cline/cline
+Original license: Apache License 2.0
+Upstream copyright: Copyright 2026 Cline Bot Inc.
+
+Copyright notices and license terms applicable to the original Cline
+components are retained in accordance with the Apache License 2.0. The
+original upstream copyright notice is preserved in the LICENSE file. Bytos
+includes modifications, additional components, and independent development
+that are not part of the original Cline project.
+
+Bytos is an independent project. It is not endorsed by, sponsored by, or
+affiliated with the Cline project or its maintainers. "Cline" and any related
+marks belong to their respective owners.
+
+Third-party components bundled with Bytos are listed in
+THIRD-PARTY-NOTICES.txt, together with their applicable license texts and
+copyright notices. A copy of the Apache License, Version 2.0 is included in
+LICENSE.
+
+If you distribute a modified version of Bytos, you must preserve this NOTICE,
+the upstream copyright notice in LICENSE, and the third-party notices that
+apply to the components you distribute.

@@ -10,14 +10,14 @@
 
 <p align="center">
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-4F8CFF.svg" /></a>
-  <a href="https://github.com/bytos/bytos/actions"><img alt="Build" src="https://img.shields.io/badge/build-passing-22D3EE.svg" /></a>
+  <a href="https://github.com/Balahurra/Bytos/actions"><img alt="Build" src="https://img.shields.io/badge/build-passing-22D3EE.svg" /></a>
   <img alt="Bun" src="https://img.shields.io/badge/runtime-Bun%201.4-8B5CF6.svg" />
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-strict-3178C6.svg" />
 </p>
 
 <p align="center">
-  <a href="https://docs.bytos.dev">Docs</a> |
-  <a href="https://github.com/bytos/bytos/discussions">Discussions</a> |
+  <a href="https://github.com/Balahurra/Bytos">Docs</a> |
+  <a href="https://github.com/Balahurra/Bytos/discussions">Discussions</a> |
   <a href="CONTRIBUTING.md">Contributing</a> |
   <a href="SECURITY.md">Security</a>
 </p>
@@ -32,7 +32,7 @@ It runs everywhere you do: as a VS Code extension, a terminal UI, a desktop app,
 
 - **Plan first, then execute.** Bytos breaks work into steps, shows the plan, and checks in before risky actions.
 - **Whole-repository context.** File tree, symbols, diagnostics, terminal output, browser state, and MCP tools in one loop.
-- **Human approval by design.** Approve each action, auto-approve safe categories, or run fully unattended when you choose.
+- **Fail-closed approval by default.** File reads, edits, terminal commands, browser access, and MCP tools require your explicit approval until you enable that category. Auto-approval is opt-in.
 - **One engine, every surface.** IDE, CLI, desktop, and hub share the same session model and tool runtime.
 - **Built to stay fast.** Streaming responses, lazy-loaded UI, incremental context, and a native session store.
 - **Extensible from day one.** MCP servers, hooks, skills, subagents, worktrees, and a typed SDK.
@@ -67,6 +67,8 @@ code --install-extension bytos.bytos
 ```
 
 Open the Bytos view in the activity bar, pick a model provider, and describe the task.
+
+This release is a free, bring-your-own-key (BYOK) build. It does not require a Bytos account, subscription, or backend. API keys are stored in VS Code SecretStorage, never in a plaintext settings file, and are never sent to the webview.
 
 ### ClinePass compatibility
 
@@ -138,14 +140,26 @@ cd apps/vscode && bun run package   # production VSIX
 
 ## Brand and license
 
-Bytos is licensed under the **Apache License 2.0**. See [LICENSE](LICENSE) and [NOTICE](NOTICE) for the attribution that accompanies the upstream open-source work this project is derived from.
+Bytos is licensed under the **Apache License 2.0**. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
+
+Bytos includes software derived from the [Cline](https://github.com/cline/cline)
+open-source project, Copyright 2026 Cline Bot Inc., licensed under the Apache
+License 2.0. The upstream copyright notice is preserved in [LICENSE](LICENSE);
+[NOTICE](NOTICE) explains the relationship and disclaims affiliation; files
+acquired from Cline and then modified by Bytos carry a
+`Copyright 2026 Cline Bot Inc. | Bytos modifications` header. Every bundled
+dependency and its license text is listed in
+[apps/vscode/THIRD-PARTY-NOTICES.txt](apps/vscode/THIRD-PARTY-NOTICES.txt).
+See [docs/release-audit/03-LICENSE-AND-ATTRIBUTION.md](docs/release-audit/03-LICENSE-AND-ATTRIBUTION.md)
+for the full obligation map.
 
 The Bytos name, logo, and visual identity are original to this project and are **not** covered by the Apache license. See [TRADEMARKS.md](TRADEMARKS.md) before using them in a fork or distribution.
 
 ## Links
 
-- Documentation: <https://docs.bytos.dev>
-- Source: <https://github.com/bytos/bytos>
-- Issues: <https://github.com/bytos/bytos/issues>
-- Discussions: <https://github.com/bytos/bytos/discussions>
-- Security: <security@bytos.dev>
+- Source: <https://github.com/Balahurra/Bytos>
+- Issues: <https://github.com/Balahurra/Bytos/issues>
+- Discussions: <https://github.com/Balahurra/Bytos/discussions>
+- Security: <https://github.com/Balahurra/Bytos/security/advisories/new> (see [SECURITY.md](SECURITY.md))
+- Privacy: [apps/vscode/PRIVACY.md](apps/vscode/PRIVACY.md)
+- Release readiness: [docs/release-audit/07-RELEASE-READINESS.md](docs/release-audit/07-RELEASE-READINESS.md)

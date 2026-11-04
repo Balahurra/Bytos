@@ -7,48 +7,88 @@
 <table>
 <tbody>
 <td align="center">
-<a href="https://marketplace.visualstudio.com/items?itemName=bytos.bytos" target="_blank"><strong>Download on VS Marketplace</strong></a>
+<a href="https://github.com/Balahurra/Bytos" target="_blank"><strong>Source code</strong></a>
 </td>
 <td align="center">
-<a href="https://github.com/bytos/bytos/discussions" target="_blank"><strong>Discussions</strong></a>
+<a href="https://github.com/Balahurra/Bytos/discussions" target="_blank"><strong>Discussions</strong></a>
 </td>
 <td align="center">
-<a href="https://github.com/bytos/bytos/discussions" target="_blank"><strong>Discussions</strong></a>
+<a href="https://github.com/Balahurra/Bytos/issues" target="_blank"><strong>Report an issue</strong></a>
 </td>
 <td align="center">
-<a href="https://github.com/bytos/bytos/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop" target="_blank"><strong>Feature Requests</strong></a>
-</td>
-<td align="center">
-<a href="https://docs.bytos.dev/getting-started/installing-bytos" target="_blank"><strong>Getting Started</strong></a>
+<a href="https://github.com/Balahurra/Bytos/security/advisories/new" target="_blank"><strong>Report a vulnerability</strong></a>
 </td>
 </tbody>
 </table>
 </div>
 
-Meet Bytos, an AI assistant that can use your **CLI** a**N**d **E**ditor.
+Bytos is an open-source coding agent that runs **inside VS Code**. It reads your
+workspace, plans a change, edits files, runs commands, drives a browser, and calls
+MCP tools - and it asks before each of those things unless you explicitly
+auto-approve them.
 
-Thanks to [Claude Sonnet's agentic coding capabilities](https://www.anthropic.com/claude/sonnet), Bytos can handle complex software development tasks step-by-step. With tools that let him create & edit files, explore large projects, use the browser, and execute terminal commands (after you grant permission), he can assist you in ways that go beyond code completion or tech support. Bytos can even use the Model Context Protocol (MCP) to create new tools and extend his own capabilities. While autonomous AI scripts traditionally run in sandboxed environments, this extension provides a human-in-the-loop GUI to approve every file change and terminal command, providing a safe and accessible way to explore the potential of agentic AI.
+> **Requirements**
+>
+> - **VS Code 1.101.0 or newer** (`engines.vscode` is `^1.101.0`).
+> - **Your own model provider API key.** This build is free and
+>   bring-your-own-key: there is no Bytos account, subscription, credit balance,
+>   or Bytos backend.
 
-1. Enter your task and add images to convert mockups into functional apps or fix bugs with screenshots.
-2. Bytos starts by analyzing your file structure & source code ASTs, running regex searches, and reading relevant files to get up to speed in existing projects. By carefully managing what information is added to context, Bytos can provide valuable assistance even for large, complex projects without overwhelming the context window.
-3. Once Bytos has the information he needs, he can:
-    - Create and edit files + monitor linter/compiler errors along the way, letting him proactively fix issues like missing imports and syntax errors on his own.
-    - Execute commands directly in your terminal and monitor their output as he works, letting him e.g., react to dev server issues after editing a file.
-    - For web development tasks, Bytos can launch the site in a headless browser, click, type, scroll, and capture screenshots + console logs, allowing him to fix runtime errors and visual bugs.
-4. When a task is completed, Bytos will present the result to you with a terminal command like `open -a "Google Chrome" index.html`, which you run with a click of a button.
+## What it does
 
-> [!TIP]
-> Follow [this guide](https://docs.bytos.dev/usage/ide#move-bytos-to-the-right-sidebar) to open Bytos on the right side of your editor. This lets you use Bytos side-by-side with your file explorer, and see how he changes your workspace more clearly.
+1. Describe a task in the Bytos view in the activity bar. You can attach images
+   (mockups, screenshots) and files.
+2. Bytos reads your file tree, searches the code, and pulls in only the files it
+   needs, so large repositories do not flood the context window.
+3. It then plans, and with your approval:
+   - creates and edits files, reviewing diffs in the editor and reacting to
+     linter/compiler errors;
+   - runs commands in a VS Code terminal and reads their output;
+   - for web work, opens the site in a browser, clicks, types, scrolls, and
+     captures screenshots and console logs;
+   - calls MCP servers you have configured.
+4. Every change is recorded in your files' Timeline, and each step of a task has a
+   checkpoint you can compare against or restore.
 
----
+## Providers and models
 
+Bytos talks to providers directly with your key. Supported integrations include
+OpenRouter, Anthropic, OpenAI, Google Gemini, AWS Bedrock, Azure, GCP Vertex,
+Cerebras, and Groq, plus any OpenAI-compatible endpoint and local models through
+Ollama or LM Studio. Token usage and estimated cost are tracked per request and
+per task.
 
+If you already hold a Cline API key, the **ClinePass** compatibility provider
+calls Cline's hosted API directly (`https://api.cline.bot/api/v1`) so you can keep
+that key and billing relationship. Cline's pricing and terms apply; this is a
+compatibility provider, not a Bytos subscription.
+
+## Permissions and data handling
+
+- **Fail-closed by default.** File reads, edits, terminal commands, browser
+  access, MCP tools, and skills each require approval until you enable that
+  category. Auto-approval is opt-in and per category.
+- **Keys stay in the OS credential store.** Provider API keys are written to VS
+  Code SecretStorage, never to a plaintext settings file, and are never sent to
+  the webview - the UI only ever receives a length-based mask.
+- **Telemetry is off by default.** It is enabled only by an explicit opt-in in
+  Settings - General, and disabling it stops PostHog events and feature flags.
+- **No Bytos backend.** Model requests go from your machine to the provider you
+  picked.
+
+The full data map - what is stored locally, what is sent to which provider, and
+how to delete it - is in
+[PRIVACY.md](https://github.com/Balahurra/Bytos/blob/main/apps/vscode/PRIVACY.md).
+
+## Feature details
 
 ### Use any API and Model
 
-Bytos supports API providers like OpenRouter, Anthropic, OpenAI, Google Gemini, AWS Bedrock, Azure, GCP Vertex, Cerebras and Groq. You can also configure any OpenAI compatible API, or use a local model through LM Studio/Ollama. If you're using OpenRouter, the extension fetches their latest model list, allowing you to use the newest models as soon as they're available. If you already have a Cline API key, choose **ClinePass** in the provider list to use Cline's hosted API directly; Cline's pricing and terms apply.
+Any provider in the list below works with a key you own: OpenRouter, Anthropic, OpenAI, Google Gemini, AWS Bedrock, Azure, GCP Vertex, Cerebras, Groq, any OpenAI-compatible endpoint, and local models through Ollama or LM Studio. With OpenRouter, Bytos reads their live model list so new models appear as soon as they are published. If you already have a Cline API key, pick **ClinePass** to call Cline's hosted API directly; Cline's pricing and terms apply.
 
-The extension also keeps track of total tokens and API usage cost for the entire task loop and individual requests, keeping you informed of spend every step of the way.
+Token counts and estimated cost are tracked for every request and for the whole task, so you can see spend as it happens.
+
+You pay your provider directly. There is no Bytos account, subscription, or Bytos backend in this build.
 
 <!-- Transparent pixel to create line break after floating image -->
 
@@ -60,7 +100,7 @@ The extension also keeps track of total tokens and API usage cost for the entire
 
 Bytos can execute commands and receive their output to install packages, run build scripts, deploy applications, manage databases, and run tests, all while adapting to your dev environment & toolchain to get the job done right.
 
-By default, commands run in a visible VS Code terminal, using the [shell integration API introduced in VSCode v1.93](https://code.visualstudio.com/updates/v1_93#_terminal-shell-integration-api) to stream output as commands run and let you watch or interact with them directly. You can switch to running commands in a background process instead (Settings → Terminal → Terminal Execution Mode).
+By default, commands run in a visible VS Code terminal, using the [shell integration API introduced in VSCode v1.93](https://code.visualstudio.com/updates/v1_93#_terminal-shell-integration-api) to stream output as commands run and let you watch or interact with them directly. You can switch to running commands in a background process instead (Settings > Terminal > Terminal Execution Mode).
 
 <!-- Transparent pixel to create line break after floating image -->
 
@@ -108,13 +148,13 @@ Thanks to the [Model Context Protocol](https://github.com/modelcontextprotocol),
 
 ### Add Context
 
-**`@url`:** Paste in a URL for the extension to fetch and convert to markdown, useful when you want to give Bytos the latest docs
+**`@url`:** Paste in a URL for the extension to fetch and convert to markdown, useful when you want to give Bytos the latest docs
 
-**`@problems`:** Add workspace errors and warnings ('Problems' panel) for Bytos to fix
+**`@problems`:** Add workspace errors and warnings ('Problems' panel) for Bytos to fix
 
-**`@file`:** Adds a file's contents so you don't have to waste API requests approving read file (+ type to search files)
+**`@file`:** Adds a file's contents so you don't have to waste API requests approving read file (+ type to search files)
 
-**`@folder`:** Adds folder's files all at once to speed up your workflow even more
+**`@folder`:** Adds folder's files all at once to speed up your workflow even more
 
 <!-- Transparent pixel to create line break after floating image -->
 
@@ -132,15 +172,18 @@ For example, when working with a local web server, you can use 'Restore Workspac
 
 <br>
 
-## Contributing
+## Support and contact
 
-To contribute to the project, start with our [Contributing Guide](../../CONTRIBUTING.md) to learn the basics. You can also join our [Discord](https://github.com/bytos/bytos/discussions) to chat with other contributors in the `#contributors` channel. If you're looking for full-time work, check out our open positions on our [careers page](https://github.com/bytos/bytos/blob/main/CONTRIBUTING.md)!
+- **Bugs and feature requests:** https://github.com/Balahurra/Bytos/issues
+- **Questions and community:** https://github.com/Balahurra/Bytos/discussions
+- **Security reports:** https://github.com/Balahurra/Bytos/security/advisories/new (see SECURITY.md)
 
 ## Enterprise
 
 Get the same Bytos experience with enterprise-grade controls: SSO (SAML/OIDC), global policies and configuration, observability with audit trails, private networking (VPC/private link), and self-hosted or on-prem deployments, and enterprise support. Learn more at our [enterprise page](https://bytos.dev/enterprise) or [talk to us](https://bytos.dev/contact-sales).
 
+## License and attribution
 
-## License
+Bytos is licensed under the [Apache License 2.0](https://github.com/Balahurra/Bytos/blob/main/LICENSE). Bytos includes software derived from [Cline](https://github.com/cline/cline), Copyright 2026 Cline Bot Inc., licensed under the Apache License 2.0. The upstream copyright notice is preserved in LICENSE and described in NOTICE. Every bundled dependency, its declared license, license text, and copyright notice is listed in [THIRD-PARTY-NOTICES.txt](https://github.com/Balahurra/Bytos/blob/main/apps/vscode/THIRD-PARTY-NOTICES.txt). The Bytos name and logo are covered by [TRADEMARKS.md](https://github.com/Balahurra/Bytos/blob/main/TRADEMARKS.md).
 
-[Apache 2.0 © 2026 Bytos](./LICENSE)
+Bytos is an independent project. It is not endorsed by, sponsored by, or affiliated with the Cline project or its maintainers.

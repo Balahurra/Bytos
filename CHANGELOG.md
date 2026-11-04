@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.2.0]
+
+### Changed
+
+- Free BYOK release: Bytos no longer requires or contacts a Bytos account, subscription, credits, cloud-session, remote-config, or documentation backend.
+- Provider credentials are stored in VS Code SecretStorage. Legacy plaintext `secrets.json` and credentials embedded in `providers.json` are migrated and removed only after verification.
+- API keys are never included in webview state; only length-based masks and configured/non-configured status cross the webview boundary.
+- Permissions are fail-closed: reads, edits, terminal commands, browser, MCP, skills, and unknown/future tools require approval by default.
+- File tools enforce a canonical workspace boundary, including absolute paths, traversal, Windows drive/UNC paths, and symlinks.
+- Webview CSP removes `unsafe-eval` and wildcard sources; telemetry is opt-in and disabled by default.
+- Removed the proprietary Claude Code subscription provider and SAP AI Core provider from the public build; they require distribution licenses that are not available for this VSIX.
+- Restored the upstream Cline copyright in LICENSE, expanded NOTICE, added a generated third-party notice inventory, and added a release licensing gate.
+- Added `PRIVACY.md` describing local data, provider transmission, telemetry, and local deletion controls.
+
 ## [4.1.45]
 
 ### Changed

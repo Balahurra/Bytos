@@ -186,7 +186,18 @@
       same "printed page" as the copyright notice for easier
       identification within third-party archives.
 
-   Copyright 2026 Bytos
+   Copyright 2026 Cline Bot Inc.
+
+   Bytos modifications and additional components:
+   Copyright 2026 Bytos contributors
+
+   This product includes software developed as part of the Cline project
+   (https://github.com/cline/cline), licensed under the Apache License,
+   Version 2.0. Files that Bytos acquired from Cline and then modified carry
+   a "Copyright 2026 Cline Bot Inc. | Bytos modifications" notice in the
+   header of the source file, together with a short summary of the change.
+   See NOTICE and apps/vscode/THIRD-PARTY-NOTICES.txt for the attribution
+   required by Section 4 of the Apache License, Version 2.0.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

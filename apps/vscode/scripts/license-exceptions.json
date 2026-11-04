@@ -1,0 +1,30 @@
+{
+	"allowedUnknown": {
+		"buffers@0.1.1": "Legacy substack package with no license field and no LICENSE file. It is a transitive development dependency and is not imported by the production extension, webview, or plugin runtime. Legal review is required before distributing any artifact that actually contains it.",
+		"beep-boop@1.2.3": "Test fixture package used by a dependency's test suite. It is not imported by the production extension or plugin runtime and is excluded from the distributed artifact.",
+		"nw-pre-gyp-module-test@0.0.1": "Test fixture package used by a dependency's build/test tooling. It is not imported by the production extension or plugin runtime and is excluded from the distributed artifact.",
+		"transport@0.0.1": "Test fixture inside pino's test directory, not a distributable package.",
+		"@anthropic-ai/claude-agent-sdk@0.3.232": "Proprietary Anthropic SDK. The Claude Code subscription provider was removed from the free BYOK build; this package is not in the production input graph and must not be distributed without a compatible license.",
+		"@anthropic-ai/claude-agent-sdk-win32-x64@0.3.232": "Proprietary Anthropic platform binary. Removed from the free BYOK build and not in the production input graph.",
+		"@jerome-benoit/sap-ai-provider@5.0.3": "SAP AI Core provider SDK. The SAP AI Core provider was removed from the free BYOK build; this package is not in the production input graph.",
+		"@sap-ai-sdk/ai-api@2.16.0": "SAP AI SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
+		"@sap-ai-sdk/core@2.16.0": "SAP AI SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
+		"@sap-ai-sdk/foundation-models@2.16.0": "SAP AI SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
+		"@sap-ai-sdk/orchestration@2.16.0": "SAP AI SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
+		"@sap-ai-sdk/prompt-registry@2.16.0": "SAP AI SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
+		"@sap-cloud-sdk/connectivity@4.9.1": "SAP Cloud SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
+		"@sap-cloud-sdk/http-client@4.9.1": "SAP Cloud SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
+		"@sap-cloud-sdk/openapi@4.9.1": "SAP Cloud SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
+		"@sap-cloud-sdk/resilience@4.9.1": "SAP Cloud SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
+		"@sap-cloud-sdk/util@4.9.1": "SAP Cloud SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
+		"@sap/xsenv@6.2.2": "SAP Developer License Agreement. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
+		"@sap/xssec@4.15.0": "SAP Developer License Agreement. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
+		"@vscode/vsce-sign@2.1.0": "Microsoft VS Code signing tool license. Development/packaging tool only; not distributed in the extension.",
+		"@vscode/vsce-sign-win32-x64@2.0.6": "Microsoft VS Code signing tool platform binary. Development/packaging tool only; not distributed in the extension.",
+		"posthog-js-customizations@1.0.0": "Private PostHog workspace package used to build posthog-js; not separately distributed. Legal review of PostHog's terms is required if the webview analytics bundle is shipped.",
+		"posthog-js-react@1.0.0": "Private PostHog workspace package used to build posthog-js; not separately distributed.",
+		"posthog-js-rrweb@1.0.0": "Private PostHog workspace package used to build posthog-js; not separately distributed.",
+		"posthog-js-rrweb-plugin-console-record@1.0.0": "Private PostHog workspace package used to build posthog-js; not separately distributed.",
+		"posthog-js-rrweb-types@1.0.0": "Private PostHog workspace package used to build posthog-js; not separately distributed."
+	}
+}

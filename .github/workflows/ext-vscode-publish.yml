@@ -1,9 +1,8 @@
 name: ext-vscode-publish
 
 # Build (and optionally publish) the stable VS Code extension as a plain
-# standalone build of apps/vscode from `main` — the successor to both the
-# combined A/B loader VSIX (ext-vscode-ab-package.yml, retired once the SDK
-# rollout reached 100%) and ext-vscode-publish-stable.yml.
+# standalone build of apps/vscode from `main` — the successor to the retired A/B loader VSIX
+# and ext-vscode-publish-stable.yml.
 #
 # Job layout mirrors the A/B workflow that shipped 4.1.0–4.1.19: cheap input
 # gates (preflight) and the test suite run ungated; the build job packages the

@@ -15,7 +15,7 @@ Use this skill when the user asks to release, publish, or ship the VS Code exten
 
 **Do not use `ext-vscode-publish-stable.yml`.** Its publish step (`bun run publish:marketplace` → bare `vsce publish`, which re-runs `vscode:prepublish` and repacks the source tree) hung on all five attempts for v4.1.18 (2026-09-15/17), each exactly 180s after "Publishing ..." with `Request timeout: /_apis/gallery`. That path is the client's FIRST request (route discovery, no body) — the VSIX was never uploaded, so nothing about the artifact is the cause. The same code line went out as 4.1.19 through the prebuilt-artifact path in seconds. Root cause is not established (see the gotcha at the bottom); the stable workflow is kept only until the new one has shipped a release, then deleted.
 
-History, for context only: the A/B era ran `4.1.0` → `4.1.19` (Jul–Sep 2026). Design docs remain at `apps/vscode-rollout/README.md` and PR #12253 until that directory is removed.
+History, for context only: the A/B era ran `4.1.0` → `4.1.19` (Jul–Sep 2026). The A/B harness (`apps/vscode-rollout/`) and its two workflows were removed during the 4.2.0 pre-publication cleanup.
 
 ### The listings and the workflows
 
@@ -138,8 +138,8 @@ The npm suite runs ungated, the publish job waits on the `publish` environment, 
 The rollout is done but the scaffolding is still in the repo. Retire it in this order, each as its own PR:
 
 1. **Nightly → plain build of `main`**: drop the loader/`legacy-src` stitching from `ext-vscode-publish-nightly.yml` so nightly matches stable. Preserve the `|| 'default'` fallbacks for `inputs.*` while editing.
-2. Once `ext-vscode-publish.yml` has shipped a release, delete `ext-vscode-publish-stable.yml` (the repack path that timed out on 4.1.18) and `ext-vscode-ab-package.yml`; and, once the emergency path above is judged unnecessary, `ext-vscode-publish-legacy.yml`; keep the `legacy-extension` branch for history. `apps/vscode/scripts/publish-marketplace.mjs` and the `publish:marketplace*` package scripts only serve the deleted stable workflow (nightly has its own script) — remove them in the same PR.
-3. Remove `apps/vscode-rollout/` and the rollout-only code paths in `apps/vscode/src/services/telemetry/rollout-metadata.ts` (the `extension_variant` metadata and `extension.rollout.bundle_activated` event).
+2. Once `ext-vscode-publish.yml` has shipped a release, delete `ext-vscode-publish-stable.yml` (the repack path that timed out on 4.1.18) - `ext-vscode-ab-package.yml` was already removed in 4.2.0; and, once the emergency path above is judged unnecessary, `ext-vscode-publish-legacy.yml`; keep the `legacy-extension` branch for history. `apps/vscode/scripts/publish-marketplace.mjs` and the `publish:marketplace*` package scripts only serve the deleted stable workflow (nightly has its own script) — remove them in the same PR.
+3. `apps/vscode-rollout/` is already removed (4.2.0); remove the remaining rollout-only code paths in `apps/vscode/src/services/telemetry/rollout-metadata.ts` (the `extension_variant` metadata and `extension.rollout.bundle_activated` event).
 4. ~~Port the marketplace-monotonicity preflight~~ — done; `ext-vscode-publish.yml` carries both copies of the check.
 5. **Archive the PostHog flag last, and not yet.** Machines still on a combined VSIX (`≤ 4.1.17`) consult `ext-sdk-bundle-rollout` on every window load and treat a *deleted* flag as `legacy`. Leave it at 100% until `extension.rollout.bundle_activated` for combined versions flatlines, then archive. Re-verify the percentage empirically before touching it (no PostHog admin needed — the key is inlined in any shipped combined loader; download the 4.1.17 VSIX from the Marketplace `vspackage` URL, `gunzip`, `unzip`, `grep -o 'phc_[A-Za-z0-9]*' extension/extension.js`):
 

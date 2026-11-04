@@ -1,6 +1,6 @@
 name: desktop-publish
 
-# Like ext-vscode-publish-nightly, nightlies are manually dispatched because
+# Nightlies are manually dispatched because
 # PublishDesktop requires approval. Dispatch from main with channel=nightly.
 # Nightlies upload Actions artifacts only; they do not publish releases or feeds.
 # Each successful nightly is tagged desktop-nightly-<stamp> and announced to

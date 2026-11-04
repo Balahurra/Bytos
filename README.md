@@ -41,29 +41,36 @@ It runs everywhere you do: as a VS Code extension, a terminal UI, a desktop app,
 
 | Surface | Package | Get started |
 | --- | --- | --- |
-| **VS Code** | `apps/vscode` | Install `bytos.bytos` from the Marketplace |
-| **CLI** | `@bytos/cli` | `npm i -g @bytos/cli` then run `bytos` |
-| **Desktop** | `apps/examples/desktop-app` | Build with Tauri, or download a release |
-| **Hub** | `@bytos/bytos-hub` | `bytos hub` opens the local dashboard |
-| **SDK** | `@bytos/sdk` | `npm i @bytos/sdk` |
+| **VS Code** | `apps/vscode` | Build the VSIX with `node scripts/package-release.mjs` (Marketplace listing pending) |
+| **CLI** | `apps/cli` | Run from source with `bun install && bun run cli` (not yet published to npm) |
+| **Desktop** | `apps/examples/desktop-app` | Build with Tauri from source |
+| **Hub** | `apps/bytos-hub` | Run from source (not yet published to npm) |
+| **SDK** | `sdk/packages` | Workspace source (not yet published to npm) |
 
 ### CLI quick start
 
+The CLI lives in this monorepo under `apps/cli` and is not published to npm
+yet. Run it from source:
+
 ```bash
-npm i -g @bytos/cli
-bytos
+bun install
+bun run cli
 ```
 
 Run one task headlessly:
 
 ```bash
-bytos "add retry handling to the upload service and cover it with tests"
+bun run cli -- "add retry handling to the upload service and cover it with tests"
 ```
 
 ### VS Code quick start
 
+Build and install the extension from source:
+
 ```bash
-code --install-extension bytos.bytos
+bun install
+cd apps/vscode && node scripts/package-release.mjs
+code --install-extension ../../bytos-4.2.0.vsix
 ```
 
 Open the Bytos view in the activity bar, pick a model provider, and describe the task.

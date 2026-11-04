@@ -18,7 +18,7 @@
 </table>
 </div>
 
-The Bytos SDK is a TypeScript framework for building AI agents that can edit files, run shell commands, browse the web, call APIs, and use any custom tool you give them. It's the same engine that powers [Bytos](https://github.com/bytos/bytos), packaged as a library you can embed in your own applications.
+The Bytos SDK is a TypeScript framework for building AI agents that can edit files, run shell commands, browse the web, call APIs, and use any custom tool you give them. It's the same engine that powers [Bytos](https://github.com/Balahurra/Bytos), packaged as a library you can embed in your own applications.
 
 ```typescript
 import { Agent } from "@bytos/sdk"
@@ -38,8 +38,12 @@ That's it. The agent streams its response, calls tools if you give it any, and r
 
 ## Install
 
+> **Status:** `@bytos/sdk` is not published to npm yet. It is a workspace
+> package in this monorepo; build it with `bun install && bun run build:sdk`.
+> The command below applies once the package is published.
+
 ```bash
-npm install @bytos/sdk
+# npm install @bytos/sdk
 ```
 
 ## SDK Skill

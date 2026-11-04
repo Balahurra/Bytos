@@ -1,7 +1,10 @@
 # Bytos CLI
 
+> **Status:** The Bytos CLI lives in the [Bytos monorepo](https://github.com/Balahurra/Bytos/tree/main/apps/cli) and is **not published to npm yet**. Build it from source with `bun install && bun run cli` from the repository root. The install command below applies once the package is published.
+
+
 <p align="center">
-  <img src="https://raw.githubusercontent.com/bytos/bytos/main/assets/branding/logos/bytos-wordmark-dark.svg" width="70%" alt="Bytos" />
+  <img src="https://raw.githubusercontent.com/Balahurra/Bytos/main/assets/branding/logos/bytos-wordmark-dark.svg" width="70%" alt="Bytos" />
 </p>
 
 <div align="center">
@@ -14,10 +17,10 @@
 <a href="https://marketplace.visualstudio.com/items?itemName=bytos.bytos" target="_blank">VS Code Extension</a>
 </td>
 <td align="center">
-<a href="https://github.com/bytos/bytos/discussions" target="_blank">Discussions</a>
+<a href="https://github.com/Balahurra/Bytos/discussions" target="_blank">Discussions</a>
 </td>
 <td align="center">
-<a href="https://github.com/bytos/bytos/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop" target="_blank">Feature Requests</a>
+<a href="https://github.com/Balahurra/Bytos/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop" target="_blank">Feature Requests</a>
 </td>
 <td align="center">
 <a href="https://docs.bytos.dev" target="_blank">Docs</a>
@@ -392,4 +395,4 @@ See [DEVELOPMENT.md](./DEVELOPMENT.md) for local development setup, monorepo str
 
 ## License
 
-[Apache 2.0 © Bytos](https://github.com/bytos/bytos/blob/main/LICENSE)
+[Apache 2.0 © Bytos](https://github.com/Balahurra/Bytos/blob/main/LICENSE)

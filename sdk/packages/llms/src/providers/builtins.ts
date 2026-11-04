@@ -623,7 +623,6 @@ function inferClient(spec: BuiltinSpec): ProviderClient {
 		case "mistral":
 		case "claude-code":
 		case "openai-codex":
-		case "opencode":
 		case "dify":
 		case "ollama":
 		case "sap-ai-core":
@@ -755,25 +754,6 @@ const OPENAI_COMPATIBLE_SPEC_OVERRIDES: BuiltinSpecOverride[] = [
 		name: "CoreWeave",
 		description: "CoreWeave Serverless Inference",
 		docsUrl: "https://docs.wandb.ai/inference/",
-	},
-	{
-		id: "opencode-go",
-		docsUrl: "https://opencode.ai/docs/go/",
-		defaults: {
-			// models.dev lists the OpenAI-only path (/inference/go/openai/v1),
-			// which 404s on /messages. Routing appends per-model protocol
-			// endpoints, so pin the shared root that serves all of them.
-			baseUrl: "https://opencode.ai/inference/go/v1",
-			headers: { "User-Agent": "Bytos/SDK" },
-		},
-		metadata: {
-			routing: { modelApiProtocol: true },
-			stickySession: {
-				transport: "header",
-				field: "x-opencode-session",
-				metadataKey: "sessionId",
-			},
-		},
 	},
 	{
 		id: "openai-compatible",
@@ -1258,25 +1238,6 @@ const BUILTIN_SPEC_OVERRIDES: BuiltinSpecOverride[] = [
 			international: "https://api.minimax.io/anthropic/v1",
 		},
 		metadata: MINIMAX_THINKING_ROUTING_METADATA,
-	},
-	{
-		id: "opencode",
-		name: "OpenCode",
-		description: "OpenCode SDK multi-provider runtime",
-		family: "opencode",
-		// local-auth: the spawned `opencode` server authenticates from the
-		// credentials `opencode auth login` stores on this machine. Bytos has
-		// no OAuth flow or API key for it.
-		capabilities: ["reasoning", "local-auth"],
-		defaultModelId: "openai/gpt-5.6-sol",
-		modelsProviderId: "opencode",
-		docsUrl: "https://opencode.ai/docs",
-		defaults: { baseUrl: "" },
-		configFields: [],
-		metadata: {
-			// See `resolveProviderLocalCli`.
-			localCliCommand: "opencode",
-		},
 	},
 	{
 		id: "dify",

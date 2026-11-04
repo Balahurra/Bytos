@@ -184,29 +184,4 @@ describe("resolveProviderRequestHeaders", () => {
 			}),
 		).toEqual({ "x-session": "session" });
 	});
-
-	it("identifies Go conversations and the client while preserving custom headers", () => {
-		for (const sessionId of ["conversation-a", "conversation-b"]) {
-			expect(
-				resolveProviderRequestHeaders({
-					providerId: "opencode-go",
-					sessionId,
-					defaultSource: "desktop",
-					coreVersion: "0.0.82",
-					client: { version: "1.2.3" },
-					headers: {
-						stored: { "x-stored": "kept", "x-opencode-session": "stale" },
-						config: { "x-config": "kept" },
-						session: { "x-session": "kept" },
-					},
-				}),
-			).toEqual({
-				"x-opencode-session": sessionId,
-				"User-Agent": "Bytos/1.2.3",
-				"x-stored": "kept",
-				"x-config": "kept",
-				"x-session": "kept",
-			});
-		}
-	});
 });

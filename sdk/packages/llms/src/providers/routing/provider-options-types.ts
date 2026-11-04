@@ -15,7 +15,6 @@ export type AiSdkProviderOptionsTarget =
 	| "mistral"
 	| "claude-code"
 	| "openai-codex"
-	| "opencode"
 	| "dify"
 	| "ollama"
 	| "sapaicore";
@@ -81,8 +80,6 @@ export function inferProviderOptionsTarget(
 			return "claude-code";
 		case "openai-codex":
 			return "openai-codex";
-		case "opencode":
-			return "opencode";
 		case "dify":
 			return "dify";
 		case "ollama":

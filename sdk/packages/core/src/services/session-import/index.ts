@@ -4,10 +4,6 @@ export {
 } from "./claude-code";
 export { type CodexAdapterOptions, CodexImportAdapter } from "./codex";
 export {
-	type OpencodeAdapterOptions,
-	OpencodeImportAdapter,
-} from "./opencode";
-export {
 	IMPORT_MISSING_TOOL_RESULT_TEXT,
 	sanitizeImportedMessages,
 } from "./sanitize";

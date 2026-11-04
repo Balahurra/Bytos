@@ -274,6 +274,26 @@ function inspectVsix(filePath) {
 			fail(`VSIX contains a local secret/config file: ${relative}.`)
 		}
 	}
+	// The extension is the VS Code product: no CLI installer and no OpenCode
+	// client/server code may be bundled. Documentation URLs of unrelated
+	// providers are allowed; the markers below are integration-only.
+	const bundlePath = path.join(extractDir, "extension/dist/extension.js")
+	if (fs.existsSync(bundlePath)) {
+		const bundle = fs.readFileSync(bundlePath, "utf8")
+		const forbiddenBundleMarkers = [
+			"@opencode-ai/",
+			"ai-sdk-provider-opencode-sdk",
+			"installBytosCli",
+			"checkCliInstallation",
+			"npm install -g bytos",
+			"Bytos CLI Version",
+		]
+		for (const marker of forbiddenBundleMarkers) {
+			if (bundle.includes(marker)) {
+				fail(`extension bundle contains a forbidden CLI/OpenCode marker: ${marker}.`)
+			}
+		}
+	}
 	ok(`VSIX contains the required licensing and runtime files (${filePath}).`)
 	fs.rmSync(tempRoot, { recursive: true, force: true })
 }

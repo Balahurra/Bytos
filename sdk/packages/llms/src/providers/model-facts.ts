@@ -199,7 +199,7 @@ const CLAUDE_NAME_FIRST_VERSION_PATTERN =
  * - "unknown-claude": a Claude id the version parser does not recognize.
  *   Callers should treat these as NEWER than the known list and prefer
  *   adaptive — the forward-compatible policy the ecosystem converged on
- *   (vercel/ai#17804 for @ai-sdk/anthropic's capability lookup; opencode's
+ *   (vercel/ai#17804 for @ai-sdk/anthropic's capability lookup; upstream
  *   transform.ts after repeated allowlist misses for opus-4.7, sonnet-5,
  *   and opus-5). New Claude releases reject the manual shape, so an
  *   allowlist that lags a release turns every reasoning request into a

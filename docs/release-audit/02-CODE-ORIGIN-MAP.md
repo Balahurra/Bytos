@@ -111,7 +111,7 @@ before the import commit.
 | `apps/vscode/assets/icons/social/*.svg` | Discord/GitHub/LinkedIn/Reddit/X logos used as link icons. | Third-party **trademarks**, not software licences. Nominative use for linking, but redistribution terms are not verified. Open item, see `03`. |
 | `apps/vscode/bin/ripgrep*` | ripgrep binaries fetched by `bun run download-ripgrep`. | ripgrep is MIT OR Apache-2.0; the binaries are downloaded, not committed. |
 | `patches/*.patch` | Local patches to `@opentui-ui/dialog`, `ollama-ai-provider-v2`, `@shadcn/react`. | Applied at install; the patched packages keep their own licences. |
-| `apps/vscode/webview-ui/build/assets/*` (generated) | Vite output including `mermaid`, `katex`, `cytoscape`, the Geist/Inter OFL fonts and `codicon`. | Listed with texts in `THIRD-PARTY-NOTICES.txt` (2396 packages inventoried). |
+| `apps/vscode/webview-ui/build/assets/*` (generated) | Vite output including `mermaid`, `katex`, `cytoscape`, the Geist/Inter OFL fonts and `codicon`. | Listed with texts in `THIRD-PARTY-NOTICES.txt` (2,394 packages inventoried). |
 | `sdk/packages/core/src/hub/client/__fixtures__/localhost-cert.pem` | Self-signed test certificate fixture for the hub TLS client. | Test material, no secret, not packaged. |
 
 ## F. Origin or licence status unclear

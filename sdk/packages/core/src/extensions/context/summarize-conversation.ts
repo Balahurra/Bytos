@@ -67,7 +67,6 @@ export async function summarizeConversation(options: {
 		collection?.provider.capabilities?.includes("provider-tools") ||
 		routedProvider?.capabilities?.includes("provider-tools") ||
 		// These adapters can execute tools but lack the provider-tools capability flag.
-		routedProviderId === "opencode" ||
 		routedProviderId === "dify"
 	) {
 		throw new Error(

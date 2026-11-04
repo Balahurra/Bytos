@@ -86,7 +86,7 @@ top-level `node_modules/`, `*.map`. Checked twice: by `check-licenses.mjs --vsix
 
 | Check | Result |
 |---|---|
-| `THIRD-PARTY-NOTICES.txt` generated from the installed tree | 2396 packages, 13 UNKNOWN, all 13 explicitly justified in `license-exceptions.json`. |
+| `THIRD-PARTY-NOTICES.txt` generated from the installed tree | 2,394 packages, 13 UNKNOWN, all 13 explicitly justified in `license-exceptions.json`. |
 | Gate refuses an unresolvable licence that is not listed | Enforced in code (the `unresolved` loop in `check-licenses.mjs`). |
 | `bun audit` / advisory scan | **NOT RUN.** Not part of the verified pipeline and no advisory-database access was used. Run in CI before release. |
 | Secret scan | Done manually and by pattern (`04`). No `gitleaks` binary is installed on this host, so `.gitleaks.toml` was not executed. Run `gitleaks detect` in CI before release. |

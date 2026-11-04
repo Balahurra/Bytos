@@ -267,7 +267,7 @@ export function resolveCredentialError(
 
 /**
  * Where to send the user after a credential-looking turn failure. Local-auth
- * providers (Claude Code, Codex CLI, OpenCode) borrow their login from a CLI
+ * providers (Claude Code, Codex CLI) borrow their login from a CLI
  * on this machine, so Settings → Providers has nothing to fix — e.g. Claude
  * Code's "OAuth session expired and could not be refreshed" needs a fresh
  * sign-in in the `claude` CLI itself.

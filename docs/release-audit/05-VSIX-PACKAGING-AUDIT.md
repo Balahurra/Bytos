@@ -86,7 +86,7 @@ fixes made on 2026-11-04 (21:13–21:40) had **never been packaged**:
 The gate's assertion that `extension/webview-ui/build/index.html` must be present
 (PKG-01) was re-confirmed against the fresh archive rather than `vsce ls` alone.
 
-| PKG-10 | Final artefact after the cleanup commits: `bytos-4.2.0.vsix`, 191 files, 12,353,055 bytes, SHA-256 `3A7D1467E4E0A6CEFE29D366E3265E12D1CDA3C807D90D45C733554C5F4BC6D7`, built 2026-11-04 23:06. Verified inside: `LICENSE.txt` (11,938 B, Cline notice + Bytos modifications), `NOTICE`, `THIRD-PARTY-NOTICES.{txt,json}`, `PRIVACY.md`, `CHANGELOG.md`, `readme.md`, `dist/extension.js`, `dist/plugin-runtime/`, `webview-ui/build/index.html`, icons. No `.env`, source, tests, maps or scripts. | Ready to upload; `__metadata` will be added by the first `vsce publish`. |
+| PKG-10 | Final artefact after the CLI/OpenCode removal: `bytos-4.2.0.vsix`, 189 files, 12,281,325 bytes, SHA-256 `2114AA4AA88F9C60D0D9172468E59F5AE9A39F9BD50B7240A29FEDED28B16EDA`, built 2026-11-04 23:33. Verified inside: `LICENSE.txt` (11,938 B, Cline notice + Bytos modifications), `NOTICE`, `THIRD-PARTY-NOTICES.{txt,json}` (2,394 packages, zero OpenCode entries), `PRIVACY.md`, `CHANGELOG.md`, `readme.md`, `dist/extension.js`, `dist/plugin-runtime/`, `webview-ui/build/index.html`, icons. No `.env`, source, tests, maps, scripts, CLI installer code or OpenCode integration. The gate now also rejects the bundle markers `@opencode-ai/`, `ai-sdk-provider-opencode-sdk`, `installBytosCli`, `checkCliInstallation`, `npm install -g bytos` and `Bytos CLI Version`. | Ready to upload; `__metadata` will be added by the first `vsce publish`. |
 
 ## 5. What packaging alone does not verify
 

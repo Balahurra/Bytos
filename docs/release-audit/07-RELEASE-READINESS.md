@@ -36,7 +36,7 @@ Nothing was pushed to GitHub and nothing was published to the Marketplace.
 
 - [x] Apache-2.0 text shipped (`LICENSE` -> `LICENSE.txt`); upstream copyright retained verbatim, Bytos modification notice added.
 - [x] `NOTICE` shipped, byte-identical to the root copy, with the release gate enforcing that identity.
-- [x] Third-party inventory generated (2396 packages) and shipped in text and JSON form.
+- [x] Third-party inventory generated (2,394 packages) and shipped in text and JSON form.
 - [x] Modification notices on the 12 Cline-derived files this review could attribute, each with a change summary.
 - [x] `author` corrected to `Bytos contributors`; no unsupported legal entity is claimed anywhere.
 - [x] `publisher` present and placed first in the manifest, as Microsoft's publishing docs require.
@@ -102,8 +102,8 @@ desktop. Results, per dimension:
 
 | Area | Verdict |
 |---|---|
-| Technical readiness | **PASS** — reproducible package rebuilt from the tree: typecheck ×2 clean, biome lint clean (1,364 files), proto regen, webview build (Vite, 8,865 modules), esbuild bundle, `vsce package` (191 files), gate + archive inspection run. |
-| Licence & attribution | **PASS with two fixed drift findings.** (1) `apps/vscode/LICENSE` had not received the root-LICENSE fix and the shipped `LICENSE.txt` carried no Cline notice — synced (SHA-256 identical to root) and repackaged; recommend the gate also diff the packaged `LICENSE.txt` against root. (2) Modification-header docs said 12; the tree carries 14 (`SdkController.ts`, `community.ts` added) — `02` and `03` corrected. NOTICE files, third-party inventory (2,396 pkgs, 13 justified UNKNOWN, no GPL/AGPL) re-confirmed. |
+| Technical readiness | **PASS** - reproducible package rebuilt from the tree: typecheck ×2 clean, biome lint clean (1,340 files), proto regen, webview build (Vite, 8,865 modules), esbuild bundle, `vsce package` (189 files), gate + archive inspection run. |
+| Licence & attribution | **PASS with two fixed drift findings.** (1) `apps/vscode/LICENSE` had not received the root-LICENSE fix and the shipped `LICENSE.txt` carried no Cline notice — synced (SHA-256 identical to root) and repackaged; recommend the gate also diff the packaged `LICENSE.txt` against root. (2) Modification-header docs said 12; the tree carries 14 (`SdkController.ts`, `community.ts` added) — `02` and `03` corrected. NOTICE files, third-party inventory (2,394 pkgs, 13 justified UNKNOWN, no GPL/AGPL) re-confirmed. |
 | Security | **PASS** — re-scan of working tree + tracked history found no real credential; three process notes added to `04` (S-06: redaction stack untracked until the tree commit; S-07: 97 tracked files inside git-ignored agent dirs — maintainer decision; S-08: local-only report docs contain the machine path, untracked and git-ignored). |
 | VSIX packaging | **PASS on the rebuilt archive** — `extension/{LICENSE.txt, NOTICE, THIRD-PARTY-NOTICES.txt+json, CHANGELOG.md, PRIVACY.md, readme.md, package.json, dist/extension.js, dist/plugin-runtime/*, webview-ui/build/index.html, assets/icons/*}` all verified inside the archive; forbidden lists clean; see `05` PKG-07/08/09. |
 | Marketplace readiness | **BLOCKED** — unchanged: B-1 (`__metadata`, needs one `vsce publish` with the `bytos` publisher PAT), B-2 (manual install/activation check — done once externally per this engagement), B-3 (publisher/PAT ownership unverified). Human steps only.
@@ -186,9 +186,10 @@ removal, repository hygiene, documentation, packaging and the local VSIX - is
   succeed.
 - **Licence gate:** every assertion passes except the expected
   `__metadata`-absent signal (section 9.1).
-- **VSIX:** 191 files, required/forbidden lists clean, `LICENSE.txt` carries the
-  Cline copyright, `webview-ui/build/index.html` present. Final artefact:
-  12,353,055 bytes, SHA-256 `3A7D1467…BC6D7`, copied to the Desktop.
+- **VSIX:** 189 files, required/forbidden lists clean, `LICENSE.txt` carries the
+  Cline copyright, `webview-ui/build/index.html` present, zero CLI/OpenCode
+  bundle markers. Final artefact: 12,281,325 bytes,
+  SHA-256 `2114AA4A…16EDA`, copied to the Desktop.
 - **Secret scan:** `gitleaks git` over the full 32-commit history: **no leaks
   found** (~40.5 MB scanned). The 20 initial heuristic hits were verified as
   fixtures/placeholders and narrowly allowlisted in `.gitleaks.toml`.

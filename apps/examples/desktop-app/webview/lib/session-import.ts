@@ -5,18 +5,16 @@
  * copy so the client bundle never imports node-only core code.
  */
 
-export type SessionImportTool = "claude-code" | "codex" | "opencode";
+export type SessionImportTool = "claude-code" | "codex";
 
 export const SESSION_IMPORT_TOOL_ORDER: SessionImportTool[] = [
 	"claude-code",
 	"codex",
-	"opencode",
 ];
 
 export const SESSION_IMPORT_TOOL_LABELS: Record<SessionImportTool, string> = {
 	"claude-code": "Claude Code",
 	codex: "Codex",
-	opencode: "opencode",
 };
 
 export interface ImportableSession {

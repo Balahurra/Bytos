@@ -148,13 +148,6 @@ function buildOpenAICodexRequestHeaders(
 function resolveRequiredProviderHeaders(
 	input: ResolveProviderRequestHeadersInput,
 ): Record<string, string> | undefined {
-	if (input.providerId === "opencode-go") {
-		const sessionId = trimNonEmpty(input.sessionId);
-		return {
-			...(sessionId ? { "x-opencode-session": sessionId } : {}),
-			"User-Agent": `Bytos/${trimNonEmpty(input.client?.version) ?? input.coreVersion}`,
-		};
-	}
 	return (
 		buildBytosRequestHeaders(input) ?? buildOpenAICodexRequestHeaders(input)
 	);

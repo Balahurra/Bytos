@@ -26,7 +26,7 @@
 
 Bytos is an autonomous software engineering agent that plans before it edits, asks before it acts, and keeps you in control at every step. It reads your repository, writes and refactors code, runs commands, browses the web, and verifies its own work.
 
-It runs everywhere you do: as a VS Code extension, a terminal UI, a desktop app, and a local browser dashboard -- all powered by the same agent core.
+The product is the Bytos extension for Visual Studio Code. The same agent core also powers the other workspace packages in this monorepo, but the extension package is the distribution target.
 
 ## Why Bytos
 
@@ -37,31 +37,18 @@ It runs everywhere you do: as a VS Code extension, a terminal UI, a desktop app,
 - **Built to stay fast.** Streaming responses, lazy-loaded UI, incremental context, and a native session store.
 - **Extensible from day one.** MCP servers, hooks, skills, subagents, worktrees, and a typed SDK.
 
-## Surfaces
+## What is in this repository
 
-| Surface | Package | Get started |
+Bytos is distributed as a **Visual Studio Code extension**. Only
+`apps/vscode` is packaged for the Marketplace.
+
+| Component | Path | Distribution |
 | --- | --- | --- |
-| **VS Code** | `apps/vscode` | Build the VSIX with `node scripts/package-release.mjs` (Marketplace listing pending) |
-| **CLI** | `apps/cli` | Run from source with `bun install && bun run cli` (not yet published to npm) |
-| **Desktop** | `apps/examples/desktop-app` | Build with Tauri from source |
-| **Hub** | `apps/bytos-hub` | Run from source (not yet published to npm) |
-| **SDK** | `sdk/packages` | Workspace source (not yet published to npm) |
+| **VS Code extension** | `apps/vscode` | **The product.** Build the VSIX with `cd apps/vscode && node scripts/package-release.mjs` (Marketplace listing pending) |
+| Agent core | `sdk/packages` | Internal engine used by the extension; not published to npm yet |
+| CLI, hub, desktop, examples | `apps/cli`, `apps/bytos-hub`, `apps/examples` | Workspace sources kept for development; **not included in the VSIX** |
 
-### CLI quick start
-
-The CLI lives in this monorepo under `apps/cli` and is not published to npm
-yet. Run it from source:
-
-```bash
-bun install
-bun run cli
-```
-
-Run one task headlessly:
-
-```bash
-bun run cli -- "add retry handling to the upload service and cover it with tests"
-```
+The packaged extension contains no CLI binary and no OpenCode integration.
 
 ### VS Code quick start
 
@@ -113,7 +100,7 @@ sdk/
     ui/            Shared React components and theme
 ```
 
-The extension host never talks to providers directly. The agent core owns the loop; the host provides tools and approvals; the webview renders state. That separation is what lets the CLI, desktop app, and hub reuse the same engine.
+The extension host never talks to providers directly. The agent core owns the loop; the host provides tools and approvals; the webview renders state. Only `apps/vscode` is packaged and published; the other directories are separate workspace packages and are not part of the extension.
 
 ## Development
 

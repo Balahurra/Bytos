@@ -146,3 +146,58 @@ gate and VSIX archive inspection). Results are recorded in section 8 of `07`.
 - 46 files untracked from git-ignored agent-state directories (kept locally).
 - No shipped runtime entry point, provider, tool, MCP/plugin/skill path,
   command or migration was removed.
+
+## 8. VS Code package exclusions: Bytos CLI and OpenCode (2026-11-04)
+
+The product is the VS Code extension, so two integration families that had
+leaked into the extension package were removed from it entirely.
+
+### 8.1 Bytos CLI install/detect feature
+
+The extension still carried Cline-era plumbing that checked for and installed a
+`bytos` CLI (`installBytosCli`, `checkCliInstallation` RPCs, the controller
+handlers, `utils/cli-detector.ts`, the `install-cli` banner action and the
+`updateCliBannerVersion` RPC). No webview surface triggered the install path.
+
+Removed: both RPCs plus `updateCliBannerVersion` from `proto/bytos/state.proto`
+(protobufs regenerated), `core/controller/state/{installBytosCli,
+checkCliInstallation,updateCliBannerVersion}.ts`, `utils/cli-detector.ts`, the
+`BannerActionType.InstallCli` value and its test entry.
+
+### 8.2 OpenCode integration
+
+`ai-sdk-provider-opencode-sdk` (which bundles `@opencode-ai/sdk`) entered the
+extension bundle through the `opencode` local-CLI provider. The package also
+carried the `opencode` and `opencode-go` catalog providers and an OpenCode
+session-import adapter. All of it was removed:
+
+- dependency `ai-sdk-provider-opencode-sdk` (and the transitive
+  `@opencode-ai/sdk`) removed from `sdk/packages/llms/package.json`;
+- `createOpenCodeProviderModule`, the `opencode` AI-SDK case, provider registry
+  entry, `BUILT_IN_PROVIDER.OPENCODE`, builtin-family unions, routing tables,
+  request-header special case, config types and the live-catalog Qwen override;
+- generated provider specs and catalog blocks for `opencode` / `opencode-go`,
+  plus the `provider-keys.ts` mapping so regeneration does not reintroduce them;
+- the `opencode` session-import adapter, its path helper, type entry, UI labels
+  and the desktop import-picker references;
+- the now-unused `stripRogueSignalHandlers` helper and OpenCode-specific tests.
+
+**Verification after rebuild:** `dist/extension.js` contains **zero**
+occurrences of `opencode` integration code (`@opencode-ai`, `OpencodeClient`,
+`createOpencode*`, the provider id); the three remaining substring hits are
+documentation URLs of unrelated providers (AgentRouter, Infer, Pendra). It also
+contains zero occurrences of `Bytos CLI`, `installBytosCli`,
+`checkCliInstallation`, `isBytosCliInstalled` or `npm install -g bytos`.
+`llms` typecheck and 97 targeted tests pass; the extension unit suite is
+1,195 pass / 1 environmental symlink failure. The generated third-party
+inventory dropped from 2,396 to 2,394 packages because the two OpenCode packages
+are no longer installed or bundled.
+
+The `apps/cli` source tree remains in the monorepo, but it is not part of the
+VSIX and is not published to npm. Its README now states that explicitly.
+
+### 8.3 Product documentation alignment
+
+The root README now presents Bytos as a VS Code extension, marks the VSIX as the
+only distributed package, and no longer advertises unpublished npm installs.
+

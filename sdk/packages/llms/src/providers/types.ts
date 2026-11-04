@@ -24,7 +24,6 @@ export {
 	type ModelConfig,
 	normalizeProviderId,
 	type OcaConfig,
-	type OpenCodeConfig,
 	type ProviderCapability,
 	type ProviderCategory,
 	type ProviderConfig,

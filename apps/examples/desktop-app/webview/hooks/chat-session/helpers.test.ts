@@ -193,12 +193,6 @@ describe("resolveCredentialFailureHint", () => {
 				localCli: { command: "codex" },
 			}),
 		).toMatch(/`codex` CLI/);
-		expect(
-			resolveCredentialFailureHint("opencode", {
-				providerId: "opencode",
-				localCli: { command: "opencode" },
-			}),
-		).toMatch(/`opencode` CLI/);
 	});
 
 	it("points Bytos at signing in again from Settings → Account", () => {

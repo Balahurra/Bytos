@@ -258,8 +258,8 @@ export function ImportSessionsDialog({
 									No sessions found
 								</p>
 								<p className="max-w-sm text-sm text-muted-foreground">
-									Bytos looks for local history from Claude Code, Codex, and
-									opencode. Nothing importable turned up on this machine.
+									Bytos looks for local history from Claude Code and
+									Codex. Nothing importable turned up on this machine.
 								</p>
 							</div>
 						) : null}

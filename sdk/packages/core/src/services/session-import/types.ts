@@ -4,7 +4,6 @@ import type * as LlmsProviders from "@bytos/llms";
 export const SESSION_IMPORT_TOOLS = [
 	"claude-code",
 	"codex",
-	"opencode",
 ] as const;
 
 export type SessionImportTool = (typeof SESSION_IMPORT_TOOLS)[number];
@@ -12,7 +11,6 @@ export type SessionImportTool = (typeof SESSION_IMPORT_TOOLS)[number];
 export const SESSION_IMPORT_TOOL_LABELS: Record<SessionImportTool, string> = {
 	"claude-code": "Claude Code",
 	codex: "Codex",
-	opencode: "opencode",
 };
 
 /**
@@ -79,11 +77,11 @@ export interface SessionImportOptions {
 	/**
 	 * Bytos provider/model the imported sessions should resume with. Opening a
 	 * history session adopts the row's provider/model, so without this the
-	 * session would try to run on the source tool's provider (openai-native,
-	 * or an opencode provider id Bytos doesn't know) which the user may never
-	 * have configured. Both must be set to take effect; the source tool's own
-	 * provider/model are always preserved in metadata.importedFrom and in
-	 * per-message modelInfo.
+	 * session would try to run on the source tool's provider (for example
+	 * openai-native, or another provider id Bytos doesn't know) which the user
+	 * may never have configured. Both must be set to take effect; the source
+	 * tool's own provider/model are always preserved in metadata.importedFrom
+	 * and in per-message modelInfo.
 	 */
 	provider?: string;
 	model?: string;

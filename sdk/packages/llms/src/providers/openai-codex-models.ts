@@ -20,7 +20,7 @@ const CODEX_MAX_INPUT_TOKENS = 272_000;
 const CODEX_MAX_OUTPUT_TOKENS = 128_000;
 
 /**
- * Eligibility mirrors opencode's ChatGPT-plan rules for the shared OpenAI
+ * Eligibility mirrors the upstream ChatGPT-plan rules for the shared OpenAI
  * catalog: an explicit allow/deny list plus a "newer than GPT-5.4" version
  * rule. GPT-5.4 and GPT-5.4 mini were retired for ChatGPT accounts on
  * 2026-08-31 (replacements: GPT-5.6 Terra and GPT-5.6 Luna).

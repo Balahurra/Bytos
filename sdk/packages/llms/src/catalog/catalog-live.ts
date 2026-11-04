@@ -379,16 +379,6 @@ export function normalizeModelsDevProviderModels(
 		const models: Record<string, ModelInfo> = {};
 		for (const [modelId, model] of Object.entries(source.models)) {
 			const rawInfo = toModelInfo(modelId, model);
-			// Go documents Qwen's Messages endpoint, but some models.dev Qwen
-			// entries still omit provider.npm. Explicit upstream declarations win.
-			// https://opencode.ai/docs/go/#endpoints
-			if (
-				targetProviderId === "opencode-go" &&
-				/^qwen(?:\d|$)/.test(model.family ?? "") &&
-				!model.provider?.npm
-			) {
-				rawInfo.metadata = { ...rawInfo.metadata, apiProtocol: "anthropic" };
-			}
 			const modalities = normalizeBuiltinModelOperationModalities({
 				providerId: targetProviderId,
 				modelId,

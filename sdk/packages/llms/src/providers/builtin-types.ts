@@ -23,7 +23,6 @@ export type ProviderFamily =
 	| "mistral"
 	| "claude-code"
 	| "openai-codex"
-	| "opencode"
 	| "dify"
 	| "ollama"
 	| "sap-ai-core";

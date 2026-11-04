@@ -37,7 +37,6 @@ const NON_PORTABLE_REASONING_PROVIDERS = new Set([
 	"claude-code",
 	"dify",
 	"mistral",
-	"opencode",
 	"sapaicore",
 ]);
 

@@ -222,18 +222,6 @@ export interface ClaudeCodeConfig {
 }
 
 /**
- * OpenCode provider options
- */
-export interface OpenCodeConfig {
-	hostname?: string;
-	port?: number;
-	autoStartServer?: boolean;
-	serverTimeout?: number;
-	defaultSettings?: Record<string, unknown>;
-	modelSettings?: Record<string, unknown>;
-}
-
-/**
  * Cloud provider configurations (grouped)
  */
 export interface CloudConfig {
@@ -337,9 +325,6 @@ export interface ProviderConfig
 
 	/** Claude Code-specific options */
 	claudeCode?: ClaudeCodeConfig;
-
-	/** OpenCode-specific options */
-	opencode?: OpenCodeConfig;
 }
 
 /**

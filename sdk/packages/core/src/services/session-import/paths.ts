@@ -50,10 +50,3 @@ export function codexHomeDir(environment = runtimeEnvironment()): string {
 		environment.joinPath(userHome(environment), ".codex")
 	);
 }
-
-export function opencodeDataDir(environment = runtimeEnvironment()): string {
-	const dataHome =
-		nonEmpty(environment.env.XDG_DATA_HOME) ??
-		environment.joinPath(userHome(environment), ".local", "share");
-	return environment.joinPath(dataHome, "opencode");
-}

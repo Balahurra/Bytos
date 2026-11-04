@@ -33,7 +33,7 @@ topic was identified but not resolved.
 |---|---|---|
 | `LICENSE` | Yes, as `LICENSE.txt` | Unmodified Apache-2.0 text plus an appendix naming the upstream copyright, the Bytos modification copyright, and the upstream project URL. |
 | `NOTICE` (`apps/vscode/NOTICE`, byte-identical to root) | Yes | Derivation statement, upstream copyright, non-affiliation disclaimer, pointer to third-party notices. |
-| `THIRD-PARTY-NOTICES.txt` | Yes | Generated inventory of 2396 packages with declared licence and first copyright line, plus the licence families present. |
+| `THIRD-PARTY-NOTICES.txt` | Yes | Generated inventory of 2,394 packages with declared licence and first copyright line, plus the licence families present. |
 | `THIRD-PARTY-NOTICES.json` | Yes | The same inventory in machine-readable form so the VSIX can be audited without the repository. |
 | `CHANGELOG.md` (`apps/vscode`) | Yes | Release notes, including the licensing remediation entry. |
 | `PRIVACY.md` (`apps/vscode`) | Yes | Data-handling map (see `04`). |
@@ -49,7 +49,7 @@ dependency tree and records package, version, declared licence, repository, and
 the first copyright line found in the package's licence file. It also probes the
 licence text itself rather than trusting the `license` field alone.
 
-Declared-licence summary at audit time (2396 packages):
+Declared-licence summary at audit time (2,394 packages):
 
 | Licence | Count |
 |---|---|
@@ -153,7 +153,7 @@ Two drift findings from re-inspecting the on-disk artefact, both now closed:
    file replaces upstream copyright with a personal identity.
 
 Additional re-verification results (no action needed): root and extension
-`NOTICE` remain byte-identical; `THIRD-PARTY-NOTICES.txt/.json` cover 2,396
+`NOTICE` remain byte-identical; `THIRD-PARTY-NOTICES.txt/.json` cover 2,394
 packages with 13 UNKNOWN all justified in `license-exceptions.json`; no
 GPL/AGPL in the inventory — the only genuine copyleft-adjoining entry
 (`jschardet`, LGPL-2.1+) is a declared but never-imported dependency that is

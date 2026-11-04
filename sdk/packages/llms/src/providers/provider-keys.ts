@@ -148,7 +148,6 @@ const PROVIDER_IDS_MAP: ReadonlyArray<{
 	{ modelsDevKey: "mistral", generatedProviderId: "mistral" },
 	{ modelsDevKey: "moonshotai", generatedProviderId: "moonshot" },
 	{ modelsDevKey: "minimax", generatedProviderId: "minimax" },
-	{ modelsDevKey: "opencode", generatedProviderId: "opencode" },
 	{ modelsDevKey: "wandb", generatedProviderId: "wandb" },
 	{ modelsDevKey: "kilo", generatedProviderId: "kilo" },
 	{ modelsDevKey: "xiaomi", generatedProviderId: "xiaomi" },

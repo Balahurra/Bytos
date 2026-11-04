@@ -1,10 +1,10 @@
 {
-	"generatedAt": "2026-11-04T20:06:13.665Z",
-	"total": 2396,
+	"generatedAt": "2026-11-04T20:33:08.629Z",
+	"total": 2394,
 	"summary": [
 		{
 			"license": "MIT",
-			"count": 1727
+			"count": 1725
 		},
 		{
 			"license": "Apache-2.0",
@@ -3289,14 +3289,6 @@
 			"version": "0.144.6-win32-x64",
 			"license": "Apache-2.0",
 			"repository": "https://github.com/openai/codex",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@opencode-ai/sdk",
-			"version": "1.18.23",
-			"license": "MIT",
-			"repository": "",
 			"copyright": "",
 			"private": false
 		},
@@ -8009,14 +8001,6 @@
 			"version": "2.1.2",
 			"license": "MIT",
 			"repository": "https://github.com/ben-vargas/ai-sdk-provider-codex-cli",
-			"copyright": "Copyright (c) 2025 Ben Vargas",
-			"private": false
-		},
-		{
-			"name": "ai-sdk-provider-opencode-sdk",
-			"version": "3.0.6",
-			"license": "MIT",
-			"repository": "https://github.com/ben-vargas/ai-sdk-provider-opencode-sdk",
 			"copyright": "Copyright (c) 2025 Ben Vargas",
 			"private": false
 		},

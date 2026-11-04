@@ -63,10 +63,6 @@ async function loadFamilyFactory(
 				const module = await import("./ai-sdk");
 				return module.createOpenAICodexProvider;
 			}
-			case "opencode": {
-				const module = await import("./ai-sdk");
-				return module.createOpenCodeProvider;
-			}
 			case "dify": {
 				const module = await import("./ai-sdk");
 				return module.createDifyProvider;

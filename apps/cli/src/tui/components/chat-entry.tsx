@@ -660,7 +660,7 @@ export function ChatEntryView(props: {
 						 * prop makes MarkdownRenderable rebuild every block from scratch
 						 * (updateBlocks(true) skips all reuse paths), so the finished
 						 * message flashes back to unhighlighted text while tree-sitter
-						 * re-highlights. opencode's TUI keeps streaming={true} for the
+						 * re-highlights. other terminal UIs keep streaming={true} for the
 						 * same reason. entry.streaming still drives the spinner glyph.
 						 */}
 						<markdown

@@ -14,12 +14,12 @@ actually distributed, its notice is still provided here.
 This file is not a legal opinion. See LICENSE-COMPLIANCE-REPORT.md for
 verified obligations and remaining uncertainties.
 
-Generated: 2026-11-04T20:06:13.663Z
-Packages: 2396
+Generated: 2026-11-04T20:33:08.625Z
+Packages: 2394
 
 License summary
 ---------------
-MIT	1727
+MIT	1725
 Apache-2.0	375
 ISC	115
 BSD-3-Clause	51
@@ -436,7 +436,6 @@ Name	Version	License	Repository	Copyright
 @nodelib/fs.walk	1.2.8	MIT	https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.walk	Copyright (c) Denis Malinochkin
 @openai/codex	0.144.6	Apache-2.0	https://github.com/openai/codex	
 @openai/codex	0.144.6-win32-x64	Apache-2.0	https://github.com/openai/codex	
-@opencode-ai/sdk	1.18.23	MIT		
 @openrouter/ai-sdk-provider	3.0.0	Apache-2.0	https://github.com/OpenRouterTeam/ai-sdk-provider	"Licensor" shall mean the copyright owner or entity authorized by
 @opentelemetry/api	1.9.1	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
 @opentelemetry/api-logs	0.214.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
@@ -1026,7 +1025,6 @@ ai	7.0.120	Apache-2.0	https://github.com/vercel/ai	Copyright 2023 Vercel, Inc.
 ai	7.0.2	Apache-2.0	https://github.com/vercel/ai	Copyright 2023 Vercel, Inc.
 ai-sdk-provider-claude-code	4.1.1	MIT	https://github.com/ben-vargas/ai-sdk-provider-claude-code	Copyright (c) 2025 Ben Vargas
 ai-sdk-provider-codex-cli	2.1.2	MIT	https://github.com/ben-vargas/ai-sdk-provider-codex-cli	Copyright (c) 2025 Ben Vargas
-ai-sdk-provider-opencode-sdk	3.0.6	MIT	https://github.com/ben-vargas/ai-sdk-provider-opencode-sdk	Copyright (c) 2025 Ben Vargas
 ajv	6.15.0	MIT	https://github.com/ajv-validator/ajv	Copyright (c) 2015-2017 Evgeny Poberezkin
 ajv	8.20.0	MIT	ajv-validator/ajv	Copyright (c) 2015-2021 Evgeny Poberezkin
 ajv-formats	2.1.1	MIT	https://github.com/ajv-validator/ajv-formats	Copyright (c) 2020 Evgeny Poberezkin

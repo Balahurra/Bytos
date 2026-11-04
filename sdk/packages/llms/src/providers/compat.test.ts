@@ -363,34 +363,6 @@ describe("createGatewayApiHandler.createMessage", () => {
 		openaiCompatibleSpy.mockClear();
 	});
 
-	it.each([
-		["openai-responses", "openai"],
-		["anthropic", "anthropic"],
-	])("retains live model protocol %s through the handler", async (apiProtocol, family) => {
-		streamTextSpy.mockReturnValue({
-			fullStream: (async function* () {
-				yield { type: "finish", finishReason: "stop" };
-			})(),
-		});
-		const handler = createGatewayApiHandler({
-			providerId: "opencode-go",
-			modelId: "new-live-model",
-			apiKey: "test-key",
-			knownModels: {
-				"new-live-model": { id: "new-live-model", metadata: { apiProtocol } },
-			},
-		});
-		for await (const _chunk of handler.createMessage("", [
-			{ role: "user", content: "Hello" },
-		])) {
-			// Exercise the live catalog -> handler -> gateway projection.
-		}
-		expect(streamTextSpy.mock.calls.at(-1)?.[0].model).toMatchObject({
-			modelId: "new-live-model",
-			family,
-		});
-	});
-
 	it("defaults maxOutputTokens to a fraction of the catalog maxTokens", async () => {
 		streamTextSpy.mockReturnValue({
 			fullStream: (async function* () {

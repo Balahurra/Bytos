@@ -16,7 +16,7 @@ function key(input: {
 }
 
 describe("matchTranscriptKeybind", () => {
-	it("matches OpenCode-style page scroll keybinds", () => {
+	it("matches terminal-style page scroll keybinds", () => {
 		expect(matchTranscriptKeybind(key({ name: "pageup" }))).toBe(
 			"messages_page_up",
 		);
@@ -31,7 +31,7 @@ describe("matchTranscriptKeybind", () => {
 		).toBe("messages_page_down");
 	});
 
-	it("matches OpenCode-style half-page keybinds", () => {
+	it("matches terminal-style half-page keybinds", () => {
 		expect(
 			matchTranscriptKeybind(key({ name: "u", ctrl: true, meta: true })),
 		).toBe("messages_half_page_up");

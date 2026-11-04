@@ -22,7 +22,6 @@ import {
 	createOpenAICodexProvider,
 	createOpenAICompatibleProvider,
 	createOpenAIProvider,
-	createOpenCodeProvider,
 	createSapAiCoreProvider,
 	createVertexProvider,
 } from "./ai-sdk";
@@ -127,8 +126,6 @@ function resolveFactory(
 			return createClaudeCodeProvider;
 		case "openai-codex-cli":
 			return createOpenAICodexProvider;
-		case "opencode":
-			return createOpenCodeProvider;
 		case "dify":
 			return createDifyProvider;
 		case "ollama":
@@ -519,7 +516,6 @@ function buildGatewayConfig(config: ProviderConfig) {
 			usePromptCache: config.aws?.usePromptCache ?? config.oca?.usePromptCache,
 			...config.codex,
 			...config.claudeCode,
-			...config.opencode,
 			...config.sap,
 		},
 	};

@@ -168,7 +168,7 @@ describe("gateway capability producers", () => {
 	});
 
 	it("leaves tool calling enabled for builtin models that declare no capabilities", () => {
-		// A handful of builtin language models (dify, sapaicore, opencode, and
+		// A handful of builtin language models (dify and sapaicore)
 		// the Codex CLI) carry no capability list in the generated catalog.
 		// Emitting `["text"]` for them made `modelSupportsToolCalling` read an
 		// authoritative denial and strip every tool definition from the request.

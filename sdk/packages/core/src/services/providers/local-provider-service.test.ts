@@ -111,7 +111,7 @@ describe("live provider model loading", () => {
 	});
 
 	it("shares one live fetch across providers and reuses it on subsequent loads", async () => {
-		const providerIds = ["opencode", "opencode-go", "anthropic", "openai"];
+		const providerIds = ["anthropic", "openai"];
 		const fetchMock = vi.fn(async (url: string) =>
 			Response.json(
 				url.includes("models.dev")
@@ -141,7 +141,7 @@ describe("live provider model loading", () => {
 			);
 			expect(result.models.length).toBeGreaterThan(1);
 		}
-		await getLocalProviderModels("opencode");
+		await getLocalProviderModels("anthropic");
 		expect(
 			fetchMock.mock.calls.filter(([url]) => url.includes("models.dev")),
 		).toHaveLength(1);
@@ -150,7 +150,7 @@ describe("live provider model loading", () => {
 	});
 
 	it("keeps explicit model overrides above live metadata", async () => {
-		LlmsModels.registerModel("opencode", "live-model", {
+		LlmsModels.registerModel("anthropic", "live-model", {
 			id: "live-model",
 			name: "Custom name",
 		});
@@ -158,7 +158,7 @@ describe("live provider model loading", () => {
 			"fetch",
 			vi.fn(async () =>
 				Response.json({
-					opencode: {
+					anthropic: {
 						models: {
 							"live-model": { name: "Live name", tool_call: true },
 						},
@@ -166,7 +166,7 @@ describe("live provider model loading", () => {
 				}),
 			),
 		);
-		const result = await getLocalProviderModels("opencode");
+		const result = await getLocalProviderModels("anthropic");
 		expect(result.models.find((model) => model.id === "live-model")?.name).toBe(
 			"Custom name",
 		);
@@ -174,8 +174,8 @@ describe("live provider model loading", () => {
 
 	it("keeps the bundled catalog available when offline", async () => {
 		vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
-		const bundled = await LlmsModels.getModelsForProvider("opencode");
-		const result = await getLocalProviderModels("opencode");
+		const bundled = await LlmsModels.getModelsForProvider("anthropic");
+		const result = await getLocalProviderModels("anthropic");
 		expect(result.models.map((model) => model.id)).toEqual(
 			Object.keys(bundled).sort(),
 		);
@@ -358,48 +358,6 @@ describe("models registry parsing", () => {
 			expect.arrayContaining(["prompt-cache", "tools"]),
 		);
 		expect(models["image-gen"]?.capabilities).not.toContain("tools");
-	});
-
-	it("keeps generated tool support when stale OpenCode Go metadata shadows a catalog model", async () => {
-		const generatedModel =
-			LlmsModels.getGeneratedModelsForProvider("opencode-go")["glm-5.3"];
-		expect(generatedModel?.capabilities).toContain("tools");
-
-		const parsed = parseModelsFile({
-			version: 1,
-			providers: {
-				"opencode-go": {
-					models: {
-						"glm-5.3": {
-							// Older clients persisted only capability projections they
-							// understood. Once v4.1.11 began gating tools, this partial
-							// list shadowed the catalog's "tools" capability and disabled
-							// every edit/read tool for the model.
-							capabilities: ["reasoning", "prompt-cache"],
-						},
-					},
-				},
-			},
-		});
-
-		const entry = parsed.providers["opencode-go"];
-		if (!entry) {
-			throw new Error("expected OpenCode Go provider entry");
-		}
-
-		registerCustomProvider("opencode-go", entry);
-
-		const model = (await LlmsModels.getModelsForProvider("opencode-go"))[
-			"glm-5.3"
-		];
-		expect(model?.capabilities).toEqual(
-			expect.arrayContaining([
-				"tools",
-				"reasoning",
-				"prompt-cache",
-				"structured_output",
-			]),
-		);
 	});
 
 	it("skips malformed provider entries while preserving valid providers", () => {
@@ -2772,9 +2730,6 @@ describe("listLocalProviders", () => {
 				providers.find((p) => p.id === "openai-codex-cli")?.auth.localCli
 					?.command,
 			).toBe("codex");
-			expect(
-				providers.find((p) => p.id === "opencode")?.auth.localCli?.command,
-			).toBe("opencode");
 			expect(
 				providers.find((p) => p.id === "anthropic")?.auth.localCli,
 			).toBeUndefined();

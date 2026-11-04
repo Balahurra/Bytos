@@ -304,8 +304,7 @@ describe("summarizeConversation", () => {
 
 	it.each([
 		"openai-codex-cli",
-		"opencode",
-		"dify",
+			"dify",
 	])("refuses %s before starting its native agent, including routed connections", async (providerId) => {
 		for (const connection of [
 			{ ...config, providerId },

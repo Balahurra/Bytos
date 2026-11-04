@@ -13,7 +13,6 @@ import { CoreSessionService } from "../../session/services/session-service";
 import { SqliteSessionStore } from "../storage/sqlite-session-store";
 import { ClaudeCodeImportAdapter } from "./claude-code";
 import { CodexImportAdapter } from "./codex";
-import { OpencodeImportAdapter } from "./opencode";
 import {
 	IMPORT_MISSING_TOOL_RESULT_TEXT,
 	sanitizeImportedMessages,
@@ -529,174 +528,6 @@ describe("CodexImportAdapter", () => {
 	});
 });
 
-// ---------------------------------------------------------------------------
-// opencode fixtures
-// ---------------------------------------------------------------------------
-
-function writeOpencodeFixture(dataDir: string): void {
-	mkdirSync(dataDir, { recursive: true });
-	const db = loadSqliteDb(join(dataDir, "opencode.db"));
-	db.exec(`
-		CREATE TABLE session (id TEXT PRIMARY KEY, project_id TEXT, parent_id TEXT,
-			slug TEXT, directory TEXT, title TEXT, version TEXT,
-			time_created INTEGER, time_updated INTEGER);
-		CREATE TABLE message (id TEXT PRIMARY KEY, session_id TEXT,
-			time_created INTEGER, time_updated INTEGER, data TEXT);
-		CREATE TABLE part (id TEXT PRIMARY KEY, message_id TEXT, session_id TEXT,
-			time_created INTEGER, time_updated INTEGER, data TEXT);
-	`);
-	const t0 = 1767600000000;
-	db.prepare(
-		`INSERT INTO session (id, project_id, parent_id, slug, directory, title, version, time_created, time_updated)
-		 VALUES (?, ?, NULL, ?, ?, ?, ?, ?, ?)`,
-	).run(
-		"ses_1",
-		"prj",
-		"slug",
-		"/workspace/web",
-		"Refactor navbar",
-		"1.0",
-		t0,
-		t0 + 60000,
-	);
-	// Child (subagent) session must be ignored.
-	db.prepare(
-		`INSERT INTO session (id, project_id, parent_id, slug, directory, title, version, time_created, time_updated)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-	).run(
-		"ses_child",
-		"prj",
-		"ses_1",
-		"s",
-		"/workspace/web",
-		"child",
-		"1.0",
-		t0,
-		t0,
-	);
-
-	const insertMessage = db.prepare(
-		`INSERT INTO message (id, session_id, time_created, time_updated, data) VALUES (?, ?, ?, ?, ?)`,
-	);
-	const insertPart = db.prepare(
-		`INSERT INTO part (id, message_id, session_id, time_created, time_updated, data) VALUES (?, ?, ?, ?, ?, ?)`,
-	);
-	insertMessage.run(
-		"msg_1",
-		"ses_1",
-		t0,
-		t0,
-		JSON.stringify({ role: "user", time: { created: t0 } }),
-	);
-	insertPart.run(
-		"prt_1",
-		"msg_1",
-		"ses_1",
-		t0,
-		t0,
-		JSON.stringify({ type: "text", text: "make the navbar sticky" }),
-	);
-	insertPart.run(
-		"prt_2",
-		"msg_1",
-		"ses_1",
-		t0,
-		t0,
-		JSON.stringify({ type: "text", text: "AGENTS ctx", synthetic: true }),
-	);
-	insertMessage.run(
-		"msg_2",
-		"ses_1",
-		t0 + 1000,
-		t0 + 1000,
-		JSON.stringify({
-			role: "assistant",
-			providerID: "anthropic",
-			modelID: "claude-sonnet-5",
-			cost: 0.12,
-			tokens: { input: 500, output: 60, cache: { read: 100, write: 5 } },
-			time: { created: t0 + 1000 },
-		}),
-	);
-	insertPart.run(
-		"prt_3",
-		"msg_2",
-		"ses_1",
-		t0,
-		t0,
-		JSON.stringify({ type: "reasoning", text: "css change" }),
-	);
-	insertPart.run(
-		"prt_4",
-		"msg_2",
-		"ses_1",
-		t0,
-		t0,
-		JSON.stringify({
-			type: "tool",
-			tool: "edit",
-			callID: "call_a",
-			state: {
-				status: "completed",
-				input: { filePath: "nav.css" },
-				output: "edited",
-			},
-		}),
-	);
-	insertPart.run(
-		"prt_5",
-		"msg_2",
-		"ses_1",
-		t0,
-		t0,
-		JSON.stringify({ type: "text", text: "Done — navbar is sticky." }),
-	);
-	db.close?.();
-}
-
-describe("OpencodeImportAdapter", () => {
-	it("splits inline tool parts into tool_use/tool_result and skips children", () => {
-		const dataDir = tempDir("oc-import-");
-		writeOpencodeFixture(dataDir);
-		const adapter = new OpencodeImportAdapter({ dataDir });
-
-		const discovered = adapter.discover();
-		expect(discovered).toHaveLength(1);
-		expect(discovered[0].sourceId).toBe("ses_1");
-		expect(discovered[0].title).toBe("Refactor navbar");
-
-		const converted = adapter.convert("ses_1");
-		expect(converted.provider).toBe("anthropic");
-		expect(converted.model).toBe("claude-sonnet-5");
-
-		const roles = converted.messages.map((message) => message.role);
-		expect(roles).toEqual(["user", "assistant", "user", "assistant"]);
-
-		const allText = JSON.stringify(converted.messages);
-		expect(allText).not.toContain("AGENTS ctx");
-
-		const firstAssistant = converted.messages[1].content as Array<{
-			type: string;
-		}>;
-		expect(firstAssistant.map((block) => block.type)).toEqual([
-			"thinking",
-			"tool_use",
-		]);
-		const toolResult = blocks(converted.messages[2])[0];
-		expect(toolResult.tool_use_id).toBe("call_a");
-		expect(toolResult.content).toBe("edited");
-
-		const lastAssistant = converted.messages[3];
-		expect(lastAssistant.metrics).toEqual({
-			inputTokens: 500,
-			outputTokens: 60,
-			cacheReadTokens: 100,
-			cacheWriteTokens: 5,
-			cost: 0.12,
-		});
-	});
-});
-
 describe.each([
 	{
 		tool: "Claude Code",
@@ -715,15 +546,6 @@ describe.each([
 		writeFixture: writeCodexFixture,
 		createAdapter: (codexHome?: string): SessionImportAdapter =>
 			new CodexImportAdapter({ codexHome }),
-	},
-	{
-		tool: "Opencode",
-		envKey: "XDG_DATA_HOME",
-		subdir: "opencode",
-		defaultDir: [".local", "share", "opencode"],
-		writeFixture: writeOpencodeFixture,
-		createAdapter: (dataDir?: string): SessionImportAdapter =>
-			new OpencodeImportAdapter({ dataDir }),
 	},
 ])("$tool path resolution", (fixture) => {
 	let homeDir: string;

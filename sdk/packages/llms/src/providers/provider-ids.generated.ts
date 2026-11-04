@@ -147,8 +147,6 @@ export const GENERATED_PROVIDER_IDS = [
 	"ofox",
 	"ollama",
 	"openai-native",
-	"opencode",
-	"opencode-go",
 	"openreason",
 	"openrouter",
 	"opper",

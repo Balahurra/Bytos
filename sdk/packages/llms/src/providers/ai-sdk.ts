@@ -2103,12 +2103,6 @@ async function createProviderModule(
 			);
 			return createOpenAICodexProviderModule(config);
 		}
-		case "opencode": {
-			const { createOpenCodeProviderModule } = await import(
-				"./vendors/community"
-			);
-			return createOpenCodeProviderModule(config);
-		}
 		case "dify": {
 			const { createDifyProviderModule } = await import("./vendors/community");
 			return createDifyProviderModule(config);
@@ -2558,7 +2552,6 @@ export const createBedrockProvider = createAiSdkProvider("bedrock");
 export const createMistralProvider = createAiSdkProvider("mistral");
 export const createClaudeCodeProvider = createAiSdkProvider("claude-code");
 export const createOpenAICodexProvider = createAiSdkProvider("openai-codex");
-export const createOpenCodeProvider = createAiSdkProvider("opencode");
 export const createDifyProvider = createAiSdkProvider("dify");
 export const createOllamaProvider = createAiSdkProvider("ollama");
 export const createSapAiCoreProvider = createAiSdkProvider("sapaicore");

@@ -1,4 +1,29 @@
 title = "Bytos SDK secret scanning"
 
+# Use the upstream gitleaks rule set, plus a narrow allowlist for values that
+# are demonstrably fixtures and would otherwise fail every history scan.
 [extend]
 useDefault = true
+
+[allowlist]
+description = "Documented test fixtures and documentation placeholders (verified in docs/release-audit/04-SECURITY-AUDIT.md)."
+regexTarget = "match"
+paths = [
+  # CLI test configuration fixtures contain unsigned (alg "none") JWTs for a
+  # fixture identity, not credentials.
+  '''apps/cli/src/tests/configs/.*/data/settings/providers\.json''',
+]
+regexes = [
+  # Documentation curl examples use a placeholder, never a real key.
+  '''Bearer YOUR_API_KEY''',
+  '''Bearer YOUR_TOKEN''',
+  '''Bearer YOUR_AUTH_TOKEN''',
+  '''api-keys/KEY_ID''',
+  # RFC 6455 example WebSocket key used by the hub server test.
+  '''Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==''',
+  # Unsigned test JWT (alg "none") with fixture identity, used by the CLI test configs.
+  '''workos:eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0''',
+  # Model IDs such as "anthropic--claude-4.6-sonnet" trip the generic-api-key
+  # heuristic in provider-config test fixtures; they are not credentials.
+  '''actModeApiModelId''',
+]

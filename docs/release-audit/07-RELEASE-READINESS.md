@@ -173,3 +173,28 @@ Everything else - licensing, attribution, notices, security, dead-code
 removal, repository hygiene, documentation, packaging and the local VSIX - is
 **PASS**.
 
+### 9.4 Final validation after the cleanup commits
+
+- **Typecheck:** `bun run check-types` (extension `tsc`, compat tsconfig, webview
+  `tsc`) — exit 0.
+- **Unit suite:** 89 files, **1,195 pass / 1 fail**. The single failure is
+  `bytos-rules.test.ts` → symlink creation returns `EPERM` because the Windows
+  host does not hold the symlink privilege; the same test failed before any
+  cleanup and is environmental, not a regression. It passes on Linux CI.
+- **Lint:** biome clean on 1,344 files during the final packaging run.
+- **Build:** webview Vite build (8,865 modules) and production esbuild bundle
+  succeed.
+- **Licence gate:** every assertion passes except the expected
+  `__metadata`-absent signal (section 9.1).
+- **VSIX:** 191 files, required/forbidden lists clean, `LICENSE.txt` carries the
+  Cline copyright, `webview-ui/build/index.html` present. Final artefact:
+  12,353,055 bytes, SHA-256 `3A7D1467…BC6D7`, copied to the Desktop.
+- **Secret scan:** `gitleaks git` over the full 32-commit history: **no leaks
+  found** (~40.5 MB scanned). The 20 initial heuristic hits were verified as
+  fixtures/placeholders and narrowly allowlisted in `.gitleaks.toml`.
+- **Commits:** `2033f4a` (security/BYOK), `57e9dee` (licensing/packaging/docs),
+  `4e02af6` (dead-code and repository cleanup), `6a4589d` (audit records),
+  `21f60aa` (merge). Every commit ran the gitleaks pre-commit hook: "no leaks
+  found".
+- **Working tree:** clean. Nothing pushed; nothing published.
+

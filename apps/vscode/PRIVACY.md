@@ -9,7 +9,7 @@ Marketplace distributes:
 
 - **[apps/vscode/PRIVACY.md](apps/vscode/PRIVACY.md)** - what is stored locally,
   what is sent to which provider, telemetry behaviour, and how to delete local
-  data. (Version: Bytos VS Code extension 4.2.0.)
+  data. (Version: Bytos VS Code extension 1.0.0.)
 
 Summary of the guarantees this build makes:
 

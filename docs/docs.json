@@ -40,12 +40,7 @@
 			{
 				"label": "GitHub",
 				"icon": "github",
-				"href": "https://github.com/bytos/bytos"
-			},
-			{
-				"label": "Discussions",
-				"icon": "comments",
-				"href": "https://github.com/bytos/bytos/discussions"
+				"href": "https://github.com/Balahurra/Bytos"
 			}
 		],
 		"primary": {
@@ -368,7 +363,7 @@
 	},
 	"footer": {
 		"socials": {
-			"github": "https://github.com/bytos/bytos",
+			"github": "https://github.com/Balahurra/Bytos",
 			"website": "https://bytos.dev"
 		}
 	},

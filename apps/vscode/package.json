@@ -1,8 +1,8 @@
 {
 	"name": "bytos",
 	"displayName": "Bytos",
-	"description": "Open-source autonomous coding agent for your editor: plans first, asks before it acts, and edits files, runs commands, uses the browser, and calls MCP tools only with your approval. Free BYOK build.",
-	"version": "4.2.0",
+	"description": "Bytos is an open-source AI coding agent for Visual Studio Code. It plans before it edits, asks before it acts, and can edit files, run commands, use the browser, and call MCP tools with your approval. Bring your own API key (BYOK); no Bytos account or backend is required.",
+	"version": "1.0.0",
 	"icon": "assets/icons/icon.png",
 	"publisher": "bytos",
 	"engines": {
@@ -27,32 +27,24 @@
 	"categories": [
 		"AI",
 		"Chat",
-		"Programming Languages",
-		"Testing"
+		"Programming Languages"
 	],
 	"keywords": [
 		"bytos",
-		"agent",
 		"ai",
-		"autonomous",
-		"chatgpt",
-		"claude",
-		"claude-sonnet",
-		"code-generation",
-		"coding",
-		"coding-agent",
-		"dev",
-		"gemini",
-		"gpt",
-		"ide",
-		"llama",
+		"ai-coding-agent",
+		"ai-coding-assistant",
+		"autonomous-agent",
+		"coding-assistant",
+		"developer-tools",
 		"llm",
 		"mcp",
 		"model-context-protocol",
-		"ollama",
-		"openai",
-		"openrouter",
-		"sonnet"
+		"multi-provider",
+		"open-source",
+		"vs-code",
+		"vscode-extension",
+		"byok"
 	],
 	"activationEvents": [
 		"onUri",
@@ -527,7 +519,7 @@
 		"puppeteer-core": "^23.4.0",
 		"reconnecting-eventsource": "^1.6.4",
 		"serialize-error": "^11.0.3",
-		"simple-git": "3.36.0",
+		"simple-git": "4.0.2",
 		"tailwindcss": "^4.1.14",
 		"ts-morph": "^25.0.1",
 		"turndown": "^7.2.0",

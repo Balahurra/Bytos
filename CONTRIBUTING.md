@@ -15,7 +15,7 @@ Bug reports help make Bytos better for everyone! Before creating a new issue, pl
 
 All contributions must begin with a GitHub Issue, unless the change is for small bug fixes, typo corrections, minor wording improvements, or simple type fixes that don't change functionality.
 **For features and contributions**:
-- First check the [Feature Requests discussions board](https://github.com/Balahurra/Bytos/discussions/categories/feature-requests) for similar ideas
+- First check the [open issues](https://github.com/Balahurra/Bytos/issues) for similar ideas
 - If your idea is new, create a new feature request  
 - Wait for approval from core maintainers before starting implementation
 - Once approved, feel free to begin working on a PR with the help of our community!

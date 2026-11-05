@@ -14,12 +14,12 @@ actually distributed, its notice is still provided here.
 This file is not a legal opinion. See LICENSE-COMPLIANCE-REPORT.md for
 verified obligations and remaining uncertainties.
 
-Generated: 2026-11-04T20:33:08.625Z
-Packages: 2394
+Generated: 2026-11-05T01:20:38.267Z
+Packages: 2398
 
 License summary
 ---------------
-MIT	1725
+MIT	1728
 Apache-2.0	375
 ISC	115
 BSD-3-Clause	51
@@ -35,6 +35,7 @@ apache-2.0	3
 Apache-2.0 OR MIT	3
 CC-BY-4.0	2
 MIT/X11	2
+(MPL-2.0 OR Apache-2.0)	2
 BSD	2
 CC0-1.0	2
 0BSD	2
@@ -46,7 +47,6 @@ Apache-2.0 AND LGPL-3.0-or-later	1
 SAP DEVELOPER LICENSE AGREEMENT	1
 Apache-2.0 AND MIT	1
 Python-2.0	1
-(MPL-2.0 OR Apache-2.0)	1
 (MIT OR WTFPL)	1
 LGPL-2.1+	1
 (AFL-2.1 OR BSD-3-Clause)	1
@@ -781,7 +781,9 @@ Name	Version	License	Repository	Copyright
 @shikijs/types	4.4.3	MIT	https://github.com/shikijs/shiki	Copyright (c) 2021 Pine Wu
 @shikijs/vscode-textmate	10.0.2	MIT	https://github.com/shikijs/vscode-textmate	Copyright (c) Microsoft Corporation
 @simple-git/args-pathspec	1.0.3	MIT	https://github.com/steveukx/git-js	
+@simple-git/args-pathspec	1.0.4	MIT	https://github.com/steveukx/git-js	Copyright (c) 2025 Steve King
 @simple-git/argv-parser	1.1.1	MIT	https://github.com/steveukx/git-js	
+@simple-git/argv-parser	2.0.1	MIT	https://github.com/steveukx/git-js	Copyright (c) 2025 Steve King
 @sinclair/typebox	0.27.12	MIT	https://github.com/sinclairzx81/sinclair-typebox	Copyright (c) 2017-2023 Haydn Paterson (sinclair) <haydn.developer@gmail.com>
 @sinclair/typebox	0.34.52	MIT	https://github.com/sinclairzx81/sinclair-typebox	Copyright (c) 2017-2026 Haydn Paterson
 @sindresorhus/merge-streams	2.3.0	MIT	sindresorhus/merge-streams	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
@@ -1312,6 +1314,7 @@ dom-serializer	2.0.0	MIT	git://github.com/cheeriojs/dom-serializer	Copyright (c)
 domelementtype	2.3.0	BSD-2-Clause	git://github.com/fb55/domelementtype	Copyright (c) Felix Böhm
 domhandler	5.0.3	BSD-2-Clause	git://github.com/fb55/domhandler	Copyright (c) Felix Böhm
 dompurify	3.4.14	(MPL-2.0 OR Apache-2.0)	git://github.com/cure53/DOMPurify	"Licensor" shall mean the copyright owner or entity authorized by
+dompurify	3.4.17	(MPL-2.0 OR Apache-2.0)	git://github.com/cure53/DOMPurify	"Licensor" shall mean the copyright owner or entity authorized by
 domutils	3.2.2	BSD-2-Clause	git://github.com/fb55/domutils	Copyright (c) Felix Böhm
 dot-prop	6.0.1	MIT	sindresorhus/dot-prop	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 dotenv	17.4.2	BSD-2-Clause	git://github.com/motdotla/dotenv	Copyright (c) 2015, Scott Motte
@@ -2155,6 +2158,7 @@ signal-exit	4.1.0	ISC	https://github.com/tapjs/signal-exit	Copyright (c) 2015-20
 simple-concat	1.0.1	MIT	git://github.com/feross/simple-concat	Copyright (c) Feross Aboukhadijeh
 simple-get	4.0.1	MIT	git://github.com/feross/simple-get	Copyright (c) Feross Aboukhadijeh
 simple-git	3.36.0	MIT	https://github.com/steveukx/git-js	
+simple-git	4.0.2	MIT	https://github.com/steveukx/git-js	Copyright (c) 2025 Steve King
 simple-swizzle	0.2.4	MIT	qix-/node-simple-swizzle	Copyright (c) 2015 Josh Junon
 sinon	21.1.2	BSD-3-Clause	http://github.com/sinonjs/sinon	Copyright (c) 2010-2017, Christian Johansen, christian@cjohansen.no
 sisteransi	1.0.5	MIT	https://github.com/terkelg/sisteransi	Copyright (c) 2018 Terkel Gjervig Nielsen

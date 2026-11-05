@@ -1,10 +1,10 @@
 {
-	"generatedAt": "2026-11-04T20:33:08.629Z",
-	"total": 2394,
+	"generatedAt": "2026-11-05T01:20:38.269Z",
+	"total": 2398,
 	"summary": [
 		{
 			"license": "MIT",
-			"count": 1725
+			"count": 1728
 		},
 		{
 			"license": "Apache-2.0",
@@ -67,6 +67,10 @@
 			"count": 2
 		},
 		{
+			"license": "(MPL-2.0 OR Apache-2.0)",
+			"count": 2
+		},
+		{
 			"license": "BSD",
 			"count": 2
 		},
@@ -108,10 +112,6 @@
 		},
 		{
 			"license": "Python-2.0",
-			"count": 1
-		},
-		{
-			"license": "(MPL-2.0 OR Apache-2.0)",
 			"count": 1
 		},
 		{
@@ -6053,11 +6053,27 @@
 			"private": false
 		},
 		{
+			"name": "@simple-git/args-pathspec",
+			"version": "1.0.4",
+			"license": "MIT",
+			"repository": "https://github.com/steveukx/git-js",
+			"copyright": "Copyright (c) 2025 Steve King",
+			"private": false
+		},
+		{
 			"name": "@simple-git/argv-parser",
 			"version": "1.1.1",
 			"license": "MIT",
 			"repository": "https://github.com/steveukx/git-js",
 			"copyright": "",
+			"private": false
+		},
+		{
+			"name": "@simple-git/argv-parser",
+			"version": "2.0.1",
+			"license": "MIT",
+			"repository": "https://github.com/steveukx/git-js",
+			"copyright": "Copyright (c) 2025 Steve King",
 			"private": false
 		},
 		{
@@ -10295,6 +10311,14 @@
 		{
 			"name": "dompurify",
 			"version": "3.4.14",
+			"license": "(MPL-2.0 OR Apache-2.0)",
+			"repository": "git://github.com/cure53/DOMPurify",
+			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
+			"private": false
+		},
+		{
+			"name": "dompurify",
+			"version": "3.4.17",
 			"license": "(MPL-2.0 OR Apache-2.0)",
 			"repository": "git://github.com/cure53/DOMPurify",
 			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
@@ -17042,6 +17066,14 @@
 			"license": "MIT",
 			"repository": "https://github.com/steveukx/git-js",
 			"copyright": "",
+			"private": false
+		},
+		{
+			"name": "simple-git",
+			"version": "4.0.2",
+			"license": "MIT",
+			"repository": "https://github.com/steveukx/git-js",
+			"copyright": "Copyright (c) 2025 Steve King",
 			"private": false
 		},
 		{

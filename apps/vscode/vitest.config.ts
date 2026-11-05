@@ -8,6 +8,7 @@ export default defineConfig({
 	test: {
 		include: [
 			"src/sdk/**/*.test.ts",
+			"src/core/auto-phase/**/*.test.ts",
 			"src/shared/attachments/**/*.test.ts",
 			"src/integrations/misc/pdf-ocr.test.ts",
 			"src/integrations/misc/media-attachments.test.ts",

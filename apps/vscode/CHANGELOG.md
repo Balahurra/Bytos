@@ -1,5 +1,49 @@
 # Changelog
 
+## [1.0.1]
+
+### Added
+
+- Auto Phase phases can pass their short completion report to the next phase as context.
+- Auto Phase failure handling: when a phase fails or reports `BLOCKED` / `FAILED`, the run can stop, continue with the next phase automatically, or ask the user each time. The default is **Ask me**.
+- Every Auto Phase run writes a detailed Markdown report to `.bytos/auto-phase-reports/<run-id>/report.md`, including each phase's prompt, status, provider/model, duration, error, and completion report.
+- The chat shows a short Auto Phase summary with a link to the detailed Markdown report.
+- Optional AI-generated final summary for Auto Phase runs. It is off by default and uses the last phase's provider and model.
+
+### Changed
+
+- The Auto Phase Plan settings page now includes failure handling, report, and summary controls.
+- Auto Phase progress in the composer now shows `Waiting`, `Report`, and `Summary` stages in addition to phase progress.
+
+### Fixed
+
+- A phase that reports `STATUS: BLOCKED` or `STATUS: FAILED` is treated as a failed phase instead of a successful one.
+- Stopping a run or hitting a phase timeout now writes the partial Markdown report and records the remaining phases as skipped.
+- The README no longer says Auto Phase phases run in the same task; each phase is its own Act-mode task.
+
+### Security
+
+- Auth, API-key, credit, and quota failures are not auto-continued even when **Continue with the next phase automatically** is selected; the runner asks once instead.
+- Auto Phase reports can contain prompts, workspace paths, and code excerpts. They are written inside the workspace; add `.bytos/auto-phase-reports/` to `.gitignore` if you do not want them committed.
+
+## [1.0.0]
+
+First public release of Bytos, an open-source, bring-your-own-key AI coding agent for Visual Studio Code.
+
+### Added
+
+- Chat-first agent workflow with Plan and Act modes and per-tool approval.
+- Multi-provider BYOK configuration, including OpenRouter, Anthropic, OpenAI, Google Gemini, AWS Bedrock, Azure, GCP Vertex, Cerebras, Groq, OpenAI-compatible endpoints, Ollama, and LM Studio.
+- File editing with reviewable diffs, terminal execution, browser automation, MCP tools, hooks, skills, worktrees, checkpoints, and task history.
+- Sequential Auto Phase plans with up to ten phases, each with its own provider, model, attachments, and MCP allowlist.
+- API keys stored in VS Code SecretStorage; telemetry off by default.
+
+### Security
+
+- Fail-closed tool permissions.
+- Canonical workspace boundary checks for file tools.
+- No CLI, desktop, hub, or OpenCode runtime in the VSIX.
+
 ## [4.2.0]
 
 ### Changed

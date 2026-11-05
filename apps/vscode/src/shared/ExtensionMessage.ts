@@ -70,6 +70,8 @@ export interface ExtensionState {
 	autoPhaseProgress?: {
 		current: number
 		total: number
+		/** What the runner is doing: a phase, waiting for a failure decision, writing the report, or the AI summary. */
+		stage?: "phase" | "waiting" | "report" | "summary"
 	}
 	/**
 	 * Follow-up prompts submitted while the active agent turn is still running.

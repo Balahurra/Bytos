@@ -2,9 +2,13 @@
 	"name": "bytos",
 	"displayName": "Bytos",
 	"description": "Bytos is an open-source AI coding agent for Visual Studio Code. It plans before it edits, asks before it acts, and can edit files, run commands, use the browser, and call MCP tools with your approval. Bring your own API key (BYOK); no Bytos account or backend is required.",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"icon": "assets/icons/icon.png",
 	"publisher": "bytos",
+	"__metadata": {
+		"publisherId": "bytos",
+		"publisherDisplayName": "Bytos"
+	},
 	"engines": {
 		"vscode": "^1.101.0"
 	},

@@ -64,12 +64,20 @@ compatibility provider, not a Bytos subscription.
 ## Auto Phase
 
 Auto Phase is sequential multi-phase orchestration. You define a plan of up to ten
-phases, and Bytos runs them one after another in the same task:
+phases, and Bytos runs them one after another; each phase is its own Act-mode
+task:
 
 - each phase has its own prompt, provider, model, attachments, and MCP server
   allowlist;
 - the plan is saved in extension state, and phase API keys are stored in VS Code
   SecretStorage;
+- each phase can receive the previous phase's short completion report as context;
+- when a phase fails or reports `BLOCKED` / `FAILED`, you can stop the run,
+  continue with the next phase automatically, or be asked each time;
+- every run writes a detailed Markdown report to
+  `.bytos/auto-phase-reports/<run-id>/report.md`, and the chat shows a short
+  summary with a link to that report;
+- an optional AI-generated final summary is available and off by default;
 - starting Auto Phase shows a confirmation warning, and you can stop the run at
   any time;
 - phases are sequential, not parallel.

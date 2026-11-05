@@ -40,13 +40,26 @@ import { CLOUD_CREATION_UNCONFIRMED_ERROR_CODE, CLOUD_SESSION_MODE, isCloudSessi
 import { mentionRegexGlobal } from "@shared/context-mentions"
 import type { BytosApiReqInfo, BytosMessage, ExtensionState } from "@shared/ExtensionMessage"
 import type { HistoryItem } from "@shared/HistoryItem"
+import { AutoPhaseErrorPolicy } from "@shared/proto/bytos/state"
 import { DeleteAllTaskHistoryCount, type GetTaskHistoryRequest, TaskHistoryArray, TaskResponse } from "@shared/proto/bytos/task"
 import { isSecretKey, type Settings } from "@shared/storage/state-keys"
 import type { Mode } from "@shared/storage/types"
 import type { TelemetrySetting } from "@shared/TelemetrySetting"
 import type { BytosCheckpointRestore } from "@shared/WebviewMessage"
 import { BytosEndpoint } from "@/config"
-import { type AutoPhasePrompt, readAutoPhasePlanWithKeys } from "@/core/auto-phase/plan-store"
+import { type AutoPhasePrompt, type AutoPhaseRunPlan, readAutoPhaseRunPlan } from "@/core/auto-phase/plan-store"
+import {
+	type AutoPhaseOutcome,
+	type AutoPhaseOutcomeStatus,
+	buildAutoPhaseReportInstruction,
+	buildAutoPhaseSummaryPrompt,
+	buildDeterministicSummary,
+	buildPreviousPhaseContext,
+	createAutoPhaseRunId,
+	extractPhaseReport,
+	parsePhaseReportStatus,
+	writeAutoPhaseReport,
+} from "@/core/auto-phase/report"
 import { parseMentions } from "@/core/mentions"
 import { ensureMcpServersDirectoryExists } from "@/core/storage/disk"
 import { clearSdkRemoteConfig, refreshSdkRemoteConfig } from "@/core/storage/remote-config/sdk-refresh"
@@ -211,12 +224,33 @@ interface CloudTarget {
 	branch?: string
 }
 
+type AutoPhaseStage = "phase" | "waiting" | "report" | "summary"
+type AutoPhaseFailureDecision = "continue" | "continue-and-dont-ask" | "stop"
+type AutoPhaseWaitResult = {
+	status: "completed" | "failed" | "timeout" | "cancelled"
+	error?: string
+}
+
 /** Mutable state of one Auto Phase run, surfaced to the composer as progress. */
 interface AutoPhaseRun {
 	cancelled: boolean
 	currentIndex: number
 	total: number
 	taskIds: string[]
+	stage: AutoPhaseStage
+	onPhaseError: AutoPhaseErrorPolicy
+	passPhaseReports: boolean
+	writeReport: boolean
+	aiSummary: boolean
+	runId: string
+	startedAt: number
+	reportAbsolutePath?: string
+	reportRelativePath?: string
+	aiSummaryText?: string
+	outcomes: AutoPhaseOutcome[]
+	previousContext?: string
+	/** Resolves a pending failure prompt when the user clicks Stop all. */
+	resolveFailureDecision?: (decision: AutoPhaseFailureDecision) => void
 }
 
 // ---------------------------------------------------------------------------
@@ -1611,14 +1645,26 @@ export class Controller {
 			throw new Error("Auto Phase is already running.")
 		}
 
-		const phases = readAutoPhasePlanWithKeys(this.stateManager).filter(
-			(phase) => phase.prompt.trim() && phase.provider.trim() && phase.modelId.trim(),
-		)
+		const plan: AutoPhaseRunPlan = readAutoPhaseRunPlan(this.stateManager)
+		const phases = plan.phases.filter((phase) => phase.prompt.trim() && phase.provider.trim() && phase.modelId.trim())
 		if (phases.length === 0) {
 			throw new Error("Auto Phase Plan has no runnable phases. Add a prompt, provider, and model first.")
 		}
 
-		const run: AutoPhaseRun = { cancelled: false, currentIndex: 0, total: phases.length, taskIds: [] }
+		const run: AutoPhaseRun = {
+			cancelled: false,
+			currentIndex: 0,
+			total: phases.length,
+			taskIds: [],
+			stage: "phase",
+			onPhaseError: plan.onPhaseError,
+			passPhaseReports: plan.passPhaseReports,
+			writeReport: plan.writeReport,
+			aiSummary: plan.aiSummary,
+			runId: createAutoPhaseRunId(),
+			startedAt: Date.now(),
+			outcomes: [],
+		}
 		this.autoPhaseRun = run
 		void this.postStateToWebview()
 		this.autoPhasePromise = this.runAutoPhase(phases, run)
@@ -1643,6 +1689,7 @@ export class Controller {
 			return
 		}
 		run.cancelled = true
+		run.resolveFailureDecision?.("stop")
 		try {
 			await this.cancelTask()
 		} catch (error) {
@@ -1662,76 +1709,136 @@ export class Controller {
 		try {
 			for (let index = 0; index < phases.length; index++) {
 				if (run.cancelled) {
+					this.recordSkippedAutoPhaseOutcomes(phases, index, run)
 					break
 				}
 				run.currentIndex = index
+				run.stage = "phase"
+				void this.postStateToWebview()
+
 				const phase = phases[index]
-				const provider = phase.provider.trim()
-				const providerId = parseProviderId(provider)
+				const startedAt = Date.now()
+				let outcome: AutoPhaseOutcome
 
-				// Snapshot the user's provider key once, then point the provider at
-				// this phase's key. Everything is restored when the run ends. Even
-				// when a phase has no key of its own we write the snapshot back, so
-				// a previous phase's key can never leak into this phase.
-				if (!providerSnapshots.has(provider)) {
-					const current = this.providerConfigStore.read(providerId)
-					providerSnapshots.set(provider, { apiKey: current.apiKey, baseUrl: current.baseUrl })
-				}
-				const snapshot = providerSnapshots.get(provider)
-				const phaseBaseUrl = provider === "bytos-pass" ? CLINE_PASS_API_BASE_URL : (snapshot?.baseUrl ?? "")
-				this.providerConfigStore.write(providerId, {
-					apiKey: phase.apiKey !== undefined ? phase.apiKey : (snapshot?.apiKey ?? ""),
-					baseUrl: phaseBaseUrl,
-				})
+				try {
+					this.configureAutoPhaseProvider(phase, providerSnapshots, injectedKeyFields, previousConfig)
 
-				// buildSessionConfig reads provider/model from StateManager, not from
-				// NewTaskRequest.taskSettings. Set the phase's Act configuration for
-				// the duration of the task, then restore it in the finally block.
-				const modelKey = getProviderModelIdKey(provider, "act")
-				const phaseConfig = {
-					...previousConfig,
-					actModeApiProvider: provider,
-					actModeApiModelId: phase.modelId,
-					[modelKey]: phase.modelId,
-				} as unknown as ApiConfiguration
-				// Providers that keep their key in the legacy ApiConfiguration need
-				// the phase key written there; resolveApiKey prefers that field.
-				const keyField = getProviderApiKeyField(provider)
-				if (phase.apiKey !== undefined && keyField) {
-					if (!injectedKeyFields.has(keyField)) {
-						injectedKeyFields.set(keyField, previousConfig[keyField] as string | undefined)
+					const phaseImages = phase.attachments
+						.filter((attachment) => attachment.kind === "image" && attachment.data)
+						.map((attachment) => attachment.data as string)
+					const phaseFiles = phase.attachments
+						.filter((attachment) => attachment.kind !== "image" && attachment.path)
+						.map((attachment) => attachment.path as string)
+					// Legacy plans (before per-phase MCP selection) keep the old
+					// "all servers" behavior; explicit plans use their own allowlist,
+					// including an empty list meaning no MCP.
+					const phaseMcpServers = phase.mcpServersExplicit ? phase.mcpServers : undefined
+					const prompt = this.composeAutoPhasePrompt(phase.prompt, run.previousContext)
+
+					const taskId = await this.initTask(
+						prompt,
+						phaseImages,
+						phaseFiles,
+						undefined,
+						undefined,
+						undefined,
+						phaseMcpServers,
+					)
+					if (!taskId) {
+						outcome = this.createAutoPhaseOutcome({
+							phase,
+							index,
+							startedAt,
+							status: "failed",
+							error: `Phase ${index + 1} could not start a task.`,
+						})
+					} else {
+						run.taskIds.push(taskId)
+						const wait = await this.waitForAutoPhaseTask(taskId, run)
+						const messages = await this.readAutoPhaseMessages(taskId)
+						const report = extractPhaseReport(messages)
+						outcome = this.buildAutoPhaseOutcome({
+							phase,
+							index,
+							startedAt,
+							wait,
+							report,
+							taskId,
+						})
 					}
-					;(phaseConfig as Record<string, unknown>)[keyField] = phase.apiKey
+				} catch (error) {
+					outcome = this.createAutoPhaseOutcome({
+						phase,
+						index,
+						startedAt,
+						status: "failed",
+						error: error instanceof Error ? error.message : String(error),
+					})
 				}
-				this.stateManager.setApiConfiguration(phaseConfig)
-				this.stateManager.setGlobalState("mode", "act")
 
-				const phaseImages = phase.attachments
-					.filter((attachment) => attachment.kind === "image" && attachment.data)
-					.map((attachment) => attachment.data as string)
-				const phaseFiles = phase.attachments
-					.filter((attachment) => attachment.kind !== "image" && attachment.path)
-					.map((attachment) => attachment.path as string)
-				// Legacy plans (before per-phase MCP selection) keep the old
-				// "all servers" behavior; explicit plans use their own allowlist,
-				// including an empty list meaning no MCP.
-				const phaseMcpServers = phase.mcpServersExplicit ? phase.mcpServers : undefined
-
-				const taskId = await this.initTask(
-					phase.prompt,
-					phaseImages,
-					phaseFiles,
-					undefined,
-					undefined,
-					undefined,
-					phaseMcpServers,
-				)
-				if (!taskId) {
-					throw new Error(`Phase ${index + 1} could not start a task.`)
+				run.outcomes.push(outcome)
+				if (run.writeReport) {
+					await this.persistAutoPhaseReport(run)
 				}
-				run.taskIds.push(taskId)
-				await this.waitForAutoPhaseTask(taskId, run)
+
+				if (run.cancelled || outcome.status === "cancelled") {
+					outcome.decision = "cancelled"
+					this.recordSkippedAutoPhaseOutcomes(phases, index + 1, run)
+					if (run.writeReport) {
+						await this.persistAutoPhaseReport(run)
+					}
+					break
+				}
+
+				if (!this.isAutoPhaseSuccess(outcome.status)) {
+					const decision = await this.decideAfterAutoPhaseFailure(run, outcome)
+					outcome.decision = decision === "stop" ? "stopped" : "continued"
+					if (decision === "continue-and-dont-ask") {
+						run.onPhaseError = AutoPhaseErrorPolicy.AUTO_PHASE_ERROR_CONTINUE
+					}
+					if (run.writeReport) {
+						await this.persistAutoPhaseReport(run)
+					}
+					if (decision === "stop") {
+						run.cancelled = true
+						this.recordSkippedAutoPhaseOutcomes(phases, index + 1, run)
+						if (run.writeReport) {
+							await this.persistAutoPhaseReport(run)
+						}
+						break
+					}
+				}
+
+				if (run.passPhaseReports) {
+					run.previousContext = buildPreviousPhaseContext(outcome)
+				}
 			}
+
+			if (run.writeReport) {
+				run.stage = "report"
+				void this.postStateToWebview()
+				await this.persistAutoPhaseReport(run)
+			}
+
+			if (run.aiSummary && !run.cancelled) {
+				run.stage = "summary"
+				void this.postStateToWebview()
+				const summary = await this.runAutoPhaseSummaryTask(
+					phases,
+					run,
+					providerSnapshots,
+					injectedKeyFields,
+					previousConfig,
+				)
+				if (summary) {
+					run.aiSummaryText = summary
+					if (run.writeReport) {
+						await this.persistAutoPhaseReport(run)
+					}
+				}
+			}
+
+			await this.postAutoPhaseSummary(run)
 		} finally {
 			for (const [provider, snapshot] of providerSnapshots) {
 				this.providerConfigStore.write(parseProviderId(provider), {
@@ -1752,34 +1859,376 @@ export class Controller {
 		}
 	}
 
-	private async waitForAutoPhaseTask(taskId: string, run: AutoPhaseRun): Promise<void> {
+	private composeAutoPhasePrompt(prompt: string, previousContext?: string): string {
+		const parts = [prompt.trim()]
+		if (previousContext) {
+			parts.push(previousContext)
+		}
+		parts.push(buildAutoPhaseReportInstruction())
+		return parts.join("\n\n")
+	}
+
+	private configureAutoPhaseProvider(
+		phase: AutoPhasePrompt,
+		providerSnapshots: Map<string, { apiKey?: string; baseUrl?: string }>,
+		injectedKeyFields: Map<keyof ApiConfiguration, string | undefined>,
+		previousConfig: ApiConfiguration,
+	): void {
+		const provider = phase.provider.trim()
+		const providerId = parseProviderId(provider)
+
+		// Snapshot the user's provider key once, then point the provider at
+		// this phase's key. Everything is restored when the run ends. Even
+		// when a phase has no key of its own we write the snapshot back, so
+		// a previous phase's key can never leak into this phase.
+		if (!providerSnapshots.has(provider)) {
+			const current = this.providerConfigStore.read(providerId)
+			providerSnapshots.set(provider, { apiKey: current.apiKey, baseUrl: current.baseUrl })
+		}
+		const snapshot = providerSnapshots.get(provider)
+		const phaseBaseUrl = provider === "bytos-pass" ? CLINE_PASS_API_BASE_URL : (snapshot?.baseUrl ?? "")
+		this.providerConfigStore.write(providerId, {
+			apiKey: phase.apiKey !== undefined ? phase.apiKey : (snapshot?.apiKey ?? ""),
+			baseUrl: phaseBaseUrl,
+		})
+
+		// buildSessionConfig reads provider/model from StateManager, not from
+		// NewTaskRequest.taskSettings. Set the phase's Act configuration for
+		// the duration of the task, then restore it in the finally block.
+		const modelKey = getProviderModelIdKey(provider, "act")
+		const phaseConfig = {
+			...previousConfig,
+			actModeApiProvider: provider,
+			actModeApiModelId: phase.modelId,
+			[modelKey]: phase.modelId,
+		} as unknown as ApiConfiguration
+		// Providers that keep their key in the legacy ApiConfiguration need
+		// the phase key written there; resolveApiKey prefers that field.
+		const keyField = getProviderApiKeyField(provider)
+		if (phase.apiKey !== undefined && keyField) {
+			if (!injectedKeyFields.has(keyField)) {
+				injectedKeyFields.set(keyField, previousConfig[keyField] as string | undefined)
+			}
+			;(phaseConfig as Record<string, unknown>)[keyField] = phase.apiKey
+		}
+		this.stateManager.setApiConfiguration(phaseConfig)
+		this.stateManager.setGlobalState("mode", "act")
+	}
+
+	private createAutoPhaseOutcome(args: {
+		phase: AutoPhasePrompt
+		index: number
+		startedAt: number
+		status: AutoPhaseOutcomeStatus
+		error?: string
+		report?: string
+		taskId?: string
+	}): AutoPhaseOutcome {
+		return {
+			phaseNumber: args.index + 1,
+			phaseId: args.phase.id,
+			prompt: args.phase.prompt,
+			provider: args.phase.provider,
+			modelId: args.phase.modelId,
+			status: args.status,
+			error: args.error,
+			report: args.report ?? "",
+			taskId: args.taskId,
+			startedAt: args.startedAt,
+			finishedAt: Date.now(),
+		}
+	}
+
+	private buildAutoPhaseOutcome(args: {
+		phase: AutoPhasePrompt
+		index: number
+		startedAt: number
+		wait: AutoPhaseWaitResult
+		report: string
+		taskId?: string
+	}): AutoPhaseOutcome {
+		let status: AutoPhaseOutcomeStatus = args.wait.status
+		let error = args.wait.error
+		if (args.wait.status === "completed") {
+			const marker = parsePhaseReportStatus(args.report)
+			if (marker === "blocked") {
+				status = "blocked"
+				error = error ?? "The phase reported BLOCKED."
+			} else if (marker === "failed") {
+				status = "failed"
+				error = error ?? "The phase reported FAILED."
+			} else if (marker === "partial") {
+				status = "completed_with_warnings"
+			}
+		}
+		return this.createAutoPhaseOutcome({
+			phase: args.phase,
+			index: args.index,
+			startedAt: args.startedAt,
+			status,
+			error,
+			report: args.report,
+			taskId: args.taskId,
+		})
+	}
+
+	private isAutoPhaseSuccess(status: AutoPhaseOutcomeStatus): boolean {
+		return status === "completed" || status === "completed_with_warnings"
+	}
+
+	private recordSkippedAutoPhaseOutcomes(phases: AutoPhasePrompt[], startIndex: number, run: AutoPhaseRun): void {
+		for (let index = startIndex; index < phases.length; index++) {
+			const phaseNumber = index + 1
+			if (run.outcomes.some((outcome) => outcome.phaseNumber === phaseNumber)) {
+				continue
+			}
+			const now = Date.now()
+			run.outcomes.push(
+				this.createAutoPhaseOutcome({
+					phase: phases[index],
+					index,
+					startedAt: now,
+					status: "skipped",
+				}),
+			)
+		}
+	}
+
+	private async decideAfterAutoPhaseFailure(run: AutoPhaseRun, outcome: AutoPhaseOutcome): Promise<AutoPhaseFailureDecision> {
+		if (run.cancelled) {
+			return "stop"
+		}
+		if (run.onPhaseError === AutoPhaseErrorPolicy.AUTO_PHASE_ERROR_STOP) {
+			return "stop"
+		}
+		if (run.onPhaseError === AutoPhaseErrorPolicy.AUTO_PHASE_ERROR_CONTINUE) {
+			// Auth/credits failures will repeat for every remaining phase, so even
+			// an "always continue" plan asks once instead of burning through them.
+			if (!this.isAutoPhaseBlockingError(outcome.error)) {
+				return "continue"
+			}
+		}
+
+		run.stage = "waiting"
+		void this.postStateToWebview()
+		let timeoutId: ReturnType<typeof setTimeout> | undefined
+		try {
+			const cancelPromise = new Promise<AutoPhaseFailureDecision>((resolve) => {
+				run.resolveFailureDecision = resolve
+			})
+			const timeoutPromise = new Promise<AutoPhaseFailureDecision>((resolve) => {
+				timeoutId = setTimeout(() => resolve("stop"), 5 * 60 * 1000)
+				timeoutId.unref?.()
+			})
+			const result = await Promise.race([
+				HostProvider.window.showMessage({
+					type: ShowMessageType.ERROR,
+					message: `Phase ${outcome.phaseNumber} failed: ${outcome.error ?? outcome.status}`,
+					options: {
+						modal: true,
+						detail: "Auto Phase can continue with the next phase or stop the run. The failure is recorded in the Markdown report.",
+						items: ["Continue with next phase", "Stop the plan", "Continue and don't ask again"],
+					},
+				}),
+				cancelPromise,
+				timeoutPromise,
+			])
+			if (typeof result === "string") {
+				return result
+			}
+			const selected = result?.selectedOption
+			if (selected === "Continue with next phase") {
+				return "continue"
+			}
+			if (selected === "Continue and don't ask again") {
+				return "continue-and-dont-ask"
+			}
+			return "stop"
+		} catch (error) {
+			Logger.warn("[AutoPhase] Failed to ask how to handle the phase failure:", error)
+			return "stop"
+		} finally {
+			if (timeoutId) {
+				clearTimeout(timeoutId)
+			}
+			run.resolveFailureDecision = undefined
+			run.stage = "phase"
+			void this.postStateToWebview()
+		}
+	}
+
+	private async waitForAutoPhaseTask(taskId: string, run: AutoPhaseRun): Promise<AutoPhaseWaitResult> {
 		const deadline = Date.now() + 2 * 60 * 60 * 1000
-		while (!run.cancelled) {
+		while (true) {
+			if (run.cancelled) {
+				return { status: "cancelled" }
+			}
 			if (this.task?.taskId && this.task.taskId !== taskId) {
-				throw new Error("The active task changed while Auto Phase was running.")
+				return { status: "failed", error: "The active task changed while Auto Phase was running." }
 			}
 			const phase = this.turnStateTracker.currentPhase
 			if (phase === "completed") {
-				return
+				return { status: "completed" }
 			}
 			if (phase === "error") {
-				throw new Error(`Phase ${run.currentIndex + 1} failed.`)
+				return { status: "failed", error: await this.getLastTaskError(taskId, run.currentIndex + 1) }
 			}
 			if (phase === "resumable") {
-				throw new Error(`Phase ${run.currentIndex + 1} was interrupted.`)
+				return { status: "failed", error: `Phase ${run.currentIndex + 1} was interrupted.` }
 			}
 			// A turn that stops without the completion tool lands in
 			// "awaiting_followup". If the agent is waiting on a question it needs
 			// the user, so keep waiting; a plain end-of-turn means the phase is
 			// done and the next one may start.
 			if (phase === "awaiting_followup" && !this.hasPendingAsk(taskId)) {
-				return
+				return { status: "completed" }
 			}
 			if (Date.now() > deadline) {
-				throw new Error(`Phase ${run.currentIndex + 1} timed out.`)
+				return { status: "timeout", error: `Phase ${run.currentIndex + 1} timed out after 2 hours.` }
 			}
 			await new Promise((resolve) => setTimeout(resolve, 500))
 		}
+	}
+
+	private async readAutoPhaseMessages(taskId: string): Promise<BytosMessage[]> {
+		// Prefer the live task while it is still active: the persisted transcript
+		// can lag behind the final completion_result by a moment.
+		if (this.task?.taskId === taskId) {
+			const live = this.task.messageStateHandler.getBytosMessages()
+			if (live.length > 0) {
+				return live
+			}
+		}
+		try {
+			const persisted = await this.taskHistory.getBytosMessages(taskId)
+			if (Array.isArray(persisted) && persisted.length > 0) {
+				return persisted
+			}
+		} catch (error) {
+			Logger.warn("[AutoPhase] Failed to read the phase transcript:", error)
+		}
+		return []
+	}
+
+	private async getLastTaskError(taskId: string, phaseNumber: number): Promise<string> {
+		const messages = await this.readAutoPhaseMessages(taskId)
+		for (let index = messages.length - 1; index >= 0; index--) {
+			const message = messages[index]
+			if (message?.type === "say" && message.say === "error" && message.text?.trim()) {
+				return this.extractAutoPhaseErrorText(message.text)
+			}
+			if (message?.type === "ask" && message.ask === "api_req_failed" && message.text?.trim()) {
+				return this.extractAutoPhaseErrorText(message.text)
+			}
+		}
+		return `Phase ${phaseNumber} failed.`
+	}
+
+	private extractAutoPhaseErrorText(text: string): string {
+		try {
+			const parsed = JSON.parse(text) as { message?: unknown; error?: unknown }
+			if (typeof parsed.message === "string" && parsed.message.trim()) {
+				return parsed.message
+			}
+			if (typeof parsed.error === "string" && parsed.error.trim()) {
+				return parsed.error
+			}
+		} catch {
+			// Plain text error.
+		}
+		return text
+	}
+
+	/** Errors that will repeat for every remaining phase if the run continues. */
+	private isAutoPhaseBlockingError(error: string | undefined): boolean {
+		if (!error) {
+			return false
+		}
+		return /\b(api key|unauthorized|unauthenticated|authentication|forbidden|insufficient credits|insufficient balance|quota exceeded|billing)\b/i.test(
+			error,
+		)
+	}
+
+	private async persistAutoPhaseReport(run: AutoPhaseRun): Promise<void> {
+		if (!run.writeReport) {
+			return
+		}
+		try {
+			const workspaceRoot = await this.getWorkspaceRoot()
+			const result = await writeAutoPhaseReport(workspaceRoot, {
+				runId: run.runId,
+				startedAt: run.startedAt,
+				finishedAt: Date.now(),
+				outcomes: run.outcomes,
+				aiSummary: run.aiSummaryText,
+				cancelled: run.cancelled,
+				workspaceRoot,
+			})
+			run.reportAbsolutePath = result.absolutePath
+			run.reportRelativePath = result.relativePath
+		} catch (error) {
+			Logger.warn("[AutoPhase] Failed to write the Markdown report:", error)
+		}
+	}
+
+	private async runAutoPhaseSummaryTask(
+		phases: AutoPhasePrompt[],
+		run: AutoPhaseRun,
+		providerSnapshots: Map<string, { apiKey?: string; baseUrl?: string }>,
+		injectedKeyFields: Map<keyof ApiConfiguration, string | undefined>,
+		previousConfig: ApiConfiguration,
+	): Promise<string | undefined> {
+		const phase = phases[phases.length - 1]
+		if (!phase) {
+			return undefined
+		}
+		try {
+			this.configureAutoPhaseProvider(phase, providerSnapshots, injectedKeyFields, previousConfig)
+			const prompt = buildAutoPhaseSummaryPrompt({
+				outcomes: run.outcomes,
+				reportRelativePath: run.reportRelativePath,
+			})
+			const taskId = await this.initTask(prompt, undefined, undefined, undefined, undefined, undefined, undefined)
+			if (!taskId) {
+				return undefined
+			}
+			run.taskIds.push(taskId)
+			const wait = await this.waitForAutoPhaseTask(taskId, run)
+			if (wait.status !== "completed") {
+				Logger.warn("[AutoPhase] Summary task did not complete:", wait.error)
+				return undefined
+			}
+			const messages = await this.readAutoPhaseMessages(taskId)
+			return extractPhaseReport(messages).trim() || undefined
+		} catch (error) {
+			Logger.warn("[AutoPhase] Summary task failed:", error)
+			return undefined
+		}
+	}
+
+	private async postAutoPhaseSummary(run: AutoPhaseRun): Promise<void> {
+		// When the AI summary ran, its completion row is already the chat summary.
+		if (run.aiSummaryText?.trim()) {
+			return
+		}
+		const text = buildDeterministicSummary({
+			outcomes: run.outcomes,
+			reportRelativePath: run.reportRelativePath,
+			writeReport: run.writeReport,
+			cancelled: run.cancelled,
+		})
+		try {
+			this.messages.emitSyntheticMessage({
+				ts: Date.now(),
+				type: "say",
+				say: "text",
+				text,
+				partial: false,
+			})
+		} catch (error) {
+			Logger.warn("[AutoPhase] Failed to append the chat summary:", error)
+		}
+		await this.postStateToWebview().catch(() => {})
 	}
 
 	/** True when the phase task's last message is an unanswered ask. */
@@ -2931,6 +3380,7 @@ export class Controller {
 					? {
 							current: Math.min(this.autoPhaseRun.currentIndex + 1, this.autoPhaseRun.total),
 							total: this.autoPhaseRun.total,
+							stage: this.autoPhaseRun.stage,
 						}
 					: undefined,
 				queuedPrompts,

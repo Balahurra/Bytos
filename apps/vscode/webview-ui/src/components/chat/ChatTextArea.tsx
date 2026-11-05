@@ -1886,8 +1886,22 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 								className="text-xs font-semibold"
 								data-testid="auto-phase-progress"
 								style={{ color: AUTO_MODE_COLOR }}
-								title={`Auto Phase ${autoPhaseProgress.current} of ${autoPhaseProgress.total}`}>
-								{autoPhaseProgress.current}/{autoPhaseProgress.total}
+								title={`Auto Phase ${autoPhaseProgress.current} of ${autoPhaseProgress.total}${
+									autoPhaseProgress.stage === "waiting"
+										? " — waiting for a failure decision"
+										: autoPhaseProgress.stage === "report"
+											? " — writing the detailed report"
+											: autoPhaseProgress.stage === "summary"
+												? " — preparing the summary"
+												: ""
+								}`}>
+								{autoPhaseProgress.stage === "waiting"
+									? "Waiting…"
+									: autoPhaseProgress.stage === "report"
+										? "Report"
+										: autoPhaseProgress.stage === "summary"
+											? "Summary"
+											: `${autoPhaseProgress.current}/${autoPhaseProgress.total}`}
 							</span>
 							<VSCodeButton
 								appearance="secondary"

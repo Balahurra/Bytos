@@ -1,10 +1,10 @@
 {
-	"generatedAt": "2026-11-05T19:22:58.731Z",
-	"total": 2398,
+	"generatedAt": "2026-11-05T19:48:57.768Z",
+	"total": 2399,
 	"summary": [
 		{
 			"license": "MIT",
-			"count": 1728
+			"count": 1729
 		},
 		{
 			"license": "Apache-2.0",
@@ -15831,6 +15831,14 @@
 		{
 			"name": "proxy-addr",
 			"version": "2.0.7",
+			"license": "MIT",
+			"repository": "jshttp/proxy-addr",
+			"copyright": "Copyright (c) 2014-2016 Douglas Christopher Wilson",
+			"private": false
+		},
+		{
+			"name": "proxy-addr",
+			"version": "2.0.8",
 			"license": "MIT",
 			"repository": "jshttp/proxy-addr",
 			"copyright": "Copyright (c) 2014-2016 Douglas Christopher Wilson",

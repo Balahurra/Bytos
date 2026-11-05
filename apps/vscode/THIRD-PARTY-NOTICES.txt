@@ -14,12 +14,12 @@ actually distributed, its notice is still provided here.
 This file is not a legal opinion. See LICENSE-COMPLIANCE-REPORT.md for
 verified obligations and remaining uncertainties.
 
-Generated: 2026-11-05T19:22:58.729Z
-Packages: 2398
+Generated: 2026-11-05T19:48:57.765Z
+Packages: 2399
 
 License summary
 ---------------
-MIT	1728
+MIT	1729
 Apache-2.0	375
 ISC	115
 BSD-3-Clause	51
@@ -2004,6 +2004,7 @@ property-information	7.2.0	MIT	wooorm/property-information	Copyright (c) Titus W
 protobufjs	7.6.5	BSD-3-Clause	protobufjs/protobuf.js	Copyright (c) 2016, Daniel Wirtz All rights reserved.
 protoc-gen-ts	0.8.7	MIT	https://github.com/thesayyn/protoc-gen-ts	
 proxy-addr	2.0.7	MIT	jshttp/proxy-addr	Copyright (c) 2014-2016 Douglas Christopher Wilson
+proxy-addr	2.0.8	MIT	jshttp/proxy-addr	Copyright (c) 2014-2016 Douglas Christopher Wilson
 proxy-agent	6.5.0	MIT	https://github.com/TooTallNate/proxy-agents	Copyright (c) 2013 Nathan Rajlich <nathan@tootallnate.net>
 proxy-from-env	1.1.0	MIT	https://github.com/Rob--W/proxy-from-env	Copyright (C) 2016-2018 Rob Wu <rob@robwu.nl>
 proxy-from-env	2.1.0	MIT	https://github.com/Rob--W/proxy-from-env	Copyright (C) 2016-2018 Rob Wu <rob@robwu.nl>

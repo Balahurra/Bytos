@@ -50,7 +50,9 @@ gate enforces this.
 ## 4. Third-party inventory
 
 The generated inventory contains **2,398 packages** and the following licence
-families (declared):
+families (declared). It is intentionally a superset: it walks installed
+`node_modules`, so cached older copies can appear even when the build resolves a
+newer version.
 
 | Licence family | Notes |
 | --- | --- |

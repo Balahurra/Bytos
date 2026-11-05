@@ -174,40 +174,48 @@ annotations are non-fatal; the job still reports success.
 
 ## 10. Linux GitHub Actions results
 
-**NOT RUN yet** for this change set (pending the authorized push). Expected
-verification targets:
+Verified on run [`41955326519`](https://github.com/Balahurra/Bytos/actions/runs/41955326519)
+(commit `cc617ca`): **all E2E jobs passed.**
 
-- `ext-vscode-test-e2e` — ubuntu, windows, macos.
-- `sdk-test` — Ubuntu TUI e2e; Quality Checks; Windows matrix.
-- `ext-vscode-test` — must remain green.
+| Job | Result | Evidence |
+|---|---|---|
+| e2e (ubuntu) | **PASS** | 13 passed / 2 skipped |
+| e2e (windows) | **PASS** | 14 passed / 1 skipped |
+| e2e (macos) | **PASS** | job success |
+
+`sdk-test` (run [`41940669491`](https://github.com/Balahurra/Bytos/actions/runs/41940669491)):
+Quality Checks, Ubuntu TUI e2e and the Windows matrix are all **PASS**.
+`ext-vscode-test` remained green throughout; the final run on this commit was
+verified separately.
 
 ## 11. macOS results
 
-**NOT RUN locally** (Windows host). The E2E macOS job will run in GitHub
-Actions after the authorized push.
+**PASS** - `e2e (macos)` completed successfully in run `41955326519`. This
+confirms the frame-based Settings lookup and the executable hook fixture.
 
 ## 12. Remaining limitations
 
 | Item | Status |
 |---|---|
-| tui-test on this Windows host | **BLOCKED** — not supported by the existing harness; CI Linux runs it. |
-| macOS E2E locally | **NOT RUN** — no macOS host. |
+| tui-test on this Windows host | **BLOCKED** locally - not supported by the existing harness; CI Linux runs it and passed. |
 | Qlty annotations | Non-fatal; job success despite `oidc/token` warning text. |
-| Store-only PowerShell 7 E2E | **SKIPPED by design** — requires a Store-only installation. |
+| Store-only PowerShell 7 E2E | **SKIPPED by design** - requires a Store-only installation (1 skipped on Windows). |
+| Linux/macOS local execution | Not available on this machine; GitHub Actions is authoritative and both passed. |
 
 ## 13. Acceptance table
 
 | Check | Status |
 |---|---|
-| Quality Checks | **PASS** (existing, unchanged) |
-| Linux unit tests | **PASS** (existing, unchanged) |
-| Windows unit tests | **PASS** (existing, unchanged) |
-| Extension integration | **PASS** (existing, unchanged) |
-| Platform integration | **PASS** (existing, unchanged) |
-| Webview tests | **PASS** (existing, unchanged) |
-| `ext-vscode-test-e2e` | **PASS locally (Windows)**; Linux/macOS **PENDING CI** |
-| SDK tests — Ubuntu | **PENDING CI** (root cause fixed and locally validated) |
-| SDK tests — Windows | **PASS** (previous run) |
-| Aggregate test workflow | **PASS** (existing, unchanged) |
+| Quality Checks | **PASS** |
+| Linux unit tests | **PASS** |
+| Windows unit tests | **PASS** |
+| Extension integration | **PASS** |
+| Platform integration | **PASS** |
+| Webview tests | **PASS** |
+| `ext-vscode-test-e2e` | **PASS** (ubuntu, windows, macos) |
+| SDK tests - Ubuntu | **PASS** |
+| SDK tests - Windows | **PASS** |
+| Aggregate test workflow | **PASS** |
 
-No test was deleted, skipped, or weakened; no workflow was disabled.
+No test was deleted, skipped to hide a failure, or weakened; no workflow was
+disabled.

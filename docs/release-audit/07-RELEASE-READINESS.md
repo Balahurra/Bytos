@@ -175,13 +175,12 @@ removal, repository hygiene, documentation, packaging and the local VSIX - is
 
 ### 9.5 Remaining CI workflows (2026-11-05)
 
-The main `ext-vscode-test` gate is green on Linux and Windows (see `10`). The
-two remaining workflow failures - the Playwright extension E2E suite and the
-Ubuntu TUI E2E suite in `sdk-test` - are resolved locally and documented in
-`11-E2E-AND-SDK-CI-RESOLUTION.md`: the E2E suite now drives the real BYOK
-chat-first UI with the local mock provider, and unauthenticated CLI tests use a
-loopback 401 server instead of public DNS. Linux/macOS confirmation is pending
-the authorized verification push.
+All workflows are green: `ext-vscode-test` (Linux/Windows unit, integration,
+platform, webview, typecheck/lint/build), `sdk-test` (Quality, Ubuntu TUI e2e,
+Windows matrix) and `ext-vscode-test-e2e` (ubuntu, windows, macos). The E2E and
+SDK fixes are documented in `11-E2E-AND-SDK-CI-RESOLUTION.md`: the E2E suite
+drives the real BYOK chat-first UI with the local mock provider, and
+unauthenticated CLI tests use a loopback 401 server instead of public DNS.
 
 ### 9.4 Final validation after the cleanup commits
 

@@ -100,9 +100,14 @@ export class SdkMessageCoordinator {
 		this.emitSessionEvents(messages, event)
 	}
 
-	emitHookMessage(message: BytosMessage): void {
+	/** Append a host-authored message (summary, notice) to the active task and stream it. */
+	emitSyntheticMessage(message: BytosMessage): void {
 		this.appendMessages([message])
 		pushMessageToWebview(message).catch(() => {})
+	}
+
+	emitHookMessage(message: BytosMessage): void {
+		this.emitSyntheticMessage(message)
 	}
 
 	/**

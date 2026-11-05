@@ -1,6 +1,12 @@
-import { AutoPhaseAttachment, AutoPhasePlan, AutoPhasePlanPhase } from "@shared/proto/bytos/state"
+import { AutoPhaseAttachment, AutoPhaseErrorPolicy, AutoPhasePlan, AutoPhasePlanPhase } from "@shared/proto/bytos/state"
 import { describe, expect, it } from "vitest"
-import { MAX_AUTO_PHASES, readAutoPhasePlan, readAutoPhasePlanWithKeys, saveAutoPhasePlan } from "@/core/auto-phase/plan-store"
+import {
+	MAX_AUTO_PHASES,
+	readAutoPhasePlan,
+	readAutoPhasePlanWithKeys,
+	readAutoPhaseRunPlan,
+	saveAutoPhasePlan,
+} from "@/core/auto-phase/plan-store"
 import type { StateManager } from "@/core/storage/StateManager"
 
 function createFakeStateManager() {
@@ -151,5 +157,55 @@ describe("auto phase plan store", () => {
 		const withKeys = readAutoPhasePlanWithKeys(stateManager)
 		expect(withKeys[0]?.attachments).toHaveLength(2)
 		expect(withKeys[1]?.attachments).toHaveLength(0)
+	})
+
+	it("persists the run-level failure and report settings", () => {
+		const { stateManager } = createFakeStateManager()
+
+		saveAutoPhasePlan(
+			stateManager,
+			AutoPhasePlan.create({
+				phases: [phase("a")],
+				onPhaseError: AutoPhaseErrorPolicy.AUTO_PHASE_ERROR_CONTINUE,
+				writeReport: false,
+				aiSummary: true,
+				passPhaseReports: false,
+			}),
+		)
+
+		const plan = readAutoPhasePlan(stateManager)
+		expect(plan.onPhaseError).toBe(AutoPhaseErrorPolicy.AUTO_PHASE_ERROR_CONTINUE)
+		expect(plan.writeReport).toBe(false)
+		expect(plan.aiSummary).toBe(true)
+		expect(plan.passPhaseReports).toBe(false)
+
+		const runPlan = readAutoPhaseRunPlan(stateManager)
+		expect(runPlan.onPhaseError).toBe(AutoPhaseErrorPolicy.AUTO_PHASE_ERROR_CONTINUE)
+		expect(runPlan.writeReport).toBe(false)
+		expect(runPlan.aiSummary).toBe(true)
+		expect(runPlan.passPhaseReports).toBe(false)
+	})
+
+	it("defaults plans saved before reporting existed to ask/write/pass", () => {
+		const { stateManager, global } = createFakeStateManager()
+		global.set("autoPhasePlan", JSON.stringify({ phases: [phase("legacy")] }))
+
+		const plan = readAutoPhasePlan(stateManager)
+		expect(plan.onPhaseError).toBe(AutoPhaseErrorPolicy.AUTO_PHASE_ERROR_ASK)
+		expect(plan.writeReport).toBe(true)
+		expect(plan.aiSummary).toBe(false)
+		expect(plan.passPhaseReports).toBe(true)
+	})
+
+	it("fills missing run-level settings with safe defaults when saving", () => {
+		const { stateManager } = createFakeStateManager()
+
+		saveAutoPhasePlan(stateManager, AutoPhasePlan.create({ phases: [phase("a")] }))
+
+		const plan = readAutoPhasePlan(stateManager)
+		expect(plan.onPhaseError).toBe(AutoPhaseErrorPolicy.AUTO_PHASE_ERROR_ASK)
+		expect(plan.writeReport).toBe(true)
+		expect(plan.aiSummary).toBe(false)
+		expect(plan.passPhaseReports).toBe(true)
 	})
 })

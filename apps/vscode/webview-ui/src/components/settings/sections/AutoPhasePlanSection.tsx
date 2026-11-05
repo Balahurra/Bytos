@@ -1,8 +1,8 @@
 ﻿import { buildChatAttachments } from "@shared/attachments"
 import { EmptyRequest } from "@shared/proto/bytos/common"
 import { SelectFilesRequest } from "@shared/proto/bytos/file"
-import { AutoPhasePlan, AutoPhasePlanPhase } from "@shared/proto/bytos/state"
-import { VSCodeButton, VSCodeDropdown, VSCodeOption } from "@vscode/webview-ui-toolkit/react"
+import { AutoPhaseErrorPolicy, AutoPhasePlan, AutoPhasePlanPhase } from "@shared/proto/bytos/state"
+import { VSCodeButton, VSCodeCheckbox, VSCodeDropdown, VSCodeOption } from "@vscode/webview-ui-toolkit/react"
 import { Check, ChevronDown, ChevronRight, Copy, Eraser, Plus, Trash2 } from "lucide-react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { getDataUrlBase64Length, normalizeImagesForAttachment } from "@/components/chat/attachment-image-normalization"
@@ -45,6 +45,20 @@ interface StatusMessage {
 	text: string
 }
 
+interface PlanSettings {
+	onPhaseError: AutoPhaseErrorPolicy
+	writeReport: boolean
+	aiSummary: boolean
+	passPhaseReports: boolean
+}
+
+const DEFAULT_PLAN_SETTINGS: PlanSettings = {
+	onPhaseError: AutoPhaseErrorPolicy.AUTO_PHASE_ERROR_ASK,
+	writeReport: true,
+	aiSummary: false,
+	passPhaseReports: true,
+}
+
 function createDraft(phase: AutoPhasePlanPhase, expanded = false): PhaseDraft {
 	const images = (phase.attachments ?? [])
 		.filter((attachment) => attachment.kind === "image" && attachment.data)
@@ -72,7 +86,7 @@ function displayProviderName(id: string, name: string): string {
 	return id === CLINE_PASS_PROVIDER_ID ? "ClinePass" : name
 }
 
-function toPlan(phases: PhaseDraft[]): AutoPhasePlan {
+function toPlan(phases: PhaseDraft[], settings: PlanSettings): AutoPhasePlan {
 	return AutoPhasePlan.create({
 		phases: phases.slice(0, MAX_PHASES).map((phase) =>
 			AutoPhasePlanPhase.create({
@@ -87,6 +101,10 @@ function toPlan(phases: PhaseDraft[]): AutoPhasePlan {
 				attachments: buildChatAttachments(phase.images, phase.files),
 			}),
 		),
+		onPhaseError: settings.onPhaseError,
+		writeReport: settings.writeReport,
+		aiSummary: settings.aiSummary,
+		passPhaseReports: settings.passPhaseReports,
 	})
 }
 
@@ -145,6 +163,7 @@ const PhaseModelSettings = ({ phase, onChange }: { phase: PhaseDraft; onChange: 
 
 const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps) => {
 	const [phaseList, setPhaseList] = useState<PhaseDraft[]>([])
+	const [planSettings, setPlanSettings] = useState<PlanSettings>(DEFAULT_PLAN_SETTINGS)
 	const [loading, setLoading] = useState(true)
 	const [saving, setSaving] = useState(false)
 	const [status, setStatus] = useState<StatusMessage | null>(null)
@@ -180,6 +199,12 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 					return
 				}
 				setPhaseList((plan.phases ?? []).map((phase, index) => createDraft(phase, index === 0)))
+				setPlanSettings({
+					onPhaseError: plan.onPhaseError ?? AutoPhaseErrorPolicy.AUTO_PHASE_ERROR_ASK,
+					writeReport: plan.writeReport !== false,
+					aiSummary: plan.aiSummary === true,
+					passPhaseReports: plan.passPhaseReports !== false,
+				})
 			})
 			.catch((error) => {
 				if (!cancelled) {
@@ -198,6 +223,10 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 
 	const updatePhase = useCallback((id: string, patch: Partial<PhaseDraft>) => {
 		setPhaseList((current) => current.map((phase) => (phase.id === id ? { ...phase, ...patch } : phase)))
+	}, [])
+
+	const updatePlanSettings = useCallback((patch: Partial<PlanSettings>) => {
+		setPlanSettings((current) => ({ ...current, ...patch }))
 	}, [])
 
 	const addPhaseAttachments = useCallback(
@@ -280,7 +309,7 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 			setSaving(true)
 			setStatus(null)
 			try {
-				await StateServiceClient.saveAutoPhasePlan(toPlan(phaseList))
+				await StateServiceClient.saveAutoPhasePlan(toPlan(phaseList, planSettings))
 				setPhaseList((current) =>
 					current.map((phase) => ({
 						...phase,
@@ -301,7 +330,7 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 				setSaving(false)
 			}
 		},
-		[phaseList],
+		[phaseList, planSettings],
 	)
 
 	const openPhaseMcpSettings = useCallback(
@@ -328,7 +357,7 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 		setSaving(true)
 		setStatus(null)
 		try {
-			await StateServiceClient.saveAutoPhasePlan(AutoPhasePlan.create({ phases: [] }))
+			await StateServiceClient.saveAutoPhasePlan(toPlan([], planSettings))
 			setPhaseList([])
 			setStatus({ kind: "info", text: "All phases deleted. History and tasks were not changed." })
 		} catch (error) {
@@ -339,7 +368,7 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 		} finally {
 			setSaving(false)
 		}
-	}, [])
+	}, [planSettings])
 
 	return (
 		<div id="auto-phase-plan-page">
@@ -527,6 +556,80 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 								<Plus className="mr-1" size={14} />
 								Add Phase
 							</VSCodeButton>
+						</div>
+
+						<div className="rounded-sm border border-[var(--vscode-panel-border)] p-3 mt-2 flex flex-col gap-3">
+							<div>
+								<div className="font-medium">Failure handling</div>
+								<p className="text-xs text-description m-0 mt-1">
+									If a phase fails or is blocked, should Auto Phase continue with the next phase?
+								</p>
+							</div>
+
+							<div className="flex flex-col gap-1">
+								<label className="font-medium" htmlFor="auto-phase-error-policy">
+									On phase failure
+								</label>
+								<VSCodeDropdown
+									className="w-full"
+									id="auto-phase-error-policy"
+									onChange={(event) =>
+										updatePlanSettings({
+											onPhaseError: Number(
+												(event.target as HTMLSelectElement).value,
+											) as AutoPhaseErrorPolicy,
+										})
+									}
+									value={String(planSettings.onPhaseError)}>
+									<VSCodeOption value={String(AutoPhaseErrorPolicy.AUTO_PHASE_ERROR_ASK)}>
+										Ask me when a phase fails
+									</VSCodeOption>
+									<VSCodeOption value={String(AutoPhaseErrorPolicy.AUTO_PHASE_ERROR_CONTINUE)}>
+										Continue with the next phase automatically
+									</VSCodeOption>
+									<VSCodeOption value={String(AutoPhaseErrorPolicy.AUTO_PHASE_ERROR_STOP)}>
+										Stop the plan
+									</VSCodeOption>
+								</VSCodeDropdown>
+							</div>
+
+							<VSCodeCheckbox
+								checked={planSettings.passPhaseReports}
+								onChange={(event) =>
+									updatePlanSettings({
+										passPhaseReports: (event.target as HTMLInputElement).checked === true,
+									})
+								}>
+								Pass each phase's short report to the next phase
+							</VSCodeCheckbox>
+
+							<div>
+								<VSCodeCheckbox
+									checked={planSettings.writeReport}
+									onChange={(event) =>
+										updatePlanSettings({ writeReport: (event.target as HTMLInputElement).checked === true })
+									}>
+									Write a detailed Markdown report for every run
+								</VSCodeCheckbox>
+								<p className="text-xs text-description m-0 mt-1">
+									Reports are written to <code>.bytos/auto-phase-reports/</code> in the workspace. The chat
+									shows a short summary and points to the detailed report.
+								</p>
+							</div>
+
+							<div>
+								<VSCodeCheckbox
+									checked={planSettings.aiSummary}
+									onChange={(event) =>
+										updatePlanSettings({ aiSummary: (event.target as HTMLInputElement).checked === true })
+									}>
+									Generate an AI summary at the end (extra model call)
+								</VSCodeCheckbox>
+								<p className="text-xs text-description m-0 mt-1">
+									When off, the chat summary is generated deterministically from the phase reports. When on, the
+									summary uses the last phase's provider and model.
+								</p>
+							</div>
 						</div>
 
 						<div className="flex items-center justify-end gap-3 mt-2">

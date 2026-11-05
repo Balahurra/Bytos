@@ -26,4 +26,8 @@ regexes = [
   # Model IDs such as "anthropic--claude-4.6-sonnet" trip the generic-api-key
   # heuristic in provider-config test fixtures; they are not credentials.
   '''actModeApiModelId''',
+  # Minified property assignments in the bundled sanitize-html and jws code
+  # (isAttributeKey=..., compileToken=...). These are identifiers, not secrets.
+  '''isAttributeKey=''',
+  '''compileToken=''',
 ]

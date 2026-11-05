@@ -79,7 +79,7 @@ VSIX from a release artifact or build it from source:
 bun install
 cd apps/vscode
 node scripts/package-release.mjs
-code --install-extension ../../bytos-1.0.0.vsix
+code --install-extension ../../bytos-1.0.1.vsix
 ```
 
 Then open the Bytos view in the activity bar.
@@ -105,11 +105,18 @@ workspace to an earlier step.
 Auto Phase is sequential multi-phase orchestration, not a parallel multi-agent
 system. Open the mode selector in the chat input and choose **Auto Phase**:
 
-- up to ten phases run in order in the same task;
+- up to ten phases run in order; each phase is its own Act-mode task;
 - every phase has its own prompt, provider, model, attachments, and MCP server
   allowlist;
 - the plan is stored in extension state and phase API keys are stored in VS Code
   SecretStorage;
+- each phase can receive the previous phase's short completion report as context;
+- when a phase fails or reports `BLOCKED` / `FAILED`, the run can stop, continue
+  with the next phase automatically, or ask you each time;
+- every run writes a detailed Markdown report to
+  `.bytos/auto-phase-reports/<run-id>/report.md`, and the chat shows a short
+  summary with a link to that report;
+- an optional AI-generated final summary is available and off by default;
 - starting a run shows a confirmation warning, and the run can be stopped at any
   time.
 

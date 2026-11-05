@@ -1,4 +1,4 @@
-import { AutoPhaseAttachment, AutoPhasePlan } from "@shared/proto/bytos/state"
+import { AutoPhaseAttachment, AutoPhaseErrorPolicy, AutoPhasePlan } from "@shared/proto/bytos/state"
 import type { StateManager } from "@/core/storage/StateManager"
 
 const PLAN_KEY = "autoPhasePlan"
@@ -27,6 +27,10 @@ interface StoredPhase {
 
 interface StoredPlan {
 	phases: StoredPhase[]
+	onPhaseError: AutoPhaseErrorPolicy
+	writeReport: boolean
+	aiSummary: boolean
+	passPhaseReports: boolean
 }
 
 export interface AutoPhasePrompt {
@@ -40,13 +44,39 @@ export interface AutoPhasePrompt {
 	attachments: StoredAttachment[]
 }
 
+/** The full plan, including run-level settings, for the Auto Phase runner. */
+export interface AutoPhaseRunPlan {
+	phases: AutoPhasePrompt[]
+	onPhaseError: AutoPhaseErrorPolicy
+	writeReport: boolean
+	aiSummary: boolean
+	passPhaseReports: boolean
+}
+
+const DEFAULT_PLAN: Omit<StoredPlan, "phases"> = {
+	onPhaseError: AutoPhaseErrorPolicy.AUTO_PHASE_ERROR_ASK,
+	writeReport: true,
+	aiSummary: false,
+	passPhaseReports: true,
+}
+
+function normalizeErrorPolicy(value: unknown): AutoPhaseErrorPolicy {
+	if (value === AutoPhaseErrorPolicy.AUTO_PHASE_ERROR_CONTINUE) {
+		return AutoPhaseErrorPolicy.AUTO_PHASE_ERROR_CONTINUE
+	}
+	if (value === AutoPhaseErrorPolicy.AUTO_PHASE_ERROR_STOP) {
+		return AutoPhaseErrorPolicy.AUTO_PHASE_ERROR_STOP
+	}
+	return AutoPhaseErrorPolicy.AUTO_PHASE_ERROR_ASK
+}
+
 function readStoredPlan(stateManager: StateManager): StoredPlan {
 	const raw = stateManager.getGlobalStateKey(PLAN_KEY)
 	if (!raw) {
-		return { phases: [] }
+		return { phases: [], ...DEFAULT_PLAN }
 	}
 	try {
-		const parsed = JSON.parse(raw) as StoredPlan
+		const parsed = JSON.parse(raw) as Partial<StoredPlan>
 		const phases = Array.isArray(parsed.phases)
 			? parsed.phases.map((phase) => ({
 					...phase,
@@ -55,9 +85,16 @@ function readStoredPlan(stateManager: StateManager): StoredPlan {
 					attachments: Array.isArray(phase.attachments) ? phase.attachments : [],
 				}))
 			: []
-		return { phases }
+		return {
+			phases,
+			onPhaseError: normalizeErrorPolicy(parsed.onPhaseError),
+			// Old plans predate reporting. They default to writing a report.
+			writeReport: parsed.writeReport !== false,
+			aiSummary: parsed.aiSummary === true,
+			passPhaseReports: parsed.passPhaseReports !== false,
+		}
 	} catch {
-		return { phases: [] }
+		return { phases: [], ...DEFAULT_PLAN }
 	}
 }
 
@@ -107,22 +144,41 @@ export function readAutoPhasePlan(stateManager: StateManager): AutoPhasePlan {
 				}),
 			),
 		})),
+		onPhaseError: stored.onPhaseError,
+		writeReport: stored.writeReport,
+		aiSummary: stored.aiSummary,
+		passPhaseReports: stored.passPhaseReports,
 	})
 }
 
-/** Read the full plan, including plaintext keys, for the runner. */
-export function readAutoPhasePlanWithKeys(stateManager: StateManager): AutoPhasePrompt[] {
+/** Read the full plan, including plaintext keys and run-level settings, for the runner. */
+export function readAutoPhaseRunPlan(stateManager: StateManager): AutoPhaseRunPlan {
 	const stored = readStoredPlan(stateManager)
 	const keys = readApiKeys(stateManager)
-	return stored.phases.map((phase) => ({
-		...phase,
-		apiKey: keys[phase.id],
-	}))
+	return {
+		phases: stored.phases.map((phase) => ({
+			...phase,
+			apiKey: keys[phase.id],
+		})),
+		onPhaseError: stored.onPhaseError,
+		writeReport: stored.writeReport,
+		aiSummary: stored.aiSummary,
+		passPhaseReports: stored.passPhaseReports,
+	}
+}
+
+/** Read just the phases, including plaintext keys. Kept for existing callers/tests. */
+export function readAutoPhasePlanWithKeys(stateManager: StateManager): AutoPhasePrompt[] {
+	return readAutoPhaseRunPlan(stateManager).phases
 }
 
 /** Persist plan metadata and any edited API keys. */
 export function saveAutoPhasePlan(stateManager: StateManager, plan: AutoPhasePlan): AutoPhasePlan {
 	const incoming = Array.isArray(plan.phases) ? plan.phases.slice(0, MAX_AUTO_PHASES) : []
+	const onPhaseError = normalizeErrorPolicy(plan.onPhaseError)
+	const writeReport = plan.writeReport !== false
+	const aiSummary = plan.aiSummary === true
+	const passPhaseReports = plan.passPhaseReports !== false
 	const existingKeys = readApiKeys(stateManager)
 	const nextKeys: Record<string, string> = { ...existingKeys }
 	const phases: StoredPhase[] = incoming.map((phase, index) => {
@@ -171,7 +227,7 @@ export function saveAutoPhasePlan(stateManager: StateManager, plan: AutoPhasePla
 		}
 	}
 
-	stateManager.setGlobalState(PLAN_KEY, JSON.stringify({ phases }))
+	stateManager.setGlobalState(PLAN_KEY, JSON.stringify({ phases, onPhaseError, writeReport, aiSummary, passPhaseReports }))
 	writeApiKeys(stateManager, nextKeys)
 	return readAutoPhasePlan(stateManager)
 }

@@ -516,6 +516,23 @@ message AutoPhasePlanPhase {
   repeated AutoPhaseAttachment attachments = 9;
 }
 
+// What the Auto Phase runner should do when a phase fails or is blocked.
+enum AutoPhaseErrorPolicy {
+  // Ask the user after each failure (default).
+  AUTO_PHASE_ERROR_ASK = 0;
+  // Continue with the next phase without asking.
+  AUTO_PHASE_ERROR_CONTINUE = 1;
+  // Stop the whole run (pre-existing behavior).
+  AUTO_PHASE_ERROR_STOP = 2;
+}
+
 message AutoPhasePlan {
   repeated AutoPhasePlanPhase phases = 1;
+  AutoPhaseErrorPolicy on_phase_error = 2;
+  // Missing on plans saved before reporting existed. Reading treats undefined as true.
+  optional bool write_report = 3;
+  // Optional AI-written summary at the end. Defaults to false.
+  optional bool ai_summary = 4;
+  // Pass each phase's short report to the next phase. Defaults to true.
+  optional bool pass_phase_reports = 5;
 }

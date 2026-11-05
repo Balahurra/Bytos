@@ -11,7 +11,7 @@ locations only.
 
 | Check | Command | Result |
 | --- | --- | --- |
-| Full Git history | `gitleaks git --redact --no-banner` | 52 commits scanned, ~40.5 MB, **no leaks found** |
+| Full Git history | `gitleaks git --redact --no-banner` | 52 commits scanned at audit time, ~40.5 MB, **no leaks found**; the release commit was also scanned by the pre-commit hook |
 | Tracked `.env` / key / certificate files | `git ls-files` filter | Only `.env.example`, test fixtures, fake PEMs, and credential-store source/tests. No real credential. |
 | VSIX content | extracted `bytos-1.0.0.vsix`, filename and content scan | No `.env*`, `secrets.json`, private key, service-role key, or token-shaped value. |
 | Packaging exclusions | `.vscodeignore` | `.env`, `.env.example`, `.vscode-test/**`, `.github/**`, source, tests, scripts, and source maps are excluded. |
@@ -49,6 +49,12 @@ advisory exists; that is expected).
 | `@simple-git/argv-parser` | `1.1.1` | `2.0.1` | Pulled by `simple-git@4.0.2`; resolves the critical editor-detection advisory. |
 
 Both packages no longer appear in the production audit output.
+
+The shipped `THIRD-PARTY-NOTICES` file is intentionally a **superset** inventory:
+it walks installed `node_modules`, including cached older copies. It therefore
+lists both `simple-git` 3.36.0 and 4.0.2 and both `dompurify` 3.4.14 and 3.4.17.
+The workspace resolution (`bun pm ls --all`) and the lockfile select 4.0.2 and
+3.4.17; the older entries are not the build inputs.
 
 ### 2.3 Residual bundled advisories
 

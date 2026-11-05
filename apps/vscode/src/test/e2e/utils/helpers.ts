@@ -278,24 +278,33 @@ export class E2ETestHelper {
 	 */
 	public async openSettings(page: Page): Promise<Frame> {
 		// The workbench can expose more than one "Settings" action (VS Code's
-		// own gear and the Bytos view action), and their order differs by
-		// platform. Try each visible candidate until the Bytos settings webview
-		// (identified by #api-provider) is the one that opened.
-		const settingsButtons = page.getByRole("button", { name: "Settings", exact: true })
-		const total = await settingsButtons.count()
-		let attempted = 0
+		// own gear and the Bytos view action), and the Bytos webview subscribes
+		// to the click event asynchronously. Retry the click a few times so a
+		// click that lands before the subscription is ready is not lost.
+		const candidates: import("@playwright/test").Locator[] = []
+		const bytosActions = page
+			.getByRole("toolbar", { name: "Bytos actions" })
+			.getByRole("button", { name: "Settings", exact: true })
+		if ((await bytosActions.count()) > 0) candidates.push(bytosActions.first())
+
+		const allSettings = page.getByRole("button", { name: "Settings", exact: true })
+		const total = await allSettings.count()
 		for (let index = 0; index < total; index++) {
-			const button = settingsButtons.nth(index)
-			if (!(await button.isVisible().catch(() => false))) continue
-			attempted++
-			await button.click()
-			try {
-				return await this.findFrameContaining(page, "#api-provider", 10_000)
-			} catch {
-				// This candidate opened a different settings surface; try the next.
+			const button = allSettings.nth(index)
+			if (await button.isVisible().catch(() => false)) candidates.push(button)
+		}
+
+		for (const candidate of candidates) {
+			for (let attempt = 0; attempt < 4; attempt++) {
+				await candidate.click().catch(() => undefined)
+				try {
+					return await this.findFrameContaining(page, "#api-provider", 3_000)
+				} catch {
+					// The click may have raced the webview subscription; retry.
+				}
 			}
 		}
-		throw new Error(`Bytos Settings did not open (tried ${attempted} visible Settings buttons)`)
+		throw new Error("Bytos Settings did not open from any Settings action")
 	}
 
 	/**

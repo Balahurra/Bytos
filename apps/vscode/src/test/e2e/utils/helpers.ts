@@ -277,15 +277,25 @@ export class E2ETestHelper {
 	 * assuming which frame it uses.
 	 */
 	public async openSettings(page: Page): Promise<Frame> {
-		const bytosSettings = page
-			.getByRole("toolbar", { name: "Bytos actions" })
-			.getByRole("button", { name: "Settings", exact: true })
-		if ((await bytosSettings.count()) > 0) {
-			await bytosSettings.first().click()
-		} else {
-			await page.getByRole("button", { name: "Settings", exact: true }).first().click()
+		// The workbench can expose more than one "Settings" action (VS Code's
+		// own gear and the Bytos view action), and their order differs by
+		// platform. Try each visible candidate until the Bytos settings webview
+		// (identified by #api-provider) is the one that opened.
+		const settingsButtons = page.getByRole("button", { name: "Settings", exact: true })
+		const total = await settingsButtons.count()
+		let attempted = 0
+		for (let index = 0; index < total; index++) {
+			const button = settingsButtons.nth(index)
+			if (!(await button.isVisible().catch(() => false))) continue
+			attempted++
+			await button.click()
+			try {
+				return await this.findFrameContaining(page, "#api-provider", 10_000)
+			} catch {
+				// This candidate opened a different settings surface; try the next.
+			}
 		}
-		return this.findFrameContaining(page, "#api-provider")
+		throw new Error(`Bytos Settings did not open (tried ${attempted} visible Settings buttons)`)
 	}
 
 	/**

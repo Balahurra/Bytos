@@ -96,6 +96,11 @@ appears only in internal audit documents, never as a working public link.
 
 ## 6. Publication steps (manual, after authorisation)
 
+> **Preferred path:** use `.github/workflows/publish-marketplace.yml` (GitHub
+> OIDC Trusted Publishing, no PAT) and follow
+> [`13-TRUSTED-PUBLISHING.md`](13-TRUSTED-PUBLISHING.md). The PAT steps below
+> are the legacy fallback and are not used by the Trusted Publishing workflow.
+
 1. Confirm the `bytos` publisher exists in the Visual Studio Marketplace
    publisher management page and is owned by the publishing account.
 2. Create a PAT with Marketplace **Manage** scope. Expose it only as `VSCE_PAT`

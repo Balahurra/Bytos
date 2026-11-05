@@ -128,6 +128,7 @@ Full evidence is in `02-SECURITY-AUDIT.md`.
 | CHANGELOG | `1.0.0` entry |
 | Discussions | Disabled; links removed rather than left dead |
 | Release / tag | **Created**: `v1.0.0` GitHub release with `bytos-1.0.0.vsix` and SHA-256 asset (2026-11-05) |
+| Marketplace workflow | `.github/workflows/publish-marketplace.yml` — manual OIDC Trusted Publishing, environment `marketplace`, no PAT (see `13-TRUSTED-PUBLISHING.md`) |
 | Draft release notes | Published with the GitHub `v1.0.0` release; Marketplace publication remains separate |
 
 ### Draft `v1.0.0` release notes
@@ -228,8 +229,8 @@ GitHub Actions for commit `15c620b`:
 
 | ID | Blocker | Owner | Action |
 | --- | --- | --- | --- |
-| B-1 | Marketplace publisher `bytos` and PAT ownership unverified | Maintainer | Confirm the publisher in the Marketplace management page; create a Manage-scope PAT; expose it only as `VSCE_PAT` |
-| B-2 | `__metadata` absent | Release engineer | Run `vsce publish` once (or `node scripts/publish-marketplace.mjs`), then commit the manifest change |
+| B-1 | Marketplace publisher `bytos` and Trusted Publishing policy unverified | Maintainer | Confirm the publisher; create the OIDC policy in `13-TRUSTED-PUBLISHING.md`; configure the `marketplace` environment. No PAT is needed for the new workflow. |
+| B-2 | `__metadata` absent | Release engineer | Run the `publish-marketplace` workflow once (OIDC), then commit the manifest change. |
 | B-3 | 13 UNKNOWN-licence packages | Legal | Review the enumerated exceptions before distribution |
 | B-4 | CC-BY-4.0 attribution wording | Legal | Confirm the requested attribution for codicons/caniuse-lite |
 | B-5 | Brand asset authorship | Human/legal | Document the authorship/assignment |

@@ -1,0 +1,293 @@
+name: publish-marketplace
+
+# Manual-only Visual Studio Marketplace publish using GitHub OIDC Trusted
+# Publishing. This workflow never uses a PAT and never publishes on push, PR,
+# or tag creation.
+#
+# Marketplace Trusted Publishing policy (create it in the publisher's
+# Trusted Publishing page) must match:
+#   Repository owner: Balahurra
+#   Repository:       Bytos
+#   Workflow:         publish-marketplace.yml
+#   Environment:      marketplace
+#
+# The job downloads the VSIX and checksum from an existing GitHub release,
+# verifies their identity and integrity, and publishes only that package.
+
+run-name: Publish ${{ inputs.tag }} to VS Code Marketplace
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing stable release tag to publish, for example v1.0.0"
+        required: true
+        type: string
+      confirm_publish:
+        description: 'Type "publish" to confirm the Marketplace upload'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-marketplace-${{ inputs.tag }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  preflight:
+    name: Validate release
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    outputs:
+      tag: ${{ steps.release.outputs.tag }}
+      version: ${{ steps.release.outputs.version }}
+      vsix: ${{ steps.release.outputs.vsix }}
+      checksum: ${{ steps.release.outputs.checksum }}
+    steps:
+      - name: Validate dispatch context
+        env:
+          REPOSITORY: ${{ github.repository }}
+          REF: ${{ github.ref }}
+          ACTOR: ${{ github.actor }}
+          CONFIRM: ${{ inputs.confirm_publish }}
+        run: |
+          set -euo pipefail
+          if [[ "$REPOSITORY" != "Balahurra/Bytos" ]]; then
+            echo "::error::This workflow only publishes from Balahurra/Bytos."
+            exit 1
+          fi
+          if [[ "$REF" != "refs/heads/main" ]]; then
+            echo "::error::Dispatch this workflow from main; the release commit is selected by the tag input."
+            exit 1
+          fi
+          if [[ "$CONFIRM" != "publish" ]]; then
+            echo "::error::Set confirm_publish to publish to confirm the Marketplace upload."
+            exit 1
+          fi
+          case "$ACTOR" in
+            *"[bot]")
+              echo "::error::Bot actors are not allowed to publish."
+              exit 1
+              ;;
+          esac
+
+      - name: Validate tag format
+        id: release
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::tag must be an existing stable release tag such as v1.0.0."
+            exit 1
+          fi
+          VERSION="${TAG#v}"
+          VSIX="bytos-${VERSION}.vsix"
+          SHA256="${VSIX}.sha256"
+          {
+            echo "tag=$TAG"
+            echo "version=$VERSION"
+            echo "vsix=$VSIX"
+            echo "checksum=$SHA256"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Checkout release tag
+        uses: actions/checkout@v4
+        with:
+          ref: refs/tags/${{ steps.release.outputs.tag }}
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+
+      - name: Verify release commit is on main
+        run: |
+          set -euo pipefail
+          git fetch origin main --no-tags
+          if ! git merge-base --is-ancestor HEAD origin/main; then
+            echo "::error::Release tag is not on the main branch; refusing to publish."
+            exit 1
+          fi
+
+      - name: Verify extension manifest
+        env:
+          EXPECTED_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs = require("node:fs")
+          const pkg = JSON.parse(fs.readFileSync("apps/vscode/package.json", "utf8"))
+          if (pkg.name !== "bytos" || pkg.publisher !== "bytos" || pkg.version !== process.env.EXPECTED_VERSION) {
+            console.error(`Unexpected extension manifest: ${pkg.publisher}.${pkg.name}@${pkg.version}`)
+            process.exit(1)
+          }
+          console.log(`Extension manifest ok: ${pkg.publisher}.${pkg.name}@${pkg.version}`)
+          NODE
+
+      - name: Verify release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.release.outputs.tag }}
+          VSIX: ${{ steps.release.outputs.vsix }}
+          CHECKSUM: ${{ steps.release.outputs.checksum }}
+        run: |
+          set -euo pipefail
+          release="$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json tagName,isDraft,isPrerelease,assets)"
+          echo "$release" | jq -e --arg tag "$TAG" --arg vsix "$VSIX" --arg sha "$CHECKSUM" '
+            .tagName == $tag and
+            .isDraft == false and
+            .isPrerelease == false and
+            ([.assets[].name] | index($vsix)) != null and
+            ([.assets[].name] | index($sha)) != null and
+            ([.assets[] | select(.name | endswith(".vsix"))] | length) == 1
+          ' >/dev/null
+
+  publish:
+    name: Publish with OIDC
+    needs: preflight
+    if: needs.preflight.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: marketplace
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout release tag
+        uses: actions/checkout@v4
+        with:
+          ref: refs/tags/${{ needs.preflight.outputs.tag }}
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+
+      - name: Verify release commit is on main
+        run: |
+          set -euo pipefail
+          git fetch origin main --no-tags
+          if ! git merge-base --is-ancestor HEAD origin/main; then
+            echo "::error::Release tag is not on the main branch; refusing to publish."
+            exit 1
+          fi
+
+      - name: Verify extension manifest
+        env:
+          EXPECTED_VERSION: ${{ needs.preflight.outputs.version }}
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs = require("node:fs")
+          const pkg = JSON.parse(fs.readFileSync("apps/vscode/package.json", "utf8"))
+          if (pkg.name !== "bytos" || pkg.publisher !== "bytos" || pkg.version !== process.env.EXPECTED_VERSION) {
+            console.error(`Unexpected extension manifest: ${pkg.publisher}.${pkg.name}@${pkg.version}`)
+            process.exit(1)
+          }
+          console.log(`Extension manifest ok: ${pkg.publisher}.${pkg.name}@${pkg.version}`)
+          NODE
+
+      - name: Download and verify release VSIX
+        id: verify
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.preflight.outputs.tag }}
+          VSIX: ${{ needs.preflight.outputs.vsix }}
+          CHECKSUM: ${{ needs.preflight.outputs.checksum }}
+        run: |
+          set -euo pipefail
+          release_dir="$RUNNER_TEMP/marketplace-release"
+          rm -rf "$release_dir"
+          mkdir -p "$release_dir"
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" \
+            --pattern "$VSIX" --pattern "$CHECKSUM" --dir "$release_dir"
+          cd "$release_dir"
+          if ! grep -Fq "  ${VSIX}" "$CHECKSUM"; then
+            echo "::error::Checksum manifest does not describe ${VSIX}."
+            exit 1
+          fi
+          sha256sum --check "$CHECKSUM"
+          sha256="$(sha256sum "$VSIX" | awk '{print $1}')"
+          echo "sha256=$sha256" >> "$GITHUB_OUTPUT"
+          for required in \
+            extension/dist/extension.js \
+            extension/webview-ui/build/index.html \
+            extension/LICENSE.txt \
+            extension/NOTICE \
+            extension/THIRD-PARTY-NOTICES.txt; do
+            if ! unzip -l "$VSIX" | grep -F "$required" >/dev/null; then
+              echo "::error::VSIX is missing $required"
+              exit 1
+            fi
+          done
+
+      - name: Verify embedded VSIX identity
+        env:
+          EXPECTED_VERSION: ${{ needs.preflight.outputs.version }}
+        run: |
+          set -euo pipefail
+          embedded_package="$RUNNER_TEMP/marketplace-release/embedded-package.json"
+          unzip -p "$RUNNER_TEMP/marketplace-release/${{ needs.preflight.outputs.vsix }}" extension/package.json > "$embedded_package"
+          node - "$embedded_package" <<'NODE'
+          const fs = require("node:fs")
+          const pkg = JSON.parse(fs.readFileSync(process.argv[2], "utf8"))
+          if (pkg.name !== "bytos" || pkg.publisher !== "bytos" || pkg.version !== process.env.EXPECTED_VERSION) {
+            console.error(`Unexpected VSIX identity: ${pkg.publisher}.${pkg.name}@${pkg.version}`)
+            process.exit(1)
+          }
+          if (!pkg.engines || typeof pkg.engines.vscode !== "string") {
+            console.error("VSIX manifest is missing engines.vscode")
+            process.exit(1)
+          }
+          console.log(`VSIX identity ok: ${pkg.publisher}.${pkg.name}@${pkg.version}`)
+          NODE
+
+      - name: Verify vsce OIDC support
+        run: |
+          set -euo pipefail
+          npx --yes @vscode/vsce@4.1.0 --version
+
+      - name: Publish to Marketplace with OIDC
+        working-directory: apps/vscode
+        env:
+          VSIX_PATH: ${{ runner.temp }}/marketplace-release/${{ needs.preflight.outputs.vsix }}
+        run: |
+          set -euo pipefail
+          npx --yes @vscode/vsce@4.1.0 publish \
+            --oidc \
+            --packagePath "$VSIX_PATH" \
+            --no-dependencies \
+            --allow-package-secrets sendgrid
+
+      - name: Write publish summary
+        if: success()
+        env:
+          TAG: ${{ needs.preflight.outputs.tag }}
+          VERSION: ${{ needs.preflight.outputs.version }}
+          SHA256: ${{ steps.verify.outputs.sha256 }}
+        run: |
+          set -euo pipefail
+          {
+            echo "## Marketplace publish"
+            echo ""
+            echo "- Tag: \`$TAG\`"
+            echo "- Version: \`$VERSION\`"
+            echo "- VSIX SHA-256: \`$SHA256\`"
+            echo "- Authentication: OIDC Trusted Publishing (no PAT)"
+            echo "- Marketplace: https://marketplace.visualstudio.com/items?itemName=bytos.bytos"
+          } >> "$GITHUB_STEP_SUMMARY"

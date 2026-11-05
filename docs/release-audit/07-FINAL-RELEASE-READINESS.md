@@ -83,7 +83,7 @@ Full evidence is in `02-SECURITY-AUDIT.md`.
 | Workspace boundary | canonical path checks incl. traversal, drive/UNC, symlinks |
 | Telemetry | off by default |
 | Private vulnerability reporting | enabled during this pass |
-| Dependabot security updates | disabled; recommended manual action |
+| Dependabot security updates | enabled on 2026-11-05 (including vulnerability alerts) |
 
 ## 5. CLI and OpenCode
 
@@ -127,8 +127,8 @@ Full evidence is in `02-SECURITY-AUDIT.md`.
 | SECURITY.md | Rewritten; private reporting enabled |
 | CHANGELOG | `1.0.0` entry |
 | Discussions | Disabled; links removed rather than left dead |
-| Release / tag | **Not created** (requires explicit authorisation) |
-| Draft release notes | Prepared below, not published |
+| Release / tag | **Created**: `v1.0.0` GitHub release with `bytos-1.0.0.vsix` and SHA-256 asset (2026-11-05) |
+| Draft release notes | Published with the GitHub `v1.0.0` release; Marketplace publication remains separate |
 
 ### Draft `v1.0.0` release notes
 
@@ -146,7 +146,7 @@ Full evidence is in `02-SECURITY-AUDIT.md`.
 > Bytos includes software derived from Cline, Copyright 2026 Cline Bot Inc.,
 > licensed under Apache-2.0. See LICENSE, NOTICE, and THIRD-PARTY-NOTICES.
 
-Do not create the tag or release until the publisher and legal items are cleared.
+The GitHub release is published. Marketplace publication remains separate and must not proceed until the publisher identity, `__metadata`, and legal items are cleared.
 
 ## 8. SEO and discoverability
 
@@ -181,6 +181,7 @@ Full proposal is in `06-MARKETPLACE-METADATA.md`.
 | Field | Value |
 | --- | --- |
 | Path | `C:\Users\TT\Desktop\bytos-main\bytos-1.0.0.vsix` |
+| GitHub release | `https://github.com/Balahurra/Bytos/releases/tag/v1.0.0` (VSIX + SHA-256 attached) |
 | Size | 12,277,434 bytes |
 | SHA-256 | `A0ABBCBAF4D171374AE726A80D159E0DF5485000140407057F25C97B4918AA44` |
 | Entries | 189 |
@@ -232,9 +233,11 @@ GitHub Actions for commit `15c620b`:
 | B-3 | 13 UNKNOWN-licence packages | Legal | Review the enumerated exceptions before distribution |
 | B-4 | CC-BY-4.0 attribution wording | Legal | Confirm the requested attribution for codicons/caniuse-lite |
 | B-5 | Brand asset authorship | Human/legal | Document the authorship/assignment |
-| B-6 | Website changes not deployed | Maintainer | Deploy `Balahurra/web2`, then verify robots/sitemap and submit to search consoles |
+| B-6 | Website changes not deployed | Maintainer | **Resolved 2026-11-05:** `https://bytos.dev` deployed and verified; sitemap/robots live |
 | B-7 | Residual high dependency advisories | Maintainer | Plan a controlled upgrade of `undici`, `sharp`, MCP/gRPC, `zod`, etc. |
-| B-8 | Dependabot security updates disabled | Maintainer | Enable in repository settings |
+| B-8 | Dependabot security updates disabled | Maintainer | **Resolved 2026-11-05:** vulnerability alerts and automated security updates enabled |
+| B-9 | Marketplace domain-verification TXT record not added | Maintainer | Add `_visual-studio-marketplace-bytos.bytos.dev` TXT `f46729b3-40c0-46a5-99e7-4280b9c4084c` in Cloudflare DNS |
+| B-10 | Google/Bing ownership verification | Maintainer | Click verify in Search Console (HTML file) and Bing (XML file); then submit `https://bytos.dev/sitemap.xml` |
 
 ## 13. Final decision
 

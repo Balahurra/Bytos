@@ -32,6 +32,16 @@ export interface ConsumedHandoff {
 	session_id: string | null
 }
 
+export interface HandoffCleanupInput {
+	expiredBefore: number
+	consumedBefore: number
+	batchSize: number
+}
+
+export interface HandoffCleanupResult {
+	deleted: number
+}
+
 export interface StorageEnv {
 	DB?: D1Database
 	STORAGE_DRIVER?: string
@@ -43,11 +53,23 @@ export interface HandoffStore {
 	insert(record: HandoffRecord): Promise<void>
 	consume(input: ConsumeHandoffInput): Promise<ConsumedHandoff | null>
 	clearTokens(codeHash: string): Promise<void>
+	cleanup(input: HandoffCleanupInput): Promise<HandoffCleanupResult>
 }
 
 function baseUrl(env: StorageEnv): string {
 	return env.SUPABASE_URL.replace(/\/+$/, "")
 }
+
+/** D1 equivalent of the production cleanup RPC. Exported for SQL-level tests. */
+export const D1_HANDOFF_CLEANUP_SQL = `DELETE FROM handoff_codes
+ WHERE id IN (
+	SELECT id
+	FROM handoff_codes
+	WHERE expires_at <= ?
+	   OR (consumed_at IS NOT NULL AND consumed_at <= ?)
+	ORDER BY expires_at
+	LIMIT ?
+ )`
 
 class D1HandoffStore implements HandoffStore {
 	constructor(private readonly db: D1Database) {}
@@ -114,6 +136,15 @@ class D1HandoffStore implements HandoffStore {
 			)
 			.bind(codeHash)
 			.run()
+	}
+
+	async cleanup(input: HandoffCleanupInput): Promise<HandoffCleanupResult> {
+		const result = await this.db
+			.prepare(D1_HANDOFF_CLEANUP_SQL)
+			.bind(input.expiredBefore, input.consumedBefore, input.batchSize)
+			.run()
+		const changes = result.meta?.changes
+		return { deleted: typeof changes === "number" ? changes : 0 }
 	}
 }
 
@@ -191,6 +222,34 @@ class SupabaseHandoffStore implements HandoffStore {
 		if (!response.ok) {
 			throw new Error(`Supabase handoff cleanup failed with status ${response.status}`)
 		}
+	}
+
+	async cleanup(input: HandoffCleanupInput): Promise<HandoffCleanupResult> {
+		const response = await fetch(`${baseUrl(this.env)}/rest/v1/rpc/cleanup_handoff_codes`, {
+			method: "POST",
+			headers: this.headers(),
+			body: JSON.stringify({
+				p_expired_before: new Date(input.expiredBefore).toISOString(),
+				p_consumed_before: new Date(input.consumedBefore).toISOString(),
+				p_batch_size: input.batchSize,
+			}),
+		})
+		if (!response.ok) {
+			throw new Error(`Supabase handoff cleanup failed with status ${response.status}`)
+		}
+		const data: unknown = await response.json()
+		const value = Array.isArray(data) ? data[0] : data
+		if (value === null || value === undefined) {
+			throw new Error("Supabase handoff cleanup returned an invalid count")
+		}
+		const deleted =
+			typeof value === "object" && "cleanup_handoff_codes" in value
+				? Number((value as Record<string, unknown>).cleanup_handoff_codes)
+				: Number(value)
+		if (!Number.isFinite(deleted) || deleted < 0) {
+			throw new Error("Supabase handoff cleanup returned an invalid count")
+		}
+		return { deleted: Math.floor(deleted) }
 	}
 }
 

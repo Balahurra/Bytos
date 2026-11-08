@@ -26,6 +26,7 @@ function headers(origin: string | null, contentType = "application/json"): Heade
 		"Content-Type": contentType,
 		"Cache-Control": "no-store",
 		"X-Content-Type-Options": "nosniff",
+		"Access-Control-Expose-Headers": "Retry-After",
 	})
 	if (origin) {
 		result.set("Access-Control-Allow-Origin", origin)

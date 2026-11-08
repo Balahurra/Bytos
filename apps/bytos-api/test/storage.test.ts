@@ -115,6 +115,47 @@ describe("Supabase handoff store", () => {
 		})
 	})
 
+	it("cleans expired/consumed rows through the service-role RPC", async () => {
+		fetchMock.mockImplementation(async () => jsonResponse(42))
+		const store = createHandoffStore(env)
+		const result = await store.cleanup({
+			expiredBefore: 1_700_000_000_000,
+			consumedBefore: 1_699_999_400_000,
+			batchSize: 500,
+		})
+
+		const [url, init] = fetchMock.mock.calls[0]
+		expect(String(url)).toBe("https://project.supabase.co/rest/v1/rpc/cleanup_handoff_codes")
+		expect(init.method).toBe("POST")
+		expect(init.headers.apikey).toBe("service-role-test")
+		expect(init.headers.Authorization).toBe("Bearer service-role-test")
+		expect(JSON.parse(init.body)).toEqual({
+			p_expired_before: new Date(1_700_000_000_000).toISOString(),
+			p_consumed_before: new Date(1_699_999_400_000).toISOString(),
+			p_batch_size: 500,
+		})
+		expect(result).toEqual({ deleted: 42 })
+	})
+
+	it("accepts a wrapped cleanup count", async () => {
+		fetchMock.mockImplementation(async () => jsonResponse([{ cleanup_handoff_codes: 7 }]))
+		const store = createHandoffStore(env)
+		const result = await store.cleanup({
+			expiredBefore: 1,
+			consumedBefore: 1,
+			batchSize: 500,
+		})
+		expect(result).toEqual({ deleted: 7 })
+	})
+
+	it("rejects an invalid cleanup count", async () => {
+		fetchMock.mockImplementation(async () => jsonResponse("not-a-count"))
+		const store = createHandoffStore(env)
+		await expect(
+			store.cleanup({ expiredBefore: 1, consumedBefore: 1, batchSize: 500 }),
+		).rejects.toThrow("invalid count")
+	})
+
 	it("requires a service-role key for Supabase storage", () => {
 		expect(() => createHandoffStore({ ...env, SUPABASE_SERVICE_ROLE_KEY: undefined })).toThrow(
 			"SUPABASE_SERVICE_ROLE_KEY",

@@ -307,6 +307,20 @@ const USER_SETTINGS_FIELDS = {
 	openTelemetryLogBatchSize: { default: 512 as number | undefined },
 	openTelemetryLogBatchTimeout: { default: 5000 as number | undefined },
 	openTelemetryLogMaxQueueSize: { default: 2048 as number | undefined },
+
+	// ── Voice (F1 capture · F3 settings) ──────────────────────────
+	// Persisted capture and recognition preferences. The runtime reads them
+	// lazily, so a change applies to the next capture / transcription.
+	voiceEnabled: { default: false as boolean },
+	voiceCaptureMethod: { default: "auto" as "auto" | "wasapi" }, // Windows-only values in F1
+	voiceMicrophoneId: { default: undefined as string | undefined },
+	voiceSilenceDetectionEnabled: { default: true as boolean },
+	voiceSilenceTimeoutMs: { default: 1200 as number },
+	voiceMaxDurationMs: { default: 120000 as number },
+	// F3: recognition preferences (Settings → Voice). "auto" | "tr" | "en" | "de"
+	// and "tiny" | "base"; both are validated by the handler before being stored.
+	voiceLanguage: { default: "auto" as string },
+	voiceModelId: { default: "base" as string },
 } satisfies FieldDefinitions
 
 const SETTINGS_FIELDS = { ...API_HANDLER_SETTINGS_FIELDS, ...USER_SETTINGS_FIELDS }

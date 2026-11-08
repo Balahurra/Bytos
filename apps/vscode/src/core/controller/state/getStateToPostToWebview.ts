@@ -20,6 +20,7 @@ import { DEFAULT_API_PROVIDER } from "@shared/api"
 import type { ExtensionState, Platform } from "@shared/ExtensionMessage"
 import { BytosEnv } from "@/config"
 import { ExtensionRegistryInfo, HostRegistryInfo } from "@/registry"
+import { SupabaseAccountService } from "@/services/auth/supabaseAccountService"
 import { BannerService } from "@/services/banner/BannerService"
 import { featureFlagsService } from "@/services/feature-flags"
 import { getDistinctId } from "@/services/logging/distinctId"
@@ -75,6 +76,7 @@ export async function getStateToPostToWebview(controller: {
 	const webSearchEnabled = isModelToolEnabledGlobally("web_search")
 	const subagentsEnabled = stateManager.getGlobalSettingsKey("subagentsEnabled")
 	const userInfo = stateManager.getGlobalStateKey("userInfo")
+	const supabaseUser = SupabaseAccountService.isInitialized() ? SupabaseAccountService.getInstance().getCachedUser() : undefined
 	const mcpMarketplaceEnabled = stateManager.getGlobalStateKey("mcpMarketplaceEnabled")
 	const mcpDisplayMode = stateManager.getGlobalStateKey("mcpDisplayMode")
 	const telemetrySetting = stateManager.getGlobalSettingsKey("telemetrySetting")
@@ -100,6 +102,12 @@ export async function getStateToPostToWebview(controller: {
 	const lastDismissedCliBannerVersion = stateManager.getGlobalStateKey("lastDismissedCliBannerVersion") || 0
 	const dismissedBanners = stateManager.getGlobalStateKey("dismissedBanners")
 	const showFeatureTips = stateManager.getGlobalSettingsKey("showFeatureTips")
+	// F3: voice preferences the Settings panel renders. Only identity/language
+	// values — never audio, never a filesystem path.
+	const voiceEnabled = stateManager.getGlobalSettingsKey("voiceEnabled") === true
+	const voiceMicrophoneId = stateManager.getGlobalSettingsKey("voiceMicrophoneId")
+	const voiceLanguage = stateManager.getGlobalSettingsKey("voiceLanguage")
+	const voiceModelId = stateManager.getGlobalSettingsKey("voiceModelId")
 
 	const localBytosRulesToggles = stateManager.getWorkspaceStateKey("localBytosRulesToggles")
 	const localWindsurfRulesToggles = stateManager.getWorkspaceStateKey("localWindsurfRulesToggles")
@@ -155,6 +163,7 @@ export async function getStateToPostToWebview(controller: {
 		webSearchEnabled,
 		subagentsEnabled,
 		userInfo,
+		supabaseUser,
 		mcpMarketplaceEnabled,
 		mcpDisplayMode,
 		telemetrySetting,
@@ -211,6 +220,10 @@ export async function getStateToPostToWebview(controller: {
 		optOutOfRemoteConfig: stateManager.getGlobalSettingsKey("optOutOfRemoteConfig"),
 		remoteConfigAvailable: controller.isRemoteConfigAvailable ?? false,
 		showFeatureTips,
+		voiceEnabled,
+		voiceMicrophoneId,
+		voiceLanguage,
+		voiceModelId,
 		banners,
 		welcomeBanners,
 		openAiCodexIsAuthenticated,

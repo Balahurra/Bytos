@@ -2,7 +2,7 @@
 	"name": "bytos",
 	"displayName": "Bytos",
 	"description": "Bytos is an open-source AI coding agent for Visual Studio Code. It plans before it edits, asks before it acts, and can edit files, run commands, use the browser, and call MCP tools with your approval. Bring your own API key (BYOK); no Bytos account or backend is required.",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"icon": "assets/icons/icon.png",
 	"publisher": "bytos",
 	"__metadata": {
@@ -154,6 +154,12 @@
 				"icon": "$(settings-gear)"
 			},
 			{
+				"command": "bytos.openAccount",
+				"title": "Account",
+				"category": "Bytos",
+				"icon": "$(person)"
+			},
+			{
 				"command": "bytos.dev.createTestTasks",
 				"title": "Create Test Tasks",
 				"category": "Bytos",
@@ -162,6 +168,12 @@
 			{
 				"command": "bytos.dev.expireMcpOAuthTokens",
 				"title": "Expire MCP OAuth Tokens (for testing)",
+				"category": "Bytos",
+				"when": "bytos.isDevMode"
+			},
+			{
+				"command": "bytos.voice.f1.smoke",
+				"title": "Voice F1: Run Capture Smoke Test",
 				"category": "Bytos",
 				"when": "bytos.isDevMode"
 			},
@@ -266,6 +278,11 @@
 				{
 					"command": "bytos.historyButtonClicked",
 					"group": "navigation@3",
+					"when": "view == bytos.SidebarProvider"
+				},
+				{
+					"command": "bytos.openAccount",
+					"group": "navigation@5",
 					"when": "view == bytos.SidebarProvider"
 				},
 				{

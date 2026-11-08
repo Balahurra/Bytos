@@ -1,4 +1,6 @@
 import { setCompactionStrategyGlobally, setModelToolEnabledGlobally } from "@bytos/core"
+import { isSupportedLanguage } from "@core/voice/transcription/language"
+import { isKnownModelId } from "@core/voice/transcription/models/modelCatalog"
 import { Empty } from "@shared/proto/bytos/common"
 import { PlanActMode, McpDisplayMode as ProtoMcpDisplayMode, UpdateSettingsRequest } from "@shared/proto/bytos/state"
 import { convertProtoToApiProvider } from "@shared/proto-conversions/models/api-configuration-conversion"
@@ -266,6 +268,57 @@ export async function updateSettings(controller: Controller, request: UpdateSett
 
 		if (request.showFeatureTips !== undefined) {
 			controller.stateManager.setGlobalState("showFeatureTips", request.showFeatureTips)
+		}
+
+		// ── Voice capture preferences (F1 — persisted, no UI yet) ──────────
+		// The runtime reads these lazily, so writing them here is enough for a
+		// pinned capture method or microphone to take effect on the next capture.
+		if (request.voiceEnabled !== undefined) {
+			controller.stateManager.setGlobalState("voiceEnabled", !!request.voiceEnabled)
+		}
+
+		if (request.voiceCaptureMethod !== undefined && request.voiceCaptureMethod !== "") {
+			const method = request.voiceCaptureMethod
+			if (method !== "auto" && method !== "wasapi") {
+				throw new Error(`Invalid voice capture method value: ${method}`)
+			}
+			controller.stateManager.setGlobalState("voiceCaptureMethod", method)
+		}
+
+		if (request.voiceMicrophoneId !== undefined) {
+			// Empty string clears a pin back to "system default".
+			controller.stateManager.setGlobalState("voiceMicrophoneId", request.voiceMicrophoneId || undefined)
+		}
+
+		if (request.voiceSilenceDetectionEnabled !== undefined) {
+			controller.stateManager.setGlobalState("voiceSilenceDetectionEnabled", !!request.voiceSilenceDetectionEnabled)
+		}
+
+		if (request.voiceSilenceTimeoutMs !== undefined) {
+			controller.stateManager.setGlobalState("voiceSilenceTimeoutMs", Number(request.voiceSilenceTimeoutMs))
+		}
+
+		if (request.voiceMaxDurationMs !== undefined) {
+			controller.stateManager.setGlobalState("voiceMaxDurationMs", Number(request.voiceMaxDurationMs))
+		}
+
+		// ── Voice recognition preferences (F3 — Settings → Voice) ─────────
+		// Both values are validated before they are stored: the recogniser must
+		// never be handed a language or model it cannot actually honour.
+		if (request.voiceLanguage !== undefined && request.voiceLanguage !== "") {
+			const language = request.voiceLanguage
+			if (!isSupportedLanguage(language)) {
+				throw new Error(`Invalid voice language value: ${language}`)
+			}
+			controller.stateManager.setGlobalState("voiceLanguage", language)
+		}
+
+		if (request.voiceModelId !== undefined && request.voiceModelId !== "") {
+			const modelId = request.voiceModelId
+			if (!isKnownModelId(modelId)) {
+				throw new Error(`Invalid voice model value: ${modelId}`)
+			}
+			controller.stateManager.setGlobalState("voiceModelId", modelId)
 		}
 
 		// Post updated state to webview

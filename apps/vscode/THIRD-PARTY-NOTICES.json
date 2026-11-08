@@ -1,14 +1,14 @@
 {
-	"generatedAt": "2026-11-05T19:48:57.768Z",
-	"total": 2399,
+	"generatedAt": "2026-11-07T04:44:09.606Z",
+	"total": 2423,
 	"summary": [
 		{
 			"license": "MIT",
-			"count": 1729
+			"count": 1744
 		},
 		{
 			"license": "Apache-2.0",
-			"count": 375
+			"count": 378
 		},
 		{
 			"license": "ISC",
@@ -35,6 +35,10 @@
 			"count": 8
 		},
 		{
+			"license": "MIT OR Apache-2.0",
+			"count": 7
+		},
+		{
 			"license": "MPL-2.0",
 			"count": 7
 		},
@@ -47,16 +51,20 @@
 			"count": 5
 		},
 		{
-			"license": "MIT OR Apache-2.0",
+			"license": "apache-2.0",
 			"count": 3
 		},
 		{
-			"license": "apache-2.0",
+			"license": "CC0-1.0",
 			"count": 3
 		},
 		{
 			"license": "Apache-2.0 OR MIT",
 			"count": 3
+		},
+		{
+			"license": "Apache-2.0 AND LGPL-3.0-or-later",
+			"count": 2
 		},
 		{
 			"license": "CC-BY-4.0",
@@ -72,10 +80,6 @@
 		},
 		{
 			"license": "BSD",
-			"count": 2
-		},
-		{
-			"license": "CC0-1.0",
 			"count": 2
 		},
 		{
@@ -96,10 +100,6 @@
 		},
 		{
 			"license": "MIT-0",
-			"count": 1
-		},
-		{
-			"license": "Apache-2.0 AND LGPL-3.0-or-later",
 			"count": 1
 		},
 		{
@@ -1197,6 +1197,38 @@
 			"private": false
 		},
 		{
+			"name": "@cloudflare/kv-asset-handler",
+			"version": "0.5.0",
+			"license": "MIT OR Apache-2.0",
+			"repository": "https://github.com/cloudflare/workers-sdk",
+			"copyright": "",
+			"private": false
+		},
+		{
+			"name": "@cloudflare/unenv-preset",
+			"version": "2.16.2",
+			"license": "MIT OR Apache-2.0",
+			"repository": "https://github.com/cloudflare/workers-sdk",
+			"copyright": "",
+			"private": false
+		},
+		{
+			"name": "@cloudflare/workerd-windows-64",
+			"version": "1.20261104.1",
+			"license": "Apache-2.0",
+			"repository": "https://github.com/cloudflare/workerd",
+			"copyright": "",
+			"private": false
+		},
+		{
+			"name": "@cloudflare/workers-types",
+			"version": "4.20260702.1",
+			"license": "MIT OR Apache-2.0",
+			"repository": "https://github.com/cloudflare/workerd",
+			"copyright": "",
+			"private": false
+		},
+		{
 			"name": "@colors/colors",
 			"version": "1.6.0",
 			"license": "MIT",
@@ -1367,6 +1399,14 @@
 		{
 			"name": "@esbuild/win32-x64",
 			"version": "0.27.7",
+			"license": "MIT",
+			"repository": "https://github.com/evanw/esbuild",
+			"copyright": "",
+			"private": false
+		},
+		{
+			"name": "@esbuild/win32-x64",
+			"version": "0.28.2",
 			"license": "MIT",
 			"repository": "https://github.com/evanw/esbuild",
 			"copyright": "",
@@ -2893,6 +2933,14 @@
 			"private": false
 		},
 		{
+			"name": "@img/sharp-win32-x64",
+			"version": "0.35.5",
+			"license": "Apache-2.0 AND LGPL-3.0-or-later",
+			"repository": "https://github.com/lovell/sharp",
+			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by the copyright",
+			"private": false
+		},
+		{
 			"name": "@internationalized/date",
 			"version": "3.12.0",
 			"license": "Apache-2.0",
@@ -3770,6 +3818,30 @@
 			"license": "MIT",
 			"repository": "git@github.com:pkgjs/parseargs",
 			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
+			"private": false
+		},
+		{
+			"name": "@poppinss/colors",
+			"version": "4.1.6",
+			"license": "MIT",
+			"repository": "https://github.com/poppinss/colors",
+			"copyright": "Copyright 2021 Harminder Virk, contributors",
+			"private": false
+		},
+		{
+			"name": "@poppinss/dumper",
+			"version": "0.6.5",
+			"license": "MIT",
+			"repository": "https://github.com/poppinss/dumper",
+			"copyright": "Copyright (c) 2023",
+			"private": false
+		},
+		{
+			"name": "@poppinss/exception",
+			"version": "1.2.3",
+			"license": "MIT",
+			"repository": "https://github.com/poppinss/exception",
+			"copyright": "Copyright (c) 2023",
 			"private": false
 		},
 		{
@@ -6093,6 +6165,14 @@
 			"private": false
 		},
 		{
+			"name": "@sindresorhus/is",
+			"version": "7.2.0",
+			"license": "MIT",
+			"repository": "sindresorhus/is",
+			"copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
+			"private": false
+		},
+		{
 			"name": "@sindresorhus/merge-streams",
 			"version": "2.3.0",
 			"license": "MIT",
@@ -6250,6 +6330,14 @@
 			"license": "Apache-2.0",
 			"repository": "https://github.com/adobe/react-spectrum",
 			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
+			"private": false
+		},
+		{
+			"name": "@speed-highlight/core",
+			"version": "1.2.24",
+			"license": "CC0-1.0",
+			"repository": "git://github.com/speed-highlight/core",
+			"copyright": "exclusive Copyright and Related Rights (defined below) upon the creator",
 			"private": false
 		},
 		{
@@ -8565,6 +8653,14 @@
 			"private": false
 		},
 		{
+			"name": "blake3-wasm",
+			"version": "2.1.5",
+			"license": "MIT",
+			"repository": "https://github.com/connor4312/blake3",
+			"copyright": "Copyright (c) 2019 Connor Peet",
+			"private": false
+		},
+		{
 			"name": "bluebird",
 			"version": "3.4.7",
 			"license": "MIT",
@@ -9391,6 +9487,14 @@
 		{
 			"name": "cookie",
 			"version": "0.7.2",
+			"license": "MIT",
+			"repository": "jshttp/cookie",
+			"copyright": "Copyright (c) 2012-2014 Roman Shtylman <shtylman@gmail.com>",
+			"private": false
+		},
+		{
+			"name": "cookie",
+			"version": "1.1.1",
 			"license": "MIT",
 			"repository": "jshttp/cookie",
 			"copyright": "Copyright (c) 2012-2014 Roman Shtylman <shtylman@gmail.com>",
@@ -10581,6 +10685,14 @@
 			"private": false
 		},
 		{
+			"name": "error-stack-parser-es",
+			"version": "1.0.5",
+			"license": "MIT",
+			"repository": "https://github.com/antfu/error-stack-parser-es",
+			"copyright": "Copyright (c) 2023-PRESENT Anthony Fu <https://github.com/antfu>",
+			"private": false
+		},
+		{
 			"name": "errore",
 			"version": "0.11.0",
 			"license": "MIT",
@@ -10655,6 +10767,14 @@
 		{
 			"name": "esbuild",
 			"version": "0.27.7",
+			"license": "MIT",
+			"repository": "https://github.com/evanw/esbuild",
+			"copyright": "Copyright (c) 2020 Evan Wallace",
+			"private": false
+		},
+		{
+			"name": "esbuild",
+			"version": "0.28.2",
 			"license": "MIT",
 			"repository": "https://github.com/evanw/esbuild",
 			"copyright": "Copyright (c) 2020 Evan Wallace",
@@ -14405,6 +14525,14 @@
 			"private": false
 		},
 		{
+			"name": "miniflare",
+			"version": "5.20261104.0-beta",
+			"license": "MIT",
+			"repository": "https://github.com/cloudflare/workers-sdk",
+			"copyright": "",
+			"private": false
+		},
+		{
 			"name": "minimatch",
 			"version": "10.2.6",
 			"license": "BlueOak-1.0.0",
@@ -15354,6 +15482,14 @@
 			"license": "BlueOak-1.0.0",
 			"repository": "https://github.com/isaacs/path-scurry",
 			"copyright": "## Copyright",
+			"private": false
+		},
+		{
+			"name": "path-to-regexp",
+			"version": "6.3.0",
+			"license": "MIT",
+			"repository": "https://github.com/pillarjs/path-to-regexp",
+			"copyright": "Copyright (c) 2014 Blake Embrey (hello@blakeembrey.com)",
 			"private": false
 		},
 		{
@@ -16909,6 +17045,14 @@
 			"private": false
 		},
 		{
+			"name": "sharp",
+			"version": "0.35.5",
+			"license": "Apache-2.0",
+			"repository": "https://github.com/lovell/sharp",
+			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by the copyright",
+			"private": false
+		},
+		{
 			"name": "shebang-command",
 			"version": "2.0.0",
 			"license": "MIT",
@@ -18445,6 +18589,14 @@
 			"private": false
 		},
 		{
+			"name": "unenv",
+			"version": "2.0.0-rc.24",
+			"license": "MIT",
+			"repository": "unjs/unenv",
+			"copyright": "Copyright (c) Pooya Parsa <pooya@pi0.io>",
+			"private": false
+		},
+		{
 			"name": "unicorn-magic",
 			"version": "0.1.0",
 			"license": "MIT",
@@ -19141,11 +19293,27 @@
 			"private": false
 		},
 		{
+			"name": "workerd",
+			"version": "1.20261104.1",
+			"license": "Apache-2.0",
+			"repository": "https://github.com/cloudflare/workerd",
+			"copyright": "",
+			"private": false
+		},
+		{
 			"name": "workerpool",
 			"version": "9.3.4",
 			"license": "Apache-2.0",
 			"repository": "git://github.com/josdejong/workerpool",
 			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
+			"private": false
+		},
+		{
+			"name": "wrangler",
+			"version": "4.158.0",
+			"license": "MIT OR Apache-2.0",
+			"repository": "https://github.com/cloudflare/workers-sdk",
+			"copyright": "",
 			"private": false
 		},
 		{
@@ -19185,6 +19353,14 @@
 			"version": "7.5.13",
 			"license": "MIT",
 			"repository": "websockets/ws",
+			"copyright": "Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>",
+			"private": false
+		},
+		{
+			"name": "ws",
+			"version": "8.21.0",
+			"license": "MIT",
+			"repository": "https://github.com/websockets/ws",
 			"copyright": "Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>",
 			"private": false
 		},
@@ -19386,6 +19562,22 @@
 			"license": "MIT",
 			"repository": "sindresorhus/yoctocolors",
 			"copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
+			"private": false
+		},
+		{
+			"name": "youch",
+			"version": "4.1.0-beta.10",
+			"license": "MIT",
+			"repository": "https://github.com/poppinss/youch",
+			"copyright": "Copyright (c) 2023",
+			"private": false
+		},
+		{
+			"name": "youch-core",
+			"version": "0.3.3",
+			"license": "MIT",
+			"repository": "https://github.com/poppinss/youch-core",
+			"copyright": "Copyright (c) 2024",
 			"private": false
 		},
 		{

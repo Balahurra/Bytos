@@ -39,6 +39,10 @@ export default defineConfig({
 			"src/core/controller/models/__tests__/refreshBytosRecommendedModels.test.ts",
 			"src/core/controller/models/__tests__/refreshProviderModels.test.ts",
 			"src/core/controller/models/__tests__/refreshOpenAiModels.test.ts",
+			// Voice (F1): recorder isolation, capture plumbing, audio normalisation,
+			// ProtoBus audio-free guard and the audio-free handlers.
+			"src/core/voice/**/*.test.ts",
+			"src/core/controller/voice/**/*.test.ts",
 		],
 		environment: "node",
 		setupFiles: ["./src/test/vitest-setup.ts"],

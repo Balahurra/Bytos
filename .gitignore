@@ -5,6 +5,8 @@ node_modules
 tmp
 .vscode-test/
 *.vsix
+*.vsix.files.txt
+*.vsix.sha256
 
 .DS_Store
 .idea
@@ -103,6 +105,14 @@ apps/vscode/webview-ui/build/
 # tree at package time.
 *.vsix
 *.sig
+
+# Voice (F1/F2) local artifacts. The WASAPI capture helper and the pinned
+# whisper.cpp engine + models are acquired/build per machine, are excluded from
+# any packaged build (apps/vscode/.vscodeignore), and total ~230 MB. They are
+# reproduced with apps/vscode/scripts/build-voice-helper.ps1 and
+# apps/vscode/scripts/voice-f2-fetch-assets.ps1, which verify exact SHA-256s.
+apps/vscode/assets/voice/bin/**
+apps/vscode/test-assets/
 
 # Editor, agent, and review-tool scratch state
 .agents/

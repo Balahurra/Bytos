@@ -19,6 +19,21 @@ service AccountService {
   // Clears API keys and user state.
   rpc accountLogoutClicked(EmptyRequest) returns (Empty);
 
+  // Starts the Supabase-first signup handoff (opens the website with state + PKCE).
+  rpc supabaseStartSignup(SupabaseSignupRequest) returns (String);
+
+  // Starts the Supabase-first sign-in handoff (opens the website with state + PKCE).
+  rpc supabaseStartSignin(SupabaseSignupRequest) returns (String);
+
+  // Signs in with Supabase email/password and stores the session in SecretStorage.
+  rpc supabaseSignIn(SupabaseSignInRequest) returns (AuthState);
+
+  // Signs out of the Supabase session and clears SecretStorage.
+  rpc supabaseSignOut(EmptyRequest) returns (Empty);
+
+  // Returns the current Supabase auth state (restores/refreshes from SecretStorage).
+  rpc getSupabaseAuthState(EmptyRequest) returns (AuthState);
+
   // Subscribe to auth status update events (when authentication state changes)
   rpc subscribeToAuthStatusUpdate(EmptyRequest) returns (stream AuthState);
 
@@ -62,6 +77,16 @@ service AccountService {
 message AuthStateChangedRequest {
   Metadata metadata = 1;
   UserInfo user = 2;
+}
+
+message SupabaseSignupRequest {
+  bool keep_signed_in = 1;
+}
+
+message SupabaseSignInRequest {
+  string email = 1;
+  string password = 2;
+  bool keep_signed_in = 3;
 }
 
 message AuthState {

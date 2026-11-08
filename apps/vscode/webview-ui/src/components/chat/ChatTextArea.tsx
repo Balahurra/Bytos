@@ -3,6 +3,7 @@ import { mentionRegex, mentionRegexGlobal } from "@shared/context-mentions"
 import { EmptyRequest, StringRequest } from "@shared/proto/bytos/common"
 import { FileSearchRequest, FileSearchType, RelativePathsRequest } from "@shared/proto/bytos/file"
 import { PlanActMode, TogglePlanActModeRequest } from "@shared/proto/bytos/state"
+import type { VoiceServiceStatus } from "@shared/proto/bytos/voice"
 import { type SlashCommand } from "@shared/slashCommands"
 import { VSCodeButton } from "@vscode/webview-ui-toolkit/react"
 import { AtSignIcon, PlusIcon, TriangleAlertIcon } from "lucide-react"
@@ -20,7 +21,7 @@ import { useExtensionState } from "@/context/ExtensionStateContext"
 import { usePlatform } from "@/context/PlatformContext"
 import { useNormalizedApiConfiguration } from "@/hooks/useNormalizedApiConfiguration"
 import { cn } from "@/lib/utils"
-import { FileServiceClient, StateServiceClient } from "@/services/grpc-client"
+import { FileServiceClient, StateServiceClient, VoiceServiceClient } from "@/services/grpc-client"
 import {
 	ContextMenuOptionType,
 	getContextMenuOptionIndex,
@@ -46,6 +47,10 @@ import BytosRulesToggleModal from "../bytos-rules/BytosRulesToggleModal"
 import { getDataUrlBase64Length, normalizeImagesForAttachment } from "./attachment-image-normalization"
 import { getModeToggleDraftAction } from "./chat-textarea-mode-toggle"
 import ServersToggleModal from "./ServersToggleModal"
+import { appendTranscript } from "./voice/composerDraft"
+import { resolveVoiceUiLanguage, voiceDictationStrings } from "./voice/dictationStrings"
+import { useVoiceDictation } from "./voice/useVoiceDictation"
+import { VoiceDictationButton, voiceStatusText } from "./voice/VoiceDictationButton"
 
 const { MAX_IMAGES_AND_FILES_PER_MESSAGE } = CHAT_CONSTANTS
 
@@ -101,6 +106,123 @@ const PLAN_MODE_COLOR = "var(--vscode-activityWarningBadge-background)"
 const ACT_MODE_COLOR = "var(--vscode-focusBorder)"
 // Auto Phase is an automatic green "run" state, distinct from blue Act.
 const AUTO_MODE_COLOR = "var(--vscode-charts-green, #2ea043)"
+
+/**
+ * F4 — why the mic button is inert, keyed by the stable code the host reports
+ * for `voiceEnabled`, capture capability, the engine and the selected model.
+ * The wording matches Settings → Voice so the two surfaces agree.
+ */
+const VOICE_UNAVAILABLE_TEXT: Record<string, string> = {
+	VOICE_DISABLED: "Voice input is off. Turn it on in Settings → Voice.",
+	PLATFORM_NOT_SUPPORTED_IN_F1: "Voice input is available on Windows x64 only.",
+	REMOTE_HOST_UNSUPPORTED: "Voice input is unavailable in a remote session.",
+	WEB_UI_UNSUPPORTED: "Voice input needs the desktop editor.",
+	CAPTURE_HELPER_MISSING: "The Windows audio capture helper is missing from this installation.",
+	NO_CAPTURE_DEVICE: "No microphone was found on this machine.",
+	CAPTURE_DEVICE_NOT_FOUND: "The selected microphone is no longer connected.",
+	MICROPHONE_ACCESS_DENIED: "Microphone access was denied. Allow it in Windows Settings → Privacy → Microphone.",
+	RECORDER_ISOLATION_UNVERIFIED: "Voice input is held back until recorder isolation is verified.",
+	WHISPER_BINARY_MISSING: "The speech recognition engine is not installed.",
+	WHISPER_BINARY_INTEGRITY_FAILED: "The speech recognition engine failed its integrity check.",
+	WHISPER_BINARY_UNSUPPORTED_PLATFORM: "Local speech recognition is available on Windows x64 only.",
+	MODEL_NOT_INSTALLED: "The speech model is not installed. Install it in Settings → Voice.",
+	MODEL_INTEGRITY_FAILED: "The speech model did not match its checksum. Verify it in Settings → Voice.",
+	MODEL_UNVERIFIED: "The speech model has not been verified. Press Verify in Settings → Voice.",
+}
+
+/** Turns a stable voice code into the one sentence the composer shows. */
+function describeVoiceUnavailable(code: string): string {
+	if (!code) return "Voice input is not ready."
+	return VOICE_UNAVAILABLE_TEXT[code] ?? `Voice input is unavailable (${code}).`
+}
+
+/**
+ * True when the selected chat model accepts text input.
+ *
+ * Voice input ends in the draft, so a model that cannot take text (an image-only
+ * model) would make the transcript useless. Unknown capabilities fail open, the
+ * same way the image-support check above does.
+ */
+function modelAcceptsText(selectedModelInfo: { modalities?: { input?: readonly string[] } }): boolean {
+	const input = selectedModelInfo.modalities?.input
+	if (!input || input.length === 0) return true
+	return input.includes("text")
+}
+
+interface VoiceReadiness {
+	status: VoiceServiceStatus | undefined
+	loading: boolean
+	/** Stable code when the status read itself failed. */
+	errorCode: string
+}
+
+/**
+ * F4 — one read of the host's real voice readiness for the composer.
+ *
+ * It composes the same two RPCs Settings uses, so the composer can never claim
+ * something different from Settings → Voice:
+ *  - `getVoiceStatus`           capability (no process spawns at all);
+ *  - `getVoiceServiceStatus`    engine state, model readiness, microphone list.
+ *
+ * Once mounted the stream keeps it current: a model that finishes verifying, or
+ * a microphone that gets plugged in, unlocks the button without a reload.
+ */
+function useVoiceReadiness(): VoiceReadiness {
+	const [status, setStatus] = useState<VoiceServiceStatus | undefined>(undefined)
+	const [loading, setLoading] = useState(true)
+	const [errorCode, setErrorCode] = useState("")
+	// Stops a slow read from overwriting a newer one.
+	const requestSeq = useRef(0)
+
+	useEffect(() => {
+		let cancelled = false
+		const seq = ++requestSeq.current
+		setLoading(true)
+		VoiceServiceClient.getVoiceServiceStatus(EmptyRequest.create())
+			.then((next) => {
+				if (cancelled || seq !== requestSeq.current) return
+				setStatus(next)
+				setErrorCode("")
+			})
+			.catch((error: unknown) => {
+				if (cancelled || seq !== requestSeq.current) return
+				setErrorCode((error instanceof Error ? error.message : String(error)) || "VOICE_INTERNAL_ERROR")
+			})
+			.finally(() => {
+				if (cancelled || seq !== requestSeq.current) return
+				setLoading(false)
+			})
+		return () => {
+			cancelled = true
+		}
+	}, [])
+
+	useEffect(() => {
+		const unsubscribe = VoiceServiceClient.subscribeToVoiceEvents(EmptyRequest.create(), {
+			onResponse: (event) => {
+				// Only transitions that can change readiness are worth a re-read:
+				// a finished download/verify, or the removal of a model.
+				if (
+					event.kind === "modelStatusChanged" &&
+					event.modelState !== "downloading" &&
+					event.modelState !== "verifying"
+				) {
+					requestSeq.current += 1
+					VoiceServiceClient.getVoiceServiceStatus(EmptyRequest.create())
+						.then((next) => setStatus(next))
+						.catch(() => undefined)
+				}
+			},
+			onError: () => {
+				// The stream is an optimisation; the one-shot read already ran.
+			},
+			onComplete: () => {},
+		})
+		return unsubscribe
+	}, [])
+
+	return { status, loading, errorCode }
+}
 
 type PhaseSelection = "plan" | "act" | "auto"
 
@@ -247,6 +369,9 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 			turnState,
 			autoPhaseRunning,
 			autoPhaseProgress,
+			voiceEnabled: hostVoiceEnabled,
+			voiceLanguage: hostVoiceLanguage,
+			voiceModelId: hostVoiceModelId,
 		} = useExtensionState()
 		// Cloud sessions are Act-only (like the desktop app and the cloud dashboard).
 		// While a cloud task is shown, or a new task is about to run in the cloud,
@@ -315,6 +440,75 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 		const oversizedImageCount = imageEncodedBytes.filter((bytes) => bytes > ATTACHMENT_LIMITS.maxImageEncodedBytes).length
 		const totalImageEncodedBytes = imageEncodedBytes.reduce((sum, bytes) => sum + bytes, 0)
 		const imagesOverBudget = oversizedImageCount > 0 || totalImageEncodedBytes > ATTACHMENT_LIMITS.maxTotalMediaBytes
+
+		// ── F4: voice input ────────────────────────────────────────────────────
+		// Readiness is real host data: `getVoiceStatus` (no process spawns) for
+		// capability, `getVoiceServiceStatus` for the engine, the selected model
+		// and the real microphone list. It is read once per composer mount and
+		// never polled, and refreshed by the voice event stream.
+		const voice = useVoiceReadiness()
+		const voiceEnabled = !!hostVoiceEnabled
+		const voiceStatus = voice.status
+		const voiceCanCapture = !!voiceStatus?.capability?.canCapture && voiceStatus?.microphoneAvailable === true
+		const recognitionReady = voiceStatus?.transcribeReady === true
+		const voiceSupported = voiceStatus?.engineState !== "unsupported-platform"
+		const voiceAvailable = voiceEnabled && voiceCanCapture && recognitionReady && modelAcceptsText(selectedModelInfo)
+		const voiceUnavailableReason = !voiceEnabled
+			? describeVoiceUnavailable("VOICE_DISABLED")
+			: !voiceStatus
+				? voice.loading
+					? "Checking the microphone…"
+					: describeVoiceUnavailable(voice.errorCode)
+				: !voiceStatus.capability?.canCapture
+					? describeVoiceUnavailable(voiceStatus.capability?.unavailableReason || "VOICE_INTERNAL_ERROR")
+					: !voiceStatus.microphoneAvailable
+						? describeVoiceUnavailable(voiceStatus.microphoneErrorCode || "NO_CAPTURE_DEVICE")
+						: !recognitionReady
+							? describeVoiceUnavailable(
+									voiceStatus.engineState !== "ready"
+										? voiceStatus.engineErrorCode || "WHISPER_BINARY_MISSING"
+										: "MODEL_NOT_INSTALLED",
+								)
+							: !voiceSupported
+								? describeVoiceUnavailable("WHISPER_BINARY_UNSUPPORTED_PLATFORM")
+								: "The selected model does not accept text input."
+
+		/**
+		 * The transcript is appended to the CURRENT draft, read straight from the
+		 * text area so text typed while the recogniser ran is kept. It is never
+		 * sent: `onSend` is only ever called by the Send button.
+		 */
+		const handleVoiceTranscript = useCallback(
+			(transcript: string) => {
+				const currentDraft = textAreaRef.current?.value ?? inputValue
+				const { value, changed, cursor } = appendTranscript(currentDraft, transcript)
+				if (!changed) return
+				setInputValue(value)
+				setCursorPosition(cursor)
+				setIntendedCursorPosition(cursor)
+			},
+			[inputValue, setInputValue],
+		)
+
+		const dictation = useVoiceDictation({
+			enabled: voiceAvailable,
+			language: hostVoiceLanguage,
+			modelId: hostVoiceModelId,
+			onTranscript: handleVoiceTranscript,
+		})
+
+		// F4: the dictation UI speaks the user's language. A pinned recognition
+		// language wins; otherwise the editor's own locale decides, so a Turkish
+		// user sees "Metne Çevir" without touching the settings first.
+		const voiceUiLanguage = useMemo(
+			() =>
+				resolveVoiceUiLanguage({
+					recognitionLanguage: hostVoiceLanguage,
+					editorLocale: typeof navigator !== "undefined" ? navigator.language : undefined,
+				}),
+			[hostVoiceLanguage],
+		)
+		const voiceStrings = useMemo(() => voiceDictationStrings(voiceUiLanguage), [voiceUiLanguage])
 
 		const addNormalizedImages = useCallback(
 			async (candidates: readonly string[]): Promise<number> => {
@@ -1750,7 +1944,16 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 					<div
 						className="absolute flex items-end bottom-4.5 right-5 z-10 h-8 text-xs"
 						style={{ height: textAreaBaseHeight }}>
-						<div className="flex flex-row items-center">
+						<div className="flex flex-row items-center gap-1">
+							{/* F4: mic sits immediately left of Send, inside that row.
+							    Nothing here changes the row's size, so the composer's
+							    height and width are unaffected. */}
+							<VoiceDictationButton
+								dictation={dictation}
+								disabledReason={voiceUnavailableReason}
+								enabled={voiceAvailable}
+								language={voiceUiLanguage}
+							/>
 							<div
 								className={cn("input-icon-button", { disabled: sendingDisabled }, "codicon codicon-send text-sm")}
 								data-testid="send-button"
@@ -1818,6 +2021,64 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 				{autoPhaseNotice && (
 					<div className="px-3.5 pb-1 text-xs" role="alert" style={{ color: "var(--vscode-errorForeground)" }}>
 						{autoPhaseNotice}
+					</div>
+				)}
+				{/* F4: recording / transcribing / failure, announced but never blocking.
+				    A failed run says why (the host's own sentence) and offers "try again". */}
+				{(voiceStatusText(dictation, voiceUiLanguage) || dictation.phase === "error") && (
+					<div
+						aria-live="polite"
+						className="flex items-center gap-1.5 px-3.5 pb-1 text-xs"
+						data-testid="voice-status"
+						role={dictation.phase === "error" ? "alert" : "status"}
+						style={{
+							color:
+								dictation.phase === "error"
+									? "var(--vscode-errorForeground)"
+									: dictation.phase === "recording"
+										? "var(--vscode-errorForeground, #f14c4c)"
+										: "var(--vscode-descriptionForeground)",
+						}}>
+						{dictation.phase === "error" && <TriangleAlertIcon className="shrink-0" size={12} />}
+						{dictation.phase === "recording" && (
+							<span
+								aria-hidden="true"
+								className="inline-block w-1.5 h-1.5 rounded-full animate-pulse shrink-0"
+								style={{ backgroundColor: "var(--vscode-errorForeground, #f14c4c)" }}
+							/>
+						)}
+						<span className="min-w-0 truncate">
+							{dictation.phase === "error"
+								? dictation.errorMessage || voiceStrings.failed
+								: voiceStatusText(dictation, voiceUiLanguage)}
+						</span>
+						{(dictation.phase === "recording" || dictation.phase === "transcribing") && (
+							<button
+								className="underline cursor-pointer bg-transparent border-0 p-0 m-0 text-[var(--vscode-textLink-foreground)] hover:text-[var(--vscode-textLink-activeForeground)]"
+								data-testid="voice-cancel"
+								onClick={() => void dictation.cancel()}
+								type="button">
+								{voiceStrings.cancel}
+							</button>
+						)}
+						{dictation.phase === "error" && (
+							<>
+								<button
+									className="underline cursor-pointer bg-transparent border-0 p-0 m-0 text-[var(--vscode-textLink-foreground)] hover:text-[var(--vscode-textLink-activeForeground)]"
+									data-testid="voice-retry"
+									onClick={dictation.retry}
+									type="button">
+									{voiceStrings.tryAgain}
+								</button>
+								<button
+									className="underline cursor-pointer bg-transparent border-0 p-0 m-0 text-[var(--vscode-textLink-foreground)] hover:text-[var(--vscode-textLink-activeForeground)]"
+									data-testid="voice-dismiss"
+									onClick={dictation.reset}
+									type="button">
+									{voiceStrings.dismiss}
+								</button>
+							</>
+						)}
 					</div>
 				)}
 				<div className="flex justify-between items-center -mt-[2px] px-3 pb-2">

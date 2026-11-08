@@ -39,6 +39,9 @@ describe("GrpcHandler Recording Middleware", () => {
 		builderStub = {
 			enableIf: sinon.stub().returnsThis(),
 			withLogFileHandler: sinon.stub().returnsThis(),
+			// `getRecorder()` registers the voice isolation filter unconditionally
+			// (F1 T1), so the builder chain must support it.
+			withFilters: sinon.stub().returnsThis(),
 			build: sinon.stub().returns(recorderStub),
 		}
 

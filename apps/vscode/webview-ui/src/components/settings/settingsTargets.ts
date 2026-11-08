@@ -12,6 +12,7 @@ export const SETTINGS_NAVIGATION_TARGETS = {
 	},
 	terminal: { tabId: "general", elementId: "terminal-settings-section" },
 	general: { tabId: "general" },
+	voice: { tabId: "voice" },
 	about: { tabId: "about" },
 	debug: { tabId: "debug" },
 	"remote-config": { tabId: "remote-config" },

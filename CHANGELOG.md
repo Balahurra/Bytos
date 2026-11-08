@@ -1,5 +1,38 @@
 # Changelog
 
+## [1.0.2]
+
+### Added
+
+- Account view in the Bytos sidebar with web-first sign-in and sign-up, plus an email/password fallback.
+- Secure browser → VS Code account handoff: the website completes Supabase OAuth, exchanges the session for a single-use, PKCE-bound handoff code through the Bytos API, and returns to `vscode://bytos.bytos/auth/callback`. Only the authorization code and state travel in the URI; access and refresh tokens never leave SecretStorage.
+- Cross-device session restore: the Supabase session is stored in VS Code SecretStorage and refreshed in the background; "Keep me signed in" is honoured per sign-in.
+- Local voice dictation in the chat composer. The microphone button sits left of Send: press it to record, then press **Metne Çevir** / **Transcribe** / **In Text umwandeln** to convert the recording to text, which is appended to the existing draft for you to edit and send yourself. Recognition runs locally with whisper.cpp; audio is held in memory only and never leaves the machine.
+- Voice dictation UI is localised in Turkish, English and German.
+
+### Changed
+
+- The account screen is optional. You can dismiss it and keep using Bytos with your own API key (BYOK); no Bytos account is required.
+- The webview Content-Security-Policy no longer allows `bytos.dev` / `*.supabase.co` connections, because the account flow runs in the extension host and the system browser.
+- Voice capture ends on silence using a gate calibrated against the microphone's own measured room tone instead of a fixed threshold, and transcription uses more CPU threads on machines with more cores.
+
+### Fixed
+
+- Sign-in over `vscode://` now works on VS Code Insiders as well as stable VS Code; the handoff callback accepts both supported URI schemes and rejects every other scheme and authority.
+- The handoff exchange reports the real Supabase access-token lifetime instead of a fixed one-hour value, so an already-expired session is never treated as fresh.
+- The account state reaches the webview after a browser callback and after a VS Code restart.
+- Sign-out always clears the local session even when the network call fails.
+- Voice input no longer finishes a recording silently and then delivers no text. A recording that ended on its own (silence or the length cap) keeps its audio until you press the transcribe button, so the transcript still reaches the draft.
+- Voice input no longer treats ordinary speech as silence: the level gate was far above what a built-in laptop microphone actually produces, which discarded the recording before it could be transcribed.
+- The microphone selected in **Settings → Voice** is now the one used for dictation; previously the composer always recorded from the system default.
+- Voice input no longer inserts the recogniser's non-speech markers (for example `[Applaus]` or `[MÜZİK ÇALIYOR]`) into your message as if you had said them.
+
+
+### Security
+
+- Hardened the account handoff: PKCE S256, hashed single-use state, replay tombstones, and AES-256-GCM encryption of the handoff tokens at rest in the Bytos API.
+- `openExternal` failure logs redact the URL, so handoff state and PKCE material never appear in a message box.
+
 ## [1.0.1]
 
 ### Added

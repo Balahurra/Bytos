@@ -8,6 +8,7 @@ import {
 	HardDriveDownload,
 	Info,
 	type LucideIcon,
+	Mic,
 	SlidersHorizontal,
 	Sparkles,
 	Wrench,
@@ -31,12 +32,13 @@ import DebugSection from "./sections/DebugSection"
 import FeatureSettingsSection from "./sections/FeatureSettingsSection"
 import GeneralSettingsSection from "./sections/GeneralSettingsSection"
 import { RemoteConfigSection } from "./sections/RemoteConfigSection"
+import VoiceSettingsSection from "./sections/VoiceSettingsSection"
 import { getNextSettingsNavigationRequestId, resolveSettingsTarget, type SettingsNavigationRequest } from "./settingsTargets"
 
 const IS_DEV = process.env.IS_DEV
 
 // Tab definitions
-type SettingsTabID = "api-config" | "features" | "auto-phase-plan" | "general" | "about" | "debug" | "remote-config"
+type SettingsTabID = "api-config" | "features" | "auto-phase-plan" | "general" | "voice" | "about" | "debug" | "remote-config"
 interface SettingsTab {
 	id: SettingsTabID
 	name: string
@@ -74,6 +76,14 @@ const SETTINGS_TABS: SettingsTab[] = [
 		tooltipText: "General Settings",
 		headerText: "General Settings",
 		icon: Wrench,
+	},
+	{
+		// F3: sits between General and About, per the Voice spec.
+		id: "voice",
+		name: "Voice",
+		tooltipText: "Voice Settings",
+		headerText: "Voice",
+		icon: Mic,
 	},
 	{
 		id: "remote-config",
@@ -131,6 +141,7 @@ const SettingsView = ({ navigationRequest, onDone }: SettingsViewProps) => {
 		() => ({
 			"api-config": ApiConfigurationSection,
 			general: GeneralSettingsSection,
+			voice: VoiceSettingsSection,
 			features: FeatureSettingsSection,
 			"auto-phase-plan": AutoPhasePlanSection,
 			"remote-config": RemoteConfigSection,

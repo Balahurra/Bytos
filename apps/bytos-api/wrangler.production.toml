@@ -1,0 +1,19 @@
+name = "bytos-api"
+main = "src/index.ts"
+compatibility_date = "2026-01-01"
+workers_dev = true
+
+[vars]
+SUPABASE_URL = "https://qetnpmgyseccwbpsjxcl.supabase.co"
+APP_BASE_URL = "https://bytos.dev"
+STORAGE_DRIVER = "supabase"
+CORS_ORIGINS = "https://bytos.dev,https://staging-app.bytos.dev"
+
+# Secrets (set with `wrangler secret put ... --config wrangler.production.toml`):
+# - SUPABASE_ANON_KEY
+# - SUPABASE_SERVICE_ROLE_KEY
+# - HANDOFF_ENCRYPTION_KEY
+
+[observability]
+enabled = true
+

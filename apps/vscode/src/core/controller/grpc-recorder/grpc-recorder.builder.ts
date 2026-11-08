@@ -1,4 +1,5 @@
 import { GrpcPostRecordHook, GrpcRequestFilter } from "@core/controller/grpc-recorder/types"
+import { isVoiceRequest } from "@core/voice/recorder/voiceRequestFilter"
 import { Controller } from "@/core/controller"
 import { GrpcRecorder, GrpcRecorderNoops, IRecorder } from "@/core/controller/grpc-recorder/grpc-recorder"
 import { LogFileHandler, LogFileHandlerNoops } from "@/core/controller/grpc-recorder/log-file-handler"
@@ -48,6 +49,10 @@ export class GrpcRecorderBuilder {
 			GrpcRecorderBuilder.recorder = GrpcRecorder.builder()
 				.enableIf(process.env.GRPC_RECORDER_ENABLED === "true" && process.env.BYTOS_ENVIRONMENT === "local")
 				.withLogFileHandler(new LogFileHandler())
+				// Always applied, never gated on GRPC_RECORDER_TESTS_FILTERS_ENABLED.
+				// Voice traffic and anything carrying an audio-like field must never
+				// reach the recorder, the session log or disk.
+				.withFilters(isVoiceRequest)
 				.build(controller)
 		}
 		return GrpcRecorderBuilder.recorder

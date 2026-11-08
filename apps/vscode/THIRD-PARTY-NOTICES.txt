@@ -14,36 +14,36 @@ actually distributed, its notice is still provided here.
 This file is not a legal opinion. See LICENSE-COMPLIANCE-REPORT.md for
 verified obligations and remaining uncertainties.
 
-Generated: 2026-11-05T19:48:57.765Z
-Packages: 2399
+Generated: 2026-11-07T04:44:09.604Z
+Packages: 2423
 
 License summary
 ---------------
-MIT	1729
-Apache-2.0	375
+MIT	1744
+Apache-2.0	378
 ISC	115
 BSD-3-Clause	51
 BSD-2-Clause	34
 BlueOak-1.0.0	17
 UNKNOWN	13
 Unlicense	8
+MIT OR Apache-2.0	7
 MPL-2.0	7
 OFL-1.1	5
 Artistic-2.0	5
-MIT OR Apache-2.0	3
 apache-2.0	3
+CC0-1.0	3
 Apache-2.0 OR MIT	3
+Apache-2.0 AND LGPL-3.0-or-later	2
 CC-BY-4.0	2
 MIT/X11	2
 (MPL-2.0 OR Apache-2.0)	2
 BSD	2
-CC0-1.0	2
 0BSD	2
 (MIT OR CC0-1.0)	2
 WTFPL	1
 (Apache-2.0 AND BSD-3-Clause)	1
 MIT-0	1
-Apache-2.0 AND LGPL-3.0-or-later	1
 SAP DEVELOPER LICENSE AGREEMENT	1
 Apache-2.0 AND MIT	1
 Python-2.0	1
@@ -174,6 +174,10 @@ Name	Version	License	Repository	Copyright
 @chevrotain/types	11.1.2	Apache-2.0	git://github.com/Chevrotain/chevrotain	"Licensor" shall mean the copyright owner or entity authorized by
 @clack/core	1.4.3	MIT	https://github.com/bombshell-dev/clack	MIT License Copyright (c) 2025-Present [Bombshell contributors](https://bomb.sh/team)
 @clack/prompts	1.7.0	MIT	https://github.com/bombshell-dev/clack	MIT License Copyright (c) 2025-Present [Bombshell contributors](https://bomb.sh/team)
+@cloudflare/kv-asset-handler	0.5.0	MIT OR Apache-2.0	https://github.com/cloudflare/workers-sdk	
+@cloudflare/unenv-preset	2.16.2	MIT OR Apache-2.0	https://github.com/cloudflare/workers-sdk	
+@cloudflare/workerd-windows-64	1.20261104.1	Apache-2.0	https://github.com/cloudflare/workerd	
+@cloudflare/workers-types	4.20260702.1	MIT OR Apache-2.0	https://github.com/cloudflare/workerd	
 @colors/colors	1.6.0	MIT	http://github.com/DABH/colors.js	- Copyright (c) Marak Squires
 @cspotcode/source-map-support	0.8.1	MIT	https://github.com/cspotcode/node-source-map-support	Copyright (c) 2014 Evan Wallace
 @csstools/color-helpers	5.1.0	MIT-0	https://github.com/csstools/postcss-plugins	Copyright © CSSTools Contributors
@@ -196,6 +200,7 @@ Name	Version	License	Repository	Copyright
 @emotion/memoize	0.9.0	MIT	https://github.com/emotion-js/emotion/tree/main/packages/memoize	Copyright (c) Emotion team and other contributors
 @esbuild/win32-x64	0.25.12	MIT	https://github.com/evanw/esbuild	
 @esbuild/win32-x64	0.27.7	MIT	https://github.com/evanw/esbuild	
+@esbuild/win32-x64	0.28.2	MIT	https://github.com/evanw/esbuild	
 @eslint-community/eslint-utils	4.10.1	MIT	https://github.com/eslint-community/eslint-utils	Copyright (c) 2018 Toru Nagashima
 @eslint-community/regexpp	4.12.2	MIT	https://github.com/eslint-community/regexpp	Copyright (c) 2018 Toru Nagashima
 @eslint/config-array	0.21.2	Apache-2.0	https://github.com/eslint/rewrite	"Licensor" shall mean the copyright owner or entity authorized by
@@ -386,6 +391,7 @@ Name	Version	License	Repository	Copyright
 @iconify/utils	3.1.4	MIT	https://github.com/iconify/iconify	Copyright (c) 2021-PRESENT Vjacheslav Trushkin
 @img/colour	1.1.0	MIT	https://github.com/lovell/colour	Copyright (c) 2012 Heather Arthur
 @img/sharp-win32-x64	0.34.5	Apache-2.0 AND LGPL-3.0-or-later	https://github.com/lovell/sharp	"Licensor" shall mean the copyright owner or entity authorized by the copyright
+@img/sharp-win32-x64	0.35.5	Apache-2.0 AND LGPL-3.0-or-later	https://github.com/lovell/sharp	"Licensor" shall mean the copyright owner or entity authorized by the copyright
 @internationalized/date	3.12.0	Apache-2.0	https://github.com/adobe/react-spectrum/tree/main/packages/@internationalized/date	"Licensor" shall mean the copyright owner or entity authorized by
 @internationalized/date	3.12.3	Apache-2.0	https://github.com/adobe/react-spectrum/tree/main/packages/@internationalized/date	"Licensor" shall mean the copyright owner or entity authorized by
 @internationalized/message	3.1.10	Apache-2.0	https://github.com/adobe/react-spectrum	"Licensor" shall mean the copyright owner or entity authorized by
@@ -496,6 +502,9 @@ Name	Version	License	Repository	Copyright
 @pierre/theming	1.0.1	apache-2.0		"Licensor" shall mean the copyright owner or entity authorized by the
 @pinojs/redact	0.4.0	MIT	https://github.com/pinojs/redact	Copyright (c) 2025 pinojs contributors
 @pkgjs/parseargs	0.11.0	MIT	git@github.com:pkgjs/parseargs	"Licensor" shall mean the copyright owner or entity authorized by
+@poppinss/colors	4.1.6	MIT	https://github.com/poppinss/colors	Copyright 2021 Harminder Virk, contributors
+@poppinss/dumper	0.6.5	MIT	https://github.com/poppinss/dumper	Copyright (c) 2023
+@poppinss/exception	1.2.3	MIT	https://github.com/poppinss/exception	Copyright (c) 2023
 @posthog/browser-common	0.6.0	MIT	https://github.com/PostHog/posthog-js	
 @posthog/core	1.48.11	MIT	https://github.com/PostHog/posthog-js	
 @posthog/types	1.406.1	MIT	https://github.com/PostHog/posthog-js	Copyright 2020 Posthog / Hiberly, Inc.
@@ -786,6 +795,7 @@ Name	Version	License	Repository	Copyright
 @simple-git/argv-parser	2.0.1	MIT	https://github.com/steveukx/git-js	Copyright (c) 2025 Steve King
 @sinclair/typebox	0.27.12	MIT	https://github.com/sinclairzx81/sinclair-typebox	Copyright (c) 2017-2023 Haydn Paterson (sinclair) <haydn.developer@gmail.com>
 @sinclair/typebox	0.34.52	MIT	https://github.com/sinclairzx81/sinclair-typebox	Copyright (c) 2017-2026 Haydn Paterson
+@sindresorhus/is	7.2.0	MIT	sindresorhus/is	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 @sindresorhus/merge-streams	2.3.0	MIT	sindresorhus/merge-streams	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 @sindresorhus/merge-streams	4.0.0	MIT	sindresorhus/merge-streams	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 @sinonjs/commons	3.0.1	BSD-3-Clause	https://github.com/sinonjs/commons	Copyright (c) 2018, Sinon.JS
@@ -806,6 +816,7 @@ Name	Version	License	Repository	Copyright
 @so-ric/colorspace	1.1.6	MIT	https://github.com/so-ric/colorspace	Copyright (c) 2015 Arnout Kazemier, Martijn Swaagman, the Contributors.
 @spectrum-icons/ui	3.7.1	Apache-2.0	https://github.com/adobe/react-spectrum	"Licensor" shall mean the copyright owner or entity authorized by
 @spectrum-icons/workflow	4.3.1	Apache-2.0	https://github.com/adobe/react-spectrum	"Licensor" shall mean the copyright owner or entity authorized by
+@speed-highlight/core	1.2.24	CC0-1.0	git://github.com/speed-highlight/core	exclusive Copyright and Related Rights (defined below) upon the creator
 @standard-schema/spec	1.1.0	MIT	https://github.com/standard-schema/standard-schema	Copyright (c) 2024 Colin McDonnell
 @storybook/addon-a11y	9.1.20	MIT	https://github.com/storybookjs/storybook	
 @storybook/addon-docs	9.1.20	MIT	https://github.com/storybookjs/storybook	
@@ -1095,6 +1106,7 @@ binary-extensions	2.3.0	MIT	sindresorhus/binary-extensions	Copyright (c) Sindre 
 binaryextensions	6.11.0	Artistic-2.0	https://github.com/bevry/binaryextensions	- Copyright &copy; [Benjamin Lupton](https://balupton.com)
 bindings	1.5.0	MIT	git://github.com/TooTallNate/node-bindings	Copyright (c) 2012 Nathan Rajlich &lt;nathan@tootallnate.net&gt;
 bl	4.1.0	MIT	https://github.com/rvagg/bl	Copyright (c) 2013-2019 bl contributors
+blake3-wasm	2.1.5	MIT	https://github.com/connor4312/blake3	Copyright (c) 2019 Connor Peet
 bluebird	3.4.7	MIT	git://github.com/petkaantonov/bluebird	Copyright (c) 2013-2015 Petka Antonov
 body-parser	2.3.0	MIT	expressjs/body-parser	Copyright (c) 2014 Jonathan Ong <me@jongleberry.com>
 boolbase	1.0.0	ISC	https://github.com/fb55/boolbase	
@@ -1199,6 +1211,7 @@ content-type	1.0.5	MIT	jshttp/content-type	Copyright (c) 2015 Douglas Christophe
 content-type	2.1.0	MIT	jshttp/content-type	Copyright (c) 2015 Douglas Christopher Wilson
 convert-source-map	2.0.0	MIT	git://github.com/thlorenz/convert-source-map	Copyright 2013 Thorsten Lorenz.
 cookie	0.7.2	MIT	jshttp/cookie	Copyright (c) 2012-2014 Roman Shtylman <shtylman@gmail.com>
+cookie	1.1.1	MIT	jshttp/cookie	Copyright (c) 2012-2014 Roman Shtylman <shtylman@gmail.com>
 cookie-signature	1.2.2	MIT	https://github.com/visionmedia/node-cookie-signature	Copyright (c) 2012–2024 LearnBoost <tj@learnboost.com> and other contributors;
 copy-to-clipboard	3.3.3	MIT	https://github.com/sudodoki/copy-to-clipboard	Copyright (c) 2017 sudodoki <smd.deluzion@gmail.com>
 core-js	3.50.0	MIT	https://github.com/zloirock/core-js	Copyright (c) 2013–2025 Denis Pushkarev (zloirock.ru)
@@ -1347,6 +1360,7 @@ env-paths	2.2.1	MIT	sindresorhus/env-paths	Copyright (c) Sindre Sorhus <sindreso
 environment	1.1.0	MIT	sindresorhus/environment	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 error-ex	1.3.4	MIT	qix-/node-error-ex	Copyright (c) 2015 JD Ballard
 error-stack-parser	2.1.4	MIT	git://github.com/stacktracejs/error-stack-parser	Copyright (c) 2017 Eric Wendelin and other contributors
+error-stack-parser-es	1.0.5	MIT	https://github.com/antfu/error-stack-parser-es	Copyright (c) 2023-PRESENT Anthony Fu <https://github.com/antfu>
 errore	0.11.0	MIT	https://github.com/remorses/errore	
 es-define-property	1.0.1	MIT	https://github.com/ljharb/es-define-property	Copyright (c) 2024 Jordan Harband
 es-errors	1.3.0	MIT	https://github.com/ljharb/es-errors	Copyright (c) 2024 Jordan Harband
@@ -1357,6 +1371,7 @@ es-set-tostringtag	2.1.0	MIT	https://github.com/es-shims/es-set-tostringtag	Copy
 es-toolkit	1.51.0	MIT	https://github.com/toss/es-toolkit	Copyright (c) 2024 Viva Republica, Inc.
 esbuild	0.25.12	MIT	https://github.com/evanw/esbuild	Copyright (c) 2020 Evan Wallace
 esbuild	0.27.7	MIT	https://github.com/evanw/esbuild	Copyright (c) 2020 Evan Wallace
+esbuild	0.28.2	MIT	https://github.com/evanw/esbuild	Copyright (c) 2020 Evan Wallace
 esbuild-register	3.6.0	MIT		Copyright (c) EGOIST <0x142857@gmail.com> (https://egoist.sh)
 escalade	3.2.0	MIT	lukeed/escalade	Copyright (c) Luke Edwards <luke.edwards05@gmail.com> (lukeed.com)
 escape-carriage	1.3.1	MIT	https://github.com/lgeiger/escape-carriage	Copyright (c) 2016 Lukas Geiger
@@ -1825,6 +1840,7 @@ mimic-fn	4.0.0	MIT	sindresorhus/mimic-fn	Copyright (c) Sindre Sorhus <sindresorh
 mimic-function	5.0.1	MIT	sindresorhus/mimic-function	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 mimic-response	3.1.0	MIT	sindresorhus/mimic-response	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 min-indent	1.0.1	MIT	https://github.com/thejameskyle/min-indent	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com), James Kyle <me@thejameskyle.com> (thejameskyle.com)
+miniflare	5.20261104.0-beta	MIT	https://github.com/cloudflare/workers-sdk	
 minimatch	10.2.6	BlueOak-1.0.0	git@github.com:isaacs/minimatch	## Copyright
 minimatch	3.1.5	ISC	git://github.com/isaacs/minimatch	Copyright (c) Isaac Z. Schlueter and Contributors
 minimatch	5.1.9	ISC	git://github.com/isaacs/minimatch	Copyright (c) 2011-2023 Isaac Z. Schlueter and Contributors
@@ -1944,6 +1960,7 @@ path-key	4.0.0	MIT	sindresorhus/path-key	Copyright (c) Sindre Sorhus <sindresorh
 path-parse	1.0.7	MIT	https://github.com/jbgutierrez/path-parse	Copyright (c) 2015 Javier Blanco
 path-scurry	1.11.1	BlueOak-1.0.0	https://github.com/isaacs/path-scurry	## Copyright
 path-scurry	2.0.2	BlueOak-1.0.0	https://github.com/isaacs/path-scurry	## Copyright
+path-to-regexp	6.3.0	MIT	https://github.com/pillarjs/path-to-regexp	Copyright (c) 2014 Blake Embrey (hello@blakeembrey.com)
 path-to-regexp	8.4.2	MIT	https://github.com/pillarjs/path-to-regexp	Copyright (c) 2014 Blake Embrey (hello@blakeembrey.com)
 path-type	6.0.0	MIT	sindresorhus/path-type	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 pathe	2.0.3	MIT	unjs/pathe	Copyright (c) Pooya Parsa <pooya@pi0.io> - Daniel Roe <daniel@roe.dev>
@@ -2138,6 +2155,7 @@ setprototypeof	1.2.0	ISC	https://github.com/wesleytodd/setprototypeof	Copyright 
 shadcn	4.19.0	MIT	https://github.com/shadcn-ui/ui	Copyright (c) 2023 shadcn
 shallow-clone	3.0.1	MIT	jonschlinkert/shallow-clone	Copyright (c) 2015-present, Jon Schlinkert.
 sharp	0.34.5	Apache-2.0	git://github.com/lovell/sharp	"Licensor" shall mean the copyright owner or entity authorized by the copyright
+sharp	0.35.5	Apache-2.0	https://github.com/lovell/sharp	"Licensor" shall mean the copyright owner or entity authorized by the copyright
 shebang-command	2.0.0	MIT	kevva/shebang-command	Copyright (c) Kevin Mårtensson <kevinmartensson@gmail.com> (github.com/kevva)
 shebang-regex	3.0.0	MIT	sindresorhus/shebang-regex	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
 shell-quote	1.10.0	MIT	http://github.com/ljharb/shell-quote	Copyright (c) 2013 James Halliday (mail@substack.net)
@@ -2330,6 +2348,7 @@ undici-types	5.26.5	MIT	https://github.com/nodejs/undici
 undici-types	6.21.0	MIT	https://github.com/nodejs/undici	Copyright (c) Matteo Collina and Undici contributors
 undici-types	7.18.2	MIT	https://github.com/nodejs/undici	Copyright (c) Matteo Collina and Undici contributors
 undici-types	7.24.6	MIT	https://github.com/nodejs/undici	Copyright (c) Matteo Collina and Undici contributors
+unenv	2.0.0-rc.24	MIT	unjs/unenv	Copyright (c) Pooya Parsa <pooya@pi0.io>
 unicorn-magic	0.1.0	MIT	sindresorhus/unicorn-magic	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 unicorn-magic	0.3.0	MIT	sindresorhus/unicorn-magic	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 unified	11.0.5	MIT	unifiedjs/unified	Copyright (c) 2015 Titus Wormer <tituswormer@gmail.com>
@@ -2417,12 +2436,15 @@ windows-release	6.1.0	MIT	sindresorhus/windows-release	Copyright (c) Sindre Sorh
 winston	3.19.0	MIT	https://github.com/winstonjs/winston	Copyright (c) 2010 Charlie Robbins
 winston-transport	4.9.0	MIT	git@github.com:winstonjs/winston-transport	Copyright (c) 2015 Charlie Robbins & the contributors.
 word-wrap	1.2.5	MIT	jonschlinkert/word-wrap	Copyright (c) 2014-2016, Jon Schlinkert
+workerd	1.20261104.1	Apache-2.0	https://github.com/cloudflare/workerd	
 workerpool	9.3.4	Apache-2.0	git://github.com/josdejong/workerpool	"Licensor" shall mean the copyright owner or entity authorized by
+wrangler	4.158.0	MIT OR Apache-2.0	https://github.com/cloudflare/workers-sdk	
 wrap-ansi	7.0.0	MIT	chalk/wrap-ansi	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 wrap-ansi	8.1.0	MIT	chalk/wrap-ansi	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 wrap-ansi	9.0.2	MIT	chalk/wrap-ansi	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 wrappy	1.0.2	ISC	https://github.com/npm/wrappy	Copyright (c) Isaac Z. Schlueter and Contributors
 ws	7.5.13	MIT	websockets/ws	Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>
+ws	8.21.0	MIT	https://github.com/websockets/ws	Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>
 ws	8.21.3	MIT	https://github.com/websockets/ws	Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>
 wsl-utils	0.1.0	MIT	sindresorhus/wsl-utils	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 wsl-utils	1.0.0	MIT	sindresorhus/wsl-utils	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
@@ -2448,6 +2470,8 @@ yocto-queue	0.1.0	MIT	sindresorhus/yocto-queue	Copyright (c) Sindre Sorhus <sind
 yocto-queue	1.2.2	MIT	sindresorhus/yocto-queue	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 yocto-spinner	1.2.2	MIT	sindresorhus/yocto-spinner	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 yoctocolors	2.2.0	MIT	sindresorhus/yoctocolors	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+youch	4.1.0-beta.10	MIT	https://github.com/poppinss/youch	Copyright (c) 2023
+youch-core	0.3.3	MIT	https://github.com/poppinss/youch-core	Copyright (c) 2024
 zigpty	0.2.1	MIT	pithings/zigpty	Copyright (c) Pooya Parsa <pooya@pi0.io>
 zip-stream	4.1.1	MIT	https://github.com/archiverjs/node-zip-stream	Copyright (c) 2014 Chris Talkington, contributors.
 zip-stream	6.0.1	MIT	https://github.com/archiverjs/node-zip-stream	Copyright (c) 2014 Chris Talkington, contributors.

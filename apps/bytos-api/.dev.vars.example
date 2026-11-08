@@ -1,0 +1,12 @@
+# Local-only Worker secrets. Copy to `.dev.vars` and fill in.
+# The Supabase anon key is public by design; the service-role key is NOT used here.
+SUPABASE_URL=https://qetnpmgyseccwbpsjxcl.supabase.co
+SUPABASE_ANON_KEY=
+HANDOFF_ENCRYPTION_KEY=
+# Optional local mock overrides (used by the e2e test harness):
+# SUPABASE_JWKS_URL=http://127.0.0.1:54321/auth/v1/.well-known/jwks.json
+# SUPABASE_USERINFO_URL=http://127.0.0.1:54321/auth/v1/user
+# Production only (do not put a service-role key in a local browser build):
+# STORAGE_DRIVER=supabase
+# SUPABASE_SERVICE_ROLE_KEY=
+

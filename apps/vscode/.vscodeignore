@@ -68,6 +68,17 @@ evals/
 buf.yaml
 .bytosrules/
 
+# Voice F1: the native capture helper and its build inputs are development/test
+# artifacts only. Whether the helper ships is an F5 packaging decision; F1 must
+# not change what a packaged extension contains.
+native/**
+assets/voice/**
+
+# Voice F2: the pinned whisper engine, the downloaded models and the speech
+# corpus used by the recognition tests are local test assets. They must never be
+# packaged; F5 owns the packaging decision for the engine.
+test-assets/**
+
 # Build metadata that is not read at runtime. The walkthrough, README, NOTICE,
 # LICENSE, THIRD-PARTY-NOTICES.txt and PRIVACY.md are intentionally packaged;
 # everything else here is generated or development-only.

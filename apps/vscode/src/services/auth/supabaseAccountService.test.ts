@@ -249,11 +249,14 @@ describe("SupabaseAccountService", () => {
 		}
 	})
 
-	it("clears SecretStorage and marks onboarding incomplete on sign out", async () => {
+	it("clears SecretStorage on sign out without re-arming the account intro", async () => {
 		await service().signIn("user@example.com", "secret", true)
+		setGlobalState.mockClear()
 		await service().signOut()
 		expect(secrets.has("bytos.supabase.session")).toBe(false)
-		expect(setGlobalState).toHaveBeenCalledWith("welcomeViewCompleted", false)
+		// The one-time account intro stays completed; the title-bar bell is the
+		// signed-out reminder instead of reopening the account view.
+		expect(setGlobalState).not.toHaveBeenCalledWith("welcomeViewCompleted", false)
 	})
 
 	it("does not clear SecretStorage when the sign-out network call hangs", async () => {

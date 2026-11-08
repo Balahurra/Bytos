@@ -18,6 +18,7 @@ export default defineConfig({
 			"src/hosts/vscode/VscodeEditPreview.test.ts",
 			"src/hosts/vscode/vscode-secret-storage.test.ts",
 			"src/hosts/vscode/vscode-provider-credential-store.test.ts",
+			"src/hosts/vscode/notifications.test.ts",
 			"src/shared/vsCodeSelectorUtils.test.ts",
 			"src/shared/net.test.ts",
 			"src/shared/proto-conversions/models/**/*.test.ts",

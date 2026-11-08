@@ -201,13 +201,13 @@ export const WebAccountPanel = ({ onDone }: { onDone: () => void }) => {
 							and <VSCodeLink href="https://bytos.dev/privacy">Privacy Policy</VSCodeLink>.
 						</p>
 
-						<div className="border-t border-(--vscode-panel-border) pt-3 flex flex-col gap-1">
-							<VSCodeButton appearance="secondary" onClick={onDone}>
+						<div className="border-t border-(--vscode-panel-border) pt-3">
+							<button
+								className="bg-transparent border-0 p-0 text-xs text-(--vscode-descriptionForeground) underline underline-offset-2 cursor-pointer hover:text-(--vscode-foreground)"
+								onClick={onDone}
+								type="button">
 								Continue without an account
-							</VSCodeButton>
-							<p className="text-xs text-(--vscode-descriptionForeground) m-0">
-								Bytos works without an account. Use your own API key (BYOK) and skip this step any time.
-							</p>
+							</button>
 						</div>
 					</div>
 				)}

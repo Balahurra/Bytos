@@ -366,7 +366,9 @@ export class SupabaseAccountService {
 	async signOut(): Promise<void> {
 		const session = await this.readSession()
 		await this.clearSession()
-		this.markWelcome(false)
+		// Signing out must not re-arm the one-time account intro. The title-bar
+		// bell is the ongoing signed-out reminder; the account view only opens
+		// when the user asks for it.
 		if (!session) return
 		try {
 			const config = await this.loadConfig()

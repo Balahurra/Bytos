@@ -160,6 +160,12 @@
 				"icon": "$(person)"
 			},
 			{
+				"command": "bytos.notificationsButtonClicked",
+				"title": "Notifications",
+				"category": "Bytos",
+				"icon": "$(bell)"
+			},
+			{
 				"command": "bytos.dev.createTestTasks",
 				"title": "Create Test Tasks",
 				"category": "Bytos",
@@ -286,8 +292,13 @@
 					"when": "view == bytos.SidebarProvider"
 				},
 				{
-					"command": "bytos.settingsButtonClicked",
+					"command": "bytos.notificationsButtonClicked",
 					"group": "navigation@6",
+					"when": "view == bytos.SidebarProvider"
+				},
+				{
+					"command": "bytos.settingsButtonClicked",
+					"group": "navigation@7",
 					"when": "view == bytos.SidebarProvider"
 				}
 			],

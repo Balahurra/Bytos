@@ -55,6 +55,7 @@ import { workspaceResolver } from "./core/workspace"
 import { findMatchingNotebookCell, getContextForCommand, showWebview } from "./hosts/vscode/commandUtils"
 import { abortCommitGeneration, generateCommitMsg } from "./hosts/vscode/commit-message-generator"
 import { registerBytosOutputChannel } from "./hosts/vscode/hostbridge/env/debugLog"
+import { showBytosNotifications } from "./hosts/vscode/notifications"
 import {
 	disposeVscodeCommentReviewController,
 	getVscodeCommentReviewController,
@@ -182,6 +183,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand(commands.HistoryButton, () => sendHistoryButtonClickedEvent()))
 	context.subscriptions.push(vscode.commands.registerCommand(commands.AccountButton, () => sendAccountButtonClickedEvent()))
 	context.subscriptions.push(vscode.commands.registerCommand(commands.OpenAccount, () => sendAccountButtonClickedEvent()))
+	context.subscriptions.push(vscode.commands.registerCommand(commands.NotificationsButton, () => showBytosNotifications()))
 	context.subscriptions.push(vscode.commands.registerCommand(commands.WorktreesButton, () => sendWorktreesButtonClickedEvent()))
 
 	// Voice F1 smoke entry point. Registered only outside Production and loaded

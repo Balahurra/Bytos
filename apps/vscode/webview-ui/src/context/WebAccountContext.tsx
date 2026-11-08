@@ -39,6 +39,7 @@ export const WebAccountProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 	const { supabaseUser } = useExtensionState()
 	const [user, setUser] = useState<WebAccountUser | null>(null)
 	const userRef = useRef<WebAccountUser | null>(null)
+	const previousSupabaseUserRef = useRef<string | undefined>(undefined)
 	const [ready, setReady] = useState(false)
 	const [sessionExpired, setSessionExpired] = useState(false)
 	const [keepSignedIn, setKeepSignedInState] = useState(() => {
@@ -90,8 +91,18 @@ export const WebAccountProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 	// never receives or stores the Supabase tokens.
 	useEffect(() => {
 		if (supabaseUser?.uid) {
+			previousSupabaseUserRef.current = supabaseUser.uid
 			setUser({ id: supabaseUser.uid, email: supabaseUser.email ?? "" })
 			setSessionExpired(false)
+			return
+		}
+		// A first snapshot without a user is a cold host cache, not a sign-out.
+		// Only clear once the host has actually reported a user before, so the
+		// navbar bell comes back when a live session is dropped.
+		if (previousSupabaseUserRef.current) {
+			previousSupabaseUserRef.current = undefined
+			setUser(null)
+			setSessionExpired(true)
 		}
 	}, [supabaseUser])
 

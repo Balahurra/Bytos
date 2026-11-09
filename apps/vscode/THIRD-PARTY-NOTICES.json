@@ -1,18 +1,18 @@
 {
-	"generatedAt": "2026-11-07T04:44:09.606Z",
-	"total": 2423,
+	"generatedAt": "2026-11-09T02:13:41.238Z",
+	"total": 2331,
 	"summary": [
 		{
 			"license": "MIT",
-			"count": 1744
+			"count": 1710
 		},
 		{
 			"license": "Apache-2.0",
-			"count": 378
+			"count": 325
 		},
 		{
 			"license": "ISC",
-			"count": 115
+			"count": 114
 		},
 		{
 			"license": "BSD-3-Clause",
@@ -43,12 +43,12 @@
 			"count": 7
 		},
 		{
-			"license": "OFL-1.1",
+			"license": "Artistic-2.0",
 			"count": 5
 		},
 		{
-			"license": "Artistic-2.0",
-			"count": 5
+			"license": "OFL-1.1",
+			"count": 3
 		},
 		{
 			"license": "apache-2.0",
@@ -72,10 +72,6 @@
 		},
 		{
 			"license": "MIT/X11",
-			"count": 2
-		},
-		{
-			"license": "(MPL-2.0 OR Apache-2.0)",
 			"count": 2
 		},
 		{
@@ -115,11 +111,11 @@
 			"count": 1
 		},
 		{
-			"license": "(MIT OR WTFPL)",
+			"license": "(MPL-2.0 OR Apache-2.0)",
 			"count": 1
 		},
 		{
-			"license": "LGPL-2.1+",
+			"license": "(MIT OR WTFPL)",
 			"count": 1
 		},
 		{
@@ -446,14 +442,6 @@
 		},
 		{
 			"name": "@ai-sdk/provider",
-			"version": "3.0.15",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/vercel/ai",
-			"copyright": "Copyright 2023 Vercel, Inc.",
-			"private": false
-		},
-		{
-			"name": "@ai-sdk/provider",
 			"version": "4.0.0",
 			"license": "Apache-2.0",
 			"repository": "https://github.com/vercel/ai",
@@ -474,14 +462,6 @@
 			"license": "Apache-2.0",
 			"repository": "https://github.com/vercel/ai",
 			"copyright": "Copyright 2023 Vercel, Inc.",
-			"private": false
-		},
-		{
-			"name": "@ai-sdk/provider-utils",
-			"version": "4.0.48",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/vercel/ai",
-			"copyright": "",
 			"private": false
 		},
 		{
@@ -1501,358 +1481,6 @@
 			"private": false
 		},
 		{
-			"name": "@firebase/ai",
-			"version": "1.4.1",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/analytics",
-			"version": "0.10.17",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/analytics-compat",
-			"version": "0.2.23",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/analytics-types",
-			"version": "0.8.3",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/app",
-			"version": "0.13.2",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/app-check",
-			"version": "0.10.1",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/app-check-compat",
-			"version": "0.3.26",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/app-check-interop-types",
-			"version": "0.3.3",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/app-check-types",
-			"version": "0.5.3",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/app-compat",
-			"version": "0.4.2",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/app-types",
-			"version": "0.9.3",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/auth",
-			"version": "1.10.8",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/auth-compat",
-			"version": "0.5.28",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/auth-interop-types",
-			"version": "0.2.4",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/auth-types",
-			"version": "0.13.0",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/component",
-			"version": "0.6.18",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/data-connect",
-			"version": "0.3.10",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/database",
-			"version": "1.0.20",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/database-compat",
-			"version": "2.0.11",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/database-types",
-			"version": "1.0.15",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/firestore",
-			"version": "4.8.0",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/firestore-compat",
-			"version": "0.3.53",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/firestore-types",
-			"version": "3.0.3",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/functions",
-			"version": "0.12.9",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/functions-compat",
-			"version": "0.3.26",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/functions-types",
-			"version": "0.6.3",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/installations",
-			"version": "0.6.18",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/installations-compat",
-			"version": "0.2.18",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/installations-types",
-			"version": "0.5.3",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/logger",
-			"version": "0.4.4",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/messaging",
-			"version": "0.12.22",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/messaging-compat",
-			"version": "0.2.22",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/messaging-interop-types",
-			"version": "0.2.3",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/performance",
-			"version": "0.7.7",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/performance-compat",
-			"version": "0.2.20",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/performance-types",
-			"version": "0.2.3",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/remote-config",
-			"version": "0.6.5",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/remote-config-compat",
-			"version": "0.2.18",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/remote-config-types",
-			"version": "0.4.0",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/storage",
-			"version": "0.13.14",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/storage-compat",
-			"version": "0.3.24",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/storage-types",
-			"version": "0.8.3",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/util",
-			"version": "1.12.1",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@firebase/webchannel-wrapper",
-			"version": "1.0.3",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
-			"private": false
-		},
-		{
 			"name": "@floating-ui/core",
 			"version": "1.8.0",
 			"license": "MIT",
@@ -1863,14 +1491,6 @@
 		{
 			"name": "@floating-ui/dom",
 			"version": "1.8.0",
-			"license": "MIT",
-			"repository": "https://github.com/floating-ui/floating-ui",
-			"copyright": "Copyright (c) 2021-present Floating UI contributors",
-			"private": false
-		},
-		{
-			"name": "@floating-ui/react",
-			"version": "0.27.20",
 			"license": "MIT",
 			"repository": "https://github.com/floating-ui/floating-ui",
 			"copyright": "Copyright (c) 2021-present Floating UI contributors",
@@ -1914,22 +1534,6 @@
 			"license": "OFL-1.1",
 			"repository": "https://github.com/fontsource/font-files",
 			"copyright": "Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter) Inter-Italic[opsz,wght].ttf: Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter)",
-			"private": false
-		},
-		{
-			"name": "@fontsource-variable/manrope",
-			"version": "5.3.0",
-			"license": "OFL-1.1",
-			"repository": "https://github.com/fontsource/font-files",
-			"copyright": "Copyright 2019 The Manrope Project Authors (https://github.com/sharanda/manrope)",
-			"private": false
-		},
-		{
-			"name": "@fontsource-variable/space-grotesk",
-			"version": "5.3.0",
-			"license": "OFL-1.1",
-			"repository": "https://github.com/fontsource/font-files",
-			"copyright": "Copyright 2020 The Space Grotesk Project Authors (https://github.com/floriankarsten/space-grotesk)",
 			"private": false
 		},
 		{
@@ -2023,14 +1627,6 @@
 		{
 			"name": "@grpc/grpc-js",
 			"version": "1.14.4",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/grpc/grpc-node/tree/master/packages/grpc-js",
-			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
-			"private": false
-		},
-		{
-			"name": "@grpc/grpc-js",
-			"version": "1.9.16",
 			"license": "Apache-2.0",
 			"repository": "https://github.com/grpc/grpc-node/tree/master/packages/grpc-js",
 			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
@@ -3117,14 +2713,6 @@
 			"private": false
 		},
 		{
-			"name": "@jridgewell/trace-mapping",
-			"version": "0.3.9",
-			"license": "MIT",
-			"repository": "https://github.com/jridgewell/trace-mapping",
-			"copyright": "Copyright 2022 Justin Ridgewell <justin@ridgewell.name>",
-			"private": false
-		},
-		{
 			"name": "@js-sdsl/ordered-map",
 			"version": "4.4.2",
 			"license": "MIT",
@@ -3250,14 +2838,6 @@
 			"license": "MIT",
 			"repository": "https://github.com/Microsoft/fast",
 			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@microsoft/tui-test",
-			"version": "0.0.1",
-			"license": "MIT",
-			"repository": "https://github.com/microsoft/tui-test",
-			"copyright": "Copyright (c) Microsoft Corporation.",
 			"private": false
 		},
 		{
@@ -3762,22 +3342,6 @@
 			"license": "MIT",
 			"repository": "https://github.com/oxc-project/oxc",
 			"copyright": "Copyright (c) 2024-present VoidZero Inc. & Contributors",
-			"private": false
-		},
-		{
-			"name": "@paper-design/shaders",
-			"version": "0.0.46",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "Copyright (c) 2024 Lost Coast Labs, Inc. (Paper Design)",
-			"private": false
-		},
-		{
-			"name": "@paper-design/shaders-react",
-			"version": "0.0.46",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "Copyright (c) 2024 Lost Coast Labs, Inc. (Paper Design)",
 			"private": false
 		},
 		{
@@ -6118,26 +5682,10 @@
 		},
 		{
 			"name": "@simple-git/args-pathspec",
-			"version": "1.0.3",
-			"license": "MIT",
-			"repository": "https://github.com/steveukx/git-js",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "@simple-git/args-pathspec",
 			"version": "1.0.4",
 			"license": "MIT",
 			"repository": "https://github.com/steveukx/git-js",
 			"copyright": "Copyright (c) 2025 Steve King",
-			"private": false
-		},
-		{
-			"name": "@simple-git/argv-parser",
-			"version": "1.1.1",
-			"license": "MIT",
-			"repository": "https://github.com/steveukx/git-js",
-			"copyright": "",
 			"private": false
 		},
 		{
@@ -6821,14 +6369,6 @@
 			"private": false
 		},
 		{
-			"name": "@types/clone-deep",
-			"version": "4.0.4",
-			"license": "MIT",
-			"repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-			"copyright": "Copyright (c) Microsoft Corporation.",
-			"private": false
-		},
-		{
 			"name": "@types/d3",
 			"version": "7.4.3",
 			"license": "MIT",
@@ -7278,14 +6818,6 @@
 		},
 		{
 			"name": "@types/node",
-			"version": "20.19.43",
-			"license": "MIT",
-			"repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-			"copyright": "Copyright (c) Microsoft Corporation.",
-			"private": false
-		},
-		{
-			"name": "@types/node",
 			"version": "22.15.1",
 			"license": "MIT",
 			"repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
@@ -7421,14 +6953,6 @@
 			"private": false
 		},
 		{
-			"name": "@types/shell-quote",
-			"version": "1.7.5",
-			"license": "MIT",
-			"repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-			"copyright": "Copyright (c) Microsoft Corporation.",
-			"private": false
-		},
-		{
 			"name": "@types/should",
 			"version": "11.2.0",
 			"license": "MIT",
@@ -7535,14 +7059,6 @@
 		{
 			"name": "@types/vscode",
 			"version": "1.134.0",
-			"license": "MIT",
-			"repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-			"copyright": "Copyright (c) Microsoft Corporation.",
-			"private": false
-		},
-		{
-			"name": "@types/vscode",
-			"version": "1.84.0",
 			"license": "MIT",
 			"repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
 			"copyright": "Copyright (c) Microsoft Corporation.",
@@ -9205,14 +8721,6 @@
 			"private": false
 		},
 		{
-			"name": "clone-deep",
-			"version": "4.0.1",
-			"license": "MIT",
-			"repository": "jonschlinkert/clone-deep",
-			"copyright": "Copyright (c) 2014-2018, Jon Schlinkert.",
-			"private": false
-		},
-		{
 			"name": "clsx",
 			"version": "2.1.1",
 			"license": "MIT",
@@ -10181,14 +9689,6 @@
 			"private": false
 		},
 		{
-			"name": "default-shell",
-			"version": "2.2.0",
-			"license": "MIT",
-			"repository": "sindresorhus/default-shell",
-			"copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
-			"private": false
-		},
-		{
 			"name": "defaults",
 			"version": "1.0.4",
 			"license": "MIT",
@@ -10410,14 +9910,6 @@
 			"license": "BSD-2-Clause",
 			"repository": "git://github.com/fb55/domhandler",
 			"copyright": "Copyright (c) Felix Böhm",
-			"private": false
-		},
-		{
-			"name": "dompurify",
-			"version": "3.4.14",
-			"license": "(MPL-2.0 OR Apache-2.0)",
-			"repository": "git://github.com/cure53/DOMPurify",
-			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
 			"private": false
 		},
 		{
@@ -11054,14 +10546,6 @@
 		},
 		{
 			"name": "execa",
-			"version": "8.0.1",
-			"license": "MIT",
-			"repository": "sindresorhus/execa",
-			"copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
-			"private": false
-		},
-		{
-			"name": "execa",
 			"version": "9.6.1",
 			"license": "MIT",
 			"repository": "sindresorhus/execa",
@@ -11253,14 +10737,6 @@
 			"private": false
 		},
 		{
-			"name": "faye-websocket",
-			"version": "0.11.4",
-			"license": "Apache-2.0",
-			"repository": "git://github.com/faye/faye-websocket-node",
-			"copyright": "Copyright 2010-2021 James Coglan",
-			"private": false
-		},
-		{
 			"name": "fd-slicer",
 			"version": "1.1.0",
 			"license": "MIT",
@@ -11362,14 +10838,6 @@
 			"license": "MIT",
 			"repository": "sindresorhus/find-up",
 			"copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
-			"private": false
-		},
-		{
-			"name": "firebase",
-			"version": "11.10.0",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/firebase/firebase-js-sdk",
-			"copyright": "",
 			"private": false
 		},
 		{
@@ -11663,14 +11131,6 @@
 		{
 			"name": "get-stream",
 			"version": "6.0.1",
-			"license": "MIT",
-			"repository": "sindresorhus/get-stream",
-			"copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
-			"private": false
-		},
-		{
-			"name": "get-stream",
-			"version": "8.0.1",
 			"license": "MIT",
 			"repository": "sindresorhus/get-stream",
 			"copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
@@ -12205,14 +11665,6 @@
 			"private": false
 		},
 		{
-			"name": "http-parser-js",
-			"version": "0.5.10",
-			"license": "MIT",
-			"repository": "git://github.com/creationix/http-parser-js",
-			"copyright": "Copyright (c) 2015 Tim Caswell (https://github.com/creationix) and other",
-			"private": false
-		},
-		{
 			"name": "http-proxy-agent",
 			"version": "7.0.2",
 			"license": "MIT",
@@ -12239,14 +11691,6 @@
 		{
 			"name": "human-signals",
 			"version": "2.1.0",
-			"license": "Apache-2.0",
-			"repository": "ehmicky/human-signals",
-			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
-			"private": false
-		},
-		{
-			"name": "human-signals",
-			"version": "5.0.0",
 			"license": "Apache-2.0",
 			"repository": "ehmicky/human-signals",
 			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
@@ -12298,14 +11742,6 @@
 			"license": "MIT",
 			"repository": "https://github.com/pillarjs/iconv-lite",
 			"copyright": "Copyright (c) 2011 Alexander Shtuchkin",
-			"private": false
-		},
-		{
-			"name": "idb",
-			"version": "7.1.1",
-			"license": "ISC",
-			"repository": "git://github.com/jakearchibald/idb",
-			"copyright": "Copyright (c) 2016, Jake Archibald <jaffathecake@gmail.com>",
 			"private": false
 		},
 		{
@@ -12725,14 +12161,6 @@
 			"private": false
 		},
 		{
-			"name": "is-plain-object",
-			"version": "2.0.4",
-			"license": "MIT",
-			"repository": "jonschlinkert/is-plain-object",
-			"copyright": "Copyright (c) 2014-2017, Jon Schlinkert.",
-			"private": false
-		},
-		{
 			"name": "is-potential-custom-element-name",
 			"version": "1.0.1",
 			"license": "MIT",
@@ -12759,14 +12187,6 @@
 		{
 			"name": "is-stream",
 			"version": "2.0.1",
-			"license": "MIT",
-			"repository": "sindresorhus/is-stream",
-			"copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
-			"private": false
-		},
-		{
-			"name": "is-stream",
-			"version": "3.0.0",
 			"license": "MIT",
 			"repository": "sindresorhus/is-stream",
 			"copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
@@ -12850,14 +12270,6 @@
 			"license": "BlueOak-1.0.0",
 			"repository": "https://github.com/isaacs/isexe",
 			"copyright": "## Copyright",
-			"private": false
-		},
-		{
-			"name": "isobject",
-			"version": "3.0.1",
-			"license": "MIT",
-			"repository": "jonschlinkert/isobject",
-			"copyright": "Copyright (c) 2014-2017, Jon Schlinkert.",
 			"private": false
 		},
 		{
@@ -13026,14 +12438,6 @@
 			"license": "MIT",
 			"repository": "nodeca/js-yaml",
 			"copyright": "Copyright (C) 2011-2015 by Vitaly Puzrin",
-			"private": false
-		},
-		{
-			"name": "jschardet",
-			"version": "3.1.4",
-			"license": "LGPL-2.1+",
-			"repository": "https://github.com/aadsm/jschardet",
-			"copyright": "Copyright (C) 1991, 1999 Free Software Foundation, Inc.",
 			"private": false
 		},
 		{
@@ -13242,14 +12646,6 @@
 			"license": "ISC",
 			"repository": "https://github.com/hilleer/kill-port-process",
 			"copyright": "Copyright (c) 2019 Daniel Hillmann",
-			"private": false
-		},
-		{
-			"name": "kind-of",
-			"version": "6.0.3",
-			"license": "MIT",
-			"repository": "jonschlinkert/kind-of",
-			"copyright": "Copyright (c) 2014-2017, Jon Schlinkert.",
 			"private": false
 		},
 		{
@@ -13802,14 +13198,6 @@
 			"license": "MIT",
 			"repository": "https://github.com/pieroxy/lz-string",
 			"copyright": "Copyright (c) 2013 pieroxy",
-			"private": false
-		},
-		{
-			"name": "macos-release",
-			"version": "3.5.1",
-			"license": "MIT",
-			"repository": "sindresorhus/macos-release",
-			"copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
 			"private": false
 		},
 		{
@@ -14493,14 +13881,6 @@
 			"private": false
 		},
 		{
-			"name": "mimic-fn",
-			"version": "4.0.0",
-			"license": "MIT",
-			"repository": "sindresorhus/mimic-fn",
-			"copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
-			"private": false
-		},
-		{
 			"name": "mimic-function",
 			"version": "5.0.1",
 			"license": "MIT",
@@ -14902,14 +14282,6 @@
 		},
 		{
 			"name": "npm-run-path",
-			"version": "5.3.0",
-			"license": "MIT",
-			"repository": "sindresorhus/npm-run-path",
-			"copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
-			"private": false
-		},
-		{
-			"name": "npm-run-path",
 			"version": "6.0.0",
 			"license": "MIT",
 			"repository": "sindresorhus/npm-run-path",
@@ -15022,14 +14394,6 @@
 		},
 		{
 			"name": "onetime",
-			"version": "6.0.0",
-			"license": "MIT",
-			"repository": "sindresorhus/onetime",
-			"copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
-			"private": false
-		},
-		{
-			"name": "onetime",
 			"version": "7.0.0",
 			"license": "MIT",
 			"repository": "sindresorhus/onetime",
@@ -15133,14 +14497,6 @@
 			"private": false
 		},
 		{
-			"name": "os-name",
-			"version": "6.1.0",
-			"license": "MIT",
-			"repository": "sindresorhus/os-name",
-			"copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
-			"private": false
-		},
-		{
 			"name": "p-finally",
 			"version": "1.0.0",
 			"license": "MIT",
@@ -15201,14 +14557,6 @@
 			"version": "7.0.6",
 			"license": "MIT",
 			"repository": "sindresorhus/p-map",
-			"copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
-			"private": false
-		},
-		{
-			"name": "p-mutex",
-			"version": "1.0.0",
-			"license": "MIT",
-			"repository": "sindresorhus/p-mutex",
 			"copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
 			"private": false
 		},
@@ -15954,22 +15302,6 @@
 			"license": "BSD-3-Clause",
 			"repository": "protobufjs/protobuf.js",
 			"copyright": "Copyright (c) 2016, Daniel Wirtz All rights reserved.",
-			"private": false
-		},
-		{
-			"name": "protoc-gen-ts",
-			"version": "0.8.7",
-			"license": "MIT",
-			"repository": "https://github.com/thesayyn/protoc-gen-ts",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "proxy-addr",
-			"version": "2.0.7",
-			"license": "MIT",
-			"repository": "jshttp/proxy-addr",
-			"copyright": "Copyright (c) 2014-2016 Douglas Christopher Wilson",
 			"private": false
 		},
 		{
@@ -17029,14 +16361,6 @@
 			"private": false
 		},
 		{
-			"name": "shallow-clone",
-			"version": "3.0.1",
-			"license": "MIT",
-			"repository": "jonschlinkert/shallow-clone",
-			"copyright": "Copyright (c) 2015-present, Jon Schlinkert.",
-			"private": false
-		},
-		{
 			"name": "sharp",
 			"version": "0.34.5",
 			"license": "Apache-2.0",
@@ -17210,14 +16534,6 @@
 			"license": "MIT",
 			"repository": "git://github.com/feross/simple-get",
 			"copyright": "Copyright (c) Feross Aboukhadijeh",
-			"private": false
-		},
-		{
-			"name": "simple-git",
-			"version": "3.36.0",
-			"license": "MIT",
-			"repository": "https://github.com/steveukx/git-js",
-			"copyright": "",
 			"private": false
 		},
 		{
@@ -17670,14 +16986,6 @@
 		},
 		{
 			"name": "strip-final-newline",
-			"version": "3.0.0",
-			"license": "MIT",
-			"repository": "sindresorhus/strip-final-newline",
-			"copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
-			"private": false
-		},
-		{
-			"name": "strip-final-newline",
 			"version": "4.0.0",
 			"license": "MIT",
 			"repository": "sindresorhus/strip-final-newline",
@@ -17855,14 +17163,6 @@
 		{
 			"name": "tabbable",
 			"version": "5.3.3",
-			"license": "MIT",
-			"repository": "https://github.com/focus-trap/tabbable",
-			"copyright": "Copyright (c) 2015 David Clark",
-			"private": false
-		},
-		{
-			"name": "tabbable",
-			"version": "6.5.0",
 			"license": "MIT",
 			"repository": "https://github.com/focus-trap/tabbable",
 			"copyright": "Copyright (c) 2015 David Clark",
@@ -18525,14 +17825,6 @@
 			"private": false
 		},
 		{
-			"name": "ulid",
-			"version": "2.4.0",
-			"license": "MIT",
-			"repository": "https://github.com/ulid/javascript",
-			"copyright": "Copyright (c) 2017 Alizain Feerasta",
-			"private": false
-		},
-		{
 			"name": "unbzip2-stream",
 			"version": "1.4.3",
 			"license": "MIT",
@@ -19134,14 +18426,6 @@
 		},
 		{
 			"name": "web-vitals",
-			"version": "4.2.4",
-			"license": "Apache-2.0",
-			"repository": "https://github.com/GoogleChrome/web-vitals",
-			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
-			"private": false
-		},
-		{
-			"name": "web-vitals",
 			"version": "5.3.0",
 			"license": "Apache-2.0",
 			"repository": "https://github.com/GoogleChrome/web-vitals",
@@ -19178,22 +18462,6 @@
 			"license": "MIT",
 			"repository": "https://github.com/sysgears/webpack-virtual-modules",
 			"copyright": "Copyright (c) 2017 SysGears",
-			"private": false
-		},
-		{
-			"name": "websocket-driver",
-			"version": "0.7.5",
-			"license": "Apache-2.0",
-			"repository": "git://github.com/faye/websocket-driver-node",
-			"copyright": "Copyright 2010-2026 James Coglan",
-			"private": false
-		},
-		{
-			"name": "websocket-extensions",
-			"version": "0.1.4",
-			"license": "Apache-2.0",
-			"repository": "git://github.com/faye/websocket-extensions-node",
-			"copyright": "Copyright 2014-2020 James Coglan",
 			"private": false
 		},
 		{
@@ -19258,14 +18526,6 @@
 			"license": "ISC",
 			"repository": "https://github.com/iarna/wide-align",
 			"copyright": "Copyright (c) 2015, Rebecca Turner <me@re-becca.org>",
-			"private": false
-		},
-		{
-			"name": "windows-release",
-			"version": "6.1.0",
-			"license": "MIT",
-			"repository": "sindresorhus/windows-release",
-			"copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
 			"private": false
 		},
 		{

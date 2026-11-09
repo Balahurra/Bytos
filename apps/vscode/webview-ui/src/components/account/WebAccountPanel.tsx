@@ -1,5 +1,6 @@
 import { VSCodeButton, VSCodeCheckbox, VSCodeLink } from "@vscode/webview-ui-toolkit/react"
 import { type FormEvent, useState } from "react"
+import DoneButton from "@/components/common/DoneButton"
 import ViewHeader from "@/components/common/ViewHeader"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import { useWebAccount } from "@/context/WebAccountContext"
@@ -110,9 +111,9 @@ export const WebAccountPanel = ({ onDone }: { onDone: () => void }) => {
 								<VSCodeButton appearance="secondary" disabled={busy} onClick={handleSignOut}>
 									{busy ? "Signing out..." : "Log out"}
 								</VSCodeButton>
-								<VSCodeButton appearance="primary" onClick={onDone}>
+								<DoneButton appearance="primary" onClick={onDone}>
 									Done
-								</VSCodeButton>
+								</DoneButton>
 							</div>
 						</div>
 					</div>

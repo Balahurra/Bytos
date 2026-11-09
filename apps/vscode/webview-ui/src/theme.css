@@ -36,6 +36,9 @@
 	--color-selection-inactive: var(--vscode-editor-inactiveSelectionBackground);
 	--color-button-background: var(--vscode-button-background);
 	--color-button-hover: var(--vscode-button-hoverBackground);
+	/* Done buttons: two shades darker than the theme button color. */
+	--color-done-button-background: color-mix(in srgb, var(--vscode-button-background, #007acc) 70%, #000);
+	--color-done-button-hover: color-mix(in srgb, var(--vscode-button-hoverBackground, #026ec1) 70%, #000);
 	--color-button-foreground: var(--vscode-button-foreground);
 	--color-button-separator: var(--vscode-button-separator);
 	--color-text-separator: var(--vscode-textSeparator-foreground, #424242);

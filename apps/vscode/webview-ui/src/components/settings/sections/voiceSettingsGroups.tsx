@@ -75,6 +75,7 @@ export const GeneralVoiceGroup = ({
 						id="voice-enabled-control"
 						onCheckedChange={onEnabledChange}
 						size="lg"
+						tone="green"
 					/>
 				</div>
 				<p className="text-xs text-description">

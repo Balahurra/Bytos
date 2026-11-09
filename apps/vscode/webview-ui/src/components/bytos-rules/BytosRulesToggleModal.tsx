@@ -12,6 +12,7 @@ import {
 	ToggleWorkflowRequest,
 } from "@shared/proto/bytos/file"
 import { VSCodeButton, VSCodeLink } from "@vscode/webview-ui-toolkit/react"
+import { SlidersHorizontal } from "lucide-react"
 import React, { useEffect, useRef, useState } from "react"
 import { useClickAway, useWindowSize } from "react-use"
 import styled from "styled-components"
@@ -405,7 +406,7 @@ const BytosRulesToggleModal: React.FC = () => {
 							aria-label={isVisible ? "Hide Customize" : "Show Customize"}
 							className="p-0 m-0 flex items-center"
 							onClick={() => setIsVisible(!isVisible)}>
-							<i className="codicon codicon-law" style={{ fontSize: "12.5px" }} />
+							<SlidersHorizontal size={12.5} />
 						</VSCodeButton>
 					</TooltipTrigger>
 				</Tooltip>

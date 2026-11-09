@@ -6,7 +6,7 @@ import { PlanActMode, TogglePlanActModeRequest } from "@shared/proto/bytos/state
 import type { VoiceServiceStatus } from "@shared/proto/bytos/voice"
 import { type SlashCommand } from "@shared/slashCommands"
 import { VSCodeButton } from "@vscode/webview-ui-toolkit/react"
-import { AtSignIcon, PlusIcon, TriangleAlertIcon } from "lucide-react"
+import { MessageSquarePlus, Paperclip, TriangleAlertIcon } from "lucide-react"
 import type React from "react"
 import { forwardRef, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import DynamicTextArea from "react-textarea-autosize"
@@ -2096,7 +2096,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 										data-testid="context-button"
 										onClick={handleContextButtonClick}>
 										<ButtonContainer>
-											<AtSignIcon size={12} />
+											<MessageSquarePlus size={12} />
 										</ButtonContainer>
 									</VSCodeButton>
 								</TooltipTrigger>
@@ -2117,7 +2117,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 											}
 										}}>
 										<ButtonContainer>
-											<PlusIcon size={13} />
+											<Paperclip size={13} />
 										</ButtonContainer>
 									</VSCodeButton>
 								</TooltipTrigger>

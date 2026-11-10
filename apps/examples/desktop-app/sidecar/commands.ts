@@ -1779,6 +1779,10 @@ async function listAvailableCodeEditors(): Promise<
 	return editors;
 }
 
+function quoteForCmdExeArg(value: string): string {
+	return `"${value.replace(/"/g, '""')}"`;
+}
+
 /** Launches `executable filePath` detached; false if the CLI is unusable. */
 function launchEditorCli(executable: string, filePath: string): boolean {
 	// Windows `where` resolves editor CLIs to .cmd/.bat shims, which
@@ -1789,10 +1793,19 @@ function launchEditorCli(executable: string, filePath: string): boolean {
 		return false;
 	}
 	const child = isWindowsShim
-		? spawn("cmd", ["/c", executable, filePath], {
-				stdio: "ignore",
-				detached: true,
-			})
+		? execFile(
+				"cmd",
+				[
+					"/d",
+					"/s",
+					"/c",
+					`${quoteForCmdExeArg(executable)} ${quoteForCmdExeArg(filePath)}`,
+				],
+				{
+					stdio: "ignore",
+					detached: true,
+				},
+			)
 		: spawn(executable, [filePath], {
 				stdio: "ignore",
 				detached: true,

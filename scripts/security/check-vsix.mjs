@@ -42,6 +42,7 @@ const FORBIDDEN_PATTERNS = [
 	{ pattern: /\.(pem|key|p12|pfx|crt)$/i, reason: "private key or certificate" },
 	{ pattern: /(^|\/)(tests?|__tests__|coverage|test-assets|test-results|\.vscode-test)(\/|$)/i, reason: "test tooling/assets" },
 	{ pattern: /(^|\/)(docs|evals|examples)(\/|$)/i, reason: "documentation/evals/examples" },
+	{ pattern: /(^|\/)tmp(\/|$)/i, reason: "temporary/debug files" },
 	{ pattern: /(^|\/)(src|proto|scripts|testing-platform|standalone)(\/|$)/i, reason: "development source/tooling" },
 	{ pattern: /(^|\/)(package-lock\.json|bun\.lock|bun\.lockb|yarn\.lock|pnpm-lock\.yaml)$/i, reason: "lockfile" },
 	{ pattern: /\.(test|spec)\.[cm]?[jt]sx?$/i, reason: "test file" },

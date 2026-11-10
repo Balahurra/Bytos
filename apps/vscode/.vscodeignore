@@ -4,6 +4,8 @@
 .worktrees/**
 # Agent tooling, never shipped in the VSIX
 .agents/**
+# Local temporary/debug files, never shipped in the VSIX
+tmp/**
 .claude/**
 .bytos/**
 .codex/**

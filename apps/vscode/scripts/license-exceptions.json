@@ -1,6 +1,5 @@
 {
 	"allowedUnknown": {
-		"buffers@0.1.1": "Legacy substack package with no license field and no LICENSE file. It is a transitive development dependency and is not imported by the production extension, webview, or plugin runtime. Legal review is required before distributing any artifact that actually contains it.",
 		"beep-boop@1.2.3": "Test fixture package used by a dependency's test suite. It is not imported by the production extension or plugin runtime and is excluded from the distributed artifact.",
 		"nw-pre-gyp-module-test@0.0.1": "Test fixture package used by a dependency's build/test tooling. It is not imported by the production extension or plugin runtime and is excluded from the distributed artifact.",
 		"transport@0.0.1": "Test fixture inside pino's test directory, not a distributable package.",

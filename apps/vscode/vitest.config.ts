@@ -15,6 +15,7 @@ export default defineConfig({
 			"src/integrations/misc/model3d-attachments.test.ts",
 			"src/integrations/misc/model3d-converter.test.ts",
 			"src/integrations/misc/process-files.test.ts",
+			"src/integrations/misc/extract-text.xlsx.test.ts",
 			"src/hosts/vscode/VscodeEditPreview.test.ts",
 			"src/hosts/vscode/vscode-secret-storage.test.ts",
 			"src/hosts/vscode/vscode-provider-credential-store.test.ts",

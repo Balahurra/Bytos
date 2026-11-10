@@ -1,10 +1,10 @@
 {
-	"generatedAt": "2026-11-09T02:13:41.238Z",
-	"total": 2331,
+	"generatedAt": "2026-11-10T04:41:48.866Z",
+	"total": 2289,
 	"summary": [
 		{
 			"license": "MIT",
-			"count": 1710
+			"count": 1680
 		},
 		{
 			"license": "Apache-2.0",
@@ -12,11 +12,11 @@
 		},
 		{
 			"license": "ISC",
-			"count": 114
+			"count": 107
 		},
 		{
 			"license": "BSD-3-Clause",
-			"count": 51
+			"count": 50
 		},
 		{
 			"license": "BSD-2-Clause",
@@ -28,11 +28,7 @@
 		},
 		{
 			"license": "UNKNOWN",
-			"count": 13
-		},
-		{
-			"license": "Unlicense",
-			"count": 8
+			"count": 12
 		},
 		{
 			"license": "MIT OR Apache-2.0",
@@ -40,6 +36,10 @@
 		},
 		{
 			"license": "MPL-2.0",
+			"count": 7
+		},
+		{
+			"license": "Unlicense",
 			"count": 7
 		},
 		{
@@ -68,10 +68,6 @@
 		},
 		{
 			"license": "CC-BY-4.0",
-			"count": 2
-		},
-		{
-			"license": "MIT/X11",
 			"count": 2
 		},
 		{
@@ -201,14 +197,6 @@
 			"private": false
 		},
 		{
-			"name": "buffers",
-			"version": "0.1.1",
-			"license": "UNKNOWN",
-			"repository": "http://github.com/substack/node-buffers",
-			"copyright": "",
-			"private": false
-		},
-		{
 			"name": "beep-boop",
 			"version": "1.2.3",
 			"license": "UNKNOWN",
@@ -259,7 +247,6 @@
 	],
 	"exceptions": {
 		"allowedUnknown": {
-			"buffers@0.1.1": "Legacy substack package with no license field and no LICENSE file. It is a transitive development dependency and is not imported by the production extension, webview, or plugin runtime. Legal review is required before distributing any artifact that actually contains it.",
 			"beep-boop@1.2.3": "Test fixture package used by a dependency's test suite. It is not imported by the production extension or plugin runtime and is excluded from the distributed artifact.",
 			"nw-pre-gyp-module-test@0.0.1": "Test fixture package used by a dependency's build/test tooling. It is not imported by the production extension or plugin runtime and is excluded from the distributed artifact.",
 			"transport@0.0.1": "Test fixture inside pino's test directory, not a distributable package.",
@@ -1462,22 +1449,6 @@
 			"license": "Apache-2.0",
 			"repository": "https://github.com/eslint/rewrite",
 			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
-			"private": false
-		},
-		{
-			"name": "@fast-csv/format",
-			"version": "4.3.5",
-			"license": "MIT",
-			"repository": "https://github.com/C2FO/fast-csv",
-			"copyright": "Copyright (c) 2011-2019 C2FO",
-			"private": false
-		},
-		{
-			"name": "@fast-csv/parse",
-			"version": "4.3.6",
-			"license": "MIT",
-			"repository": "https://github.com/C2FO/fast-csv",
-			"copyright": "Copyright (c) 2011-2019 C2FO",
 			"private": false
 		},
 		{
@@ -6802,14 +6773,6 @@
 		},
 		{
 			"name": "@types/node",
-			"version": "14.18.63",
-			"license": "MIT",
-			"repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-			"copyright": "Copyright (c) Microsoft Corporation.",
-			"private": false
-		},
-		{
-			"name": "@types/node",
 			"version": "18.19.130",
 			"license": "MIT",
 			"repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
@@ -7746,34 +7709,10 @@
 		},
 		{
 			"name": "archiver",
-			"version": "5.3.2",
-			"license": "MIT",
-			"repository": "https://github.com/archiverjs/node-archiver",
-			"copyright": "Copyright (c) 2012-2014 Chris Talkington, contributors.",
-			"private": false
-		},
-		{
-			"name": "archiver",
 			"version": "7.0.1",
 			"license": "MIT",
 			"repository": "https://github.com/archiverjs/node-archiver",
 			"copyright": "Copyright (c) 2012-2014 Chris Talkington, contributors.",
-			"private": false
-		},
-		{
-			"name": "archiver-utils",
-			"version": "2.1.0",
-			"license": "MIT",
-			"repository": "https://github.com/archiverjs/archiver-utils",
-			"copyright": "Copyright (c) 2015 Chris Talkington.",
-			"private": false
-		},
-		{
-			"name": "archiver-utils",
-			"version": "3.0.4",
-			"license": "MIT",
-			"repository": "https://github.com/archiverjs/archiver-utils",
-			"copyright": "Copyright (c) 2015 Chris Talkington.",
 			"private": false
 		},
 		{
@@ -8113,27 +8052,11 @@
 			"private": false
 		},
 		{
-			"name": "big-integer",
-			"version": "1.6.52",
-			"license": "Unlicense",
-			"repository": "git@github.com:peterolson/BigInteger.js",
-			"copyright": "In jurisdictions that recognize copyright laws, the author or authors",
-			"private": false
-		},
-		{
 			"name": "bignumber.js",
 			"version": "9.3.1",
 			"license": "MIT",
 			"repository": "https://github.com/MikeMcl/bignumber.js",
 			"copyright": "Copyright © `<2025>` `Michael Mclaughlin`",
-			"private": false
-		},
-		{
-			"name": "binary",
-			"version": "0.3.0",
-			"license": "MIT",
-			"repository": "http://github.com/substack/node-binary",
-			"copyright": "",
 			"private": false
 		},
 		{
@@ -8158,14 +8081,6 @@
 			"license": "MIT",
 			"repository": "git://github.com/TooTallNate/node-bindings",
 			"copyright": "Copyright (c) 2012 Nathan Rajlich &lt;nathan@tootallnate.net&gt;",
-			"private": false
-		},
-		{
-			"name": "bl",
-			"version": "4.1.0",
-			"license": "MIT",
-			"repository": "https://github.com/rvagg/bl",
-			"copyright": "Copyright (c) 2013-2019 bl contributors",
 			"private": false
 		},
 		{
@@ -8302,22 +8217,6 @@
 			"license": "BSD-3-Clause",
 			"repository": "git@github.com:goinstant/buffer-equal-constant-time",
 			"copyright": "Copyright (c) 2013, GoInstant Inc., a salesforce.com company",
-			"private": false
-		},
-		{
-			"name": "buffer-indexof-polyfill",
-			"version": "1.0.2",
-			"license": "MIT",
-			"repository": "https://github.com/sarosia/buffer-indexof-polyfill",
-			"copyright": "Copyright (c) 2015 Sarosia",
-			"private": false
-		},
-		{
-			"name": "buffers",
-			"version": "0.1.1",
-			"license": "UNKNOWN",
-			"repository": "http://github.com/substack/node-buffers",
-			"copyright": "",
 			"private": false
 		},
 		{
@@ -8462,14 +8361,6 @@
 			"license": "MIT",
 			"repository": "https://github.com/chaijs/chai",
 			"copyright": "Copyright (c) 2017 Chai.js Assertion Library",
-			"private": false
-		},
-		{
-			"name": "chainsaw",
-			"version": "0.1.0",
-			"license": "MIT/X11",
-			"repository": "http://github.com/substack/node-chainsaw",
-			"copyright": "",
 			"private": false
 		},
 		{
@@ -8906,14 +8797,6 @@
 		},
 		{
 			"name": "compress-commons",
-			"version": "4.1.2",
-			"license": "MIT",
-			"repository": "https://github.com/archiverjs/node-compress-commons",
-			"copyright": "Copyright (c) 2014 Chris Talkington, contributors.",
-			"private": false
-		},
-		{
-			"name": "compress-commons",
 			"version": "6.0.2",
 			"license": "MIT",
 			"repository": "https://github.com/archiverjs/node-compress-commons",
@@ -9086,14 +8969,6 @@
 			"license": "Apache-2.0",
 			"repository": "git://github.com/SheetJS/js-crc32",
 			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
-			"private": false
-		},
-		{
-			"name": "crc32-stream",
-			"version": "4.0.3",
-			"license": "MIT",
-			"repository": "https://github.com/archiverjs/node-crc32-stream",
-			"copyright": "Copyright (c) 2014 Chris Talkington, contributors.",
 			"private": false
 		},
 		{
@@ -9969,14 +9844,6 @@
 			"private": false
 		},
 		{
-			"name": "duplexer2",
-			"version": "0.1.4",
-			"license": "BSD-3-Clause",
-			"repository": "deoxxa/duplexer2",
-			"copyright": "Copyright (c) 2013, Deoxxa Development",
-			"private": false
-		},
-		{
 			"name": "eastasianwidth",
 			"version": "0.2.0",
 			"license": "MIT",
@@ -10529,14 +10396,6 @@
 			"private": false
 		},
 		{
-			"name": "exceljs",
-			"version": "4.4.0",
-			"license": "MIT",
-			"repository": "https://github.com/exceljs/exceljs",
-			"copyright": "Copyright (c) 2014-2019 Guyon Roche",
-			"private": false
-		},
-		{
 			"name": "execa",
 			"version": "5.1.1",
 			"license": "MIT",
@@ -10622,14 +10481,6 @@
 			"license": "MIT",
 			"repository": "https://github.com/davepacheco/node-extsprintf",
 			"copyright": "Copyright (c) 2012, Joyent, Inc. All rights reserved.",
-			"private": false
-		},
-		{
-			"name": "fast-csv",
-			"version": "4.3.6",
-			"license": "MIT",
-			"repository": "https://github.com/C2FO/fast-csv",
-			"copyright": "Copyright (c) 2011-2019 C2FO",
 			"private": false
 		},
 		{
@@ -10953,35 +10804,11 @@
 			"private": false
 		},
 		{
-			"name": "fs-constants",
-			"version": "1.0.0",
-			"license": "MIT",
-			"repository": "https://github.com/mafintosh/fs-constants",
-			"copyright": "Copyright (c) 2018 Mathias Buus",
-			"private": false
-		},
-		{
 			"name": "fs-extra",
 			"version": "11.4.0",
 			"license": "MIT",
 			"repository": "https://github.com/jprichardson/node-fs-extra",
 			"copyright": "Copyright (c) 2011-2024 JP Richardson",
-			"private": false
-		},
-		{
-			"name": "fs.realpath",
-			"version": "1.0.0",
-			"license": "ISC",
-			"repository": "https://github.com/isaacs/fs.realpath",
-			"copyright": "Copyright (c) Isaac Z. Schlueter and Contributors",
-			"private": false
-		},
-		{
-			"name": "fstream",
-			"version": "1.0.12",
-			"license": "ISC",
-			"repository": "https://github.com/npm/fstream",
-			"copyright": "Copyright (c) Isaac Z. Schlueter and Contributors",
 			"private": false
 		},
 		{
@@ -11198,14 +11025,6 @@
 			"license": "BlueOak-1.0.0",
 			"repository": "git@github.com:isaacs/node-glob",
 			"copyright": "## Copyright",
-			"private": false
-		},
-		{
-			"name": "glob",
-			"version": "7.2.3",
-			"license": "ISC",
-			"repository": "git://github.com/isaacs/node-glob",
-			"copyright": "Copyright (c) Isaac Z. Schlueter and Contributors",
 			"private": false
 		},
 		{
@@ -11822,14 +11641,6 @@
 			"license": "MIT",
 			"repository": "sindresorhus/index-to-position",
 			"copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
-			"private": false
-		},
-		{
-			"name": "inflight",
-			"version": "1.0.6",
-			"license": "ISC",
-			"repository": "https://github.com/npm/inflight",
-			"copyright": "Copyright (c) Isaac Z. Schlueter",
 			"private": false
 		},
 		{
@@ -12801,14 +12612,6 @@
 			"private": false
 		},
 		{
-			"name": "listenercount",
-			"version": "1.0.1",
-			"license": "ISC",
-			"repository": "git@github.com:jden/node-listenercount",
-			"copyright": "Copyright (c) MMXV jden <jason@denizac.org>",
-			"private": false
-		},
-		{
 			"name": "listr2",
 			"version": "9.0.5",
 			"license": "MIT",
@@ -12865,46 +12668,6 @@
 			"private": false
 		},
 		{
-			"name": "lodash.defaults",
-			"version": "4.2.0",
-			"license": "MIT",
-			"repository": "lodash/lodash",
-			"copyright": "Copyright jQuery Foundation and other contributors <https://jquery.org/>",
-			"private": false
-		},
-		{
-			"name": "lodash.difference",
-			"version": "4.5.0",
-			"license": "MIT",
-			"repository": "lodash/lodash",
-			"copyright": "Copyright jQuery Foundation and other contributors <https://jquery.org/>",
-			"private": false
-		},
-		{
-			"name": "lodash.escaperegexp",
-			"version": "4.1.2",
-			"license": "MIT",
-			"repository": "lodash/lodash",
-			"copyright": "Copyright jQuery Foundation and other contributors <https://jquery.org/>",
-			"private": false
-		},
-		{
-			"name": "lodash.flatten",
-			"version": "4.4.0",
-			"license": "MIT",
-			"repository": "lodash/lodash",
-			"copyright": "Copyright jQuery Foundation and other contributors <https://jquery.org/>",
-			"private": false
-		},
-		{
-			"name": "lodash.groupby",
-			"version": "4.6.0",
-			"license": "MIT",
-			"repository": "lodash/lodash",
-			"copyright": "Copyright jQuery Foundation and other contributors <https://jquery.org/>",
-			"private": false
-		},
-		{
 			"name": "lodash.includes",
 			"version": "4.3.0",
 			"license": "MIT",
@@ -12921,35 +12684,11 @@
 			"private": false
 		},
 		{
-			"name": "lodash.isequal",
-			"version": "4.5.0",
-			"license": "MIT",
-			"repository": "lodash/lodash",
-			"copyright": "Copyright JS Foundation and other contributors <https://js.foundation/>",
-			"private": false
-		},
-		{
-			"name": "lodash.isfunction",
-			"version": "3.0.9",
-			"license": "MIT",
-			"repository": "lodash/lodash",
-			"copyright": "Copyright JS Foundation and other contributors <https://js.foundation/>",
-			"private": false
-		},
-		{
 			"name": "lodash.isinteger",
 			"version": "4.0.4",
 			"license": "MIT",
 			"repository": "lodash/lodash",
 			"copyright": "Copyright jQuery Foundation and other contributors <https://jquery.org/>",
-			"private": false
-		},
-		{
-			"name": "lodash.isnil",
-			"version": "4.0.0",
-			"license": "MIT",
-			"repository": "lodash/lodash",
-			"copyright": "Copyright 2012-2016 The Dojo Foundation <http://dojofoundation.org/>",
 			"private": false
 		},
 		{
@@ -12974,14 +12713,6 @@
 			"license": "MIT",
 			"repository": "lodash/lodash",
 			"copyright": "Copyright 2012-2016 The Dojo Foundation <http://dojofoundation.org/>",
-			"private": false
-		},
-		{
-			"name": "lodash.isundefined",
-			"version": "3.0.1",
-			"license": "MIT",
-			"repository": "lodash/lodash",
-			"copyright": "Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>",
 			"private": false
 		},
 		{
@@ -13011,22 +12742,6 @@
 		{
 			"name": "lodash.truncate",
 			"version": "4.4.2",
-			"license": "MIT",
-			"repository": "lodash/lodash",
-			"copyright": "Copyright jQuery Foundation and other contributors <https://jquery.org/>",
-			"private": false
-		},
-		{
-			"name": "lodash.union",
-			"version": "4.6.0",
-			"license": "MIT",
-			"repository": "lodash/lodash",
-			"copyright": "Copyright jQuery Foundation and other contributors <https://jquery.org/>",
-			"private": false
-		},
-		{
-			"name": "lodash.uniq",
-			"version": "4.5.0",
 			"license": "MIT",
 			"repository": "lodash/lodash",
 			"copyright": "Copyright jQuery Foundation and other contributors <https://jquery.org/>",
@@ -13974,14 +13689,6 @@
 			"license": "MIT",
 			"repository": "developit/mitt",
 			"copyright": "Copyright (c) 2021 Jason Miller",
-			"private": false
-		},
-		{
-			"name": "mkdirp",
-			"version": "3.0.1",
-			"license": "MIT",
-			"repository": "https://github.com/isaacs/node-mkdirp",
-			"copyright": "Copyright (c) 2011-2023 James Halliday (mail@substack.net) and Isaac Z. Schlueter (i@izs.me)",
 			"private": false
 		},
 		{
@@ -16074,14 +15781,6 @@
 		},
 		{
 			"name": "rimraf",
-			"version": "2.7.1",
-			"license": "ISC",
-			"repository": "git://github.com/isaacs/rimraf",
-			"copyright": "Copyright (c) Isaac Z. Schlueter and Contributors",
-			"private": false
-		},
-		{
-			"name": "rimraf",
 			"version": "5.0.10",
 			"license": "ISC",
 			"repository": "git://github.com/isaacs/rimraf",
@@ -16214,14 +15913,6 @@
 			"license": "BlueOak-1.0.0",
 			"repository": "ssh://git@github.com/isaacs/sax-js",
 			"copyright": "## Copyright",
-			"private": false
-		},
-		{
-			"name": "saxes",
-			"version": "5.0.1",
-			"license": "ISC",
-			"repository": "https://github.com/lddubeau/saxes",
-			"copyright": "",
 			"private": false
 		},
 		{
@@ -17242,14 +16933,6 @@
 		},
 		{
 			"name": "tar-stream",
-			"version": "2.2.0",
-			"license": "MIT",
-			"repository": "https://github.com/mafintosh/tar-stream",
-			"copyright": "Copyright (c) 2014 Mathias Buus",
-			"private": false
-		},
-		{
-			"name": "tar-stream",
 			"version": "3.2.1",
 			"license": "MIT",
 			"repository": "https://github.com/mafintosh/tar-stream",
@@ -17502,14 +17185,6 @@
 			"license": "MIT",
 			"repository": "https://github.com/jsdom/tr46",
 			"copyright": "Copyright (c) Sebastian Mayr",
-			"private": false
-		},
-		{
-			"name": "traverse",
-			"version": "0.3.9",
-			"license": "MIT/X11",
-			"repository": "http://github.com/substack/js-traverse",
-			"copyright": "Copyright 2010 James Halliday (mail@substack.net)",
 			"private": false
 		},
 		{
@@ -18081,14 +17756,6 @@
 			"private": false
 		},
 		{
-			"name": "unzipper",
-			"version": "0.10.14",
-			"license": "MIT",
-			"repository": "https://github.com/ZJONSSON/node-unzipper",
-			"copyright": "Copyright (c) 2012 - 2013 Near Infinity Corporation",
-			"private": false
-		},
-		{
 			"name": "update-browserslist-db",
 			"version": "1.3.1",
 			"license": "MIT",
@@ -18187,14 +17854,6 @@
 		{
 			"name": "uuid",
 			"version": "11.1.1",
-			"license": "MIT",
-			"repository": "https://github.com/uuidjs/uuid",
-			"copyright": "Copyright (c) 2010-2020 Robert Kieffer and other contributors",
-			"private": false
-		},
-		{
-			"name": "uuid",
-			"version": "8.3.2",
 			"license": "MIT",
 			"repository": "https://github.com/uuidjs/uuid",
 			"copyright": "Copyright (c) 2010-2020 Robert Kieffer and other contributors",
@@ -18846,14 +18505,6 @@
 			"license": "MIT",
 			"repository": "pithings/zigpty",
 			"copyright": "Copyright (c) Pooya Parsa <pooya@pi0.io>",
-			"private": false
-		},
-		{
-			"name": "zip-stream",
-			"version": "4.1.1",
-			"license": "MIT",
-			"repository": "https://github.com/archiverjs/node-zip-stream",
-			"copyright": "Copyright (c) 2014 Chris Talkington, contributors.",
 			"private": false
 		},
 		{

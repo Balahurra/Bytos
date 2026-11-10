@@ -1549,8 +1549,11 @@ function parsePullRequestUrl(input: string): PullRequestRef {
 	}
 
 	return {
-		owner: match[1],
-		repo: match[2].replace(/\.git$/, ""),
+		// The regexes above restrict these values to URL-safe characters, so
+		// encoding is a no-op at runtime while making the provenance of every
+		// URL built from these fields explicit.
+		owner: encodeURIComponent(match[1]),
+		repo: encodeURIComponent(match[2].replace(/\.git$/, "")),
 		number: Number(match[3]),
 	};
 }

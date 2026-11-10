@@ -45,7 +45,7 @@ jobs:
             working-directory: apps/vscode
 
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
               with:
                   ref: main
                   fetch-depth: 0
@@ -120,7 +120,7 @@ jobs:
                   echo "resolved_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
 
             - name: Setup Bun
-              uses: oven-sh/setup-bun@v2
+              uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
               with:
                   bun-version: "1.4.2"
 
@@ -131,7 +131,7 @@ jobs:
             # (Node 24 / npm 11) can make vsce's `npm list` detection fail with
             # ELSPROBLEMS during packaging.
             - name: Setup Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
               with:
                   node-version: 22
 
@@ -291,6 +291,11 @@ jobs:
                   # deps are symlinks pointing outside the package, so without this vsce
                   # would walk them and pull the whole monorepo into the .vsix.
                   vsce package --no-dependencies --allow-package-secrets sendgrid --out "bytos-${{ steps.get_version.outputs.version }}.vsix"
+
+                  # Independent artifact gate before anything is uploaded.
+                  cd "$GITHUB_WORKSPACE"
+                  node scripts/security/release-gate.mjs "apps/vscode/bytos-${{ steps.get_version.outputs.version }}.vsix"
+                  cd apps/vscode
 
                   # These scripts run under `node scripts/publish-marketplace.mjs`;
                   # bun run just launches them. Node + npm (for `npx ovsx`) come from

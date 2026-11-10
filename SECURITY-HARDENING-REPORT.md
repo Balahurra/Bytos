@@ -11,7 +11,7 @@
 
 The shipped VS Code extension, the desktop example, the documentation toolchain, and the evaluation toolchain were audited and remediated. The initial local baseline contained 140 advisory instances in the root Bun workspace and 36 in the documentation lockfile. After remediation:
 
-- Root Bun graph: **0 high, 0 critical, 2 low** (one locally patched, one documented low).
+- Root Bun graph: **0 high, 0 critical, 3 moderate / 2 low** (remaining items are dev/build transitives such as `glob`/`minimatch`, plus the patched `deepmerge` and documented `@ai-sdk/provider-utils` low).
 - Documentation npm graph: **0 vulnerabilities**.
 - `evals/analysis` npm graph: **0 vulnerabilities**.
 - `evals` npm graph: **0 vulnerabilities**.
@@ -257,12 +257,12 @@ Remaining accepted risks are listed in `SECURITY.md` and in section D below.
 - **Version:** 1.0.2
 - **Publisher/name:** `bytos.bytos`
 - **VS Code engine:** `^1.101.0`
-- **File size:** `17,024,854` bytes (16.24 MB)
-- **SHA-256:** `536fd420b81d59cb03d4b6f12ab2b050e8f60f65997d27b105fb7ce56c8e9242`
+- **File size:** `17,049,153` bytes (16.26 MB)
+- **SHA-256:** `6f42adc5b8559f7e23e6b8553a8fba8dcaa57d4c66f02f78e1e3b063b2a4ebcb`
 - **Files:** 238
 - **Native/executable members:** 15 (whisper DLL/EXE and the Windows audio helper)
 - **Runtime inventory:** `dist/extension.js` (19.9 MB) + `dist/plugin-runtime` (90 files) + `webview-ui/build` (106 files) + assets/licenses.
-- **Security scan:** release gate PASS (0 high/critical; 2 low residual documented; no secrets; no test/development payloads).
+- **Security scan:** release gate PASS (0 high/critical; 3 moderate/2 low residual documented; no secrets; no test/development payloads).
 - **License gate:** PASS (`licenses:check:vsix` against the new VSIX).
 - **Local installation:** PASS — `code --install-extension apps/vscode/bytos-1.0.2.vsix --force` installed `bytos.bytos@1.0.2`; the installed `dist/extension.js` hash matches the VSIX member.
 - **Installed feature smoke:** PASS — Bytos webview/chat, Settings/API Configuration, Auto Phase Plan, Features/MCP, and the Account panel all opened in a real installed VS Code 1.145.2 session.
@@ -278,9 +278,12 @@ Local commits (in order):
 - `ef84ae8` — `security: harden agent permissions, paths, MCP and web fetch`
 - `0765595` — `security: remove unused inherited menubar example`
 - `3b61076` — `security: add CI gates, release checks and hardening report`
-- `3870977` — `chore(licenses): refresh notices for hardened build`
-- `f332fd3` — `docs(security): record hardening commit and artifact hashes`
-- final validation commit — `docs(security): record final 1.0.2 VSIX validation` (this commit; see `git log -1` for its hash)
+- `3870977` - `chore(licenses): refresh notices for hardened build`
+- `f332fd3` - `docs(security): record hardening commit and artifact hashes`
+- `3c01c88` - `fix(lint): resolve CI lint errors`
+- `af73e93` - `fix(package): exclude temporary debug files from VSIX`
+- `f146631` - `fix(deps): avoid npm override conflicts while keeping patched versions`
+- final validation commit - `docs(security): record final 1.0.2 VSIX validation` (this commit; see `git log -1` for its hash)
 
 **Working tree status at final validation:** clean (`git status --porcelain` empty).
 **No push, no tag, no release, no deployment, and no Marketplace upload occurred.**

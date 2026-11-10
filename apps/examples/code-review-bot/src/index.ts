@@ -1529,10 +1529,16 @@ function serializePullRequest(bundle: PullRequestBundle) {
 
 function parsePullRequestUrl(input: string): PullRequestRef {
 	const trimmed = input.trim();
+	const ownerPart = "([A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)";
+	const repoPart = "([A-Za-z0-9._-]+)";
 	const urlMatch = trimmed.match(
-		/^https?:\/\/github\.com\/([^/\s]+)\/([^/\s]+)\/pull\/(\d+)(?:[/?#].*)?$/,
+		new RegExp(
+			`^https?:\\/\\/github\\.com\\/${ownerPart}\\/${repoPart}\\/pull\\/(\\d+)(?:[/?#].*)?$`,
+		),
 	);
-	const shortMatch = trimmed.match(/^([^/\s]+)\/([^#\s]+)#(\d+)$/);
+	const shortMatch = trimmed.match(
+		new RegExp(`^${ownerPart}\\/${repoPart}#(\\d+)$`),
+	);
 	const match = urlMatch ?? shortMatch;
 
 	if (!match) {
@@ -1580,11 +1586,21 @@ async function githubFetch(url: string, init: RequestInit = {}) {
 	headers.set("X-GitHub-Api-Version", "2022-11-28");
 	if (GITHUB_TOKEN) headers.set("Authorization", `Bearer ${GITHUB_TOKEN}`);
 
-	if (!url.startsWith("https://api.github.com/")) {
+	let parsed: URL;
+	try {
+		parsed = new URL(url);
+	} catch {
+		throw new HttpError(400, "Invalid GitHub API URL");
+	}
+	if (
+		parsed.protocol !== "https:" ||
+		parsed.hostname !== "api.github.com" ||
+		!parsed.pathname.startsWith("/repos/")
+	) {
 		throw new HttpError(400, "Invalid GitHub API URL");
 	}
 
-	const response = await fetch(url, { ...init, headers });
+	const response = await fetch(parsed.toString(), { ...init, headers });
 	if (!response.ok) {
 		const body = await response.text();
 		throw new HttpError(

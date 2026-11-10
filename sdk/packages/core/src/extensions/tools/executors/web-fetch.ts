@@ -4,8 +4,8 @@
  * Built-in implementation for fetching web content using native fetch.
  */
 
-import type { AgentToolContext } from "@bytos/shared";
-import type { WebFetchExecutor } from "../types";
+import type { AgentToolContext } from "@bytos/shared"
+import type { WebFetchExecutor } from "../types"
 
 /**
  * Options for the web fetch executor
@@ -15,36 +15,62 @@ export interface WebFetchExecutorOptions {
 	 * Timeout for fetch requests in milliseconds
 	 * @default 30000 (30 seconds)
 	 */
-	timeoutMs?: number;
+	timeoutMs?: number
 
 	/**
 	 * Maximum response size in bytes
 	 * @default 5_000_000 (5MB)
 	 */
-	maxResponseBytes?: number;
+	maxResponseBytes?: number
 
 	/**
 	 * User agent string
 	 * @default "Mozilla/5.0 (compatible; AgentBot/1.0)"
 	 */
-	userAgent?: string;
+	userAgent?: string
 
 	/**
 	 * Additional headers
 	 */
-	headers?: Record<string, string>;
+	headers?: Record<string, string>
 
 	/**
 	 * Whether to follow redirects
 	 * @default true
 	 */
-	followRedirects?: boolean;
+	followRedirects?: boolean
 
 	/**
 	 * Maximum number of redirects to follow
 	 * @default 5
 	 */
-	maxRedirects?: number;
+	maxRedirects?: number
+}
+
+/**
+ * Cloud metadata services live on link-local addresses. A model-controlled
+ * fetch must not be able to read instance credentials even if a URL (or a
+ * redirect) resolves there. Localhost remains available for legitimate local
+ * documentation servers.
+ */
+function isCloudMetadataAddress(url: URL): boolean {
+	const host = url.hostname.toLowerCase()
+	if (host === "metadata.google.internal" || host === "metadata.goog") {
+		return true
+	}
+	// IPv4 link-local used by AWS/GCP/Azure instance metadata.
+	if (host.startsWith("169.254.")) {
+		return true
+	}
+	// IPv6 link-local, including IPv4-mapped forms.
+	const normalized = host.replace(/^\[|\]$/g, "")
+	if (normalized.startsWith("fe80:")) {
+		return true
+	}
+	if (normalized.startsWith("::ffff:169.254.")) {
+		return true
+	}
+	return false
 }
 
 /**
@@ -75,7 +101,7 @@ function htmlToText(html: string): string {
 			.replace(/\n\s+/g, "\n")
 			.replace(/\n{3,}/g, "\n\n")
 			.trim()
-	);
+	)
 }
 
 /**
@@ -105,7 +131,7 @@ export function createWebFetchExecutor(
 		headers = {},
 		followRedirects = true,
 		// maxRedirects is available in options but native fetch handles it automatically
-	} = options;
+	} = options
 
 	return async (
 		url: string,
@@ -113,29 +139,32 @@ export function createWebFetchExecutor(
 		context: AgentToolContext,
 	): Promise<string> => {
 		// Validate URL
-		let parsedUrl: URL;
+		let parsedUrl: URL
 		try {
-			parsedUrl = new URL(url);
+			parsedUrl = new URL(url)
 		} catch {
-			throw new Error(`Invalid URL: ${url}`);
+			throw new Error(`Invalid URL: ${url}`)
 		}
 
 		// Only allow http and https
 		if (!["http:", "https:"].includes(parsedUrl.protocol)) {
 			throw new Error(
 				`Invalid protocol: ${parsedUrl.protocol}. Only http and https are supported.`,
-			);
+			)
+		}
+		if (isCloudMetadataAddress(parsedUrl)) {
+			throw new Error("Refusing to fetch a cloud metadata address.")
 		}
 
 		// Create abort controller for timeout
-		const controller = new AbortController();
-		const timeout = setTimeout(() => controller.abort(), timeoutMs);
-		let contextAbortHandler: (() => void) | undefined;
+		const controller = new AbortController()
+		const timeout = setTimeout(() => controller.abort(), timeoutMs)
+		let contextAbortHandler: (() => void) | undefined
 
 		// Combine with context abort signal
 		if (context.signal) {
-			contextAbortHandler = () => controller.abort();
-			context.signal.addEventListener("abort", contextAbortHandler);
+			contextAbortHandler = () => controller.abort()
+			context.signal.addEventListener("abort", contextAbortHandler)
 		}
 
 		try {
@@ -150,77 +179,96 @@ export function createWebFetchExecutor(
 				},
 				redirect: followRedirects ? "follow" : "manual",
 				signal: controller.signal,
-			});
+			})
 
-			clearTimeout(timeout);
+			clearTimeout(timeout)
+
+			// Native fetch follows redirects internally; validate the final
+			// origin too so a public URL cannot redirect the agent to metadata.
+			if (response.url) {
+				try {
+					if (isCloudMetadataAddress(new URL(response.url))) {
+						throw new Error(
+							"Refusing to read a redirect to a cloud metadata address.",
+						)
+					}
+				} catch (error) {
+					if (
+						error instanceof Error &&
+						/metadata address/i.test(error.message)
+					) {
+						throw error
+					}
+				}
+			}
 
 			// Check for redirect limit (if we're checking manually)
 			if (!followRedirects && response.status >= 300 && response.status < 400) {
-				const location = response.headers.get("location");
-				return `Redirect to: ${location}`;
+				const location = response.headers.get("location")
+				return `Redirect to: ${location}`
 			}
 
 			// Check response status
 			if (!response.ok) {
-				throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+				throw new Error(`HTTP ${response.status}: ${response.statusText}`)
 			}
 
 			// Get content type
-			const contentType = response.headers.get("content-type") || "";
+			const contentType = response.headers.get("content-type") || ""
 
 			// Read response body with size limit
-			const reader = response.body?.getReader();
+			const reader = response.body?.getReader()
 			if (!reader) {
-				throw new Error("Failed to read response body");
+				throw new Error("Failed to read response body")
 			}
 
-			const chunks: Uint8Array[] = [];
-			let totalSize = 0;
+			const chunks: Uint8Array[] = []
+			let totalSize = 0
 
 			while (true) {
-				const { done, value } = await reader.read();
-				if (done) break;
+				const { done, value } = await reader.read()
+				if (done) break
 
-				totalSize += value.length;
+				totalSize += value.length
 				if (totalSize > maxResponseBytes) {
 					// Bun 1.4 rejects cancel() on an already-errored stream; that
 					// rejection must not surface as an unhandled rejection.
-					reader.cancel().catch(() => {});
+					reader.cancel().catch(() => {})
 					throw new Error(
 						`Response too large: exceeded ${maxResponseBytes} bytes`,
-					);
+					)
 				}
 
-				chunks.push(value);
+				chunks.push(value)
 			}
 
 			// Combine chunks
-			const buffer = new Uint8Array(totalSize);
-			let offset = 0;
+			const buffer = new Uint8Array(totalSize)
+			let offset = 0
 			for (const chunk of chunks) {
-				buffer.set(chunk, offset);
-				offset += chunk.length;
+				buffer.set(chunk, offset)
+				offset += chunk.length
 			}
 
 			// Decode as text
-			const text = new TextDecoder("utf-8").decode(buffer);
+			const text = new TextDecoder("utf-8").decode(buffer)
 
 			// Process content based on type
-			let content: string;
+			let content: string
 			if (
 				contentType.includes("text/html") ||
 				contentType.includes("application/xhtml")
 			) {
-				content = htmlToText(text);
+				content = htmlToText(text)
 			} else if (contentType.includes("application/json")) {
 				try {
-					const json = JSON.parse(text);
-					content = JSON.stringify(json, null, 2);
+					const json = JSON.parse(text)
+					content = JSON.stringify(json, null, 2)
 				} catch {
-					content = text;
+					content = text
 				}
 			} else {
-				content = text;
+				content = text
 			}
 
 			// Format output with metadata
@@ -231,31 +279,31 @@ export function createWebFetchExecutor(
 				``,
 				`--- Content ---`,
 				content.slice(0, 50000), // Limit content size for output
-			];
+			]
 
 			if (content.length > 50000) {
 				outputLines.push(
 					`\n[Content truncated: showing first 50000 of ${content.length} characters]`,
-				);
+				)
 			}
 
-			outputLines.push(``, `--- Analysis Request ---`, `Prompt: ${prompt}`);
+			outputLines.push(``, `--- Analysis Request ---`, `Prompt: ${prompt}`)
 
-			return outputLines.join("\n");
+			return outputLines.join("\n")
 		} catch (error) {
-			clearTimeout(timeout);
+			clearTimeout(timeout)
 
 			if (error instanceof Error) {
 				if (error.name === "AbortError") {
-					throw new Error(`Request timed out after ${timeoutMs}ms`);
+					throw new Error(`Request timed out after ${timeoutMs}ms`)
 				}
-				throw error;
+				throw error
 			}
-			throw new Error(`Fetch failed: ${String(error)}`);
+			throw new Error(`Fetch failed: ${String(error)}`)
 		} finally {
 			if (context.signal && contextAbortHandler) {
-				context.signal.removeEventListener("abort", contextAbortHandler);
+				context.signal.removeEventListener("abort", contextAbortHandler)
 			}
 		}
-	};
+	}
 }

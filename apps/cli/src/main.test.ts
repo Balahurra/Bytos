@@ -1044,7 +1044,7 @@ describe("runCli lightweight command dispatch", () => {
 		expect(runtimeMocks.runInteractive).toHaveBeenCalledTimes(1);
 		expect(runtimeMocks.runInteractive).toHaveBeenCalledWith(
 			expect.objectContaining({
-				defaultToolAutoApprove: true,
+				defaultToolAutoApprove: false,
 				toolPolicies: {
 					"*": { autoApprove: false },
 				},
@@ -1111,7 +1111,7 @@ describe("runCli lightweight command dispatch", () => {
 			await expect(runCli()).resolves.toBeUndefined();
 			expect(runtimeMocks.runInteractive).toHaveBeenCalledWith(
 				expect.objectContaining({
-					defaultToolAutoApprove: true,
+					defaultToolAutoApprove: false,
 					toolPolicies: {
 						"*": { autoApprove: false },
 					},

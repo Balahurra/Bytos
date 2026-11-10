@@ -190,13 +190,18 @@ export function getRequestRegistry(): GrpcRequestRegistry {
 }
 
 function getHandler(serviceName: string, methodName: string): any {
-	// Get the service handler from the config
-	const serviceConfig = serviceHandlers[serviceName]
-	if (!serviceConfig) {
+	// Own-property checks: a webview message is untrusted, so names such as
+	// "__proto__" or "constructor" must not resolve through the prototype
+	// chain to SomeObject.prototype methods.
+	if (!Object.hasOwn(serviceHandlers, serviceName)) {
 		throw new Error(`Unknown service: ${serviceName}`)
 	}
+	const serviceConfig = serviceHandlers[serviceName]
+	if (!serviceConfig || !Object.hasOwn(serviceConfig, methodName)) {
+		throw new Error(`Unknown rpc: ${serviceName}.${methodName}`)
+	}
 	const handler = serviceConfig[methodName]
-	if (!handler) {
+	if (typeof handler !== "function") {
 		throw new Error(`Unknown rpc: ${serviceName}.${methodName}`)
 	}
 	return handler

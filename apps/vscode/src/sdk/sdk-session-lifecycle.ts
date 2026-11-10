@@ -7,6 +7,7 @@ import type {
 	StartSessionResult,
 } from "@bytos/core"
 import { formatModeSwitchNotice, type ModeSwitchNotice } from "@bytos/shared"
+import { DEFAULT_AUTO_APPROVAL_SETTINGS } from "@shared/AutoApprovalSettings"
 import type { Mode } from "@shared/storage/types"
 import { StateManager } from "@/core/storage/StateManager"
 import type { VscodeTerminalManager } from "@/hosts/vscode/terminal/VscodeTerminalManager"
@@ -227,10 +228,16 @@ export class SdkSessionLifecycle {
 		}
 
 		const autoApprovalSettings = StateManager.get().getGlobalSettingsKey("autoApprovalSettings")
-		const toolPolicies =
-			!hostOverride && autoApprovalSettings
-				? buildToolPolicies(autoApprovalSettings, this.options.mcpHub, startInput.config?.mcpServerNames)
-				: undefined
+		// Always install a fail-closed policy set for local sessions. Leaving
+		// toolPolicies undefined would fall back to the SDK's permissive default
+		// (unlisted tools auto-approved) if settings are missing or stale.
+		const toolPolicies = !hostOverride
+			? buildToolPolicies(
+					autoApprovalSettings ?? DEFAULT_AUTO_APPROVAL_SETTINGS,
+					this.options.mcpHub,
+					startInput.config?.mcpServerNames,
+				)
+			: undefined
 
 		const sdkHost = hostOverride ?? (await this.getOrCreateSharedHost())
 		if (!shouldContinue()) {

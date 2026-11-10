@@ -21,8 +21,8 @@ import {
 	CLI_DEFAULT_MAX_CONSECUTIVE_MISTAKES,
 } from "./runtime/defaults";
 import type { TuiStartupTarget } from "./tui/types";
-import { filterChatModels } from "./utils/chat-models";
 import { registerBytosClientIdentity } from "./utils/bytos-client-identity";
+import { filterChatModels } from "./utils/chat-models";
 import { getCliBuildInfo } from "./utils/common";
 import {
 	buildCliCompactionConfig,
@@ -52,6 +52,7 @@ import {
 } from "./utils/provider-auth";
 import { resolveCliReasoning } from "./utils/reasoning";
 import {
+	CLI_DEFAULT_TOOL_AUTO_APPROVE,
 	resolveStartupCompactionMode,
 	resolveStartupMode,
 	resolveStartupToolAutoApprove,
@@ -882,7 +883,9 @@ export async function runCli(): Promise<void> {
 	// global settings file; explicit CLI flags take precedence over the
 	// persisted values, which in turn override the built-in defaults.
 	const persistedGlobalSettings = coreServer.readGlobalSettings();
-	const defaultToolAutoApprove = true;
+	// Fail closed: a fresh CLI install must not auto-approve privileged tools.
+	// Users opt in explicitly with `--yolo`/`/yolo` or the persisted setting.
+	const defaultToolAutoApprove = CLI_DEFAULT_TOOL_AUTO_APPROVE;
 	const effectiveToolAutoApprove = resolveStartupToolAutoApprove(
 		args,
 		persistedGlobalSettings,

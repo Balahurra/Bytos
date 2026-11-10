@@ -1,8 +1,8 @@
-import { afterEach, beforeEach, describe, it } from "mocha"
 import { Controller } from "@core/controller"
 import { serviceHandlers } from "@generated/hosts/vscode/protobus-services"
 import { GrpcCancel, GrpcRequest } from "@shared/WebviewMessage"
 import { expect } from "chai"
+import { afterEach, beforeEach, describe, it } from "mocha"
 import * as sinon from "sinon"
 import { getRequestRegistry, handleGrpcRequest, handleGrpcRequestCancel } from "./grpc-handler"
 
@@ -133,6 +133,32 @@ describe("grpc-handler", () => {
 				expect(sentMessage.type).to.equal("grpc_response")
 				expect(sentMessage.grpc_response?.error).to.include("Unknown rpc: bytos.TestService.unknownMethod")
 				expect(sentMessage.grpc_response?.request_id).to.equal("test-999")
+			})
+
+			it("does not resolve prototype-chain service names", async () => {
+				await handleGrpcRequest(mockController, mockPostMessageToWebview, {
+					service: "__proto__",
+					method: "toString",
+					message: {},
+					request_id: "proto-1",
+					is_streaming: false,
+				})
+
+				const sentMessage = mockPostMessageToWebview.firstCall.args[0]
+				expect(sentMessage.grpc_response?.error).to.include("Unknown service: __proto__")
+			})
+
+			it("does not resolve prototype-chain method names", async () => {
+				await handleGrpcRequest(mockController, mockPostMessageToWebview, {
+					service: serviceName,
+					method: "constructor",
+					message: {},
+					request_id: "proto-2",
+					is_streaming: false,
+				})
+
+				const sentMessage = mockPostMessageToWebview.firstCall.args[0]
+				expect(sentMessage.grpc_response?.error).to.include("Unknown rpc: bytos.TestService.constructor")
 			})
 		})
 		describe("Streaming requests", () => {

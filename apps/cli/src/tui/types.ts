@@ -2,7 +2,6 @@ import type {
 	AgentEvent,
 	AgentMode,
 	CheckpointEntry,
-	BytosSubscriptionPlan,
 	TeamEvent,
 } from "@bytos/core";
 import type {
@@ -161,7 +160,6 @@ export interface TuiProps {
 	subscribeAdditionalSlashCommands?: (listener: () => void) => () => void;
 	loadWelcomeLine?: () => Promise<string | undefined>;
 	loadBytosAccount: () => Promise<BytosAccountSnapshot>;
-	loadIndividualSubscriptionPlans?: () => Promise<BytosSubscriptionPlan[]>;
 	switchBytosAccount: (organizationId?: string | null) => Promise<void>;
 	loadConfigData: (
 		options?: LoadInteractiveConfigDataOptions,

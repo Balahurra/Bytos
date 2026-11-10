@@ -420,38 +420,6 @@ describe("buildSessionConfig", () => {
 		expect(config.systemPrompt).toContain(JSON.stringify("/tmp/workspace"))
 	})
 
-	it("resolves BytosPass from the shared Bytos OAuth credentials", async () => {
-		mocks.providerSettingsManager.getProviderSettings.mockImplementation((providerId?: string) => {
-			if (providerId !== "bytos") {
-				return undefined
-			}
-			return {
-				provider: "bytos",
-				auth: {
-					accessToken: "workos:shared-bytos-token",
-					refreshToken: "shared-refresh-token",
-				},
-			} as any
-		})
-
-		const apiKey = resolveApiKey("bytos-pass", {
-			actModeApiProvider: "bytos-pass",
-		} as any)
-
-		expect(apiKey).toBe("workos:shared-bytos-token")
-		expect(mocks.providerSettingsManager.getProviderSettings).toHaveBeenCalledWith("bytos")
-	})
-
-	it("preserves explicit BytosPass API keys from state before OAuth storage", () => {
-		mocks.providerSettingsManager.getProviderSettings.mockReturnValue({
-			provider: "bytos",
-			auth: { accessToken: "workos:stored-token" },
-		} as any)
-
-		expect(resolveApiKey("bytos-pass", { bytosApiKey: "workos:configured-token" } as any)).toBe("workos:configured-token")
-		expect(mocks.providerSettingsManager.getProviderSettings).not.toHaveBeenCalled()
-	})
-
 	it("preserves explicit Bytos API keys from state before OAuth storage", () => {
 		mocks.providerSettingsManager.getProviderSettings.mockReturnValue({
 			provider: "bytos",
@@ -1413,19 +1381,19 @@ describe("buildSessionConfig", () => {
 		expect(config.providerConfig).not.toHaveProperty("sap")
 	})
 
-	it("uses BytosPass model storage and omits empty nested apiKey so SDK OAuth can fill it", async () => {
+	it("uses ClinePass model storage and omits empty nested apiKey so SDK OAuth can fill it", async () => {
 		mocks.stateManager.getApiConfiguration.mockReturnValue({
-			actModeApiProvider: "bytos-pass",
-			actModeBytosPassModelId: "bytos-pass/glm-5.2",
+			actModeApiProvider: "cline-pass",
+			actModeClinePassModelId: "cline-pass/glm-5.2",
 		} as any)
 		mocks.providerSettingsManager.getProviderSettings.mockReturnValue(undefined)
 
 		const config = await buildSessionConfig({ cwd: "/tmp/workspace" })
 
-		expect(config.providerId).toBe("bytos-pass")
-		expect(config.modelId).toBe("bytos-pass/glm-5.2")
+		expect(config.providerId).toBe("cline-pass")
+		expect(config.modelId).toBe("cline-pass/glm-5.2")
 		expect(config.apiKey).toBe("")
-		expect(config.providerConfig).toMatchObject({ providerId: "bytos-pass", modelId: "bytos-pass/glm-5.2" })
+		expect(config.providerConfig).toMatchObject({ providerId: "cline-pass", modelId: "cline-pass/glm-5.2" })
 		expect(config.providerConfig).not.toHaveProperty("apiKey")
 	})
 

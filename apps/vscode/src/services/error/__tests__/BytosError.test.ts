@@ -9,61 +9,6 @@ describe("BytosError", () => {
 			BytosError.getErrorType(err)!.should.equal(BytosErrorType.QuotaExceeded)
 		})
 
-		it("should return Entitlement for the SDK BytosPass subscription message", () => {
-			const err = new BytosError(
-				"No access to BytosPass subscription models yet. Subscribe to BytosPass, the low cost open weights model coding plan:",
-			)
-
-			BytosError.getErrorType(err)!.should.equal(BytosErrorType.Entitlement)
-		})
-
-		it("should return Entitlement for the SDK BytosPass subscription message with a different app URL", () => {
-			const err = new BytosError(
-				"No access to BytosPass subscription models yet. Subscribe to BytosPass, the low cost open weights model coding plan:",
-			)
-
-			BytosError.getErrorType(err)!.should.equal(BytosErrorType.Entitlement)
-		})
-
-		it("should return Entitlement for the raw required-plan message", () => {
-			const err = new BytosError("403 Error 403: the user is not subscribed to required model plan")
-
-			BytosError.getErrorType(err)!.should.equal(BytosErrorType.Entitlement)
-		})
-
-		it("should classify the SDK org individual subscription message separately", () => {
-			const err = new BytosError(
-				"Organization accounts cannot use BytosPass subscriptions. Go to /account -> change account to switch to your personal account for BytosPass",
-			)
-
-			BytosError.getErrorType(err)!.should.equal(BytosErrorType.OrgBytosPassRestriction)
-		})
-
-		it("should classify the raw organization individual subscription message separately", () => {
-			const err = new BytosError("403 Error 403: organization accounts cannot use individual model inference subscriptions")
-
-			BytosError.getErrorType(err)!.should.equal(BytosErrorType.OrgBytosPassRestriction)
-		})
-
-		it("should classify BytosPass period limit messages separately", () => {
-			const err = new BytosError(
-				"You have reached your weekly Bytospass limit. The limit resets in 7d, please try again later.",
-			)
-
-			BytosError.getErrorType(err)!.should.equal(BytosErrorType.BytosPassLimit)
-		})
-
-		it("should classify nested BytosPass period limit messages separately", () => {
-			const err = new BytosError({
-				message: "403 Error 403",
-				error: {
-					message: "You have reached your monthly BytosPass limit. The limit resets in 12h, please try again later.",
-				},
-			})
-
-			BytosError.getErrorType(err)!.should.equal(BytosErrorType.BytosPassLimit)
-		})
-
 		it("should classify daily Bytos free model limits separately", () => {
 			const err = new BytosError(
 				"Error: Error 429: Daily free limit reached on model deepseek/deepseek-v4-flash. Try again in 23h 59m",

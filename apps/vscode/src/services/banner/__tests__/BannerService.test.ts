@@ -621,8 +621,8 @@ describe("BannerService", () => {
 				// Initial banner list fetch
 				expect(mockFetch.callCount).to.equal(1)
 
-				// Dismiss a hardcoded/webview-local banner id (e.g. the BytosPass promo)
-				await bannerService.dismissBanner("bytos-pass-home-promo-v2")
+				// Dismiss a hardcoded/webview-local banner id (e.g. the ClinePass promo)
+				await bannerService.dismissBanner("cline-pass-home-promo-v2")
 				// Dismiss event POST, but no cache clear
 				expect(mockFetch.callCount).to.equal(2)
 

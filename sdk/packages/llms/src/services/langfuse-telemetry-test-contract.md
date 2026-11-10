@@ -7,7 +7,7 @@ equivalence claim: the direct-export ownership contract deliberately changes.
 
 | Baseline guarantee | Combined coverage / intentional change |
 | --- | --- |
-| Non-Bytos exclusion before/after initialization; Bytos/BytosPass enablement | `keeps third-party providers disabled before and after direct initialization`; `shares one isolated exporter between concurrent Bytos backend requests` |
+| Non-Bytos exclusion before/after initialization; Bytos enablement | `keeps third-party providers disabled before and after direct initialization`; `does not route ClinePass telemetry through the Bytos exporter` |
 | Flush before shutdown | `uses direct credentials even when a non-relay host owns an immutable tracer` asserts SDK-owned flush-before-shutdown and no host cleanup |
 | Direct/proxy relay marker suppresses duplicate direct export | `recognizes a relay marker directly on the global provider`, `never registers cleanup or touches the host when direct export is declined`, `takes the relay path even after direct integration has been cached`, and real-stream direct/relay coexistence |
 | Direct exporter attaches to mutable host or proxy delegate | **Replaced intentionally:** it now uses an isolated provider and never attaches to a foreign host. Real-stream host-alive-after-cleanup and unrelated-call checks protect isolation |

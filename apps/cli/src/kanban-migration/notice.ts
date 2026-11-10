@@ -1,13 +1,11 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { resolveBytosDataDir } from "@bytos/shared/storage";
-import { getCliSubscriptionUrl } from "../utils/bytos-pass-errors";
 
-export const BYTOS_PASS_NOTICE_ID = "bytos-cli-bytos-pass-intro";
 const DESKTOP_NOTICE_ID = "bytos-cli-desktop-launch";
-const FORCE_NOTICE_ENV = "BYTOS_FORCE_BYTOS_PASS_NOTICE";
-// Historically named for the BytosPass promo; disables every startup notice.
-const DISABLE_NOTICE_ENV = "BYTOS_DISABLE_BYTOS_PASS_NOTICE";
+const FORCE_NOTICE_ENV = "BYTOS_FORCE_CLINE_PASS_NOTICE";
+// Historically named for the ClinePass promo; disables every startup notice.
+const DISABLE_NOTICE_ENV = "BYTOS_DISABLE_CLINE_PASS_NOTICE";
 const DESKTOP_APP_URL = "https://bytos.dev/desktop";
 
 export interface CliMigrationNotice {
@@ -18,26 +16,12 @@ export interface CliMigrationNotice {
 	openLabel: string;
 }
 
-export interface CliMigrationNoticeOptions {
-	activeProviderId?: string;
-}
-
-function getBytosPassNotice(): CliMigrationNotice {
-	return {
-		id: BYTOS_PASS_NOTICE_ID,
-		title: "Try BytosPass",
-		body: "BytosPass is a $9.99/month subscription plan to get access to the latest open-weight coding models with enough quota for day-to-day work, at a much lower cost than paying API costs directly.",
-		url: getCliSubscriptionUrl(),
-		openLabel: "Open BytosPass",
-	};
-}
-
 function getDesktopNotice(): CliMigrationNotice {
 	return {
 		id: DESKTOP_NOTICE_ID,
 		title: "Introducing Bytos Desktop",
 		body: [
-			"A native app for working with open weights models. Use it with BytosPass and our free models, or BYOK.",
+			"A native app for working with open weights models, with your own provider keys or free models.",
 			"- Import tasks from Claude Code and Codex",
 			"- Run Bytos on a regular schedule",
 			"- Use web search tool and voice input",
@@ -91,15 +75,6 @@ function isForceNoticeEnabled(env: NodeJS.ProcessEnv): boolean {
 	return env[FORCE_NOTICE_ENV]?.trim() === "1";
 }
 
-export function shouldSuppressBytosCliMigrationNoticeForActiveProvider(
-	activeProviderId: string | undefined,
-	env: NodeJS.ProcessEnv = process.env,
-): boolean {
-	return (
-		activeProviderId?.trim() === "bytos-pass" && !isForceNoticeEnabled(env)
-	);
-}
-
 export function resolveCliNoticeStatePath(
 	dataDir = resolveBytosDataDir(),
 ): string {
@@ -109,7 +84,6 @@ export function resolveCliNoticeStatePath(
 export function getBytosCliMigrationNotice(
 	dataDir = resolveBytosDataDir(),
 	env: NodeJS.ProcessEnv = process.env,
-	options: CliMigrationNoticeOptions = {},
 ): CliMigrationNotice | undefined {
 	const noticePath = resolveCliNoticeStatePath(dataDir);
 	const noticeState = readNoticeState(noticePath);
@@ -118,18 +92,7 @@ export function getBytosCliMigrationNotice(
 	if (disableNotice && !forceNotice) {
 		return undefined;
 	}
-	// At most one notice per launch, oldest first, so a user who has already
-	// dismissed the BytosPass intro sees the desktop launch on their next start.
-	if (
-		!shouldSuppressBytosCliMigrationNoticeForActiveProvider(
-			options.activeProviderId,
-			env,
-		) &&
-		(forceNotice || !noticeState.shown[BYTOS_PASS_NOTICE_ID])
-	) {
-		return getBytosPassNotice();
-	}
-	if (!noticeState.shown[DESKTOP_NOTICE_ID]) {
+	if (forceNotice || !noticeState.shown[DESKTOP_NOTICE_ID]) {
 		return getDesktopNotice();
 	}
 	return undefined;
@@ -137,7 +100,7 @@ export function getBytosCliMigrationNotice(
 
 export function markBytosCliMigrationNoticeShown(
 	dataDir = resolveBytosDataDir(),
-	noticeId = BYTOS_PASS_NOTICE_ID,
+	noticeId = DESKTOP_NOTICE_ID,
 ): void {
 	const noticePath = resolveCliNoticeStatePath(dataDir);
 	const noticeState = readNoticeState(noticePath);

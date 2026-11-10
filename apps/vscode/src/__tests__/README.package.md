@@ -101,12 +101,13 @@ or LM Studio. Token usage and estimated cost are tracked per request and per tas
 - **Optional Bytos account.** Chat and BYOK do not require an account. Sign-up
   and sign-in open bytos.dev and use Supabase Auth; the extension completes the
   browser handoff through the Bytos API worker. Signed-in account screens can
-  request account data such as organizations, credits, remote configuration, and,
-  when enabled, BytosPass subscription links.
+  request account data such as organizations, account-related usage, and remote
+  configuration. Account deletion is performed on bytos.dev; the Account area
+  links to it.
 - **Provider-direct model traffic by default.** Model requests go from your
-  machine to the provider you picked. Bytos does not proxy them unless you select
-  the BytosPass provider, which sends requests to the Bytos API as part of that
-  subscription. Local models do not leave your machine.
+  machine to the provider you picked. Bytos does not proxy them. The optional
+  ClinePass compatibility provider sends requests to Cline's hosted API with your
+  own Cline API key. Local models do not leave your machine.
 - **Workspace boundaries.** File tools enforce a canonical workspace boundary,
   including absolute paths, traversal, Windows drive/UNC paths, and symlinks.
 
@@ -121,7 +122,7 @@ The full data map is in
 | Local voice dictation | Windows x64 only in this release |
 | Remote SSH / WSL / VS Code Web / Windows ARM voice | Not supported for voice |
 | Desktop, CLI, JetBrains, SDK, Kanban, Enterprise | Not shipped in this release |
-| BytosPass subscription links | Feature-flagged; shown only when enabled |
+| ClinePass compatibility provider | Available with your own Cline API key |
 
 ## Feature status
 

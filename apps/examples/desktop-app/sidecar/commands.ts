@@ -2913,7 +2913,7 @@ export async function handleCommand(
 	if (command === "list_provider_catalog") {
 		const manager = new ProviderSettingsManager();
 		await ensureCustomProvidersLoaded(manager);
-		return await listLocalProviders(manager, { isBytosPassEnabled: true });
+		return await listLocalProviders(manager);
 	}
 	if (command === "list_transcription_models") {
 		const manager = new ProviderSettingsManager();
@@ -2937,7 +2937,7 @@ export async function handleCommand(
 		);
 	}
 	if (command === "list_bytos_recommended_models") {
-		// Tiered picker data (recommended / free / bytosPass) with
+		// Tiered picker data (recommended / free / clinePass) with
 		// display-ready names; falls back to a bundled list offline.
 		return await fetchBytosRecommendedModels();
 	}
@@ -3122,7 +3122,7 @@ export async function handleCommand(
 		// (see signOut in webview settings/account-view.tsx), so this is the
 		// authoritative signal — it fires the moment credentials are cleared
 		// rather than waiting for the next account fetch.
-		if (saved.providerId === "bytos" || saved.providerId === "bytos-pass") {
+		if (saved.providerId === "bytos") {
 			syncAccountContextFromSettings(ctx, manager);
 		}
 		return saved;

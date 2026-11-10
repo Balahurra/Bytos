@@ -1886,7 +1886,7 @@ export class Controller {
 			providerSnapshots.set(provider, { apiKey: current.apiKey, baseUrl: current.baseUrl })
 		}
 		const snapshot = providerSnapshots.get(provider)
-		const phaseBaseUrl = provider === "bytos-pass" ? CLINE_PASS_API_BASE_URL : (snapshot?.baseUrl ?? "")
+		const phaseBaseUrl = provider === "cline-pass" ? CLINE_PASS_API_BASE_URL : (snapshot?.baseUrl ?? "")
 		this.providerConfigStore.write(providerId, {
 			apiKey: phase.apiKey !== undefined ? phase.apiKey : (snapshot?.apiKey ?? ""),
 			baseUrl: phaseBaseUrl,

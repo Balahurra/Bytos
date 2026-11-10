@@ -175,7 +175,7 @@
 		{ "source": "/kanban", "destination": "/status-and-roadmap" },
 		{ "source": "/enterprise-solutions", "destination": "/status-and-roadmap" },
 		{ "source": "/getting-started/bytos-provider", "destination": "/status-and-roadmap" },
-		{ "source": "/getting-started/bytospass", "destination": "/status-and-roadmap" },
+
 		{ "source": "/getting-started/free-models", "destination": "/status-and-roadmap" },
 		{ "source": "/getting-started/authorizing-with-bytos", "destination": "/provider-config/overview" },
 		{ "source": "/usage/cli-overview", "destination": "/status-and-roadmap" },

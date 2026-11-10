@@ -401,7 +401,6 @@ const PROVIDER_API_KEY_MAP: Record<string, keyof ApiConfiguration> = {
 	gemini: "geminiApiKey",
 	deepseek: "deepSeekApiKey",
 	bytos: "bytosApiKey",
-	"bytos-pass": "bytosApiKey",
 	ollama: "ollamaApiKey",
 	lmstudio: "apiKey", // LM Studio doesn't need a key but uses the generic field
 	requesty: "requestyApiKey",
@@ -451,7 +450,7 @@ const PROVIDER_MODEL_ID_MAP: Record<string, { plan: keyof ApiConfiguration; act:
 	vertex: { plan: "planModeApiModelId", act: "actModeApiModelId" },
 	deepseek: { plan: "planModeApiModelId", act: "actModeApiModelId" },
 	bytos: { plan: "planModeBytosModelId", act: "actModeBytosModelId" },
-	"bytos-pass": { plan: "planModeBytosPassModelId", act: "actModeBytosPassModelId" },
+	"cline-pass": { plan: "planModeClinePassModelId", act: "actModeClinePassModelId" },
 	litellm: { plan: "planModeLiteLlmModelId", act: "actModeLiteLlmModelId" },
 	requesty: { plan: "planModeRequestyModelId", act: "actModeRequestyModelId" },
 	together: { plan: "planModeTogetherModelId", act: "actModeTogetherModelId" },
@@ -532,8 +531,7 @@ export function resolveApiKey(providerId: string, config: ApiConfiguration): str
 
 		// Read from providers.json via the shared ProviderSettingsManager. This is
 		// intentionally keyed by the requested provider so SDK auth metadata can
-		// resolve shared storage (e.g. bytos-pass -> bytos) without VS Code
-		// hardcoding provider exceptions.
+		// resolve shared storage without VS Code hardcoding provider exceptions.
 		try {
 			const manager = getProviderSettingsManager()
 			const apiKey = resolveProviderApiKeyFromSettings(manager, providerSettingsProviderId(providerId))?.trim()
@@ -1023,9 +1021,7 @@ export async function buildSessionConfig(input: SessionConfigInput): Promise<Cor
 		try {
 			const dataDir = resolveDataDir()
 			const manager = getProviderSettingsManager(dataDir)
-			const lastUsed = manager.getLastUsedProviderSettings({
-				isBytosPassEnabled: true,
-			})
+			const lastUsed = manager.getLastUsedProviderSettings()
 
 			if (lastUsed?.provider && lastUsed?.apiKey) {
 				// providers.json stores SDK provider ids (e.g. `openai-compatible`);

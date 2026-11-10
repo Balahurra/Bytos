@@ -9,7 +9,7 @@ import {
 describe("supportsModelTool", () => {
 	it.each([
 		["bytos", undefined],
-		["bytos-pass", undefined],
+		["cline-pass", undefined],
 		["anthropic", undefined],
 		["openai-native", undefined],
 		["openai-codex", undefined],

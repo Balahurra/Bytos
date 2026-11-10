@@ -239,8 +239,8 @@ describe("ai-sdk usage normalization", () => {
 
 	describe("cost extraction with pricing fallback", () => {
 		it.each([
-			["bytos-pass", "included-model", { input: 3, output: 15 }],
-			["bytos", "bytos-pass/included-model", undefined],
+			["cline-pass", "included-model", { input: 3, output: 15 }],
+			["bytos", "cline-pass/included-model", undefined],
 			["bytos", "bytos-free/free-model", undefined],
 			["bytos", "vendor/model:free", undefined],
 			["bytos", "vendor/promotional-model", { input: 0, output: 0 }],

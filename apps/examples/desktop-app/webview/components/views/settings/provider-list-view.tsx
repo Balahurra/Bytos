@@ -61,7 +61,7 @@ const FAVORITE_MODELS_STORAGE_KEY = "bytos.favorite-provider-models.v1";
 
 // Providers whose model lists carry recommended-feed tiers (see the SDK's
 // applyBytosFeaturedModels). Only these are worth a per-card list fetch.
-const FEATURED_PROVIDER_IDS = new Set(["bytos", "bytos-pass"]);
+const FEATURED_PROVIDER_IDS = new Set(["bytos"]);
 
 /** Tier + feed tags rendered as small pills next to the model name. */
 function featuredBadges(model: ProviderModel): string[] {

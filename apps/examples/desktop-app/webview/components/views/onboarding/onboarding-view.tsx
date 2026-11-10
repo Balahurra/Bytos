@@ -53,12 +53,9 @@ import {
 import { cn } from "@/lib/utils";
 
 const CREATE_ACCOUNT_URL = "https://app.bytos.dev";
-const BYTOS_PASS_SUBSCRIBE_URL =
-	"https://app.bytos.dev/onboarding/individual-plan";
 
 const BYTOS_SIGN_IN_BENEFITS = [
 	"Regular free model promotions",
-	"Subscribe to BytosPass for generous usage across the best open weights models like DeepSeek, Kimi, and GLM",
 	"No API key needed",
 ];
 
@@ -118,7 +115,7 @@ function isApiKeyOnlyProvider(provider: Provider): boolean {
 
 /**
  * Orders the provider catalog for the API-key setup step: OAuth-managed
- * providers (Bytos itself, BytosPass, ChatGPT, OCA) are excluded because they
+ * providers (Bytos itself, ClinePass, ChatGPT, OCA) are excluded because they
  * have dedicated sign-in paths, providers needing more than an API key are
  * excluded because this form only collects one, popular API-key providers
  * come first, and the rest follow alphabetically.
@@ -976,7 +973,7 @@ function ImportHistoryStep({
 /**
  * Shown after a Bytos sign-in: the free models available right now (from the
  * same feed as the composer's Free tier, bundled fallback offline) and the
- * BytosPass upsell. The feed is display-only here; the user picks a model in
+ * ClinePass upsell. The feed is display-only here; the user picks a model in
  * the composer.
  */
 function BytosModelsSummary() {
@@ -1021,28 +1018,8 @@ function BytosModelsSummary() {
 							</li>
 						))}
 					</ul>
-					<div className="my-4 border-t border-border" />
 				</>
 			) : null}
-			<div className="flex flex-wrap items-center justify-between gap-3">
-				<div className="min-w-0 flex-1">
-					<h2 className="text-sm font-semibold text-foreground">BytosPass</h2>
-					<p className="mt-1 text-xs text-muted-foreground">
-						Generous usage across the best open weights models like DeepSeek,
-						Kimi, and GLM.
-					</p>
-				</div>
-				<Button
-					onClick={() => void openExternalUrl(BYTOS_PASS_SUBSCRIBE_URL)}
-					size="sm"
-					tone="neutral"
-					type="button"
-					variant="surface"
-				>
-					Get BytosPass
-					<ExternalLink className="size-3.5" />
-				</Button>
-			</div>
 		</div>
 	);
 }

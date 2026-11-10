@@ -74,9 +74,9 @@ describe("buildModelPickerData", () => {
 		]);
 	});
 
-	it("builds subscribed / free sections for bytos-pass and hides stale catalog leftovers", () => {
-		const { options, sections } = buildModelPickerData("bytos-pass", [
-			model("bytos-pass/kimi-k3", "Kimi K3", {
+	it("builds subscribed / free sections for cline-pass and hides stale catalog leftovers", () => {
+		const { options, sections } = buildModelPickerData("cline-pass", [
+			model("cline-pass/kimi-k3", "Kimi K3", {
 				tier: "subscribed",
 				rank: 0,
 				tags: [],
@@ -103,13 +103,13 @@ describe("buildModelPickerData", () => {
 	});
 
 	it("keeps subscription and free fallback models separated with a partial feed", () => {
-		const { options, sections } = buildModelPickerData("bytos-pass", [
+		const { options, sections } = buildModelPickerData("cline-pass", [
 			model("deepseek/deepseek-v4-flash", "DeepSeek V4 Flash", {
 				tier: "free",
 				rank: 0,
 				tags: [],
 			}),
-			model("bytos-pass/kimi-k3", "Kimi K3"),
+			model("cline-pass/kimi-k3", "Kimi K3"),
 			model("nvidia/nemotron-ultra", "Nemotron Ultra"),
 		]);
 		expect(sections?.map((section) => section.id)).toEqual([
@@ -117,18 +117,18 @@ describe("buildModelPickerData", () => {
 			"free",
 		]);
 		expect(options.map((option) => [option.value, option.section])).toEqual([
-			["bytos-pass/kimi-k3", "subscribed"],
+			["cline-pass/kimi-k3", "subscribed"],
 			["deepseek/deepseek-v4-flash", "free"],
 			["nvidia/nemotron-ultra", "free"],
 		]);
 	});
 
-	it("groups the offline BytosPass catalog without confusing identical model names", () => {
-		const { options, sections } = buildModelPickerData("bytos-pass", [
+	it("groups the offline ClinePass catalog without confusing identical model names", () => {
+		const { options, sections } = buildModelPickerData("cline-pass", [
 			model("deepseek/deepseek-v4-flash", "DeepSeek V4 Flash"),
-			model("bytos-pass/glm-5.3-flash", "GLM-5.3-Flash"),
+			model("cline-pass/glm-5.3-flash", "GLM-5.3-Flash"),
 			model("bytos-free/longcat-2.0", "LongCat 2.0 (free)"),
-			model("bytos-pass/deepseek-v4-flash", "DeepSeek V4 Flash"),
+			model("cline-pass/deepseek-v4-flash", "DeepSeek V4 Flash"),
 			model("z-ai/glm-5.3-flash", "GLM-5.3-Flash"),
 		]);
 		expect(sections?.map((section) => section.label)).toEqual([
@@ -136,8 +136,8 @@ describe("buildModelPickerData", () => {
 			"Free",
 		]);
 		expect(options.map((option) => [option.value, option.section])).toEqual([
-			["bytos-pass/deepseek-v4-flash", "subscribed"],
-			["bytos-pass/glm-5.3-flash", "subscribed"],
+			["cline-pass/deepseek-v4-flash", "subscribed"],
+			["cline-pass/glm-5.3-flash", "subscribed"],
 			["deepseek/deepseek-v4-flash", "free"],
 			["z-ai/glm-5.3-flash", "free"],
 			["bytos-free/longcat-2.0", "free"],
@@ -163,11 +163,11 @@ describe("buildModelPickerData", () => {
 		"other-provider",
 	])("distinguishes colliding names in the %s fallback without hiding model routes", (providerId) => {
 		const models = [
-			model("bytos-pass/deepseek-v4-flash", "DeepSeek V4 Flash"),
+			model("cline-pass/deepseek-v4-flash", "DeepSeek V4 Flash"),
 			model("deepseek/deepseek-v4-flash", "DeepSeek V4 Flash"),
-			model("bytos-pass/glm-5.3-flash", "GLM-5.3-Flash"),
+			model("cline-pass/glm-5.3-flash", "GLM-5.3-Flash"),
 			model("z-ai/glm-5.3-flash", "GLM-5.3-Flash"),
-			model("bytos-pass/kimi-k3", "Kimi K3"),
+			model("cline-pass/kimi-k3", "Kimi K3"),
 		];
 		const { options } = buildModelPickerData(providerId, models);
 		expect(options).toHaveLength(models.length);
@@ -182,7 +182,7 @@ describe("buildModelPickerData", () => {
 		}
 		expect(options).toContainEqual({
 			label: "Kimi K3",
-			value: "bytos-pass/kimi-k3",
+			value: "cline-pass/kimi-k3",
 		});
 	});
 

@@ -1478,12 +1478,8 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 			switch (selectedProvider) {
 				case "bytos":
 					return `${selectedProvider}:${selectedModelId}`
-				case "bytos-pass":
-					// Free models selected on BytosPass go through Bytos usage billing,
-					// so label them the same way as the bytos provider
-					return selectedModelId.startsWith("bytos-pass/")
-						? `${selectedProvider}:${selectedModelId.replace(/^bytos-pass\//, "")}`
-						: `bytos:${selectedModelId}`
+				case "cline-pass":
+					return `${selectedProvider}:${selectedModelId}`
 				case "openai":
 					return `openai-compat:${selectedModelId}`
 				case "vscode-lm":

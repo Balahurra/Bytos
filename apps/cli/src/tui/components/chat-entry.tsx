@@ -1,22 +1,12 @@
-import {
-	type BytosSubscriptionPlan,
-	extractBytosFreeModelLimitResetTime,
-} from "@bytos/core";
+import { extractBytosFreeModelLimitResetTime } from "@bytos/core";
 import { useTerminalDimensions } from "@opentui/react";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "opentui-spinner/react";
 import {
-	getBytosOrgIndividualInferenceSubscriptionMessage,
-	getBytosPassLimitDetailMessage,
-	getCliSubscriptionUrl,
-	getIndividualPlanFeatures,
 	isBytosFreeModelLimitErrorMessage,
 	isBytosFreePromotionEndedErrorMessage,
-	isBytosOrgIndividualInferenceSubscriptionErrorMessage,
-	isBytosPassLimitErrorMessage,
-	isBytosPassSubscriptionError,
-} from "../../utils/bytos-pass-errors";
+} from "../../utils/cli-errors";
 import {
 	BYTOS_CREDITS_DASHBOARD_URL,
 	isBytosAccountCreditsErrorMessage,
@@ -272,12 +262,11 @@ function ToolCallView(props: {
 	);
 }
 
-function BytosCreditsBytosPassErrorView(props: {
+function BytosCreditsErrorView(props: {
 	defaultFg?: string;
 	theme: ResolvedTheme;
 }) {
 	const linkColor = props.theme.accents.act;
-	const subscriptionUrl = getCliSubscriptionUrl();
 	return (
 		<box flexDirection="row">
 			<text fg="red" content="* " />
@@ -292,9 +281,7 @@ function BytosCreditsBytosPassErrorView(props: {
 				<text
 					fg={props.defaultFg}
 					selectable
-					content={
-						"You have run out of Bytos credits. Add credits in the dashboard or purchase and switch to BytosPass to continue."
-					}
+					content="You have run out of Bytos credits. Add credits in the dashboard to continue."
 				/>
 				<box flexDirection="row">
 					<text fg="gray">Purchase Credits: </text>
@@ -304,131 +291,6 @@ function BytosCreditsBytosPassErrorView(props: {
 						</a>
 					</text>
 				</box>
-				<box flexDirection="row">
-					<text fg="gray">Purchase BytosPass: </text>
-					<text fg={linkColor} selectable>
-						<a href={subscriptionUrl}>{subscriptionUrl}</a>
-					</text>
-				</box>
-				<box flexDirection="row">
-					<text fg="gray">Switch to BytosPass: </text>
-					<text fg="gray">
-						type /settings in CLI and switch provider to BytosPass
-					</text>
-				</box>
-			</box>
-		</box>
-	);
-}
-
-function BytosCreditsErrorView(props: {
-	defaultFg?: string;
-	theme: ResolvedTheme;
-}) {
-	return (
-		<BytosCreditsBytosPassErrorView
-			defaultFg={props.defaultFg}
-			theme={props.theme}
-		/>
-	);
-}
-
-function BytosPassSubscriptionErrorView(props: {
-	defaultFg?: string;
-	loadIndividualSubscriptionPlans?: () => Promise<BytosSubscriptionPlan[]>;
-	theme: ResolvedTheme;
-}) {
-	const subscriptionUrl = getCliSubscriptionUrl();
-	const [planFeatures, setPlanFeatures] = useState<string[]>([]);
-	const planAccent = props.theme.accents.plan;
-
-	useEffect(() => {
-		if (!props.loadIndividualSubscriptionPlans) {
-			return;
-		}
-		let isMounted = true;
-		void props
-			.loadIndividualSubscriptionPlans()
-			.then((plans) => {
-				if (isMounted) {
-					setPlanFeatures(getIndividualPlanFeatures(plans));
-				}
-			})
-			.catch(() => {
-				// Keep the subscription error view usable if plan metadata is unavailable.
-			});
-
-		return () => {
-			isMounted = false;
-		};
-	}, [props.loadIndividualSubscriptionPlans]);
-
-	return (
-		<box flexDirection="row">
-			<text fg={planAccent} content="* " />
-			<box
-				flexDirection="column"
-				border
-				borderStyle="rounded"
-				borderColor={planAccent}
-				paddingX={1}
-			>
-				<text fg={planAccent}>BytosPass subscription required</text>
-				<text
-					fg={props.defaultFg}
-					selectable
-					content="No access to BytosPass subscription models yet. Subscribe to BytosPass, the low cost open weights model coding plan."
-				/>
-				{planFeatures.length > 0 && (
-					<box flexDirection="column" marginTop={1}>
-						<text fg={props.defaultFg}>BytosPass includes:</text>
-						{planFeatures.map((feature) => (
-							<text key={feature} fg={props.defaultFg} selectable>
-								<span fg="green">✓ </span>
-								<span>{feature}</span>
-							</text>
-						))}
-					</box>
-				)}
-				<box flexDirection="row">
-					<text fg="gray">Subscribe: </text>
-					<text fg={props.theme.accents.act} selectable>
-						<a href={subscriptionUrl}>Open subscription page</a>
-					</text>
-				</box>
-				<box flexDirection="row">
-					<text fg="gray">URL: </text>
-					<text fg={props.theme.accents.act} selectable>
-						<a href={subscriptionUrl}>{subscriptionUrl}</a>
-					</text>
-				</box>
-			</box>
-		</box>
-	);
-}
-
-function BytosOrgIndividualInferenceSubscriptionErrorView(props: {
-	defaultFg?: string;
-	theme: ResolvedTheme;
-}) {
-	const planAccent = props.theme.accents.plan;
-
-	return (
-		<box flexDirection="row">
-			<text fg={planAccent} content="* " />
-			<box
-				flexDirection="column"
-				border
-				borderStyle="rounded"
-				borderColor={planAccent}
-				paddingX={1}
-			>
-				<text fg={planAccent}>Personal BytosPass required</text>
-				<text
-					fg={props.defaultFg}
-					selectable
-					content={getBytosOrgIndividualInferenceSubscriptionMessage()}
-				/>
 			</box>
 		</box>
 	);
@@ -462,47 +324,6 @@ function CompactionDividerRow(props: {
 			)}
 			<text fg={labelColor} selectable content={label} />
 			<text fg="gray" content={` ${"─".repeat(ruleWidth)}`} />
-		</box>
-	);
-}
-
-function BytosPassLimitErrorView(props: {
-	message: string;
-	defaultFg?: string;
-	theme: ResolvedTheme;
-}) {
-	const detail = getBytosPassLimitDetailMessage(props.message) ?? props.message;
-	const accent = props.theme.accents.act;
-
-	return (
-		<box flexDirection="row">
-			<text fg={accent} content="* " />
-			<box
-				flexDirection="column"
-				border
-				borderStyle="rounded"
-				borderColor={accent}
-				paddingX={1}
-			>
-				<text fg={props.theme.accents.error}>BytosPass limit reached</text>
-				<text fg={props.defaultFg} selectable content={detail} />
-				<text
-					fg={props.defaultFg}
-					selectable
-					content="Switch to Bytos usage-based billing and retry with the Bytos provider."
-				/>
-				<box flexDirection="row">
-					<text fg="gray">Headless CLI: </text>
-					<text fg={props.defaultFg} selectable content="rerun with " />
-					<code
-						content="--provider bytos"
-						filetype="bash"
-						syntaxStyle={getSyntaxStyle(props.theme)}
-						selectable
-					/>
-					<text fg={props.defaultFg} selectable content="." />
-				</box>
-			</box>
 		</box>
 	);
 }
@@ -585,7 +406,6 @@ export function ChatEntryView(props: {
 	accent?: string;
 	/** Mode the entry was produced in (resolved with the current-mode fallback). */
 	mode?: SyntaxAccentMode;
-	loadIndividualSubscriptionPlans?: () => Promise<BytosSubscriptionPlan[]>;
 	theme: ResolvedTheme;
 }) {
 	const { entry, mode = "act", theme } = props;
@@ -709,34 +529,6 @@ export function ChatEntryView(props: {
 		case "error":
 			if (isBytosAccountCreditsErrorMessage(entry.text)) {
 				return <BytosCreditsErrorView defaultFg={defaultFg} theme={theme} />;
-			}
-			if (isBytosOrgIndividualInferenceSubscriptionErrorMessage(entry.text)) {
-				return (
-					<BytosOrgIndividualInferenceSubscriptionErrorView
-						defaultFg={defaultFg}
-						theme={theme}
-					/>
-				);
-			}
-			if (isBytosPassSubscriptionError(entry.text)) {
-				return (
-					<BytosPassSubscriptionErrorView
-						defaultFg={defaultFg}
-						loadIndividualSubscriptionPlans={
-							props.loadIndividualSubscriptionPlans
-						}
-						theme={theme}
-					/>
-				);
-			}
-			if (isBytosPassLimitErrorMessage(entry.text)) {
-				return (
-					<BytosPassLimitErrorView
-						message={entry.text}
-						defaultFg={defaultFg}
-						theme={theme}
-					/>
-				);
 			}
 			if (isBytosFreeModelLimitErrorMessage(entry.text)) {
 				return (

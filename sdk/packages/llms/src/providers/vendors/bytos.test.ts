@@ -120,7 +120,7 @@ describe("createBytos", () => {
 
 	it.each([
 		"bytos",
-		"bytos-pass",
+		"cline-pass",
 	])("routes composed %s gateway reasoning onto the request body", async (providerId) => {
 		const modelId = "anthropic/claude-sonnet-4-5";
 		fetchMock.mockResolvedValue(jsonCompletionResponse(modelId));
@@ -139,7 +139,7 @@ describe("createBytos", () => {
 
 		// Cross-layer contract: option routing must emit gateway reasoning into
 		// the providerOptions bucket the shared "bytos" AI SDK provider reads.
-		// Both gateway ids ("bytos" and "bytos-pass") hit the same Bytos API
+		// Both gateway ids ("bytos" and "cline-pass") hit the same Bytos API
 		// through this provider, so their options key to the "bytos" bucket.
 		// Uses an explicit budget because effort-based reasoning is portable
 		// and travels via the AI SDK top-level option, not provider options.
@@ -194,8 +194,8 @@ describe("createBytos", () => {
 	it.each([
 		["bytos", "doGenerate"],
 		["bytos", "doStream"],
-		["bytos-pass", "doGenerate"],
-		["bytos-pass", "doStream"],
+		["cline-pass", "doGenerate"],
+		["cline-pass", "doStream"],
 	] as const)("sends the resolved %s surface headers on the wire (%s)", async (providerId, operation) => {
 		const modelId = "deepseek/deepseek-v4-flash";
 		fetchMock.mockResolvedValue(

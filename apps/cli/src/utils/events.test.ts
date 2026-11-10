@@ -242,23 +242,6 @@ describe("handleEvent text formatting", () => {
 		expect(output).toContain("── aborted (2 iterations) ──");
 	});
 
-	it("formats BytosPass limit agent errors before writing to stderr", () => {
-		handleEvent(
-			{
-				type: "error",
-				error: new Error(
-					"Error: You have reached your 5-hour Bytospass limit. The limit resets in 5h, please try again later.",
-				),
-				recoverable: false,
-			} as unknown as AgentEvent,
-			{} as Config,
-		);
-
-		expect(errorOutput).toContain("BytosPass limit reached");
-		expect(errorOutput).toContain("Switch to Bytos usage-based billing");
-		expect(errorOutput).toContain("--provider bytos");
-	});
-
 	it("formats daily free model limit agent errors before writing to stderr", () => {
 		handleEvent(
 			{

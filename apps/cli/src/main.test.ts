@@ -2,10 +2,7 @@ import { fstatSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type {
-	CliMigrationNotice,
-	CliMigrationNoticeOptions,
-} from "./kanban-migration/notice";
+import type { CliMigrationNotice } from "./kanban-migration/notice";
 
 /** Real `fstatSync`: used when tests stub only stdin (fd 0); throwing for every fd breaks imports and session I/O. */
 const fsActual = vi.hoisted(() => ({
@@ -76,11 +73,7 @@ const connectMocks = vi.hoisted(() => ({
 }));
 const migrationNoticeMocks = vi.hoisted(() => ({
 	getBytosCliMigrationNotice: vi.fn<
-		(
-			dataDir?: string,
-			env?: NodeJS.ProcessEnv,
-			options?: CliMigrationNoticeOptions,
-		) => CliMigrationNotice | undefined
+		(dataDir?: string, env?: NodeJS.ProcessEnv) => CliMigrationNotice | undefined
 	>(() => undefined),
 	markBytosCliMigrationNoticeShown: vi.fn(),
 }));
@@ -860,11 +853,11 @@ describe("runCli lightweight command dispatch", () => {
 
 	it("passes the migration notice marker into interactive mode", async () => {
 		const notice = {
-			id: "bytos-cli-bytos-pass-intro",
-			title: "Try BytosPass",
-			body: "BytosPass body",
+			id: "bytos-cli-cline-pass-intro",
+			title: "Try ClinePass",
+			body: "ClinePass body",
 			url: "https://app.bytos.dev/dashboard/subscription?personal=true",
-			openLabel: "Open BytosPass",
+			openLabel: "Open ClinePass",
 		};
 		migrationNoticeMocks.getBytosCliMigrationNotice.mockReturnValue(notice);
 		process.argv = ["bun", "src/index.ts"];
@@ -891,10 +884,10 @@ describe("runCli lightweight command dispatch", () => {
 		).toHaveBeenCalledWith(undefined, notice.id);
 	});
 
-	it("passes the active BytosPass provider into the migration notice gate", async () => {
+	it("passes the active ClinePass provider into the migration notice gate", async () => {
 		providerSettingsMocks.getLastUsedProviderSettings.mockReturnValue({
-			provider: "bytos-pass",
-			model: "bytos-pass/test-model",
+			provider: "cline-pass",
+			model: "cline-pass/test-model",
 		});
 		process.argv = ["bun", "src/index.ts"];
 
@@ -904,11 +897,11 @@ describe("runCli lightweight command dispatch", () => {
 		expect(
 			migrationNoticeMocks.getBytosCliMigrationNotice,
 		).toHaveBeenCalledWith(undefined, process.env, {
-			activeProviderId: "bytos-pass",
+			activeProviderId: "cline-pass",
 		});
 		expect(runtimeMocks.runInteractive).toHaveBeenCalledWith(
 			expect.objectContaining({
-				providerId: "bytos-pass",
+				providerId: "cline-pass",
 			}),
 			expect.anything(),
 			undefined,
@@ -1247,11 +1240,11 @@ describe("runCli lightweight command dispatch", () => {
 
 	it("opens history inside the interactive TUI for the history picker", async () => {
 		migrationNoticeMocks.getBytosCliMigrationNotice.mockReturnValue({
-			id: "bytos-cli-bytos-pass-intro",
-			title: "Try BytosPass",
-			body: "BytosPass body",
+			id: "bytos-cli-cline-pass-intro",
+			title: "Try ClinePass",
+			body: "ClinePass body",
 			url: "https://app.bytos.dev/dashboard/subscription?personal=true",
-			openLabel: "Open BytosPass",
+			openLabel: "Open ClinePass",
 		});
 		process.argv = ["bun", "src/index.ts", "history"];
 

@@ -580,23 +580,22 @@ describe("CloudSessionController neutral host contract", () => {
 		await f.controller.dispose();
 	});
 
-	it("lists models for the fresh organization without provisioning a session", async () => {
-		const getActiveOrganizationId = vi.fn(async () => "org");
-		const f = fixture({ getActiveOrganizationId });
+	it("lists models without provisioning a session", async () => {
+		const f = fixture();
 		const fetcher = vi
 			.spyOn(globalThis, "fetch")
 			.mockImplementation(async (input) =>
 				Response.json(
 					String(input).endsWith("/models")
 						? [{ id: "model" }]
-						: { bytosPass: [{ id: "pass-only" }] },
+						: { bytosCloud: [{ id: "cloud-only" }] },
 				),
 			);
 		try {
 			expect(await f.controller.listModels()).toEqual([
+				{ id: "cloud-only", name: "cloud-only", catalogId: "bytos-cloud" },
 				{ id: "model", name: "model", catalogId: "bytos" },
 			]);
-			expect(getActiveOrganizationId).toHaveBeenCalledWith({ fresh: true });
 			expect(f.api.create).not.toHaveBeenCalled();
 		} finally {
 			fetcher.mockRestore();

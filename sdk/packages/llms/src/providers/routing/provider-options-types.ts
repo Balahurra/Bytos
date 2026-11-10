@@ -61,7 +61,7 @@ export function inferProviderOptionsTarget(
 ): AiSdkProviderOptionsTarget {
 	switch (providerId) {
 		case "bytos":
-		case "bytos-pass":
+		case "cline-pass":
 			return "bytos";
 		case "openai-native":
 			return "openai";

@@ -292,27 +292,27 @@ describe("resolveModelInfo", () => {
 		expect(response.modelInfo).toBeUndefined()
 	})
 
-	it("resolves a free model id from the bytos-pass catalog without coercing to the default", async () => {
+	it("resolves a free model id from the cline-pass catalog without coercing to the default", async () => {
 		const { resolveModelInfo } = await import("../resolveModelInfo")
-		const store = makeStore({ providerId: parseProviderId("bytos-pass") })
+		const store = makeStore({ providerId: parseProviderId("cline-pass") })
 		const catalog = makeCatalog()
-		// The bytos-pass catalog carries the endpoint's bytosPass bucket plus the
+		// The cline-pass catalog carries the endpoint's clinePass bucket plus the
 		// Bytos free models (zero-priced, OpenRouter-style ids without the
-		// bytos-pass/ prefix). Selecting a free model must not be replaced by the
+		// cline-pass/ prefix). Selecting a free model must not be replaced by the
 		// default pass model.
 		vi.mocked(catalog.peekModels).mockReturnValue(
 			peekResult(
-				"bytos-pass",
+				"cline-pass",
 				[
-					["bytos-pass/glm-5.1", { name: "GLM 5.1", supportsPromptCache: false, contextWindow: 200_000 }],
+					["cline-pass/glm-5.1", { name: "GLM 5.1", supportsPromptCache: false, contextWindow: 200_000 }],
 					["kwaipilot/kat-coder-pro", { name: "KAT Coder Pro", supportsPromptCache: false, contextWindow: 256_000 }],
 				],
-				"bytos-pass/glm-5.1",
+				"cline-pass/glm-5.1",
 			),
 		)
 
 		const response = await resolveModelInfo(makeController(store, catalog), {
-			providerId: "bytos-pass",
+			providerId: "cline-pass",
 			modelId: "kwaipilot/kat-coder-pro",
 		})
 

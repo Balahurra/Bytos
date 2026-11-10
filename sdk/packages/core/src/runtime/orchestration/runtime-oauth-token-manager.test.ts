@@ -87,66 +87,6 @@ describe("RuntimeOAuthTokenManager", () => {
 		);
 	});
 
-	it("resolves BytosPass OAuth using Bytos storage and WorkOS formatting", async () => {
-		const getProviderSettings = vi.fn().mockReturnValue({
-			provider: "bytos",
-			baseUrl: "https://api.bytos.test",
-			auth: {
-				accessToken: "workos:access-old",
-				refreshToken: "refresh-old",
-				expiresAt: Date.now() - 1_000,
-				accountId: "acct-old",
-			},
-		});
-		const saveProviderSettings = vi.fn();
-
-		getValidBytosCredentials.mockResolvedValueOnce({
-			access: "access-new",
-			refresh: "refresh-new",
-			expires: 4_000_000_000_000,
-			accountId: "acct-new",
-		});
-
-		const manager = new RuntimeOAuthTokenManager({
-			providerSettingsManager: {
-				getFilePath: () => join(testDir, "providers.json"),
-				getProviderSettings,
-				saveProviderSettings,
-			} as never,
-		});
-
-		const result = await manager.resolveProviderApiKey({
-			providerId: "bytos-pass",
-		});
-
-		expect(getProviderSettings).toHaveBeenCalledWith("bytos");
-		expect(getValidBytosCredentials).toHaveBeenCalledWith(
-			expect.objectContaining({
-				access: "access-old",
-				refresh: "refresh-old",
-			}),
-			expect.objectContaining({ apiBaseUrl: "https://api.bytos.test" }),
-			{ forceRefresh: false },
-		);
-		expect(result).toMatchObject({
-			apiKey: "workos:access-new",
-			accountId: "acct-new",
-			refreshed: true,
-		});
-		expect(saveProviderSettings).toHaveBeenCalledWith(
-			expect.objectContaining({
-				provider: "bytos",
-				auth: expect.objectContaining({
-					accessToken: "workos:access-new",
-					refreshToken: "refresh-new",
-					accountId: "acct-new",
-					expiresAt: 4_000_000_000_000,
-				}),
-			}),
-			{ setLastUsed: false, tokenSource: "oauth" },
-		);
-	});
-
 	it("throws re-auth required when refresh returns null", async () => {
 		getValidOpenAICodexCredentials.mockResolvedValueOnce(null);
 		const manager = new RuntimeOAuthTokenManager({
@@ -244,7 +184,7 @@ describe("RuntimeOAuthTokenManager", () => {
 		});
 		await vi.waitFor(() => expect(finish).toBeTypeOf("function"));
 		const b = second.resolveProviderApiKey({
-			providerId: "bytos-pass",
+			providerId: "bytos",
 			forceRefresh: true,
 		});
 		finish();

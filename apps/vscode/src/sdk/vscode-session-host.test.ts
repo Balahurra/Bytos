@@ -92,7 +92,7 @@ describe("VscodeSessionHost telemetry wiring", () => {
 		await host.dispose()
 	})
 
-	it.each(["bytos", "bytos-pass", "anthropic"])("scopes Git capture to eligible providers: %s", async (providerId) => {
+	it.each(["bytos", "cline-pass", "anthropic"])("scopes Git capture to eligible providers: %s", async (providerId) => {
 		const host = await VscodeSessionHost.create({ mcpHub: {} as never, telemetry: makeTelemetry() })
 		const fetch = vi.fn() as unknown as typeof globalThis.fetch
 		await host.start({
@@ -101,7 +101,7 @@ describe("VscodeSessionHost telemetry wiring", () => {
 		const config = mockInnerStart.mock.calls[0][0].config
 		expect(config.providerConfig.fetch).toBe(fetch)
 		expect(config.hooks?.beforeModel).toBeUndefined()
-		expect(typeof config.hooks?.afterModel).toBe(providerId === "anthropic" ? "undefined" : "function")
+		expect(typeof config.hooks?.afterModel).toBe(providerId === "bytos" ? "function" : "undefined")
 		await host.dispose()
 	})
 

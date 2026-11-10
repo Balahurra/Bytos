@@ -211,7 +211,7 @@ describe("Anthropic server-side refusal fallbacks", () => {
 	it.each([
 		"openrouter",
 		"bytos",
-		"bytos-pass",
+		"cline-pass",
 		"bedrock",
 		"vertex",
 		"minimax",
@@ -231,7 +231,7 @@ describe("Routed Anthropic provider failover", () => {
 	it.each([
 		"openrouter",
 		"bytos",
-		"bytos-pass",
+		"cline-pass",
 	])("enables provider failover in the transport bucket for %s", (providerId) => {
 		for (const model of [
 			{ modelId: "anthropic/claude-fable-5" },
@@ -246,15 +246,15 @@ describe("Routed Anthropic provider failover", () => {
 			expect(options[bucket]).toMatchObject({
 				provider: { allow_fallbacks: true },
 			});
-			expect(options).not.toHaveProperty("bytos-pass");
-			expect(options).not.toHaveProperty("bytosPass");
+			expect(options).not.toHaveProperty("cline-pass");
+			expect(options).not.toHaveProperty("clinePass");
 		}
 	});
 
 	it.each([
 		{ providerId: "openrouter", modelId: "openai/gpt-5" },
 		{ providerId: "bytos", modelId: "google/gemini-3-pro" },
-		{ providerId: "bytos-pass", modelId: "unknown-model" },
+		{ providerId: "cline-pass", modelId: "unknown-model" },
 		{ providerId: "openrouter", modelId: "claude-alias", family: "qwen" },
 		{ providerId: "anthropic", modelId: "claude-fable-5" },
 		{ providerId: "bedrock", modelId: "anthropic/claude-fable-5" },
@@ -769,13 +769,13 @@ describe("composeAiSdkProviderOptions: Anthropic thinking precedence", () => {
 			],
 		},
 		{
-			// BytosPass is served by the shared "bytos" AI SDK provider (same
+			// ClinePass is served by the shared "bytos" AI SDK provider (same
 			// Bytos API), which only reads the "bytos" providerOptions bucket.
 			// Uses an explicit budget because effort-based reasoning is portable
 			// and never reaches provider-option buckets.
-			name: "BytosPass-routed Sonnet 4.5 budget -> gateway reasoning under the shared bytos bucket",
+			name: "ClinePass-routed Sonnet 4.5 budget -> gateway reasoning under the shared bytos bucket",
 			request: {
-				providerId: "bytos-pass",
+				providerId: "cline-pass",
 				modelId: "anthropic/claude-sonnet-4-5",
 				reasoning: { enabled: true, budgetTokens: 2048 },
 			},
@@ -2663,16 +2663,16 @@ describe("composeAiSdkProviderOptions: provider-specific overlays", () => {
 	});
 });
 
-describe("composeAiSdkProviderOptions: BytosPass bucket normalization", () => {
-	it("keys BytosPass options to the shared bytos bucket only", () => {
+describe("composeAiSdkProviderOptions: ClinePass bucket normalization", () => {
+	it("keys ClinePass options to the shared bytos bucket only", () => {
 		const result = composeAiSdkProviderOptions(
 			makeRequest({
-				providerId: "bytos-pass",
+				providerId: "cline-pass",
 				modelId: "anthropic/claude-sonnet-4-5",
 				reasoning: { enabled: true, budgetTokens: 2048 },
 			}),
 			makeContext({
-				providerId: "bytos-pass",
+				providerId: "cline-pass",
 				modelId: "anthropic/claude-sonnet-4-5",
 				family: "claude-sonnet",
 			}),
@@ -2680,13 +2680,13 @@ describe("composeAiSdkProviderOptions: BytosPass bucket normalization", () => {
 
 		// The shared "bytos" AI SDK provider serves both gateway ids and only
 		// reads the "bytos" providerOptions bucket, so nothing may be emitted
-		// under the concrete "bytos-pass" id or its camelCase alias.
+		// under the concrete "cline-pass" id or its camelCase alias.
 		expect(result.bytos).toEqual(
 			expect.objectContaining({
 				reasoning: { enabled: true, max_tokens: 2048 },
 			}),
 		);
-		expect(result).not.toHaveProperty("bytos-pass");
-		expect(result).not.toHaveProperty("bytosPass");
+		expect(result).not.toHaveProperty("cline-pass");
+		expect(result).not.toHaveProperty("clinePass");
 	});
 });

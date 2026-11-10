@@ -54,10 +54,10 @@ function createCliEnv(
 		BYTOS_HOOKS_LOG_PATH: path.join(dataDir, "logs", "hooks.jsonl"),
 		BYTOS_TELEMETRY_DISABLED: "1",
 		BYTOS_NO_AUTO_UPDATE: "1",
-		// Without this, the BytosPass promo dialog renders over the chat view.
+		// Without this, the ClinePass promo dialog renders over the chat view.
 		// The stream-grepping interactive suite doesn't notice the overlay, but
 		// tuistory's screen snapshot reflects what the user actually sees.
-		BYTOS_DISABLE_BYTOS_PASS_NOTICE: "1",
+		BYTOS_DISABLE_CLINE_PASS_NOTICE: "1",
 		// The parent vitest process sets CI/VITEST; clear them so the spawned
 		// CLI renders as a real interactive terminal.
 		CI: undefined,
@@ -209,13 +209,13 @@ describe("cli tuistory e2e", () => {
 		expect(screen).toContain("▸ Provider");
 	});
 
-	it("dismisses the BytosPass promo with any key and marks it as shown", async () => {
+	it("dismisses the ClinePass promo with any key and marks it as shown", async () => {
 		// Re-enable the promo dialog that the shared env suppresses.
-		const env = createCliEnv({ BYTOS_DISABLE_BYTOS_PASS_NOTICE: undefined });
+		const env = createCliEnv({ BYTOS_DISABLE_CLINE_PASS_NOTICE: undefined });
 		const dataDir = env.BYTOS_DATA_DIR as string;
 		const session = await launchCli([], env);
 
-		await session.waitForText("Try BytosPass", { timeout: LAUNCH_TIMEOUT_MS });
+		await session.waitForText("Try ClinePass", { timeout: LAUNCH_TIMEOUT_MS });
 		await session.waitForText("Press Enter to open, any other key to close", {
 			timeout: UI_TIMEOUT_MS,
 		});
@@ -224,13 +224,13 @@ describe("cli tuistory e2e", () => {
 		// some terminals, notably on Windows).
 		await session.type("x");
 		await session.text({
-			waitFor: (text) => !text.includes("Try BytosPass"),
+			waitFor: (text) => !text.includes("Try ClinePass"),
 			timeout: UI_TIMEOUT_MS,
 		});
 
 		const screen = await session.text();
 		expect(screen).toContain("What can I do for you?");
-		expect(screen).not.toContain("Open BytosPass");
+		expect(screen).not.toContain("Open ClinePass");
 
 		// The "shown" marker is persisted once the dialog is dismissed so the
 		// promo doesn't reappear on the next launch.
@@ -238,7 +238,7 @@ describe("cli tuistory e2e", () => {
 		await session.waitIdle({ timeout: UI_TIMEOUT_MS });
 		expect(existsSync(markerPath)).toBe(true);
 		expect(readFileSync(markerPath, "utf8")).toContain(
-			'"bytos-cli-bytos-pass-intro": true',
+			'"bytos-cli-cline-pass-intro": true',
 		);
 	});
 });

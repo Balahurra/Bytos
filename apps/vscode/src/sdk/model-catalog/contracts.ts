@@ -267,7 +267,7 @@ export interface Disposable {
  * downstream UIs MUST suppress per-token pricing rows (in model info
  * cards) and total-cost lines (in task summaries / status bars);
  * `"subscription"` additionally signals that usage is covered by the
- * user's subscription (e.g. BytosPass, ChatGPT Plus/Pro).
+ * user's subscription (e.g. ClinePass, ChatGPT Plus/Pro).
  */
 export type UsageCostDisplay = "show" | "hide" | "subscription"
 

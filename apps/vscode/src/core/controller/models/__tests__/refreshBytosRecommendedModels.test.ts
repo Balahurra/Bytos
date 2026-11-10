@@ -28,7 +28,7 @@ describe("refreshBytosRecommendedModels", () => {
 		const sdkResult = {
 			recommended: [{ id: "anthropic/claude-sonnet-4.6", name: "Claude Sonnet 4.6", description: "Remote", tags: ["NEW"] }],
 			free: [{ id: "bytos-free/glm-5", name: "GLM 5", description: "Remote free", tags: [] }],
-			bytosPass: [],
+			clinePass: [],
 		}
 		const sdkSpy = vi.spyOn(sdkCore, "fetchBytosRecommendedModels").mockResolvedValue(sdkResult)
 
@@ -42,7 +42,7 @@ describe("refreshBytosRecommendedModels", () => {
 		const sdkResult = {
 			recommended: [{ id: "google/gemini-3.1-pro-preview", name: "Gemini 3.1 Pro", description: "Remote", tags: ["NEW"] }],
 			free: [],
-			bytosPass: [],
+			clinePass: [],
 		}
 		const sdkSpy = vi.spyOn(sdkCore, "fetchBytosRecommendedModels").mockResolvedValue(sdkResult)
 
@@ -63,7 +63,6 @@ describe("refreshBytosRecommendedModels", () => {
 					{ id: "anthropic/claude-sonnet-4.6", name: "Claude Sonnet 4.6", description: "Remote", tags: ["NEW"] },
 				],
 				free: [],
-				bytosPass: [],
 			})
 
 		const firstResult = await refreshBytosRecommendedModels()

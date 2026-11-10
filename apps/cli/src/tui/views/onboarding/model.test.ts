@@ -17,20 +17,10 @@ import {
 } from "./model";
 
 describe("onboarding model helpers", () => {
-	it("hides BytosPass from the main menu unless its feature flag is enabled", () => {
+	it("does not offer a hosted subscription provider in the main menu", () => {
 		expect(
-			getMainMenuOptions().some((option) => option.value === "bytos-pass"),
+			getMainMenuOptions().some((option) => option.value === "cline-pass"),
 		).toBe(false);
-		expect(
-			getMainMenuOptions({ isBytosPassEnabled: false }).some(
-				(option) => option.value === "bytos-pass",
-			),
-		).toBe(false);
-		expect(
-			getMainMenuOptions({ isBytosPassEnabled: true }).some(
-				(option) => option.value === "bytos-pass",
-			),
-		).toBe(true);
 	});
 
 	it("maps provider catalog entries into onboarding provider entries", () => {
@@ -177,14 +167,14 @@ describe("onboarding model helpers", () => {
 
 	it("formats OAuth provider labels for onboarding status views", () => {
 		expect(getOAuthProviderLabel("bytos")).toBe("Bytos");
-		expect(getOAuthProviderLabel("bytos-pass")).toBe("BytosPass");
+		expect(getOAuthProviderLabel("cline-pass")).toBe("ClinePass");
 		expect(getOAuthProviderLabel("openai-codex")).toBe("ChatGPT");
 		expect(getOAuthProviderLabel("oca")).toBe("oca");
 	});
 
-	it("uses the featured Bytos model picker for the Bytos and BytosPass providers", () => {
+	it("uses the featured Bytos model picker for the Bytos and ClinePass providers", () => {
 		expect(shouldUseFeaturedBytosModelPicker("bytos")).toBe(true);
-		expect(shouldUseFeaturedBytosModelPicker("bytos-pass")).toBe(true);
+		expect(shouldUseFeaturedBytosModelPicker("cline-pass")).toBe(true);
 		expect(shouldUseFeaturedBytosModelPicker("anthropic")).toBe(false);
 	});
 });

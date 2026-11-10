@@ -122,7 +122,7 @@ describe("BytosAccountService", () => {
 		const plansPayload = [
 			{
 				id: "plan-1",
-				displayName: "BytosPass Monthly",
+				displayName: "ClinePass Monthly",
 				interval: "Monthly",
 				features: { included: ["Major open-weights models"] },
 			},
@@ -157,7 +157,7 @@ describe("BytosAccountService", () => {
 		const planPayload = {
 			plan: {
 				id: "plan-1",
-				displayName: "BytosPass Monthly",
+				displayName: "ClinePass Monthly",
 				interval: "Monthly",
 			},
 			planHistoryId: "history-1",

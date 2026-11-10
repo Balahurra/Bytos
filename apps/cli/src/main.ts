@@ -939,7 +939,7 @@ export async function runCli(): Promise<void> {
 		refreshCliFeatureFlagsInBackground();
 		const lastUsedProviderSettings =
 			providerSettingsManager.getLastUsedProviderSettings({
-				isBytosPassEnabled: true,
+				isClinePassEnabled: true,
 			});
 		const provider = normalizeProviderId(
 			args.provider?.trim() || lastUsedProviderSettings?.provider || "bytos",
@@ -1198,9 +1198,7 @@ export async function runCli(): Promise<void> {
 			) {
 				const { getBytosCliMigrationNotice, markBytosCliMigrationNoticeShown } =
 					await import("./kanban-migration/notice");
-				initialNotice = getBytosCliMigrationNotice(undefined, process.env, {
-					activeProviderId: provider,
-				});
+				initialNotice = getBytosCliMigrationNotice(undefined, process.env);
 				if (initialNotice) {
 					markInitialNoticeShown = (notice) => {
 						markBytosCliMigrationNoticeShown(undefined, notice.id);

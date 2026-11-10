@@ -36,7 +36,7 @@ import { getPersistedProviderApiKey } from "../commands/auth";
 import { resolveSystemPrompt } from "../runtime/prompt";
 import { subscribeToAgentEvents } from "../runtime/session-events";
 import { createCliCore } from "../session/session";
-import { isBytosOrgIndividualInferenceSubscriptionErrorMessage } from "../utils/bytos-pass-errors";
+
 import { getCliBuildInfo } from "../utils/common";
 import { randomSessionId, resolveWorkspaceRoot } from "../utils/helpers";
 import type { ResolvedCliReasoning } from "../utils/reasoning";
@@ -53,7 +53,6 @@ import { buildConfigOptions } from "./config-options";
 import {
 	buildOrganizationConfigOption,
 	fetchBytosOrganizations,
-	getAcpOrgSubscriptionMessage,
 	ORGANIZATION_CONFIG_ID,
 	PERSONAL_ACCOUNT_VALUE,
 	switchBytosOrganization,
@@ -195,7 +194,7 @@ export class AcpAgent implements Agent {
 			CHAT_MODEL_QUERY_OPTIONS,
 		);
 		// Model ids are provider-scoped, so the default must come from the
-		// provider's own catalog: `bytos-pass` uses `bytos-pass/…` ids that mean
+		// provider's own catalog: `cline-pass` uses `cline-pass/…` ids that mean
 		// nothing to `bytos`, and vice versa.
 		const defaultModelId = await resolveDefaultModelId(
 			providerId,
@@ -486,7 +485,7 @@ export class AcpAgent implements Agent {
 				// Re-resolve the model against the new provider's catalog: keep the
 				// current one when it's offered there too, otherwise fall back to the
 				// provider's declared default rather than whichever model happens to
-				// be listed first (for bytos-pass that is an unrelated free model).
+				// be listed first (for cline-pass that is an unrelated free model).
 				const providerModels = await Llms.getModelsForProvider(
 					value,
 					CHAT_MODEL_QUERY_OPTIONS,
@@ -845,11 +844,6 @@ async function resolveDefaultModelId(
  * the object ACP actually receives.
  */
 function toAcpPromptError(error: Error): RequestError {
-	if (isBytosOrgIndividualInferenceSubscriptionErrorMessage(error)) {
-		const message = getAcpOrgSubscriptionMessage();
-		return RequestError.internalError({ message }, message);
-	}
-
 	const message = describeAgentError(error);
 	const isAuthProblem = isLikelyAuthError(error);
 	return isAuthProblem

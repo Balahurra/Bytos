@@ -189,9 +189,8 @@ export interface BytosProvider {
 export function createBytos(options: BytosProviderOptions): BytosProvider {
 	const providerFetch = createBytosFetch(options);
 	const compatible = createOpenAICompatible({
-		// Both Bytos gateway providers ("bytos" and "bytos-pass") share this AI
-		// SDK provider and the same Bytos API; option routing keys their
-		// providerOptions to the "bytos" bucket (see buildProviderAndAliasPatch).
+		// The Bytos provider uses this AI SDK provider; ClinePass reuses the
+		// OpenAI-compatible transport with Cline's own base URL and API key.
 		name: "bytos",
 		baseURL: withoutTrailingSlash(options.baseURL),
 		apiKey: options.apiKey,

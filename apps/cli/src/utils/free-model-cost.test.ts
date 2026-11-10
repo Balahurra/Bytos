@@ -88,7 +88,7 @@ describe("shouldZeroBytosFreeModelCost", () => {
 
 		await expect(
 			shouldZeroBytosFreeModelCost({
-				providerId: "bytos-pass",
+				providerId: "cline-pass",
 				modelId: "deepseek-v4-flash",
 				baseUrl: "https://bytos.test/api/v1",
 			}),
@@ -109,7 +109,7 @@ describe("shouldZeroBytosFreeModelCost", () => {
 		expect(fetchMock).not.toHaveBeenCalled();
 	});
 
-	it("zeros cost of free models selected on the bytos-pass provider", async () => {
+	it("zeros cost of free models selected on the cline-pass provider", async () => {
 		vi.stubGlobal(
 			"fetch",
 			vi.fn(async () => {
@@ -124,17 +124,17 @@ describe("shouldZeroBytosFreeModelCost", () => {
 
 		await expect(
 			shouldZeroBytosFreeModelCost({
-				providerId: "bytos-pass",
+				providerId: "cline-pass",
 				modelId: "deepseek/deepseek-v4-flash",
 				baseUrl: "https://bytos.test/api/v1",
 			}),
 		).resolves.toBe(true);
 
-		// subscription (bytos-pass/...) models are not in the free bucket
+		// subscription (cline-pass/...) models are not in the free bucket
 		await expect(
 			shouldZeroBytosFreeModelCost({
-				providerId: "bytos-pass",
-				modelId: "bytos-pass/glm-5.1",
+				providerId: "cline-pass",
+				modelId: "cline-pass/glm-5.1",
 				baseUrl: "https://bytos.test/api/v1",
 			}),
 		).resolves.toBe(false);

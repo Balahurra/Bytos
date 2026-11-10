@@ -8,7 +8,6 @@ import {
 	isProviderConfigured,
 } from "../../../utils/provider-auth";
 import {
-	buildBytosPassSubscriptionPageUrl,
 	resolveOAuthWaitKeyAction,
 	saveManualProviderApiKey,
 } from "./provider-picker-helpers";
@@ -44,26 +43,6 @@ describe("resolveOAuthWaitKeyAction", () => {
 		);
 		// A bare modifier press (empty name) is ignored, not a cancel.
 		expect(resolveOAuthWaitKeyAction({ name: "" }, true)).toBe("ignore");
-	});
-});
-
-describe("buildBytosPassSubscriptionPageUrl", () => {
-	it("opens the personal subscription page on production by default", () => {
-		expect(
-			buildBytosPassSubscriptionPageUrl(undefined).startsWith(
-				"https://app.bytos.dev/dashboard/subscription?personal=true",
-			),
-		).toBe(true);
-	});
-
-	it("keeps the configured app base URL", () => {
-		expect(
-			buildBytosPassSubscriptionPageUrl(
-				"https://staging-app.bytos.dev",
-			).startsWith(
-				"https://staging-app.bytos.dev/dashboard/subscription?personal=true",
-			),
-		).toBe(true);
 	});
 });
 
@@ -108,7 +87,7 @@ describe("saveManualProviderApiKey", () => {
 		expect(isProviderConfigured("bytos", settings)).toBe(true);
 	});
 
-	it("saves bytos-pass keys to the shared bytos auth storage entry", async () => {
+	it("saves cline-pass keys to the shared bytos auth storage entry", async () => {
 		const manager = createManager();
 		manager.saveProviderSettings({
 			provider: "bytos",
@@ -118,22 +97,22 @@ describe("saveManualProviderApiKey", () => {
 			},
 		});
 
-		await saveManualProviderApiKey(manager, "bytos-pass", "manual-api-key");
+		await saveManualProviderApiKey(manager, "cline-pass", "manual-api-key");
 
-		// bytos-pass inherits auth storage from the "bytos" entry, so the key
+		// cline-pass inherits auth storage from the "bytos" entry, so the key
 		// must land there and the stale tokens must be gone for both providers.
 		const bytosSettings = manager.getProviderSettings("bytos");
 		expect(bytosSettings?.apiKey).toBe("manual-api-key");
 		expect(bytosSettings?.auth?.accessToken).toBeUndefined();
 
-		const bytosPassSettings = manager.getProviderSettings("bytos-pass");
-		expect(getPersistedProviderApiKey("bytos-pass", bytosPassSettings)).toBe(
+		const clinePassSettings = manager.getProviderSettings("cline-pass");
+		expect(getPersistedProviderApiKey("cline-pass", clinePassSettings)).toBe(
 			"manual-api-key",
 		);
-		expect(isProviderConfigured("bytos-pass", bytosPassSettings)).toBe(true);
+		expect(isProviderConfigured("cline-pass", clinePassSettings)).toBe(true);
 	});
 
-	it("clears stale credentials copied into a direct bytos-pass entry", async () => {
+	it("clears stale credentials copied into a direct cline-pass entry", async () => {
 		const manager = createManager();
 		manager.saveProviderSettings({
 			provider: "bytos",
@@ -143,9 +122,9 @@ describe("saveManualProviderApiKey", () => {
 			},
 		});
 		// Provider switching copies the merged settings (including auth) into
-		// a direct bytos-pass entry, which shadows the shared "bytos" entry.
+		// a direct cline-pass entry, which shadows the shared "bytos" entry.
 		manager.saveProviderSettings({
-			provider: "bytos-pass",
+			provider: "cline-pass",
 			apiKey: "stale-copied-key",
 			auth: {
 				accessToken: "stale-access-token",
@@ -153,11 +132,11 @@ describe("saveManualProviderApiKey", () => {
 			},
 		});
 
-		await saveManualProviderApiKey(manager, "bytos-pass", "manual-api-key");
+		await saveManualProviderApiKey(manager, "cline-pass", "manual-api-key");
 
-		const bytosPassSettings = manager.getProviderSettings("bytos-pass");
-		expect(bytosPassSettings?.auth?.accessToken).toBeUndefined();
-		expect(getPersistedProviderApiKey("bytos-pass", bytosPassSettings)).toBe(
+		const clinePassSettings = manager.getProviderSettings("cline-pass");
+		expect(clinePassSettings?.auth?.accessToken).toBeUndefined();
+		expect(getPersistedProviderApiKey("cline-pass", clinePassSettings)).toBe(
 			"manual-api-key",
 		);
 	});

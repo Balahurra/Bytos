@@ -20,8 +20,8 @@ function withListings(providers: Array<{ id: string; usageCostDisplay: string }>
 
 describe("useProviderUsageCostDisplay", () => {
 	it("returns the subscription mark for subscription-billed providers", () => {
-		withListings([{ id: "bytos-pass", usageCostDisplay: "subscription" }])
-		const { result } = renderHook(() => useProviderUsageCostDisplay("bytos-pass"))
+		withListings([{ id: "cline-pass", usageCostDisplay: "subscription" }])
+		const { result } = renderHook(() => useProviderUsageCostDisplay("cline-pass"))
 		expect(result.current).toBe("subscription")
 	})
 
@@ -40,7 +40,7 @@ describe("useProviderUsageCostDisplay", () => {
 
 	it("returns unknown while listings have not arrived", () => {
 		withListings([])
-		const { result } = renderHook(() => useProviderUsageCostDisplay("bytos-pass"))
+		const { result } = renderHook(() => useProviderUsageCostDisplay("cline-pass"))
 		expect(result.current).toBe("unknown")
 	})
 })

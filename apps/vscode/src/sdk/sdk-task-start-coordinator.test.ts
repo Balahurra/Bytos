@@ -139,17 +139,6 @@ describe("SdkTaskStartCoordinator", () => {
 		expect(options.sessions.startNewSession).not.toHaveBeenCalled()
 	})
 
-	it("emits a Bytos auth error instead of starting when BytosPass has no token", async () => {
-		const { coordinator, options } = makeCoordinator({ config: { providerId: "bytos-pass", modelId: "model", apiKey: "" } })
-
-		const sessionId = await coordinator.initTask("needs bytospass auth")
-
-		expect(sessionId).toBeUndefined()
-		expect(options.emitBytosAuthError).toHaveBeenCalledWith("needs bytospass auth")
-		expect(options.captureProviderApiError).not.toHaveBeenCalled()
-		expect(options.sessions.startNewSession).not.toHaveBeenCalled()
-	})
-
 	it("emits a plain chat error when session start fails (e.g. provider misconfigured)", async () => {
 		const { coordinator, options, state } = makeCoordinator()
 		const error = new Error("No model configured for provider openai")

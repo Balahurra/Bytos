@@ -9,8 +9,6 @@ import {
 } from "./auth";
 import { FIELD_ORDER } from "./fields";
 import {
-	type BytosPassSubscriptionOption,
-	type BytosPassSubscriptionStatus,
 	type MenuOption,
 	type OnboardingStep,
 	THINKING_LEVELS,
@@ -28,9 +26,6 @@ export function useOnboardingKeyboard(input: {
 	modelList: SearchableListState;
 	bytosEntries: BytosModelPickerEntry[];
 	bytosModelSelected: number;
-	bytosPassSubscriptionStatus: BytosPassSubscriptionStatus;
-	bytosPassSubscriptionOptions: BytosPassSubscriptionOption[];
-	bytosPassSubscriptionSelected: number;
 	thinkingSelected: number;
 	setStep: (step: OnboardingStep) => void;
 	setMenuSelected: Dispatch<SetStateAction<number>>;
@@ -43,11 +38,7 @@ export function useOnboardingKeyboard(input: {
 	setDeviceError: (value: string) => void;
 	setDeviceStatus: (value: string) => void;
 	setBytosModelSelected: Dispatch<SetStateAction<number>>;
-	setBytosPassSubscriptionSelected: Dispatch<SetStateAction<number>>;
 	setThinkingSelected: Dispatch<SetStateAction<number>>;
-	continueFromBytosPassSubscription: () => void;
-	refreshBytosPassSubscriptionStatus: () => void;
-	openBytosPassSubscriptionPage: () => void;
 	abortOAuth: () => void;
 	abortDeviceCode: () => void;
 	resetAuth: () => void;
@@ -102,11 +93,6 @@ export function useOnboardingKeyboard(input: {
 				input.setStep("byo_provider");
 				return;
 			}
-			if (input.step === "bytos_pass_subscription") {
-				input.setStep("menu");
-				input.setMenuSelected(0);
-				return;
-			}
 			if (input.step === "bytos_model") {
 				input.setStep("menu");
 				input.setMenuSelected(0);
@@ -148,43 +134,6 @@ export function useOnboardingKeyboard(input: {
 		}
 
 		if (input.step === "device_code") return;
-
-		if (input.step === "bytos_pass_subscription") {
-			const total = input.bytosPassSubscriptionOptions.length;
-			if (total === 0) return;
-			if (key.name === "up" || (key.ctrl && key.name === "p")) {
-				input.setBytosPassSubscriptionSelected((s) =>
-					s <= 0 ? total - 1 : s - 1,
-				);
-				return;
-			}
-			if (key.name === "down" || (key.ctrl && key.name === "n")) {
-				input.setBytosPassSubscriptionSelected((s) =>
-					s >= total - 1 ? 0 : s + 1,
-				);
-				return;
-			}
-			if (key.name === "return" || key.name === "enter") {
-				const option =
-					input.bytosPassSubscriptionOptions[
-						Math.min(input.bytosPassSubscriptionSelected, total - 1)
-					];
-				if (!option) return;
-				if (option.value === "subscribe") {
-					input.openBytosPassSubscriptionPage();
-				} else if (option.value === "refresh") {
-					if (input.bytosPassSubscriptionStatus !== "loading") {
-						input.refreshBytosPassSubscriptionStatus();
-					}
-				} else if (option.value === "skip") {
-					input.continueFromBytosPassSubscription();
-				} else if (option.value === "back") {
-					input.setStep("menu");
-					input.setMenuSelected(0);
-				}
-			}
-			return;
-		}
 
 		if (input.step === "menu") {
 			if (key.name === "up") {

@@ -55,7 +55,7 @@ describe("resolveProviderRequestHeaders", () => {
 
 	it("uses host client context for Bytos billing headers when provided", () => {
 		const headers = resolveProviderRequestHeaders({
-			providerId: "bytos-pass",
+			providerId: "cline-pass",
 			sessionId: "sess-vscode",
 			source: "core",
 			defaultSource: "core",

@@ -45,7 +45,7 @@ export function getModeSpecificFields(apiConfiguration: ApiConfiguration | undef
 			openAiModelId: undefined,
 			openRouterModelId: undefined,
 			bytosModelId: undefined,
-			bytosPassModelId: undefined,
+			clinePassModelId: undefined,
 			groqModelId: undefined,
 			basetenModelId: undefined,
 			huggingFaceModelId: undefined,
@@ -87,10 +87,10 @@ export function getModeSpecificFields(apiConfiguration: ApiConfiguration | undef
 
 	const bytosModelId = mode === "plan" ? apiConfiguration.planModeBytosModelId : apiConfiguration.actModeBytosModelId
 	const bytosModelInfo = mode === "plan" ? apiConfiguration.planModeBytosModelInfo : apiConfiguration.actModeBytosModelInfo
-	const bytosPassModelId =
-		mode === "plan" ? apiConfiguration.planModeBytosPassModelId : apiConfiguration.actModeBytosPassModelId
-	const bytosPassModelInfo =
-		mode === "plan" ? apiConfiguration.planModeBytosPassModelInfo : apiConfiguration.actModeBytosPassModelInfo
+	const clinePassModelId =
+		mode === "plan" ? apiConfiguration.planModeClinePassModelId : apiConfiguration.actModeClinePassModelId
+	const clinePassModelInfo =
+		mode === "plan" ? apiConfiguration.planModeClinePassModelInfo : apiConfiguration.actModeClinePassModelInfo
 
 	return {
 		// Core fields
@@ -107,7 +107,7 @@ export function getModeSpecificFields(apiConfiguration: ApiConfiguration | undef
 		openAiModelId: mode === "plan" ? apiConfiguration.planModeOpenAiModelId : apiConfiguration.actModeOpenAiModelId,
 		openRouterModelId,
 		bytosModelId,
-		bytosPassModelId,
+		clinePassModelId,
 		groqModelId: mode === "plan" ? apiConfiguration.planModeGroqModelId : apiConfiguration.actModeGroqModelId,
 		basetenModelId: mode === "plan" ? apiConfiguration.planModeBasetenModelId : apiConfiguration.actModeBasetenModelId,
 		huggingFaceModelId:
@@ -127,7 +127,7 @@ export function getModeSpecificFields(apiConfiguration: ApiConfiguration | undef
 		liteLlmModelInfo: mode === "plan" ? apiConfiguration.planModeLiteLlmModelInfo : apiConfiguration.actModeLiteLlmModelInfo,
 		openRouterModelInfo,
 		bytosModelInfo,
-		bytosPassModelInfo,
+		clinePassModelInfo,
 		requestyModelInfo:
 			mode === "plan" ? apiConfiguration.planModeRequestyModelInfo : apiConfiguration.actModeRequestyModelInfo,
 		groqModelInfo: mode === "plan" ? apiConfiguration.planModeGroqModelInfo : apiConfiguration.actModeGroqModelInfo,
@@ -216,11 +216,11 @@ export async function syncModeConfigurations(
 			updates.actModeBytosModelInfo = sourceFields.bytosModelInfo
 			break
 
-		case "bytos-pass":
-			updates.planModeBytosPassModelId = sourceFields.bytosPassModelId
-			updates.actModeBytosPassModelId = sourceFields.bytosPassModelId
-			updates.planModeBytosPassModelInfo = sourceFields.bytosPassModelInfo
-			updates.actModeBytosPassModelInfo = sourceFields.bytosPassModelInfo
+		case "cline-pass":
+			updates.planModeClinePassModelId = sourceFields.clinePassModelId
+			updates.actModeClinePassModelId = sourceFields.clinePassModelId
+			updates.planModeClinePassModelInfo = sourceFields.clinePassModelInfo
+			updates.actModeClinePassModelInfo = sourceFields.clinePassModelInfo
 			break
 
 		case "requesty":

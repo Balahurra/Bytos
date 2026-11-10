@@ -34017,10 +34017,10 @@ export const GENERATED_PROVIDER_MODELS: {
       "description": "Compact 35-billion parameter mixture-of-experts"
     }
   },
-  "bytos-pass": {
-    "bytos-pass/deepseek-v4.1-flash": {
+  "cline-pass": {
+    "cline-pass/deepseek-v4.1-flash": {
       "name": "DeepSeek V4.1 Flash",
-      "id": "bytos-pass/deepseek-v4.1-flash",
+      "id": "cline-pass/deepseek-v4.1-flash",
       "contextWindow": 1048576,
       "maxInputTokens": 1048576,
       "maxTokens": 943718,
@@ -34053,9 +34053,9 @@ export const GENERATED_PROVIDER_MODELS: {
       "family": "deepseek-flash",
       "description": "Smarter and more efficient, with 1M context window"
     },
-    "bytos-pass/mimo-v2.6-flash": {
+    "cline-pass/mimo-v2.6-flash": {
       "name": "MiMo-V2.6-Flash",
-      "id": "bytos-pass/mimo-v2.6-flash",
+      "id": "cline-pass/mimo-v2.6-flash",
       "contextWindow": 1050000,
       "maxInputTokens": 1050000,
       "maxTokens": 131072,
@@ -34094,9 +34094,9 @@ export const GENERATED_PROVIDER_MODELS: {
       },
       "description": ""
     },
-    "bytos-pass/mimo-v2.6-pro": {
+    "cline-pass/mimo-v2.6-pro": {
       "name": "MiMo-V2.6-Pro",
-      "id": "bytos-pass/mimo-v2.6-pro",
+      "id": "cline-pass/mimo-v2.6-pro",
       "contextWindow": 1050000,
       "maxInputTokens": 1050000,
       "maxTokens": 131072,
@@ -34135,9 +34135,9 @@ export const GENERATED_PROVIDER_MODELS: {
       },
       "description": ""
     },
-    "bytos-pass/glm-5.3": {
+    "cline-pass/glm-5.3": {
       "name": "GLM-5.3",
-      "id": "bytos-pass/glm-5.3",
+      "id": "cline-pass/glm-5.3",
       "contextWindow": 1048576,
       "maxInputTokens": 1048576,
       "maxTokens": 943718,
@@ -34168,8 +34168,8 @@ export const GENERATED_PROVIDER_MODELS: {
       "family": "glm",
       "description": "Z-AI's new top open-weights model"
     },
-    "bytos-pass/qwen3.8-max": {
-      "name": "bytos-pass/qwen3.8-max",
+    "cline-pass/qwen3.8-max": {
+      "name": "cline-pass/qwen3.8-max",
       "contextWindow": 128000,
       "maxInputTokens": 128000,
       "maxTokens": 8192,
@@ -34184,12 +34184,12 @@ export const GENERATED_PROVIDER_MODELS: {
         "cacheRead": 0,
         "cacheWrite": 0
       },
-      "id": "bytos-pass/qwen3.8-max",
+      "id": "cline-pass/qwen3.8-max",
       "description": "Qwen's New SOTA coding model"
     },
-    "bytos-pass/deepseek-v4-pro": {
+    "cline-pass/deepseek-v4-pro": {
       "name": "DeepSeek V4 Pro",
-      "id": "bytos-pass/deepseek-v4-pro",
+      "id": "cline-pass/deepseek-v4-pro",
       "contextWindow": 1048576,
       "maxInputTokens": 1048576,
       "maxTokens": 384000,
@@ -34220,9 +34220,9 @@ export const GENERATED_PROVIDER_MODELS: {
       "family": "deepseek-thinking",
       "description": "Frontier reasoning and coding with 1M context window"
     },
-    "bytos-pass/muse-spark-1.3-contributor": {
+    "cline-pass/muse-spark-1.3-contributor": {
       "name": "Muse Spark 1.3 Contributor",
-      "id": "bytos-pass/muse-spark-1.3-contributor",
+      "id": "cline-pass/muse-spark-1.3-contributor",
       "contextWindow": 1048576,
       "maxInputTokens": 1048576,
       "maxTokens": 943718,
@@ -34259,9 +34259,9 @@ export const GENERATED_PROVIDER_MODELS: {
       "family": "muse",
       "description": ""
     },
-    "bytos-pass/kimi-k3": {
+    "cline-pass/kimi-k3": {
       "name": "Kimi K3",
-      "id": "bytos-pass/kimi-k3",
+      "id": "cline-pass/kimi-k3",
       "contextWindow": 1048576,
       "maxInputTokens": 1048576,
       "maxTokens": 943718,
@@ -34295,9 +34295,9 @@ export const GENERATED_PROVIDER_MODELS: {
       "family": "kimi-k3",
       "description": "Leading open weights model (reliability might be unstable and will consume usage faster than others)"
     },
-    "bytos-pass/glm-5.3-flash": {
+    "cline-pass/glm-5.3-flash": {
       "name": "GLM-5.3-Flash",
-      "id": "bytos-pass/glm-5.3-flash",
+      "id": "cline-pass/glm-5.3-flash",
       "contextWindow": 1048576,
       "maxInputTokens": 1048576,
       "maxTokens": 943718,
@@ -34330,9 +34330,9 @@ export const GENERATED_PROVIDER_MODELS: {
       "family": "glm-flash",
       "description": "Latest natively multimodal model in the GLM-5 series"
     },
-    "bytos-pass/minimax-m3": {
+    "cline-pass/minimax-m3": {
       "name": "MiniMax-M3",
-      "id": "bytos-pass/minimax-m3",
+      "id": "cline-pass/minimax-m3",
       "contextWindow": 1048576,
       "maxInputTokens": 1048576,
       "maxTokens": 512000,
@@ -34360,9 +34360,9 @@ export const GENERATED_PROVIDER_MODELS: {
       "family": "minimax",
       "description": "Frontier coding and agent model with 1M context window"
     },
-    "bytos-pass/qwen3.7-plus": {
+    "cline-pass/qwen3.7-plus": {
       "name": "Qwen3.7 Plus",
-      "id": "bytos-pass/qwen3.7-plus",
+      "id": "cline-pass/qwen3.7-plus",
       "contextWindow": 1000000,
       "maxInputTokens": 1000000,
       "maxTokens": 131072,
@@ -34389,9 +34389,9 @@ export const GENERATED_PROVIDER_MODELS: {
       "family": "qwen",
       "description": "Fast multimodal agent model with vision and video input"
     },
-    "bytos-pass/qwen3.7-max": {
+    "cline-pass/qwen3.7-max": {
       "name": "Qwen3.7 Max",
-      "id": "bytos-pass/qwen3.7-max",
+      "id": "cline-pass/qwen3.7-max",
       "contextWindow": 1000000,
       "maxInputTokens": 1000000,
       "maxTokens": 131072,
@@ -34417,9 +34417,9 @@ export const GENERATED_PROVIDER_MODELS: {
       "family": "qwen",
       "description": "Flagship agent model with 1M context window"
     },
-    "bytos-pass/mimo-v2.5-pro": {
+    "cline-pass/mimo-v2.5-pro": {
       "name": "MiMo-V2.5-Pro",
-      "id": "bytos-pass/mimo-v2.5-pro",
+      "id": "cline-pass/mimo-v2.5-pro",
       "contextWindow": 1050000,
       "maxInputTokens": 1050000,
       "maxTokens": 131072,
@@ -34445,9 +34445,9 @@ export const GENERATED_PROVIDER_MODELS: {
       "family": "mimo",
       "description": "Top open model for long autonomous coding runs"
     },
-    "bytos-pass/mimo-v2.5": {
+    "cline-pass/mimo-v2.5": {
       "name": "MiMo-V2.5",
-      "id": "bytos-pass/mimo-v2.5",
+      "id": "cline-pass/mimo-v2.5",
       "contextWindow": 1050000,
       "maxInputTokens": 1050000,
       "maxTokens": 131072,

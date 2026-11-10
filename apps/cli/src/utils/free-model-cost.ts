@@ -74,9 +74,7 @@ function getBytosFreeModelIds(baseUrl: string): Promise<readonly string[]> {
 export async function shouldZeroBytosFreeModelCost(
 	config: Pick<Config, "providerId" | "modelId" | "baseUrl">,
 ): Promise<boolean> {
-	// Free models are also selectable on BytosPass — they ride usage billing at $0
-	if (config.providerId !== "bytos" && config.providerId !== "bytos-pass")
-		return false;
+	if (config.providerId !== "bytos") return false;
 	const modelId = normalizeModelId(config.modelId);
 	if (!modelId) return false;
 

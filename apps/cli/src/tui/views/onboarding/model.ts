@@ -20,7 +20,6 @@ export type OnboardingStep =
 	| "byo_provider"
 	| "byo_apikey"
 	| "local_cli_setup"
-	| "bytos_pass_subscription"
 	| "bytos_model"
 	| "model_picker"
 	| "custom_model_id"
@@ -53,29 +52,12 @@ export interface MenuOption {
 	icon: string;
 }
 
-export type BytosPassSubscriptionAction =
-	| "subscribe"
-	| "refresh"
-	| "skip"
-	| "back";
-
-export interface BytosPassSubscriptionOption {
-	value: BytosPassSubscriptionAction;
-	label: string;
-}
-
 export const MAIN_MENU: MenuOption[] = [
 	{
 		label: "Sign in with Bytos",
 		value: "bytos",
 		detail: "Latest models with regular free promos",
 		icon: "\u263a",
-	},
-	{
-		label: "Sign in with BytosPass",
-		value: "bytos-pass",
-		detail: "Low cost subscription for everyone",
-		icon: "\u2726",
 	},
 	{
 		label: "Sign in with ChatGPT",
@@ -120,32 +102,9 @@ export function canContinueLocalCliSetup(
 	return true;
 }
 
-export function getMainMenuOptions(options?: {
-	isBytosPassEnabled?: boolean;
-}): MenuOption[] {
-	return MAIN_MENU.filter(
-		(option) => option.value !== "bytos-pass" || options?.isBytosPassEnabled,
-	);
+export function getMainMenuOptions(): MenuOption[] {
+	return MAIN_MENU;
 }
-
-export const BYTOS_PASS_SUBSCRIPTION_OPTIONS: BytosPassSubscriptionOption[] = [
-	{
-		value: "subscribe",
-		label: "Subscribe to BytosPass",
-	},
-	{
-		value: "refresh",
-		label: "Re-check subscription status",
-	},
-	{
-		value: "skip",
-		label: "Skip for now",
-	},
-	{
-		value: "back",
-		label: "Go back",
-	},
-];
 
 export interface OnboardingResult {
 	providerId: string;
@@ -171,12 +130,6 @@ export interface ModelEntry {
 	name: string;
 	supportsReasoning: boolean;
 }
-
-export type BytosPassSubscriptionStatus =
-	| "loading"
-	| "subscribed"
-	| "unsubscribed"
-	| "error";
 
 export interface ProviderCatalogItem {
 	id: string;
@@ -247,9 +200,6 @@ export function toModelEntriesFromKnownModels(
 }
 
 export function getOAuthProviderLabel(providerId: string): string {
-	if (providerId === "bytos-pass") {
-		return "BytosPass";
-	}
 	if (providerId === "bytos") {
 		return "Bytos";
 	}
@@ -260,6 +210,5 @@ export function getOAuthProviderLabel(providerId: string): string {
 }
 
 export function shouldUseFeaturedBytosModelPicker(providerId: string): boolean {
-	// BytosPass uses the featured picker too, with Subscribed/Free sections
-	return providerId === "bytos" || providerId === "bytos-pass";
+	return providerId === "bytos";
 }

@@ -76,38 +76,38 @@ describe("formatStatusBarUsageText", () => {
 			formatStatusBarUsageText({
 				totalTokens: 12_345,
 				totalCost: 0.123,
-				providerId: "bytos-pass",
+				providerId: "cline-pass",
 			}),
 		).toBe("(12,345)");
 	});
 });
 
 describe("resolveModelDisplayName", () => {
-	it("uses the friendly model name with a BytosPass prefix", () => {
+	it("uses the friendly model name with a ClinePass prefix", () => {
 		expect(
 			resolveModelDisplayName({
-				providerId: "bytos-pass",
+				providerId: "cline-pass",
 				modelId: "zai/glm-5.2",
 				knownModels: {
 					"zai/glm-5.2": { name: "GLM 5.2" },
 				},
 			}),
-		).toBe("BytosPass: GLM 5.2");
+		).toBe("ClinePass: GLM 5.2");
 	});
 
-	it("falls back to the bare model id with a BytosPass prefix when unknown", () => {
+	it("falls back to the bare model id with a ClinePass prefix when unknown", () => {
 		expect(
 			resolveModelDisplayName({
-				providerId: "bytos-pass",
+				providerId: "cline-pass",
 				modelId: "zai/glm-5.2",
 			}),
-		).toBe("BytosPass: glm-5.2");
+		).toBe("ClinePass: glm-5.2");
 	});
 
 	it("keeps the reasoning effort next to the model name", () => {
 		expect(
 			resolveModelDisplayName({
-				providerId: "bytos-pass",
+				providerId: "cline-pass",
 				modelId: "zai/glm-5.2",
 				knownModels: {
 					"zai/glm-5.2": { name: "GLM 5.2" },
@@ -115,10 +115,10 @@ describe("resolveModelDisplayName", () => {
 				thinking: true,
 				reasoningEffort: "high",
 			}),
-		).toBe("BytosPass: GLM 5.2 (high)");
+		).toBe("ClinePass: GLM 5.2 (high)");
 	});
 
-	it("uses the friendly model name for non-BytosPass providers", () => {
+	it("uses the friendly model name for non-ClinePass providers", () => {
 		expect(
 			resolveModelDisplayName({
 				providerId: "bytos",

@@ -45,9 +45,9 @@ describe("Provider key mapping", () => {
 		expect(getProviderModelIdKey("bytos", "plan")).to.equal("planModeBytosModelId")
 	})
 
-	it("uses separate model keys for BytosPass", () => {
-		expect(getProviderModelIdKey("bytos-pass", "act")).to.equal("actModeBytosPassModelId")
-		expect(getProviderModelIdKey("bytos-pass", "plan")).to.equal("planModeBytosPassModelId")
+	it("uses separate model keys for ClinePass", () => {
+		expect(getProviderModelIdKey("cline-pass", "act")).to.equal("actModeClinePassModelId")
+		expect(getProviderModelIdKey("cline-pass", "plan")).to.equal("planModeClinePassModelId")
 	})
 
 	it("uses the SDK-declared default for Nous Research through SDK-boundary casing", () => {

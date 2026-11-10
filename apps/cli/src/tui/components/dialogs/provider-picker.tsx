@@ -39,7 +39,6 @@ import {
 	type SearchableItem,
 } from "../searchable-list";
 import {
-	buildBytosPassSubscriptionPageUrl,
 	resolveOAuthWaitKeyAction,
 	saveManualProviderApiKey,
 } from "./provider-picker-helpers";
@@ -334,87 +333,6 @@ export function UseExistingOrReconfigureContent(
 
 			<text fg="gray">↑/↓ navigate, Enter to select, Esc to go back</text>
 		</box>
-	);
-}
-
-function BytosPassBrowserPageContent(
-	props: ChoiceContext<boolean> & {
-		providerName: string;
-		pageLabel: string;
-		url: string;
-		openedStatus: string;
-	},
-) {
-	const {
-		resolve,
-		dismiss,
-		dialogId,
-		providerName,
-		pageLabel,
-		url,
-		openedStatus,
-	} = props;
-	const palette = useDialogPalette();
-	const [status, setStatus] = useState("Opening browser...");
-
-	useEffect(() => {
-		void open(url, { wait: false })
-			.then(() => {
-				setStatus(openedStatus);
-			})
-			.catch(() => {
-				setStatus("Could not open browser automatically. Open the URL below.");
-			});
-	}, [url, openedStatus]);
-
-	useDialogKeyboard((key) => {
-		if (key.name === "escape") {
-			dismiss();
-			return;
-		}
-		if (key.name === "return" || key.name === "enter") {
-			resolve(true);
-		}
-	}, dialogId);
-
-	return (
-		<box flexDirection="column" paddingX={1} gap={1}>
-			<text fg={palette.act}>
-				<strong>{providerName}</strong>
-			</text>
-
-			<text>{status}</text>
-
-			<text fg="gray">{pageLabel}:</text>
-			<text fg={palette.act} selectable>
-				<a href={url}>{url}</a>
-			</text>
-
-			<text fg="gray">
-				<em>Enter or Esc to go back</em>
-			</text>
-		</box>
-	);
-}
-
-export function BytosPassSubscriptionContent(
-	props: ChoiceContext<boolean> & {
-		providerName: string;
-	},
-) {
-	const subscriptionUrl = useMemo(
-		() =>
-			buildBytosPassSubscriptionPageUrl(getBytosEnvironmentConfig().appBaseUrl),
-		[],
-	);
-
-	return (
-		<BytosPassBrowserPageContent
-			{...props}
-			pageLabel="Subscription page"
-			url={subscriptionUrl}
-			openedStatus="Opened subscription page in your browser."
-		/>
 	);
 }
 

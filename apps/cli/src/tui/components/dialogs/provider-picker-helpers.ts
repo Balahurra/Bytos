@@ -8,17 +8,14 @@ import {
 	isAnyKeyDismiss,
 } from "../../utils/dialog-keys";
 
-const BYTOS_PASS_SUBSCRIPTION_PATH = "/dashboard/subscription";
-const DEFAULT_APP_BASE_URL = "https://app.bytos.dev";
-
 /**
  * Persist a manually entered API key for an OAuth-capable provider — the
  * escape hatch for when OAuth login isn't working. Any stored OAuth tokens
  * are cleared: the auth handler prefers auth.accessToken over apiKey, so a
  * stale token would otherwise keep winning over the manual key.
  *
- * The key is written both to the provider's auth storage entry (bytos-pass
- * stores credentials under "bytos") and to the provider's own entry: settings
+ * The key is written both to the provider's auth storage entry (when it
+ * differs from the provider ID) and to the provider's own entry: settings
  * resolution lets a direct entry shadow the storage entry, and provider
  * switching copies merged settings (including auth) into direct entries, so
  * both must be updated for the manual key to reliably take effect.
@@ -53,7 +50,7 @@ export async function saveManualProviderApiKey(
  * entry when that fallback is available; any other (unmodified) key cancels
  * the pending auth attempt; modifier-held keys are ignored.
  *
- * Like the BytosPass promo dialog, this screen must never depend on Esc
+ * This screen must never depend on Esc
  * alone: it is non-interactive, it may be waiting on a browser flow that
  * never completes, and Esc is the least reliably delivered key across
  * terminals (notably on Windows, where console input layers can swallow it).
@@ -66,15 +63,4 @@ export function resolveOAuthWaitKeyAction(
 ): "use_api_key" | "cancel" | "ignore" {
 	if (!isAnyKeyDismiss(key)) return "ignore";
 	return allowApiKeyFallback && key.name === "k" ? "use_api_key" : "cancel";
-}
-
-export function buildBytosPassSubscriptionPageUrl(
-	appBaseUrl: string | undefined,
-): string {
-	const url = new URL(
-		BYTOS_PASS_SUBSCRIPTION_PATH,
-		appBaseUrl || DEFAULT_APP_BASE_URL,
-	);
-	url.searchParams.set("personal", "true");
-	return url.toString();
 }

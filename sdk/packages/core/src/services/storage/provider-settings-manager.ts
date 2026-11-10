@@ -224,13 +224,6 @@ export interface SaveProviderSettingsOptions {
 	tokenSource?: ProviderTokenSource;
 }
 
-export interface ResolveLastUsedProviderSettingsOptions {
-	isBytosPassEnabled?: boolean;
-}
-
-const BYTOS_PROVIDER_ID = "bytos";
-const BYTOS_PASS_PROVIDER_ID = "bytos-pass";
-
 /**
  * A pasted credential can carry invisible control or format characters (BOM,
  * zero-width spaces, bidirectional marks) that make the provider reject it
@@ -542,24 +535,15 @@ export class ProviderSettingsManager {
 
 	private resolveLastUsedProviderId(
 		state: StoredProviderSettings,
-		options: ResolveLastUsedProviderSettingsOptions,
 	): string | undefined {
-		const providerId = state.lastUsedProvider;
-		if (
-			providerId === BYTOS_PASS_PROVIDER_ID &&
-			options.isBytosPassEnabled === false
-		) {
-			return BYTOS_PROVIDER_ID;
-		}
-
-		return providerId;
+		return state.lastUsedProvider;
 	}
 
 	getLastUsedProviderSettings(
-		options: ResolveLastUsedProviderSettingsOptions = {},
+		_legacyOptions?: Record<string, unknown>,
 	): ProviderSettings | undefined {
 		const state = this.read();
-		const providerId = this.resolveLastUsedProviderId(state, options);
+		const providerId = this.resolveLastUsedProviderId(state);
 		if (!providerId) {
 			return undefined;
 		}
@@ -578,10 +562,9 @@ export class ProviderSettingsManager {
 	}
 
 	getLastUsedProviderConfig(
-		options: ToProviderConfigOptions &
-			ResolveLastUsedProviderSettingsOptions = {},
+		options: ToProviderConfigOptions = {},
 	): ProviderConfig | undefined {
-		const settings = this.getLastUsedProviderSettings(options);
+		const settings = this.getLastUsedProviderSettings();
 		if (!settings) {
 			return undefined;
 		}

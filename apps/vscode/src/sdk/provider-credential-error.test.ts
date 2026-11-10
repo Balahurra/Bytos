@@ -85,16 +85,6 @@ describe("reshapeErrorForWebview - rejected credentials (errorClass auth)", () =
 		expect(reshaped).toBe('{"status":401,"message":"Unauthorized"}')
 	})
 
-	it("keeps bytos-pass on the JSON path as well", () => {
-		const reshaped = reshapeErrorForWebview(
-			{ message: '{"status":401,"message":"Unauthorized"}' },
-			"bytos-pass",
-			undefined,
-			"auth",
-		)
-		expect(reshaped).toBe('{"status":401,"message":"Unauthorized"}')
-	})
-
 	it("does not rewrite unclassified errors", () => {
 		expect(reshapeErrorForWebview({ message: "boom" }, "mistral", undefined, "unknown")).toBe("boom")
 	})

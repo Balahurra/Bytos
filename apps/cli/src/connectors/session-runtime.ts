@@ -64,7 +64,7 @@ export async function buildConnectorStartRequest(input: {
 	const providerSettingsManager = new ProviderSettingsManager();
 	const lastUsedProviderSettings =
 		providerSettingsManager.getLastUsedProviderSettings({
-			isBytosPassEnabled: true,
+			isClinePassEnabled: true,
 		});
 	const provider = normalizeProviderId(
 		input.options.provider?.trim() ||

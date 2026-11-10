@@ -14,7 +14,7 @@ actually distributed, its notice is still provided here.
 This file is not a legal opinion. See LICENSE-COMPLIANCE-REPORT.md for
 verified obligations and remaining uncertainties.
 
-Generated: 2026-11-10T05:48:30.507Z
+Generated: 2026-11-10T13:34:31.944Z
 Packages: 2257
 
 License summary

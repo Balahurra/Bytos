@@ -21,7 +21,7 @@ export interface ProviderModel {
 	id: string;
 	name: string;
 	description?: string;
-	/** Set by the SDK for bytos/bytos-pass models featured by the feed. */
+	/** Set by the SDK for bytos/cline-pass models featured by the feed. */
 	featured?: ProviderModelFeatured;
 	operation?: ModelOperation;
 	operationModes?: ModelOperationMode[];

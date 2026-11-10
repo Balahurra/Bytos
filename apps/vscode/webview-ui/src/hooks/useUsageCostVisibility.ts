@@ -8,7 +8,7 @@ import { useProviderListings } from "./useProviderListings"
  *
  * A row's stored `totalCost` is an API-rate estimate; for providers the
  * SDK marks with `metadata.usageCostDisplay` other than `"show"` (e.g.
- * subscription-billed ChatGPT Plus/Pro, BytosPass, Claude Code) it is not
+ * subscription-billed ChatGPT Plus/Pro, ClinePass, Claude Code) it is not
  * a real charge, so history surfaces must not render it. This is the
  * per-row counterpart of `useProviderUsageCostDisplay`, which decides for
  * a single provider; history lists mix providers, hence the predicate.

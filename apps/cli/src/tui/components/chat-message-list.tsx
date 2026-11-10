@@ -1,5 +1,5 @@
 import "opentui-spinner/react";
-import type { AgentMode, BytosSubscriptionPlan } from "@bytos/core";
+import type { AgentMode } from "@bytos/core";
 import type { ScrollBoxRenderable } from "@opentui/core";
 import {
 	forwardRef,
@@ -21,7 +21,6 @@ export interface TranscriptScrollHandle {
 interface ChatMessageListProps {
 	entries: ChatEntry[];
 	isStreaming?: boolean;
-	loadIndividualSubscriptionPlans?: () => Promise<BytosSubscriptionPlan[]>;
 	uiMode?: AgentMode;
 }
 
@@ -105,9 +104,6 @@ export const ChatMessageList = forwardRef<
 							entry={entry}
 							accent={getThemeModeAccent(theme, entryMode)}
 							mode={entryMode === "plan" ? "plan" : "act"}
-							loadIndividualSubscriptionPlans={
-								props.loadIndividualSubscriptionPlans
-							}
 							theme={theme}
 						/>
 					);

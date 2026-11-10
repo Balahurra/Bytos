@@ -1335,9 +1335,9 @@ export function normalizeUsage(
 	// Bytos's included models have no per-request charge, even when the
 	// response includes the upstream inference or market cost.
 	const includedBytosUsage =
-		selection?.providerId === "bytos-pass" ||
+		selection?.providerId === "cline-pass" ||
 		(selection?.providerId === "bytos" &&
-			(selection.modelId.startsWith("bytos-pass/") ||
+			(selection.modelId.startsWith("cline-pass/") ||
 				selection.modelId.startsWith("bytos-free/") ||
 				selection.modelId.endsWith(":free") ||
 				(pricing?.input === 0 &&

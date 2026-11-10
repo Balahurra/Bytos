@@ -562,20 +562,6 @@ export const GENERATED_PROVIDER_SPECS: readonly BuiltinSpec[] = [
 		},
 	},
 	{
-		id: "bytos-pass",
-		name: "BytosPass",
-		description: "BytosPass model provider from models.dev",
-		family: "openai-compatible",
-		capabilities: ["tools", "reasoning", "prompt-cache"],
-		modelsProviderId: "bytos-pass",
-		defaultModelId: "bytos-pass/mimo-v2.6-flash",
-		apiKeyEnv: ["BYTOS_API_KEY"],
-		docsUrl: "https://github.com/Balahurra/Bytos",
-		defaults: {
-			baseUrl: "https://api.bytos.dev/api/v1",
-		},
-	},
-	{
 		id: "cloudferro-sherlock",
 		name: "CloudFerro Sherlock",
 		description: "CloudFerro Sherlock model provider from models.dev",

@@ -218,7 +218,7 @@ Supported commands:
 | `update_chat_session_title` | `resolveSessionBackend().updateSession`; cloud sessions PATCH the cloud API |
 | `get_feature_flags` | PostHog flag snapshot + `isCloudAgentsEnabled()` (env override + `code-cloud-agents` rollout flag) |
 | `list_cloud_repositories` | `CloudSessionManager.listRepositories()` (GitHub integration) |
-| `list_cloud_models` | `CloudSessionManager.listModels()` (account-scoped Usage-Billing, BytosPass, and BytosFree catalogs; model IDs use the Bytos cloud transport) |
+| `list_cloud_models` | `CloudSessionManager.listModels()` (account-scoped Usage-Billing and BytosFree catalogs; model IDs use the Bytos cloud transport) |
 | `list_cloud_branches` | `CloudSessionManager.listBranches()` (paginated) |
 | `list_mcp_servers` | Direct file I/O |
 | `authorize_mcp_server_oauth` | Explicit Connect action → cancellable `authorizeMcpServerOAuth` + system browser |

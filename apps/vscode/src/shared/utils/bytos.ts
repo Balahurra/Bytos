@@ -1,3 +1,3 @@
 export function isBytosManagedProvider(provider: string | undefined) {
-	return provider === "bytos" || provider === "bytos-pass"
+	return provider === "bytos"
 }

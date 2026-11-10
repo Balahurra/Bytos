@@ -14,8 +14,8 @@ import {
 } from "./catalog-live";
 
 describe("models-dev-catalog", () => {
-	it("bundles zero prices for every Bytos Pass model without a live refresh", () => {
-		const models = Object.values(getGeneratedModelsForProvider("bytos-pass"));
+	it("bundles zero prices for every ClinePass model without a live refresh", () => {
+		const models = Object.values(getGeneratedModelsForProvider("cline-pass"));
 		expect(models.length).toBeGreaterThan(0);
 		for (const model of models) {
 			expect(model.pricing, model.id).toEqual({
@@ -457,119 +457,9 @@ describe("models-dev-catalog", () => {
 		expect(providerModels.greenpt).not.toHaveProperty("green-s");
 	});
 
-	it("normalizes Bytos recommended bytosPass models as a generated provider source", () => {
-		const result = normalizeBytosRecommendedProviderModels(
-			{
-				bytosPass: [
-					{
-						id: "base-model",
-						name: "BytosPass Base Model",
-						description: "Included in BytosPass",
-					},
-					{
-						id: "custom-model",
-						name: "Custom Model",
-					},
-				],
-			},
-			{
-				openrouter: {
-					"base-model": {
-						id: "base-model",
-						name: "OpenRouter Base Model",
-						description: "OpenRouter description",
-						contextWindow: 200_000,
-						maxInputTokens: 180_000,
-						maxTokens: 16_384,
-						capabilities: ["tools", "reasoning", "images"],
-						reasoningOptions: [
-							{ type: "effort", values: ["low", "medium", "high"] },
-						],
-						pricing: { input: 3, output: 15, cacheRead: 0.3, cacheWrite: 3.75 },
-						releaseDate: "2026-01-01",
-						family: "base-family",
-					},
-				},
-			},
-		);
-
-		expect(result["bytos-pass"]).toEqual({
-			"base-model": {
-				id: "base-model",
-				name: "OpenRouter Base Model",
-				description: "Included in BytosPass",
-				contextWindow: 200_000,
-				maxInputTokens: 180_000,
-				maxTokens: 16_384,
-				capabilities: ["tools", "reasoning", "images"],
-				reasoningOptions: [
-					{ type: "effort", values: ["low", "medium", "high"] },
-				],
-				pricing: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-				releaseDate: "2026-01-01",
-				family: "base-family",
-			},
-			"custom-model": {
-				id: "custom-model",
-				name: "Custom Model",
-				description: undefined,
-				contextWindow: 128_000,
-				maxInputTokens: 128_000,
-				maxTokens: 8_192,
-				capabilities: ["tools", "reasoning", "temperature"],
-				pricing: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-			},
-		});
-	});
-
-	it("matches Bytos recommended bytosPass models against OpenRouter model slugs", () => {
-		const result = normalizeBytosRecommendedProviderModels(
-			{
-				bytosPass: [
-					{
-						id: "bytos-pass/glm-5.2",
-					},
-				],
-			},
-			{
-				openrouter: {
-					"z-ai/glm-5.2": {
-						id: "z-ai/glm-5.2",
-						name: "GLM 5.2",
-						contextWindow: 256_000,
-						maxInputTokens: 200_000,
-						maxTokens: 32_000,
-						capabilities: ["tools", "reasoning", "temperature"],
-						pricing: { input: 1, output: 2, cacheRead: 0, cacheWrite: 0 },
-					},
-				},
-			},
-		);
-
-		expect(result["bytos-pass"]?.["bytos-pass/glm-5.2"]).toMatchObject({
-			id: "bytos-pass/glm-5.2",
-			name: "GLM 5.2",
-			contextWindow: 256_000,
-			maxInputTokens: 200_000,
-			maxTokens: 32_000,
-			pricing: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-		});
-	});
-
-	it("returns no BytosPass models when bytosPass is empty or missing", () => {
-		expect(normalizeBytosRecommendedProviderModels({}, {})).toEqual({});
-		expect(
-			normalizeBytosRecommendedProviderModels({ bytosPass: [] }, {}),
-		).toEqual({});
-	});
-
 	it("falls back to Vercel only for Bytos recommended models OpenRouter doesn't list", () => {
 		const result = normalizeBytosRecommendedProviderModels(
 			{
-				bytosPass: [
-					{ id: "bytos-pass/vercel-only" },
-					{ id: "bytos-pass/glm-5.2" },
-				],
 				free: [{ id: "bytos-free/vercel-only" }, { id: "bytos-free/glm-5.2" }],
 			},
 			{
@@ -603,78 +493,18 @@ describe("models-dev-catalog", () => {
 			},
 		);
 
-		for (const id of ["bytos-free/vercel-only", "bytos-pass/vercel-only"]) {
-			expect(result["bytos-pass"]?.[id]).toMatchObject({
-				contextWindow: 1_000_000,
-				maxTokens: 64_000,
-				capabilities: ["images", "tools", "reasoning"],
-				pricing: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-			});
-		}
 		expect(result.bytos?.["bytos-free/vercel-only"]).toMatchObject({
 			name: "Acme Vercel Only (free)",
 			contextWindow: 1_000_000,
 		});
-		// Any OpenRouter match wins over every Vercel alias
-		for (const id of ["bytos-free/glm-5.2", "bytos-pass/glm-5.2"]) {
-			expect(result["bytos-pass"]?.[id]).toMatchObject({
-				contextWindow: 200_000,
-			});
-		}
 		expect(result.bytos?.["bytos-free/glm-5.2"]).toMatchObject({
 			name: "GLM 5.2 (free)",
 			contextWindow: 200_000,
 		});
 	});
 
-	it("includes Bytos free models alongside BytosPass models", () => {
-		const result = normalizeBytosRecommendedProviderModels(
-			{
-				bytosPass: [{ id: "bytos-pass/glm-5.1", name: "glm-5.1" }],
-				free: [{ id: "bytos-free/kat-coder-pro", name: "kat-coder-pro" }],
-			},
-			{
-				openrouter: {
-					"kwaipilot/kat-coder-pro": {
-						id: "kwaipilot/kat-coder-pro",
-						name: "KAT Coder Pro",
-						contextWindow: 256_000,
-						maxInputTokens: 200_000,
-						maxTokens: 32_000,
-						capabilities: ["tools", "temperature"],
-						pricing: { input: 1, output: 2, cacheRead: 0.1, cacheWrite: 0 },
-					},
-				},
-			},
-		);
-
-		const models = result["bytos-pass"] ?? {};
-		// BytosPass models stay first so the provider default remains a pass model
-		expect(Object.keys(models)).toEqual([
-			"bytos-pass/glm-5.1",
-			"bytos-free/kat-coder-pro",
-		]);
-		expect(models["bytos-free/kat-coder-pro"]).toMatchObject({
-			id: "bytos-free/kat-coder-pro",
-			name: "KAT Coder Pro (free)",
-			contextWindow: 256_000,
-			maxInputTokens: 200_000,
-			// free models are billed at $0 regardless of catalog pricing
-			pricing: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-		});
-		expect(result.bytos?.["bytos-free/kat-coder-pro"]).toMatchObject({
-			id: "bytos-free/kat-coder-pro",
-			name: "KAT Coder Pro (free)",
-			pricing: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-		});
-		expect(models["bytos-free/kat-coder-pro"]).not.toBe(
-			result.bytos?.["bytos-free/kat-coder-pro"],
-		);
-	});
-
 	it("includes Bytos Cloud models only when explicitly requested", () => {
 		const payload = {
-			bytosPass: [{ id: "bytos-pass/glm-5.2", name: "glm-5.2" }],
 			bytosCloud: [
 				{
 					id: "bytos-cloud/claude-sonnet-4.6",
@@ -699,46 +529,11 @@ describe("models-dev-catalog", () => {
 			name: "Claude Sonnet 4.6",
 			pricing: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
 		});
-		expect(result["bytos-pass"]).not.toHaveProperty(
-			"bytos-cloud/claude-sonnet-4.6",
-		);
-	});
-
-	it.each([
-		"bytos-free/deepseek-v4-flash",
-		"deepseek/deepseek-v4-flash",
-	])("labels a free model with ID %s when its name matches a BytosPass model", (freeId) => {
-		const result = normalizeBytosRecommendedProviderModels(
-			{
-				bytosPass: [
-					{
-						id: "bytos-pass/deepseek-v4-flash",
-						name: "DeepSeek V4 Flash",
-					},
-				],
-				free: [
-					{
-						id: freeId,
-						name: "DeepSeek V4 Flash",
-					},
-				],
-			},
-			{},
-		);
-
-		expect(result["bytos-pass"]?.["bytos-pass/deepseek-v4-flash"]?.name).toBe(
-			"DeepSeek V4 Flash",
-		);
-		expect(result["bytos-pass"]?.[freeId]?.name).toBe(
-			"DeepSeek V4 Flash (free)",
-		);
-		expect(result.bytos?.[freeId]?.name).toBe("DeepSeek V4 Flash (free)");
 	});
 
 	it("resolves free-model capabilities by slug and preserves free-only Bytos catalog payloads", () => {
 		const suffixed = normalizeBytosRecommendedProviderModels(
 			{
-				bytosPass: [{ id: "bytos-pass/glm-5.1" }],
 				free: [{ id: "bytos-free/trinity-large-preview:free" }],
 			},
 			{
@@ -756,26 +551,18 @@ describe("models-dev-catalog", () => {
 			},
 		);
 		expect(
-			suffixed["bytos-pass"]?.["bytos-free/trinity-large-preview:free"],
-		).toMatchObject({
-			name: "Trinity Large Preview (free)",
-			contextWindow: 512_000,
-		});
-		expect(
 			suffixed.bytos?.["bytos-free/trinity-large-preview:free"],
 		).toMatchObject({
 			name: "Trinity Large Preview (free)",
 			contextWindow: 512_000,
 		});
 
-		// free bucket alone updates the Bytos provider catalog but does not rotate
-		// BytosPass away from its bundled subscription list/default.
+		// free bucket alone updates the Bytos provider catalog.
 		const freeOnly = normalizeBytosRecommendedProviderModels(
 			{ free: [{ id: "bytos-free/kat-coder-pro" }] },
 			{},
 		);
 		expect(freeOnly.bytos?.["bytos-free/kat-coder-pro"]).toBeDefined();
-		expect(freeOnly["bytos-pass"]).toBeUndefined();
 	});
 
 	it("normalizes bytos-free ids from the free endpoint bucket", () => {
@@ -811,7 +598,7 @@ describe("models-dev-catalog", () => {
 	it("resolves OpenRouter display names for free models with full catalog ids", () => {
 		// The recommended-models endpoint sends slug-like names (e.g.
 		// "deepseek-v4-flash"); the overlay must keep the OpenRouter display
-		// name so merged bytos/bytos-pass catalogs don't show raw ids.
+		// name so merged bytos/cline-pass catalogs don't show raw ids.
 		const result = normalizeBytosRecommendedProviderModels(
 			{
 				free: [
@@ -1163,64 +950,6 @@ describe("models-dev-catalog", () => {
 		expect(result["openai-native"]).toHaveProperty("gpt-live");
 	});
 
-	it("fetches live models from models.dev and Bytos recommended bytosPass models", async () => {
-		const fetcher = vi.fn(async (url: string) => {
-			if (url === "https://models.dev/api.json") {
-				return {
-					ok: true,
-					json: async () =>
-						({
-							openrouter: {
-								models: {
-									"vendor/live-base-model": {
-										name: "Live Base Model",
-										tool_call: true,
-										reasoning: true,
-										limit: { context: 256_000, input: 200_000, output: 32_000 },
-										cost: { input: 1, output: 2 },
-									},
-								},
-							},
-						}) satisfies ModelsDevPayload,
-				};
-			}
-
-			return {
-				ok: true,
-				json: async () => ({
-					bytosPass: [
-						{
-							id: "bytos-pass/live-base-model",
-							name: "vendor/live-base-model",
-						},
-					],
-				}),
-			};
-		});
-
-		const result = await fetchLiveProviderModels(
-			"https://models.dev/api.json",
-			fetcher as unknown as typeof fetch,
-		);
-
-		expect(fetcher).toHaveBeenCalledWith("https://models.dev/api.json");
-		expect(fetcher).toHaveBeenCalledWith(
-			"https://api.bytos.dev/api/v1/ai/bytos/recommended-models",
-			expect.objectContaining({
-				headers: expect.objectContaining({ "X-CLIENT-TYPE": "bytos-sdk" }),
-			}),
-		);
-		expect(result.openrouter).toHaveProperty("vendor/live-base-model");
-		expect(result["bytos-pass"]?.["bytos-pass/live-base-model"]).toMatchObject({
-			id: "bytos-pass/live-base-model",
-			name: "Live Base Model",
-			contextWindow: 256_000,
-			maxInputTokens: 200_000,
-			maxTokens: 32_000,
-			pricing: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-		});
-	});
-
 	it("keeps models.dev live models when Bytos recommended models fail", async () => {
 		const fetcher = vi.fn(async (url: string) => {
 			if (url === "https://models.dev/api.json") {
@@ -1246,44 +975,7 @@ describe("models-dev-catalog", () => {
 		);
 
 		expect(result["openai-native"]?.["gpt-live"]?.name).toBe("GPT Live");
-		expect(result["bytos-pass"]).toBeUndefined();
-	});
-
-	it("keeps Bytos recommended bytosPass models when models.dev fails", async () => {
-		const fetcher = vi.fn(async (url: string) => {
-			if (url === "https://models.dev/api.json") {
-				return { ok: false, status: 503 };
-			}
-
-			return {
-				ok: true,
-				json: async () => ({
-					bytosPass: [
-						{
-							id: "bytos-pass/live-default-model",
-							name: "Live Default Model",
-						},
-					],
-				}),
-			};
-		});
-
-		const result = await fetchLiveProviderModels(
-			"https://models.dev/api.json",
-			fetcher as unknown as typeof fetch,
-		);
-
-		expect(result["openai-native"]).toBeUndefined();
-		expect(
-			result["bytos-pass"]?.["bytos-pass/live-default-model"],
-		).toMatchObject({
-			id: "bytos-pass/live-default-model",
-			name: "Live Default Model",
-			contextWindow: 128_000,
-			maxInputTokens: 128_000,
-			maxTokens: 8_192,
-			pricing: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-		});
+		expect(result["cline-pass"]).toBeUndefined();
 	});
 
 	it("throws when models.dev request fails", async () => {

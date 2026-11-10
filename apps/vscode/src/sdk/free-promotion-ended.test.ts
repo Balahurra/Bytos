@@ -16,10 +16,10 @@ describe("reshapeErrorForWebview - free promotion ended", () => {
 		expect(parsed.details?.code).toBe("bytos_free_promotion_ended")
 	})
 
-	it("keeps the selected provider id, so bytos-pass selections stay attributed", () => {
-		const payload = reshapeErrorForWebview({ message: "Model not found" }, "bytos-pass", "bytos-free/glm-5")
+	it("keeps the selected provider id, so cline-pass selections stay attributed", () => {
+		const payload = reshapeErrorForWebview({ message: "Model not found" }, "cline-pass", "bytos-free/glm-5")
 
-		expect(JSON.parse(payload).providerId).toBe("bytos-pass")
+		expect(JSON.parse(payload).providerId).toBe("cline-pass")
 	})
 
 	it("round-trips into the webview's BytosFreePromotionEnded classification", () => {

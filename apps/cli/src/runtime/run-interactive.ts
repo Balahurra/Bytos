@@ -14,7 +14,6 @@ import { exportHistorySession } from "../session/history-export";
 import { deleteSession } from "../session/session";
 import {
 	loadBytosAccountSnapshot,
-	loadIndividualSubscriptionPlans,
 	onProviderChange,
 	switchBytosAccount,
 } from "../tui/bytos-account";
@@ -539,12 +538,6 @@ export async function runInteractive(
 			await loadBytosAccountSnapshot({
 				config,
 				bytosApiBaseUrl: options?.bytosApiBaseUrl,
-			}),
-		loadIndividualSubscriptionPlans: async () =>
-			await loadIndividualSubscriptionPlans({
-				config,
-				bytosApiBaseUrl: options?.bytosApiBaseUrl,
-				bytosProviderSettings: options?.bytosProviderSettings,
 			}),
 		switchBytosAccount: async (organizationId) =>
 			await switchBytosAccount({

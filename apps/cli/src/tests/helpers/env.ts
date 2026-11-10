@@ -162,7 +162,7 @@ export function bytosEnv(
 		// Unauthenticated tests must never reach public DNS. Point them at the
 		// local 401 server so the CLI exercises its real auth-failure path.
 		...(isAuthenticated ? {} : { BYTOS_API_BASE_URL: UNAUTHORIZED_API_BASE_URL }),
-		BYTOS_DISABLE_BYTOS_PASS_NOTICE: "1",
+		BYTOS_DISABLE_CLINE_PASS_NOTICE: "1",
 		NO_UPDATE_NOTIFIER: "1",
 		BYTOS_NO_AUTO_UPDATE: "1",
 		...extra,

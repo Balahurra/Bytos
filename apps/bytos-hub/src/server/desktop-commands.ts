@@ -102,7 +102,7 @@ export async function handleDesktopCommand(
 	if (command === "list_provider_catalog") {
 		await ensureCustomProvidersLoaded(providerSettingsManager);
 		return await listLocalProviders(providerSettingsManager, {
-			isBytosPassEnabled: true,
+			isClinePassEnabled: true,
 		});
 	}
 	if (command === "list_provider_models") {

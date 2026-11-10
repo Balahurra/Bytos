@@ -1762,8 +1762,8 @@ const ModelSelector = memo(function ModelSelector({
 		? (Object.keys(providerModels).find((id) =>
 				providerModels[id]?.includes(model),
 			) ??
-			(model.startsWith("bytos-pass/")
-				? "bytos-pass"
+			(model.startsWith("cline-pass/")
+				? "cline-pass"
 				: model.startsWith("bytos-cloud/")
 					? "bytos-cloud"
 					: "bytos"))
@@ -1870,7 +1870,7 @@ const ModelSelector = memo(function ModelSelector({
 		[resolvedProvider, visibleProviderModels],
 	);
 	// Sectioned picker data: display names plus the Recommended/Free tiers the
-	// SDK stamps onto bytos/bytos-pass models (ProviderModel.featured).
+	// SDK stamps onto bytos/cline-pass models (ProviderModel.featured).
 	const pickerDataForProvider = useCallback(
 		(providerId: string): ModelPickerData => {
 			const detailsById = new Map(
@@ -1918,7 +1918,7 @@ const ModelSelector = memo(function ModelSelector({
 				? lastSelection.lastModelByProvider[rememberedLastProvider]
 				: undefined);
 		// Catalogs are discovery data, not validation: the bundled catalog can
-		// omit live BytosPass models, and refreshes can return partial lists.
+		// omit live ClinePass models, and refreshes can return partial lists.
 		// Keep the configured model for the current provider even if absent;
 		// otherwise loading the catalog silently changes the session's model.
 		if (
@@ -1956,7 +1956,7 @@ const ModelSelector = memo(function ModelSelector({
 		rememberedLastProvider,
 		resolvedProvider,
 	]);
-	// The picker can intentionally hide catalog models (the BytosPass offer
+	// The picker can intentionally hide catalog models (the ClinePass offer
 	// is exactly its subscribed/free tiers), but the active model must stay
 	// visible and selectable — e.g. a hydrated session configured with a
 	// model outside the current offer or missing from the catalog. Surface it

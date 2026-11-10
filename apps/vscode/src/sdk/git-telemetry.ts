@@ -103,7 +103,7 @@ export class VscodeGitTelemetryManager {
 	init(input: BytosCoreStartInput): VscodeGitTelemetry | undefined {
 		if (this.disposed) return
 		const { config } = input
-		if (!config.cwd || (config.providerId !== "bytos" && config.providerId !== "bytos-pass") || !this.telemetry) return
+		if (!config.cwd || config.providerId !== "bytos" || !this.telemetry) return
 		// Use host consent, not an organization telemetry override.
 		const observer = new VscodeGitTelemetry({ ...config, cwd: config.cwd }, this.telemetry)
 		input.config = observer.configure()

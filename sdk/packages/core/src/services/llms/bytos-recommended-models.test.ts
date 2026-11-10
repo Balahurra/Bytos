@@ -57,10 +57,6 @@ const ENDPOINT_PAYLOAD = {
 			description: "",
 		},
 	],
-	bytosPass: [
-		{ id: "bytos-pass/glm-5.2", name: "bytos-pass/glm-5.2", description: "" },
-		{ id: "bytos-pass/mystery", name: "bytos-pass/mystery", description: "" },
-	],
 };
 
 const CATALOG = {
@@ -82,16 +78,12 @@ const CATALOG = {
 			"Laguna S 2.1 (free)",
 		),
 	},
-	"bytos-pass": {
-		"bytos-pass/glm-5.2": model("bytos-pass/glm-5.2", "GLM-5.2"),
-	},
 };
 
 function namesOf(data: BytosRecommendedModelsData) {
 	return {
 		recommended: data.recommended.map((m) => m.name),
 		free: data.free.map((m) => m.name),
-		bytosPass: data.bytosPass.map((m) => m.name),
 	};
 }
 
@@ -114,7 +106,6 @@ describe("fetchBytosRecommendedModels", () => {
 			recommended: ["Claude Opus 5", "named-model", "unnamed-model", "GLM-5.2"],
 			// Free markers are redundant next to the pickers' FREE chips.
 			free: ["DeepSeek V4 Flash", "GLM-5.2", "Laguna S 2.1"],
-			bytosPass: ["GLM-5.2", "mystery"],
 		});
 		// Ids are preserved untouched.
 		expect(data.free.map((m) => m.id)).toEqual([
@@ -152,7 +143,6 @@ describe("fetchBytosRecommendedModels", () => {
 		expect(namesOf(data)).toEqual({
 			recommended: ["claude-opus-5", "named-model", "unnamed-model", "glm-5.2"],
 			free: ["deepseek-v4-flash", "glm-5.2", "laguna-s-2.1"],
-			bytosPass: ["glm-5.2", "mystery"],
 		});
 	});
 
@@ -251,14 +241,6 @@ describe("applyBytosFeaturedModels", () => {
 				tags: [],
 			},
 		],
-		bytosPass: [
-			{
-				id: "bytos-pass/kimi-k3",
-				name: "Kimi K3",
-				description: "Leading open weights model",
-				tags: [],
-			},
-		],
 	};
 
 	it("stamps recommended and free tiers onto the bytos model list", () => {
@@ -289,24 +271,6 @@ describe("applyBytosFeaturedModels", () => {
 		expect(models[3]?.featured).toBeUndefined();
 	});
 
-	it("stamps subscribed and free tiers for bytos-pass and skips other providers", () => {
-		const models = applyBytosFeaturedModels(
-			"bytos-pass",
-			[
-				{ id: "bytos-pass/kimi-k3", name: "Kimi K3" },
-				{ id: "deepseek/deepseek-v4-flash", name: "DeepSeek V4 Flash" },
-			],
-			data,
-		);
-		expect(models[0]?.featured?.tier).toBe("subscribed");
-		expect(models[1]?.featured?.tier).toBe("free");
-
-		const untouched = [{ id: "claude-sonnet-4-6", name: "Claude Sonnet" }];
-		expect(applyBytosFeaturedModels("anthropic", untouched, data)).toBe(
-			untouched,
-		);
-	});
-
 	it("matches vendor-prefix mismatches by unambiguous slug without duplicating tiers", () => {
 		const fallbackVintage: BytosRecommendedModelsData = {
 			recommended: [],
@@ -318,7 +282,6 @@ describe("applyBytosFeaturedModels", () => {
 					tags: ["FREE"],
 				},
 			],
-			bytosPass: [],
 		};
 
 		// Catalog knows the model only under the bytos-free prefix: the slug
@@ -353,7 +316,6 @@ describe("applyBytosFeaturedModels", () => {
 					{ id: "vendor-b/shared-slug", name: "B", description: "", tags: [] },
 				],
 				free: [],
-				bytosPass: [],
 			},
 		);
 		expect(ambiguous[0]?.featured).toBeUndefined();
@@ -516,7 +478,7 @@ describe("generated offline featured models", () => {
 				return {};
 			},
 		});
-		for (const tier of ["recommended", "free", "bytosPass"] as const) {
+		for (const tier of ["recommended", "free"] as const) {
 			const generated = GENERATED_BYTOS_RECOMMENDED_MODELS[tier] ?? [];
 			expect(generated.length).toBeGreaterThan(0);
 			expect(data[tier].map((entry) => entry.id)).toEqual(
@@ -533,48 +495,39 @@ describe("generated offline featured models", () => {
 		);
 		expect(recommended).toBeDefined();
 		expect(recommended?.name).toBe(catalog.openrouter[recommended!.id].name);
-		for (const providerId of ["bytos", "bytos-pass"]) {
-			const featured = applyBytosFeaturedModels(
-				providerId,
-				Object.values(
-					providerId === "bytos"
-						? { ...catalog.openrouter, ...catalog.bytos }
-						: catalog["bytos-pass"],
-				).map((entry) => ({ id: entry.id, name: entry.name ?? entry.id })),
-				data,
+		const featured = applyBytosFeaturedModels(
+			"bytos",
+			Object.values({ ...catalog.openrouter, ...catalog.bytos }).map((entry) => ({
+				id: entry.id,
+				name: entry.name ?? entry.id,
+			})),
+			data,
+		);
+		const tiers = [
+			{ tier: "recommended", entries: data.recommended },
+			{ tier: "free", entries: data.free },
+		];
+		for (const { tier, entries } of tiers) {
+			const stamped = featured
+				.filter((entry) => entry.featured?.tier === tier)
+				.sort((a, b) => a.featured!.rank - b.featured!.rank);
+			// The feed can spell a vendor differently from the catalog
+			// ("spacexai/grok-4.7" vs OpenRouter's "x-ai/grok-4.7"); the matcher
+			// then stamps the catalog's id via its slug fallback, so compare
+			// models by slug rather than verbatim id.
+			expect(
+				stamped.map((entry) => ({
+					slug: idSlug(entry.id),
+					description: entry.description ?? "",
+					featured: entry.featured,
+				})),
+			).toEqual(
+				entries.map((entry, rank) => ({
+					slug: idSlug(entry.id),
+					description: entry.description.trim(),
+					featured: { tier, rank, tags: entry.tags },
+				})),
 			);
-			const tiers =
-				providerId === "bytos"
-					? [
-							{ tier: "recommended", entries: data.recommended },
-							{ tier: "free", entries: data.free },
-						]
-					: [
-							{ tier: "subscribed", entries: data.bytosPass },
-							{ tier: "free", entries: data.free },
-						];
-			for (const { tier, entries } of tiers) {
-				const stamped = featured
-					.filter((entry) => entry.featured?.tier === tier)
-					.sort((a, b) => a.featured!.rank - b.featured!.rank);
-				// The feed can spell a vendor differently from the catalog
-				// ("spacexai/grok-4.7" vs OpenRouter's "x-ai/grok-4.7"); the matcher
-				// then stamps the catalog's id via its slug fallback, so compare
-				// models by slug rather than verbatim id.
-				expect(
-					stamped.map((entry) => ({
-						slug: idSlug(entry.id),
-						description: entry.description ?? "",
-						featured: entry.featured,
-					})),
-				).toEqual(
-					entries.map((entry, rank) => ({
-						slug: idSlug(entry.id),
-						description: entry.description.trim(),
-						featured: { tier, rank, tags: entry.tags },
-					})),
-				);
-			}
 		}
 	});
 });

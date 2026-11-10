@@ -7,6 +7,6 @@ export async function listLocalProviders(
 	manager: ProviderSettingsManager,
 ): ReturnType<typeof internalListLocalProviders> {
 	return await internalListLocalProviders(manager, {
-		isBytosPassEnabled: true,
+		isClinePassEnabled: true,
 	});
 }

@@ -28,34 +28,32 @@ describe("buildSdkProviderConfig", () => {
 		vi.clearAllMocks()
 	})
 
-	it("uses shared Bytos OAuth credentials for BytosPass direct handlers", () => {
+	it("uses the user-supplied Cline API key for ClinePass direct handlers", () => {
 		mocks.providerSettingsManager.getProviderSettings.mockImplementation((providerId: string) => {
-			if (providerId !== "bytos") {
+			if (providerId !== "cline-pass") {
 				return undefined
 			}
 			return {
-				provider: "bytos",
-				auth: {
-					accessToken: "workos:shared-bytos-token",
-					refreshToken: "refresh-token",
-				},
+				provider: "cline-pass",
+				apiKey: "cline-user-key",
+				baseUrl: "https://api.cline.bot/api/v1",
 			}
 		})
 
 		const providerConfig = buildSdkProviderConfig(
 			{
-				actModeApiProvider: "bytos-pass",
-				actModeBytosPassModelId: "bytos-pass/glm-5.2",
+				actModeApiProvider: "cline-pass",
+				actModeClinePassModelId: "cline-pass/glm-5.2",
 			},
 			"act",
 		)
 
 		expect(providerConfig).toMatchObject({
-			providerId: "bytos-pass",
-			modelId: "bytos-pass/glm-5.2",
-			apiKey: "workos:shared-bytos-token",
+			providerId: "cline-pass",
+			modelId: "cline-pass/glm-5.2",
+			apiKey: "cline-user-key",
 		})
-		expect(mocks.providerSettingsManager.getProviderSettings).toHaveBeenCalledWith("bytos")
+		expect(mocks.providerSettingsManager.getProviderSettings).toHaveBeenCalledWith("cline-pass")
 	})
 
 	it("uses provider-specific settings for SDK-backed direct handlers", () => {
@@ -143,7 +141,7 @@ describe("buildSdkProviderConfig", () => {
 		expect(providerConfig.headers && "X-Task-ID" in providerConfig.headers).toBe(false)
 	})
 
-	it("attaches the Bytos surface headers for BytosPass", () => {
+	it("attaches the Bytos surface headers for ClinePass", () => {
 		mocks.providerSettingsManager.getProviderSettings.mockReturnValue({
 			provider: "bytos",
 			auth: { accessToken: "workos:shared-bytos-token" },
@@ -151,8 +149,8 @@ describe("buildSdkProviderConfig", () => {
 
 		const providerConfig = buildSdkProviderConfig(
 			{
-				actModeApiProvider: "bytos-pass",
-				actModeBytosPassModelId: "bytos-pass/glm-5.2",
+				actModeApiProvider: "cline-pass",
+				actModeClinePassModelId: "cline-pass/glm-5.2",
 			},
 			"act",
 		)

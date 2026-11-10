@@ -14,8 +14,8 @@ checkpoints you can restore.
 
 A Bytos account is optional: chat, BYOK, and local models work without one.
 By default, model requests go directly to the provider you already pay for;
-Bytos does not proxy them. The BytosPass provider is the exception: it sends
-requests to the Bytos API as part of that subscription. API keys are stored in VS
+Bytos does not proxy them. The optional ClinePass compatibility provider uses
+your own Cline API key and sends requests to Cline's hosted API. API keys are stored in VS
 Code SecretStorage and are never sent to the webview. If you sign in, account
 data is sent to Bytos services as described in `PRIVACY.md`.
 
@@ -78,7 +78,7 @@ but are **not distributed in the current VS Code extension release**:
 - JetBrains plugin
 - SDK and plugin marketplace
 - Kanban
-- Bytos Provider / BytosPass hosted billing
+- ClinePass compatibility provider (your own Cline API key)
 - Enterprise SSO, remote configuration, and monitoring
 - Public Bytos API
 

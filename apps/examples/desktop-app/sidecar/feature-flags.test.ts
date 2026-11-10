@@ -29,7 +29,7 @@ vi.mock("@bytos/core", async () => {
 		...actual,
 		// Two known flags keep the snapshot assertions meaningful even as the
 		// real registry changes.
-		FEATURE_FLAGS: ["ext-bytos-pass", "ext-demo-flag"],
+		FEATURE_FLAGS: ["ext-cline-pass", "ext-demo-flag"],
 		NoOpFeatureFlagsProvider: mocks.NoOpFeatureFlagsProvider,
 		resolveCoreDistinctId: mocks.resolveCoreDistinctId,
 		FeatureFlagsService: class {
@@ -268,13 +268,13 @@ describe("account context persistence", () => {
 describe("buildFeatureFlagsSnapshot", () => {
 	it("resolves every known flag so the client needs no defaults", () => {
 		mocks.getFlagPayload.mockImplementation((flag: unknown) =>
-			flag === "ext-bytos-pass" ? true : undefined,
+			flag === "ext-cline-pass" ? true : undefined,
 		);
 		const snapshot = buildFeatureFlagsSnapshot(
 			getDesktopFeatureFlagsService() as never,
 		);
 		expect(snapshot.flags).toEqual({
-			"ext-bytos-pass": true,
+			"ext-cline-pass": true,
 			// Unreturned flags resolve to false rather than being absent.
 			"ext-demo-flag": false,
 		});
@@ -282,12 +282,12 @@ describe("buildFeatureFlagsSnapshot", () => {
 
 	it("passes non-boolean payloads through untouched", () => {
 		mocks.getFlagPayload.mockImplementation((flag: unknown) =>
-			flag === "ext-bytos-pass" ? { variant: "b", limit: 3 } : false,
+			flag === "ext-cline-pass" ? { variant: "b", limit: 3 } : false,
 		);
 		const snapshot = buildFeatureFlagsSnapshot(
 			getDesktopFeatureFlagsService() as never,
 		);
-		expect(snapshot.flags["ext-bytos-pass"]).toEqual({
+		expect(snapshot.flags["ext-cline-pass"]).toEqual({
 			variant: "b",
 			limit: 3,
 		});
@@ -299,7 +299,7 @@ describe("refreshDesktopFeatureFlags", () => {
 		mocks.getFlagPayload.mockReturnValue(true);
 		const snapshot = await refreshDesktopFeatureFlags();
 		expect(mocks.poll).toHaveBeenCalledTimes(1);
-		expect(snapshot.flags["ext-bytos-pass"]).toBe(true);
+		expect(snapshot.flags["ext-cline-pass"]).toBe(true);
 	});
 
 	it("still returns cached values when the poll fails", async () => {
@@ -309,7 +309,7 @@ describe("refreshDesktopFeatureFlags", () => {
 
 		const snapshot = await refreshDesktopFeatureFlags({ logger });
 
-		expect(snapshot.flags["ext-bytos-pass"]).toBe(false);
+		expect(snapshot.flags["ext-cline-pass"]).toBe(false);
 		expect(logger.error).toHaveBeenCalled();
 	});
 });

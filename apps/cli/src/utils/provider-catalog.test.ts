@@ -13,14 +13,14 @@ vi.mock("@bytos/core", async (importOriginal) => {
 });
 
 describe("listLocalProviders", () => {
-	it("enables BytosPass when listing the SDK provider list", async () => {
+	it("enables ClinePass when listing the SDK provider list", async () => {
 		const { listLocalProviders } = await import("./provider-catalog");
 		const manager = {} as never;
 
 		await listLocalProviders(manager);
 
 		expect(mocks.listLocalProviders).toHaveBeenCalledWith(manager, {
-			isBytosPassEnabled: true,
+			isClinePassEnabled: true,
 		});
 	});
 });

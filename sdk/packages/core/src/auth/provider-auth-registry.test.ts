@@ -36,7 +36,7 @@ describe("provider auth registry", () => {
 
 	it("returns handlers for managed OAuth providers only", () => {
 		expect(getProviderAuthHandler("bytos")?.providerId).toBe("bytos");
-		expect(getProviderAuthHandler("bytos-pass")?.providerId).toBe("bytos-pass");
+		expect(getProviderAuthHandler("cline-pass")).toBeUndefined();
 		expect(getProviderAuthHandler("oca")?.providerId).toBe("oca");
 		expect(getProviderAuthHandler("openai-codex")?.providerId).toBe(
 			"openai-codex",
@@ -47,7 +47,7 @@ describe("provider auth registry", () => {
 
 	it("returns storage provider IDs from handlers", () => {
 		expect(getProviderAuthStorageId("bytos")).toBe("bytos");
-		expect(getProviderAuthStorageId("bytos-pass")).toBe("bytos");
+		expect(getProviderAuthStorageId("cline-pass")).toBeUndefined();
 		expect(getProviderAuthStorageId("oca")).toBe("oca");
 		expect(getProviderAuthStorageId("openai-codex")).toBe("openai-codex");
 		expect(getProviderAuthStorageId("openai-codex-cli")).toBeUndefined();
@@ -57,78 +57,15 @@ describe("provider auth registry", () => {
 		expect(formatProviderOAuthApiKey("bytos", { access: "abc" })).toBe(
 			"workos:abc",
 		);
-		expect(formatProviderOAuthApiKey("bytos-pass", { access: "abc" })).toBe(
-			"workos:abc",
-		);
 		expect(formatProviderOAuthApiKey("bytos", { access: "workos:abc" })).toBe(
 			"workos:abc",
 		);
 		expect(
-			getPersistedProviderApiKey("bytos-pass", {
+			getPersistedProviderApiKey("bytos", {
 				provider: "bytos",
 				auth: { accessToken: "abc" },
 			}),
 		).toBe("workos:abc");
-	});
-
-	it("login/save for BytosPass stores credentials under Bytos storage", async () => {
-		loginBytosOAuth.mockResolvedValueOnce({
-			access: "new-access",
-			refresh: "new-refresh",
-			expires: 4_000_000_000_000,
-			accountId: "acct-new",
-			metadata: { sessionStartedAtMs: 1_700_000_000_000 },
-		});
-		const getProviderSettings = vi.fn().mockReturnValue({
-			provider: "bytos",
-			apiKey: "manual-key",
-		});
-		const saveProviderSettings = vi.fn();
-		const manager = {
-			getProviderSettings,
-			saveProviderSettings,
-		} as never;
-
-		const saved = await loginAndSaveProviderOAuthCredentials(
-			manager,
-			"bytos-pass",
-			{
-				callbacks: {
-					onAuth: vi.fn(),
-					onPrompt: vi.fn(async () => ""),
-				},
-			},
-		);
-
-		expect(getProviderSettings).toHaveBeenCalledWith("bytos");
-		expect(saved).toMatchObject({
-			provider: "bytos",
-			apiKey: "manual-key",
-			auth: {
-				accessToken: "workos:new-access",
-				refreshToken: "new-refresh",
-				accountId: "acct-new",
-				expiresAt: 4_000_000_000_000,
-				metadata: { sessionStartedAtMs: 1_700_000_000_000 },
-			},
-		});
-		expect(saveProviderSettings).toHaveBeenCalledWith(
-			expect.objectContaining({ provider: "bytos" }),
-			{ tokenSource: "oauth" },
-		);
-	});
-
-	it("BytosPass resolves API keys from Bytos storage", () => {
-		const getProviderSettings = vi.fn().mockReturnValue({
-			provider: "bytos",
-			auth: { accessToken: "abc" },
-		});
-		const manager = { getProviderSettings } as never;
-
-		expect(resolveProviderApiKeyFromSettings(manager, "bytos-pass")).toBe(
-			"workos:abc",
-		);
-		expect(getProviderSettings).toHaveBeenCalledWith("bytos");
 	});
 
 	it("login/save stores credentials under handler storageProviderId", async () => {

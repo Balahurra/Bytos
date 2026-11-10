@@ -52,7 +52,7 @@ export async function getStateToPostToWebview(controller: {
 	const apiConfiguration = stateManager.getApiConfiguration()
 	// This build has no hosted Bytos account provider. Move any configuration
 	// written by an older build to the default BYOK provider. ClinePass
-	// ("bytos-pass" internally) stays available as a compatibility provider.
+	// ("cline-pass" internally) stays available as a compatibility provider.
 	if (apiConfiguration) {
 		let migrated = false
 		for (const key of ["planModeApiProvider", "actModeApiProvider"] as const) {

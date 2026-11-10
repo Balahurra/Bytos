@@ -50,7 +50,9 @@ export const DEFAULT_BYTOS_REQUEST_HEADERS: Record<string, string> = {
 };
 
 function isBytosBillingProvider(providerId: string): boolean {
-	return providerId === "bytos" || providerId === "bytos-pass";
+	// ClinePass uses the shared gateway transport; these headers identify the
+	// client and do not carry Bytos account credentials.
+	return providerId === "bytos" || providerId === "cline-pass";
 }
 
 function trimNonEmpty(value: string | undefined): string | undefined {

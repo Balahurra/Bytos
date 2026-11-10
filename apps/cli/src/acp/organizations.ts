@@ -13,7 +13,7 @@ export const PERSONAL_ACCOUNT_VALUE = "personal";
 export const ORGANIZATION_CONFIG_ID = "organization";
 
 export function usesBytosAccount(providerId: string): boolean {
-	return providerId === "bytos" || providerId === "bytos-pass";
+	return providerId === "bytos";
 }
 
 export interface AcpOrganizationState {
@@ -143,12 +143,4 @@ async function persistActiveOrganization(
 	} catch {
 		// Ignore; see above.
 	}
-}
-
-export function getAcpOrgSubscriptionMessage(): string {
-	return [
-		"Organization accounts cannot use BytosPass subscriptions.",
-		'Switch the "Account" session option to Personal to keep using BytosPass,',
-		'or switch the "Provider" option to Bytos to bill your organization.',
-	].join(" ");
 }

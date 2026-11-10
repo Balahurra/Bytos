@@ -20,7 +20,7 @@ import { getSavedApiKeyMask, sanitizeMaskedApiKeyInput } from "../utils/apiKeyMa
 
 const MAX_PHASES = 10
 const MAX_PHASE_ATTACHMENTS = 20
-const CLINE_PASS_PROVIDER_ID = "bytos-pass"
+const CLINE_PASS_PROVIDER_ID = "cline-pass"
 
 interface AutoPhasePlanSectionProps {
 	renderSectionHeader: (tabId: string) => JSX.Element | null

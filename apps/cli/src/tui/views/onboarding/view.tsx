@@ -6,7 +6,6 @@ import { useOnboardingController } from "./controller";
 import { getOAuthProviderLabel, type OnboardingResult } from "./model";
 import {
 	OnboardingBytosModelScreen,
-	OnboardingBytosPassSubscriptionScreen,
 	OnboardingCustomModelIdScreen,
 	OnboardingDeviceCodeScreen,
 	OnboardingDoneScreen,
@@ -120,24 +119,6 @@ export function OnboardingView(props: OnboardingViewProps) {
 				contentWidth={contentWidth}
 				mouse={mouse}
 				recommendedLoading={state.recommendedLoading}
-			/>
-		);
-	}
-
-	if (state.step === "bytos_pass_subscription") {
-		return (
-			<OnboardingBytosPassSubscriptionScreen
-				compact={compact}
-				contentWidth={contentWidth}
-				currentPlanName={state.bytosPassCurrentPlanName}
-				error={state.bytosPassSubscriptionError}
-				mouse={mouse}
-				openStatus={state.bytosPassSubscriptionOpenStatus}
-				options={state.bytosPassSubscriptionOptions}
-				planFeatures={state.bytosPassPlanFeatures}
-				selected={state.bytosPassSubscriptionSelected}
-				status={state.bytosPassSubscriptionStatus}
-				subscriptionUrl={state.bytosPassSubscriptionUrl}
 			/>
 		);
 	}

@@ -852,12 +852,7 @@ export class CloudSessionController {
 
 	async listModels(): Promise<CloudModel[]> {
 		if (this.disposed) throw new Error("Cloud session manager was disposed");
-		const organizationId = await this.resolveActiveOrganizationId({
-			fresh: true,
-		});
-		const models = await loadCloudModels(this.options.apiBaseUrl, {
-			isOrganizationSession: Boolean(organizationId),
-		});
+		const models = await loadCloudModels(this.options.apiBaseUrl);
 		if (this.disposed) throw new Error("Cloud session manager was disposed");
 		return models;
 	}

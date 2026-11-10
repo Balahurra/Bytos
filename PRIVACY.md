@@ -30,14 +30,13 @@ The optional account flow works as follows:
   token, and basic user identity) is stored in VS Code SecretStorage. If you do
   not, the session stays in memory only.
 - Signed-in account screens can send the account token to the Bytos API at
-  `https://api.bytos.dev` to load account and organization data, credits and
-  usage, remote configuration, and, when the feature is enabled, BytosPass
-  subscription links.
+  `https://api.bytos.dev` to load account and organization data, account-related
+  usage, and remote configuration.
 
 By default, prompts and code go from your machine to the model provider you
-configure. If you select the BytosPass provider, requests go to the Bytos API at
-`https://api.bytos.dev/api/v1` as part of that subscription; that is the only
-Bytos model path in this build.
+configure. The optional ClinePass compatibility provider uses your own Cline API
+key and sends requests to Cline's hosted API (`https://api.cline.bot/api/v1`).
+This build has no hosted subscription, credit purchase, or payment flow.
 
 ## Data stored on your machine
 
@@ -48,7 +47,7 @@ Bytos model path in this build.
 | Bytos account session (Supabase tokens + basic identity) | VS Code SecretStorage key `bytos.supabase.session` when you keep signed in; memory only otherwise | OS user account |
 | Pending Bytos sign-in handoff | VS Code SecretStorage key `bytos.supabase.pending` | OS user account; expires after 10 minutes |
 | Bytos account identity shown in the UI | Extension global state and memory | User profile |
-| Bytos/BytosPass provider auth state (when that optional provider is used) | Managed by the provider settings layer under `~/.bytos/data/settings/` | User profile |
+| ClinePass compatibility provider key (when that optional provider is used) | Managed by the provider settings layer under `~/.bytos/data/settings/` | User profile |
 | Settings (provider/model, approval policy, telemetry choice) | `~/.bytos/data/globalState.json` and workspace state | User profile |
 | Task history, prompts, source snippets, tool results | `~/.bytos/data/tasks/<id>/` | User profile |
 | Rules, workflows, skills | `~/Documents/Bytos/*` and workspace `.bytosrules`, `.bytos/skills` | User profile |
@@ -73,10 +72,9 @@ left in place so credentials are not lost.
 | Supabase Auth | Email, password (hashed by Supabase), session tokens, and profile metadata | Sign-up, sign-in, session refresh, and sign-out |
 | Bytos sign-in exchange worker | One-time authorization code, PKCE verifier, redirect URI, client id, and state | Completing extension sign-in |
 | Bytos API (`api.bytos.dev`) | Account token and account/organization identifiers; profile, credits, usage, remote-config requests | Signed-in account screens and account features |
-| Bytos API (`api.bytos.dev/api/v1`) | Prompts, code, file contents, tool results, and images | Only if you select the BytosPass provider |
-
-By default, Bytos does not proxy model requests. The BytosPass provider is the
-exception described above.
+By default, Bytos does not proxy model requests. The optional ClinePass
+compatibility provider sends requests directly to Cline's hosted API with your
+own Cline API key.
 
 ## Telemetry
 
@@ -105,9 +103,11 @@ attributed to the account.
 
 ## Account data deletion and export
 
-The 1.0.2 build has no in-product account-deletion or data-export control. The
-Bytos owner must publish an account deletion/export process and a privacy contact
-in the website policy and Terms of Service before the account feature is
-presented as a complete service. Until then, a signed-in user can sign out to
-remove the local session, but server-side data remains subject to the website
-policy and the owner's process.
+Account deletion is performed on the Bytos website. The extension Account area
+links to `https://bytos.dev/account`, where a signed-in user can review the data
+associated with the account and permanently delete it. Deletion removes the
+Supabase Auth user, the profile row, active sessions, and refresh tokens.
+Backup copies may persist for up to [BACKUP RETENTION PERIOD] and are not used to restore deleted
+accounts. Legal retention obligations, if any, are listed in the website Privacy
+Policy. Signing out in the extension removes only the local session; it does not
+delete server-side account data.

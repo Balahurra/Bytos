@@ -875,7 +875,7 @@ describe("prepareLocalRuntimeBootstrap", () => {
 
 	it.each([
 		"bytos",
-		"bytos-pass",
+		"cline-pass",
 	])("adds required source request headers for %s", async (providerId) => {
 		const { prepareLocalRuntimeBootstrap } = await import(
 			"./local-runtime-bootstrap"
@@ -884,8 +884,8 @@ describe("prepareLocalRuntimeBootstrap", () => {
 		const input = createStartInput();
 		input.config.providerId = providerId;
 		input.config.modelId =
-			providerId === "bytos-pass"
-				? "bytos-pass/test-model"
+			providerId === "cline-pass"
+				? "cline-pass/test-model"
 				: "anthropic/claude-haiku-4.5";
 		const config = input.config as typeof input.config & {
 			headers: Record<string, string>;

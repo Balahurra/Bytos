@@ -37,8 +37,8 @@ software is separate from these Terms, which govern the hosted account and
 website portions of the Service.
 
 The Bytos account is optional. Chat, BYOK provider configuration, and local
-models work without an account. Account and BytosPass billing surfaces are
-feature-flagged and may not be enabled in every build.
+models work without an account. There is no hosted subscription, credit
+purchase, or payment flow in this build.
 
 ## 3. Eligibility
 
@@ -93,9 +93,10 @@ The optional account flow uses:
 MCP servers, browser targets, GitHub, OpenRouter, ClinePass, and model providers
 are third-party services you choose to use.
 
-- **[OWNER DECISION]** Identify the contracting entity for BytosPass and any
-  paid credits, and publish the price, billing cycle, cancellation, refund, and
-  tax terms.
+- **[OWNER DECISION]** Identify the contracting entity for any future paid
+  services and publish the price, billing cycle, cancellation, refund, and tax
+  terms. Do not introduce a hosted subscription or credit product without new
+  terms.
 - **[LEGAL REVIEW]** Confirm the third-party-service disclaimers and the
   allocation of responsibility for provider outages, model outputs, and MCP
   actions.
@@ -139,7 +140,7 @@ The software is licensed under the Apache License 2.0, which includes its own
 warranty and liability provisions. Those provisions apply to the software.
 
 - **[LEGAL REVIEW]** Draft the disclaimers and limitation of liability for the
-  hosted account, website, BytosPass, and credits.
+  hosted account and website.
 - **[OWNER DECISION]** Confirm whether any liability cap, exclusions, or
   mandatory consumer rights apply.
 
@@ -173,7 +174,7 @@ security advisory flow in `SECURITY.md`.
 | Minimum age and eligibility restrictions | Missing |
 | Account deletion/export process and contact | Missing |
 | Retention periods and lawful bases | Missing |
-| BytosPass price, billing, cancellation, refunds, taxes | Missing |
+| Paid subscription, credits, payments | Not offered in this build |
 | Acceptable-use rules and enforcement process | Missing |
 | User-content licence and organisation ownership | Missing |
 | Liability cap, disclaimers, and consumer-law position | Missing |
@@ -193,8 +194,8 @@ The factual statements above are based on the current repository:
   account and organisation data.
 - `apps/vscode/webview-ui/src/App.tsx` — the optional one-time account intro and
   the non-blocking close behaviour.
-- `apps/vscode/webview-ui/src/components/account/` — account, credits, and
-  feature-flagged BytosPass surfaces.
+- `apps/vscode/webview-ui/src/components/account/` — account, privacy, and
+  account-deletion links.
 - `apps/vscode/PRIVACY.md` — the data map for local storage, providers, and
   account services.
 

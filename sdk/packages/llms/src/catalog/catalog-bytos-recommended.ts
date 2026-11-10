@@ -11,7 +11,6 @@ export interface BytosRecommendedModelEntry {
 
 export interface BytosRecommendedModelsPayload {
 	recommended?: BytosRecommendedModelEntry[];
-	bytosPass?: BytosRecommendedModelEntry[];
 	free?: BytosRecommendedModelEntry[];
 	bytosCloud?: BytosRecommendedModelEntry[];
 }
@@ -26,10 +25,9 @@ type ModelCapabilities = Pick<
 	| "pricing"
 >;
 
-const BYTOS_PASS_PROVIDER_ID = "bytos-pass";
 const BYTOS_PROVIDER_ID = "bytos";
 
-const BYTOS_PASS_MODEL_DEFAULTS = {
+const BYTOS_MODEL_DEFAULTS = {
 	contextWindow: 128_000,
 	maxInputTokens: 128_000,
 	maxTokens: 8_192,
@@ -51,8 +49,6 @@ function findModelBySlug(
 	return modelsByName[modelSlug];
 }
 
-// Bytos-Pass models have only the model name (and not the lab),
-// so we need to look-up using glm-5.2 instead of bytos-pass/glm-5.2
 function buildModelsNameMap(
 	openrouterModels: Record<string, ModelInfo>,
 ): Record<string, ModelInfo> {
@@ -68,102 +64,62 @@ function buildModelsNameMap(
 }
 
 /**
- * Builds the bytos/bytos-pass catalogs from the recommended-models payload,
- * borrowing each entry's capabilities from the models.dev catalog. OpenRouter
- * is the source of truth; Vercel AI Gateway is consulted only for entries
- * OpenRouter doesn't list at all, since Bytos's backend also routes
- * Vercel-only models (e.g. free promotions).
+ * Builds the bytos catalog from the recommended-models payload, borrowing each
+ * entry's capabilities from the models.dev catalog. OpenRouter is the source
+ * of truth; Vercel AI Gateway is consulted only for entries OpenRouter doesn't
+ * list at all, since Bytos's backend also routes Vercel-only models (e.g. free
+ * promotions).
  */
 export function normalizeBytosRecommendedProviderModels(
 	payload: BytosRecommendedModelsPayload,
 	providerModels: Record<string, Record<string, ModelInfo>>,
 	options: { includeBytosCloudModels?: boolean } = {},
 ): Record<string, Record<string, ModelInfo>> {
-	const bytosPass = payload.bytosPass ?? [];
-	const models: Record<string, ModelInfo> = {};
 	const bytosModels: Record<string, ModelInfo> = {};
 	const openRouterModels = providerModels.openrouter ?? {};
 	const openRouterModelsByName = buildModelsNameMap(openRouterModels);
 	const vercelModels = providerModels["vercel-ai-gateway"] ?? {};
 	const vercelModelsByName = buildModelsNameMap(vercelModels);
 
-	bytosPass.forEach((entry) => {
-		const capabilities =
-			findModelBySlug(entry, openRouterModelsByName) ??
-			findModelBySlug(entry, vercelModelsByName) ??
-			BYTOS_PASS_MODEL_DEFAULTS;
-
-		models[entry.id] = {
-			// We should use the OR name, unless there is not one (like when using defaults)
-			name: entry.name,
-			...capabilities,
-			pricing: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-			id: entry.id,
-			description: entry.description,
-		};
-	});
-
 	const addBytosModel = (
 		entry: BytosRecommendedModelEntry,
-		includeInBytosPass: boolean,
+		markFree: boolean,
 	) => {
 		const capabilities =
 			openRouterModels[entry.id] ??
 			findModelBySlug(entry, openRouterModelsByName) ??
 			vercelModels[entry.id] ??
 			findModelBySlug(entry, vercelModelsByName) ??
-			BYTOS_PASS_MODEL_DEFAULTS;
+			BYTOS_MODEL_DEFAULTS;
 		// The recommended-models endpoint only sends slug-like names (e.g.
 		// "deepseek-v4-flash"), so prefer the OpenRouter catalog's display name
 		// for every free entry. Without this, the free overlay overwrites the
-		// nice OpenRouter names in the merged bytos/bytos-pass catalogs and the
-		// pickers end up rendering raw model ids for the Free section.
+		// nice OpenRouter names in the merged bytos catalog and the pickers end
+		// up rendering raw model ids for the Free section.
 		const entryName =
 			capabilities.name?.trim() || entry.name?.trim() || entry.id;
-		// The feed bucket determines free access, regardless of the ID namespace.
-		// Keep this visible even when a client has no featured-tier metadata.
 		const name =
-			!includeInBytosPass || /\(free\)$/i.test(entryName)
-				? entryName
-				: `${entryName} (free)`;
+			markFree && !/\(free\)$/i.test(entryName)
+				? `${entryName} (free)`
+				: entryName;
 
-		const modelInfo = {
+		bytosModels[entry.id] = {
 			...capabilities,
 			name,
+			pricing: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
 			id: entry.id,
 			description: entry.description,
 		};
-
-		bytosModels[entry.id] = {
-			...modelInfo,
-			pricing: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-		};
-
-		if (!includeInBytosPass || models[entry.id]) {
-			return;
-		}
-
-		models[entry.id] = {
-			...modelInfo,
-			pricing: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-		};
 	};
 
-	(payload.free ?? []).forEach((entry) => {
-		addBytosModel(entry, true);
-	});
+	(payload.free ?? []).forEach((entry) => addBytosModel(entry, true));
 	if (options.includeBytosCloudModels) {
-		(payload.bytosCloud ?? []).forEach((entry) => {
-			addBytosModel(entry, false);
-		});
+		(payload.bytosCloud ?? []).forEach((entry) => addBytosModel(entry, false));
 	}
 
 	const result: Record<string, Record<string, ModelInfo>> = {};
 	if (Object.keys(bytosModels).length > 0) {
 		result[BYTOS_PROVIDER_ID] = bytosModels;
-	}
-	if (bytosPass.length > 0) {
-		result[BYTOS_PASS_PROVIDER_ID] = models;
 	}
 	return result;
 }

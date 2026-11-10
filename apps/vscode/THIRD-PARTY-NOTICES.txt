@@ -14,21 +14,21 @@ actually distributed, its notice is still provided here.
 This file is not a legal opinion. See LICENSE-COMPLIANCE-REPORT.md for
 verified obligations and remaining uncertainties.
 
-Generated: 2026-11-10T04:41:48.864Z
-Packages: 2289
+Generated: 2026-11-10T04:50:45.924Z
+Packages: 2257
 
 License summary
 ---------------
-MIT	1680
+MIT	1656
 Apache-2.0	325
-ISC	107
+ISC	106
 BSD-3-Clause	50
 BSD-2-Clause	34
 BlueOak-1.0.0	17
-UNKNOWN	12
 MIT OR Apache-2.0	7
 MPL-2.0	7
 Unlicense	7
+UNKNOWN	5
 Artistic-2.0	5
 OFL-1.1	3
 apache-2.0	3
@@ -310,24 +310,6 @@ Name	Version	License	Repository	Copyright
 @hono/node-server	1.19.17	MIT	https://github.com/honojs/node-server	Copyright (c) 2022 - present, Yusuke Wada and Hono contributors
 @hono/node-ws	1.3.1	MIT	https://github.com/honojs/middleware	
 @hookform/resolvers	3.10.0	MIT	https://github.com/react-hook-form/resolvers	Copyright (c) 2019-present Beier(Bill) Luo
-@hookform/resolvers/ajv	1.0.0	MIT		
-@hookform/resolvers/arktype	2.0.0	MIT		
-@hookform/resolvers/class-validator	1.0.0	MIT		
-@hookform/resolvers/computed-types	1.0.0	MIT		
-@hookform/resolvers/effect-ts	1.0.0	MIT		
-@hookform/resolvers/fluentvalidation-ts	1.0.0	MIT		
-@hookform/resolvers/io-ts	1.0.0	MIT		
-@hookform/resolvers/joi	1.0.0	MIT		
-@hookform/resolvers/nope	1.0.0	MIT		
-@hookform/resolvers/superstruct	1.0.0	MIT		
-@hookform/resolvers/typanion	1.0.0	MIT		
-@hookform/resolvers/typebox	1.0.0	MIT		
-@hookform/resolvers/typeschema	1.0.0	MIT		
-@hookform/resolvers/valibot	1.0.0	MIT		
-@hookform/resolvers/vest	1.0.0	MIT		
-@hookform/resolvers/vine	1.0.0	MIT		
-@hookform/resolvers/yup	1.0.0	MIT		
-@hookform/resolvers/zod	1.0.0	MIT		
 @humanfs/core	0.19.2	Apache-2.0	https://github.com/humanwhocodes/humanfs	"Licensor" shall mean the copyright owner or entity authorized by
 @humanfs/node	0.16.8	Apache-2.0	https://github.com/humanwhocodes/humanfs	"Licensor" shall mean the copyright owner or entity authorized by
 @humanfs/types	0.15.0	Apache-2.0	https://github.com/humanwhocodes/humanfs	
@@ -1027,8 +1009,6 @@ bare-url	2.5.2	Apache-2.0	https://github.com/holepunchto/bare-url	"Licensor" sha
 base64-js	1.5.1	MIT	git://github.com/beatgammit/base64-js	Copyright (c) 2014 Jameson Little
 baseline-browser-mapping	2.11.19	Apache-2.0	https://github.com/web-platform-dx/baseline-browser-mapping	"Licensor" shall mean the copyright owner or entity authorized by
 basic-ftp	5.3.1	MIT	https://github.com/patrickjuchli/basic-ftp	Copyright (c) 2019 Patrick Juchli
-beep-boop	1.2.3	UNKNOWN	git@github.com:substack/beep-boop	
-benchmark	1.0.0	ISC		
 better-opn	3.0.2	MIT	https://github.com/ExiaSR/better-opn	Copyright 2018 Michael Lin <linzichunzf@hotmail.com>
 better-sqlite3	12.11.1	MIT	git://github.com/WiseLibs/better-sqlite3	Copyright (c) 2017 Joshua Wise
 bignumber.js	9.3.1	MIT	https://github.com/MikeMcl/bignumber.js	Copyright © `<2025>` `Michael Mclaughlin`
@@ -1572,7 +1552,6 @@ jsonc-parser	3.3.1	MIT	https://github.com/microsoft/node-jsonc-parser	Copyright 
 jsonfile	6.2.1	MIT	git@github.com:jprichardson/node-jsonfile	Copyright (c) 2012-2015, JP Richardson <jprichardson@gmail.com>
 jsonrepair	3.15.0	ISC	https://github.com/josdejong/jsonrepair	Copyright (c) 2020-2026 by Jos de Jong
 jsonwebtoken	9.0.3	MIT	https://github.com/auth0/node-jsonwebtoken	Copyright (c) 2015 Auth0, Inc. <support@auth0.com> (http://auth0.com)
-jsx-runtime	1.0.0	MIT		
 jszip	3.10.1	(MIT OR GPL-3.0-or-later)	https://github.com/Stuk/jszip	Copyright (c) 2009-2016 Stuart Knightley, David Duponchel, Franz Buchinger, António Afonso
 jwa	2.0.1	MIT	git://github.com/brianloveswords/node-jwa	Copyright (c) 2013 Brian J. Brennan
 jws	4.0.1	MIT	git://github.com/brianloveswords/node-jws	Copyright (c) 2013 Brian J. Brennan
@@ -1775,7 +1754,6 @@ normalize-path	3.0.0	MIT	jonschlinkert/normalize-path	Copyright (c) 2014-2018, J
 npm-run-path	4.0.1	MIT	sindresorhus/npm-run-path	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
 npm-run-path	6.0.0	MIT	sindresorhus/npm-run-path	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 nth-check	2.1.1	BSD-2-Clause	https://github.com/fb55/nth-check	Copyright (c) Felix Böhm
-nw-pre-gyp-module-test	0.0.1	UNKNOWN		
 nwsapi	2.2.24	MIT	git://github.com/dperini/nwsapi	Copyright (c) 2007-2026 Diego Perini (http://www.iport.it/)
 object-assign	4.1.1	MIT	sindresorhus/object-assign	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
 object-inspect	1.13.4	MIT	git://github.com/inspect-js/object-inspect	Copyright (c) 2013 James Halliday
@@ -1870,19 +1848,10 @@ postcss	8.5.26	MIT	postcss/postcss	Copyright 2013 Andrey Sitnik <andrey@sitnik.e
 postcss-selector-parser	7.1.5	MIT	https://github.com/postcss/postcss-selector-parser	Copyright (c) Ben Briggs <beneb.info@gmail.com> (http://beneb.info)
 postcss-value-parser	4.2.0	MIT	https://github.com/TrySound/postcss-value-parser	Copyright (c) Bogdan Chadkin <trysound@yandex.ru>
 posthog-js	1.419.4	(Apache-2.0 AND MIT)	https://github.com/PostHog/posthog-js	Copyright 2020 Posthog / Hiberly, Inc.
-posthog-js-customizations	1.0.0	UNKNOWN	https://github.com/PostHog/posthog-js	
-posthog-js-react	1.0.0	UNKNOWN	https://github.com/PostHog/posthog-js	
-posthog-js-rrweb	1.0.0	UNKNOWN	https://github.com/PostHog/posthog-js	
-posthog-js-rrweb-plugin-console-record	1.0.0	UNKNOWN	https://github.com/PostHog/posthog-js	
-posthog-js-rrweb-types	1.0.0	UNKNOWN	https://github.com/PostHog/posthog-js	
 posthog-node	5.51.2	MIT	https://github.com/PostHog/posthog-js	Copyright 2020 Posthog / Hiberly, Inc.
 powershell-utils	0.1.0	MIT	sindresorhus/powershell-utils	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 powershell-utils	0.2.0	MIT	sindresorhus/powershell-utils	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 preact	10.29.8	MIT	preactjs/preact	Copyright (c) 2015-present Jason Miller
-preact-compat	4.0.0	MIT		
-preact-debug	1.0.0	MIT		
-preact-devtools	1.0.0	MIT		
-preact-hooks	0.1.0	MIT		
 prebuild-install	7.1.3	MIT	https://github.com/prebuild/prebuild-install	Copyright (c) 2015 Mathias Buus
 prelude-ls	1.2.1	MIT	git://github.com/gkz/prelude-ls	Copyright (c) George Zahariev
 pretty-bytes	6.1.1	MIT	sindresorhus/pretty-bytes	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
@@ -2145,7 +2114,6 @@ tar-stream	3.2.1	MIT	https://github.com/mafintosh/tar-stream	Copyright (c) 2014 
 teex	1.0.1	MIT	https://github.com/mafintosh/teex	Copyright (c) 2020 Mathias Buus
 terminal-link	4.0.0	MIT	sindresorhus/terminal-link	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 test-exclude	7.0.2	ISC	https://github.com/istanbuljs/test-exclude	Copyright (c) 2016, Contributors
-test-utils	0.1.0	MIT		
 text-decoder	1.2.7	Apache-2.0	https://github.com/holepunchto/text-decoder	"Licensor" shall mean the copyright owner or entity authorized by
 text-hex	1.0.0	MIT	https://github.com/3rd-Eden/text-hex	Copyright (c) 2014-2015 Arnout Kazemier <opensource@3rd-Eden.com>
 text-table	0.2.0	MIT	git://github.com/substack/text-table	The above copyright notice and this permission notice shall be included in all
@@ -2439,10 +2407,17 @@ included here by reference. The font names are not trademarks of Bytos.
 
 CC-BY-4.0 (icons and data)
 ---------------------------
-@vscode/codicons and caniuse-lite are licensed under Creative Commons
-Attribution 4.0. Attribution: Microsoft Corporation (codicons) and
-caniuse.com contributors (caniuse-lite). License text:
+@vscode/codicons 0.0.36 is licensed under Creative Commons Attribution
+4.0. Copyright (c) Microsoft Corporation. Source:
+https://github.com/microsoft/vscode-codicons. License:
 https://creativecommons.org/licenses/by/4.0/legalcode
+Bytos packages the codicon.ttf font from that package; no Bytos
+modification to the font file is recorded.
+
+caniuse-lite is listed in the inventory for transparency but is not
+present in the packaged extension bundle. If it is ever distributed,
+credit the caniuse.com contributors and the Can I Use data project:
+https://github.com/browserslist/caniuse-lite (CC-BY-4.0).
 
 Unlicense / public domain
 -------------------------
@@ -2467,17 +2442,10 @@ Bytos Voice ships native binaries that are not npm packages:
 
 Unresolved licenses
 -------------------
-@anthropic-ai/claude-agent-sdk-win32-x64@0.3.232: Proprietary Anthropic platform binary. Removed from the free BYOK build and not in the production input graph.
-@anthropic-ai/claude-agent-sdk@0.3.232: Proprietary Anthropic SDK. The Claude Code subscription provider was removed from the free BYOK build; this package is not in the production input graph and must not be distributed without a compatible license.
-nw-pre-gyp-module-test@0.0.1: Test fixture package used by a dependency's build/test tooling. It is not imported by the production extension or plugin runtime and is excluded from the distributed artifact.
-@sap/xsenv@6.2.2: SAP Developer License Agreement. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.
-@vscode/vsce-sign-win32-x64@2.0.6: Microsoft VS Code signing tool platform binary. Development/packaging tool only; not distributed in the extension.
-@vscode/vsce-sign@2.1.0: Microsoft VS Code signing tool license. Development/packaging tool only; not distributed in the extension.
-beep-boop@1.2.3: Test fixture package used by a dependency's test suite. It is not imported by the production extension or plugin runtime and is excluded from the distributed artifact.
-posthog-js-customizations@1.0.0: Private PostHog workspace package used to build posthog-js; not separately distributed. Legal review of PostHog's terms is required if the webview analytics bundle is shipped.
-posthog-js-react@1.0.0: Private PostHog workspace package used to build posthog-js; not separately distributed.
-posthog-js-rrweb@1.0.0: Private PostHog workspace package used to build posthog-js; not separately distributed.
-posthog-js-rrweb-plugin-console-record@1.0.0: Private PostHog workspace package used to build posthog-js; not separately distributed.
-posthog-js-rrweb-types@1.0.0: Private PostHog workspace package used to build posthog-js; not separately distributed.
+@anthropic-ai/claude-agent-sdk-win32-x64@0.3.232: Proprietary Anthropic platform binary for the Claude Agent SDK. Optional dependency of @anthropic-ai/claude-agent-sdk; not present in dist/extension.js, the webview bundle, or the VSIX. It must not be distributed without a compatible Anthropic license.
+@anthropic-ai/claude-agent-sdk@0.3.232: Proprietary Anthropic SDK. Its LICENSE.md states 'Anthropic PBC. All rights reserved' and points to Anthropic's legal agreements. It enters the install graph only through the optional ai-sdk-provider-claude-code integration and is not present in dist/extension.js, the webview bundle, or the VSIX. It must not be distributed without a compatible Anthropic license.
+@sap/xsenv@6.2.2: SAP Developer License Agreement 3.1 (the package ships that licence in its LICENSE file). Transitive build/runtime support for the optional SAP AI Core provider. The SAP AI SDK and Cloud SDK packages themselves declare Apache-2.0; @sap/xsenv is not present in dist/extension.js, the webview bundle, or the VSIX. Do not distribute it without confirming the SAP terms.
+@vscode/vsce-sign-win32-x64@2.0.6: Microsoft Software License Terms for the VSCE-SIGN platform binary. Optional Windows x64 dependency of @vscode/vsce-sign; development/packaging only and not present in the extension bundle or the VSIX.
+@vscode/vsce-sign@2.1.0: Microsoft Software License Terms for Microsoft VSCE-SIGN. Development/packaging tool used by @vscode/vsce; not present in the extension bundle or the VSIX.
 
 End of third-party notices.

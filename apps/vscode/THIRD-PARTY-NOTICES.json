@@ -1,10 +1,10 @@
 {
-	"generatedAt": "2026-11-10T04:41:48.866Z",
-	"total": 2289,
+	"generatedAt": "2026-11-10T04:50:45.926Z",
+	"total": 2257,
 	"summary": [
 		{
 			"license": "MIT",
-			"count": 1680
+			"count": 1656
 		},
 		{
 			"license": "Apache-2.0",
@@ -12,7 +12,7 @@
 		},
 		{
 			"license": "ISC",
-			"count": 107
+			"count": 106
 		},
 		{
 			"license": "BSD-3-Clause",
@@ -27,10 +27,6 @@
 			"count": 17
 		},
 		{
-			"license": "UNKNOWN",
-			"count": 12
-		},
-		{
 			"license": "MIT OR Apache-2.0",
 			"count": 7
 		},
@@ -41,6 +37,10 @@
 		{
 			"license": "Unlicense",
 			"count": 7
+		},
+		{
+			"license": "UNKNOWN",
+			"count": 5
 		},
 		{
 			"license": "Artistic-2.0",
@@ -165,14 +165,6 @@
 			"private": false
 		},
 		{
-			"name": "nw-pre-gyp-module-test",
-			"version": "0.0.1",
-			"license": "UNKNOWN",
-			"repository": "",
-			"copyright": "",
-			"private": false
-		},
-		{
 			"name": "@sap/xsenv",
 			"version": "6.2.2",
 			"license": "UNKNOWN",
@@ -195,83 +187,15 @@
 			"repository": "https://github.com/Microsoft/node-vsce-sign",
 			"copyright": "",
 			"private": false
-		},
-		{
-			"name": "beep-boop",
-			"version": "1.2.3",
-			"license": "UNKNOWN",
-			"repository": "git@github.com:substack/beep-boop",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "posthog-js-customizations",
-			"version": "1.0.0",
-			"license": "UNKNOWN",
-			"repository": "https://github.com/PostHog/posthog-js",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "posthog-js-react",
-			"version": "1.0.0",
-			"license": "UNKNOWN",
-			"repository": "https://github.com/PostHog/posthog-js",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "posthog-js-rrweb",
-			"version": "1.0.0",
-			"license": "UNKNOWN",
-			"repository": "https://github.com/PostHog/posthog-js",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "posthog-js-rrweb-plugin-console-record",
-			"version": "1.0.0",
-			"license": "UNKNOWN",
-			"repository": "https://github.com/PostHog/posthog-js",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "posthog-js-rrweb-types",
-			"version": "1.0.0",
-			"license": "UNKNOWN",
-			"repository": "https://github.com/PostHog/posthog-js",
-			"copyright": "",
-			"private": true
 		}
 	],
 	"exceptions": {
 		"allowedUnknown": {
-			"beep-boop@1.2.3": "Test fixture package used by a dependency's test suite. It is not imported by the production extension or plugin runtime and is excluded from the distributed artifact.",
-			"nw-pre-gyp-module-test@0.0.1": "Test fixture package used by a dependency's build/test tooling. It is not imported by the production extension or plugin runtime and is excluded from the distributed artifact.",
-			"transport@0.0.1": "Test fixture inside pino's test directory, not a distributable package.",
-			"@anthropic-ai/claude-agent-sdk@0.3.232": "Proprietary Anthropic SDK. The Claude Code subscription provider was removed from the free BYOK build; this package is not in the production input graph and must not be distributed without a compatible license.",
-			"@anthropic-ai/claude-agent-sdk-win32-x64@0.3.232": "Proprietary Anthropic platform binary. Removed from the free BYOK build and not in the production input graph.",
-			"@jerome-benoit/sap-ai-provider@5.0.3": "SAP AI Core provider SDK. The SAP AI Core provider was removed from the free BYOK build; this package is not in the production input graph.",
-			"@sap-ai-sdk/ai-api@2.16.0": "SAP AI SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-			"@sap-ai-sdk/core@2.16.0": "SAP AI SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-			"@sap-ai-sdk/foundation-models@2.16.0": "SAP AI SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-			"@sap-ai-sdk/orchestration@2.16.0": "SAP AI SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-			"@sap-ai-sdk/prompt-registry@2.16.0": "SAP AI SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-			"@sap-cloud-sdk/connectivity@4.9.1": "SAP Cloud SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-			"@sap-cloud-sdk/http-client@4.9.1": "SAP Cloud SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-			"@sap-cloud-sdk/openapi@4.9.1": "SAP Cloud SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-			"@sap-cloud-sdk/resilience@4.9.1": "SAP Cloud SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-			"@sap-cloud-sdk/util@4.9.1": "SAP Cloud SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-			"@sap/xsenv@6.2.2": "SAP Developer License Agreement. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-			"@sap/xssec@4.15.0": "SAP Developer License Agreement. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-			"@vscode/vsce-sign@2.1.0": "Microsoft VS Code signing tool license. Development/packaging tool only; not distributed in the extension.",
-			"@vscode/vsce-sign-win32-x64@2.0.6": "Microsoft VS Code signing tool platform binary. Development/packaging tool only; not distributed in the extension.",
-			"posthog-js-customizations@1.0.0": "Private PostHog workspace package used to build posthog-js; not separately distributed. Legal review of PostHog's terms is required if the webview analytics bundle is shipped.",
-			"posthog-js-react@1.0.0": "Private PostHog workspace package used to build posthog-js; not separately distributed.",
-			"posthog-js-rrweb@1.0.0": "Private PostHog workspace package used to build posthog-js; not separately distributed.",
-			"posthog-js-rrweb-plugin-console-record@1.0.0": "Private PostHog workspace package used to build posthog-js; not separately distributed.",
-			"posthog-js-rrweb-types@1.0.0": "Private PostHog workspace package used to build posthog-js; not separately distributed."
+			"@anthropic-ai/claude-agent-sdk@0.3.232": "Proprietary Anthropic SDK. Its LICENSE.md states 'Anthropic PBC. All rights reserved' and points to Anthropic's legal agreements. It enters the install graph only through the optional ai-sdk-provider-claude-code integration and is not present in dist/extension.js, the webview bundle, or the VSIX. It must not be distributed without a compatible Anthropic license.",
+			"@anthropic-ai/claude-agent-sdk-win32-x64@0.3.232": "Proprietary Anthropic platform binary for the Claude Agent SDK. Optional dependency of @anthropic-ai/claude-agent-sdk; not present in dist/extension.js, the webview bundle, or the VSIX. It must not be distributed without a compatible Anthropic license.",
+			"@sap/xsenv@6.2.2": "SAP Developer License Agreement 3.1 (the package ships that licence in its LICENSE file). Transitive build/runtime support for the optional SAP AI Core provider. The SAP AI SDK and Cloud SDK packages themselves declare Apache-2.0; @sap/xsenv is not present in dist/extension.js, the webview bundle, or the VSIX. Do not distribute it without confirming the SAP terms.",
+			"@vscode/vsce-sign@2.1.0": "Microsoft Software License Terms for Microsoft VSCE-SIGN. Development/packaging tool used by @vscode/vsce; not present in the extension bundle or the VSIX.",
+			"@vscode/vsce-sign-win32-x64@2.0.6": "Microsoft Software License Terms for the VSCE-SIGN platform binary. Optional Windows x64 dependency of @vscode/vsce-sign; development/packaging only and not present in the extension bundle or the VSIX."
 		}
 	},
 	"packages": [
@@ -2282,150 +2206,6 @@
 			"repository": "https://github.com/react-hook-form/resolvers",
 			"copyright": "Copyright (c) 2019-present Beier(Bill) Luo",
 			"private": false
-		},
-		{
-			"name": "@hookform/resolvers/ajv",
-			"version": "1.0.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "@hookform/resolvers/arktype",
-			"version": "2.0.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "@hookform/resolvers/class-validator",
-			"version": "1.0.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "@hookform/resolvers/computed-types",
-			"version": "1.0.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "@hookform/resolvers/effect-ts",
-			"version": "1.0.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "@hookform/resolvers/fluentvalidation-ts",
-			"version": "1.0.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "@hookform/resolvers/io-ts",
-			"version": "1.0.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "@hookform/resolvers/joi",
-			"version": "1.0.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "@hookform/resolvers/nope",
-			"version": "1.0.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "@hookform/resolvers/superstruct",
-			"version": "1.0.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "@hookform/resolvers/typanion",
-			"version": "1.0.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "@hookform/resolvers/typebox",
-			"version": "1.0.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "@hookform/resolvers/typeschema",
-			"version": "1.0.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "@hookform/resolvers/valibot",
-			"version": "1.0.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "@hookform/resolvers/vest",
-			"version": "1.0.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "@hookform/resolvers/vine",
-			"version": "1.0.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "@hookform/resolvers/yup",
-			"version": "1.0.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "@hookform/resolvers/zod",
-			"version": "1.0.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
 		},
 		{
 			"name": "@humanfs/core",
@@ -8020,22 +7800,6 @@
 			"private": false
 		},
 		{
-			"name": "beep-boop",
-			"version": "1.2.3",
-			"license": "UNKNOWN",
-			"repository": "git@github.com:substack/beep-boop",
-			"copyright": "",
-			"private": false
-		},
-		{
-			"name": "benchmark",
-			"version": "1.0.0",
-			"license": "ISC",
-			"repository": "",
-			"copyright": "",
-			"private": true
-		},
-		{
 			"name": "better-opn",
 			"version": "3.0.2",
 			"license": "MIT",
@@ -12380,14 +12144,6 @@
 			"private": false
 		},
 		{
-			"name": "jsx-runtime",
-			"version": "1.0.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
-		},
-		{
 			"name": "jszip",
 			"version": "3.10.1",
 			"license": "(MIT OR GPL-3.0-or-later)",
@@ -14004,14 +13760,6 @@
 			"private": false
 		},
 		{
-			"name": "nw-pre-gyp-module-test",
-			"version": "0.0.1",
-			"license": "UNKNOWN",
-			"repository": "",
-			"copyright": "",
-			"private": false
-		},
-		{
 			"name": "nwsapi",
 			"version": "2.2.24",
 			"license": "MIT",
@@ -14764,46 +14512,6 @@
 			"private": false
 		},
 		{
-			"name": "posthog-js-customizations",
-			"version": "1.0.0",
-			"license": "UNKNOWN",
-			"repository": "https://github.com/PostHog/posthog-js",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "posthog-js-react",
-			"version": "1.0.0",
-			"license": "UNKNOWN",
-			"repository": "https://github.com/PostHog/posthog-js",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "posthog-js-rrweb",
-			"version": "1.0.0",
-			"license": "UNKNOWN",
-			"repository": "https://github.com/PostHog/posthog-js",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "posthog-js-rrweb-plugin-console-record",
-			"version": "1.0.0",
-			"license": "UNKNOWN",
-			"repository": "https://github.com/PostHog/posthog-js",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "posthog-js-rrweb-types",
-			"version": "1.0.0",
-			"license": "UNKNOWN",
-			"repository": "https://github.com/PostHog/posthog-js",
-			"copyright": "",
-			"private": true
-		},
-		{
 			"name": "posthog-node",
 			"version": "5.51.2",
 			"license": "MIT",
@@ -14834,38 +14542,6 @@
 			"repository": "preactjs/preact",
 			"copyright": "Copyright (c) 2015-present Jason Miller",
 			"private": false
-		},
-		{
-			"name": "preact-compat",
-			"version": "4.0.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "preact-debug",
-			"version": "1.0.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "preact-devtools",
-			"version": "1.0.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
-		},
-		{
-			"name": "preact-hooks",
-			"version": "0.1.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
 		},
 		{
 			"name": "prebuild-install",
@@ -16962,14 +16638,6 @@
 			"repository": "https://github.com/istanbuljs/test-exclude",
 			"copyright": "Copyright (c) 2016, Contributors",
 			"private": false
-		},
-		{
-			"name": "test-utils",
-			"version": "0.1.0",
-			"license": "MIT",
-			"repository": "",
-			"copyright": "",
-			"private": true
 		},
 		{
 			"name": "text-decoder",

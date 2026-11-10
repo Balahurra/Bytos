@@ -7,6 +7,9 @@ import { useWebAccount } from "@/context/WebAccountContext"
 
 const SIGN_IN_URL = "https://bytos.dev/signin"
 const SIGN_UP_URL = "https://bytos.dev/signup"
+const ACCOUNT_URL = "https://bytos.dev/account"
+const PRIVACY_URL = "https://bytos.dev/privacy"
+const TERMS_URL = "https://bytos.dev/terms"
 
 export const WebAccountPanel = ({ onDone }: { onDone: () => void }) => {
 	const { environment } = useExtensionState()
@@ -116,6 +119,25 @@ export const WebAccountPanel = ({ onDone }: { onDone: () => void }) => {
 								</DoneButton>
 							</div>
 						</div>
+
+						<div className="rounded-md border border-(--vscode-panel-border) p-5 flex flex-col gap-2">
+							<div className="text-sm font-semibold">Privacy and data</div>
+							<p className="text-xs text-(--vscode-descriptionForeground) m-0">
+								Your Bytos account stores your email address and the profile fields you enter. Authentication and
+								profile data are processed by Supabase Auth; account and usage requests go to the Bytos API.
+								Provider API keys stay in this editor's secret storage, and model requests go directly to the
+								provider you select.
+							</p>
+							<p className="text-xs text-(--vscode-descriptionForeground) m-0">
+								A Bytos account is optional. Account deletion is performed on the Bytos website; open the account
+								page to review your data and permanently delete your account and profile.
+							</p>
+							<div className="flex flex-wrap gap-x-3 gap-y-1 text-xs">
+								<VSCodeLink href={PRIVACY_URL}>Privacy Policy</VSCodeLink>
+								<VSCodeLink href={TERMS_URL}>Terms of Service</VSCodeLink>
+								<VSCodeLink href={ACCOUNT_URL}>Manage or delete account</VSCodeLink>
+							</div>
+						</div>
 					</div>
 				) : (
 					<div className="flex flex-col gap-4 max-w-[520px] w-full mx-auto pt-2">
@@ -198,8 +220,10 @@ export const WebAccountPanel = ({ onDone }: { onDone: () => void }) => {
 						</div>
 
 						<p className="text-(--vscode-descriptionForeground) text-xs m-0">
-							By continuing, you agree to the <VSCodeLink href="https://bytos.dev/tos">Terms of Service</VSCodeLink>{" "}
-							and <VSCodeLink href="https://bytos.dev/privacy">Privacy Policy</VSCodeLink>.
+							A Bytos account is optional. You can keep using Bytos with your own provider API keys without signing
+							in. By continuing, you agree to the <VSCodeLink href={TERMS_URL}>Terms of Service</VSCodeLink> and
+							acknowledge the <VSCodeLink href={PRIVACY_URL}>Privacy Policy</VSCodeLink>. Account deletion is
+							performed on the <VSCodeLink href={ACCOUNT_URL}>Bytos account page</VSCodeLink>.
 						</p>
 
 						<div className="border-t border-(--vscode-panel-border) pt-3">

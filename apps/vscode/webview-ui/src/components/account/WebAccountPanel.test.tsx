@@ -176,6 +176,19 @@ describe("WebAccountPanel", () => {
 		await vi.waitFor(() => expect(screen.getByRole("button", { name: "Log out" })).toBeEnabled())
 	})
 
+	it("explains account privacy and links to the website deletion page", () => {
+		mocks.accountState = { ...mocks.accountState, user: { id: "user-1", email: "user@example.com" } }
+		render(<WebAccountPanel onDone={vi.fn()} />)
+
+		expect(screen.getByText("Privacy and data")).toBeInTheDocument()
+		expect(screen.getByRole("link", { name: "Privacy Policy" })).toHaveAttribute("href", "https://bytos.dev/privacy")
+		expect(screen.getByRole("link", { name: "Terms of Service" })).toHaveAttribute("href", "https://bytos.dev/terms")
+		expect(screen.getByRole("link", { name: "Manage or delete account" })).toHaveAttribute(
+			"href",
+			"https://bytos.dev/account",
+		)
+	})
+
 	it("shows a loading state until the stored session is resolved", () => {
 		mocks.accountState = { ...mocks.accountState, ready: false }
 		render(<WebAccountPanel onDone={vi.fn()} />)

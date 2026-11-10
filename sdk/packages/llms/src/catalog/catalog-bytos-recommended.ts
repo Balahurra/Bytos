@@ -112,9 +112,13 @@ export function normalizeBytosRecommendedProviderModels(
 		};
 	};
 
-	(payload.free ?? []).forEach((entry) => addBytosModel(entry, true));
+	(payload.free ?? []).forEach((entry) => {
+		addBytosModel(entry, true);
+	});
 	if (options.includeBytosCloudModels) {
-		(payload.bytosCloud ?? []).forEach((entry) => addBytosModel(entry, false));
+		(payload.bytosCloud ?? []).forEach((entry) => {
+			addBytosModel(entry, false);
+		});
 	}
 
 	const result: Record<string, Record<string, ModelInfo>> = {};

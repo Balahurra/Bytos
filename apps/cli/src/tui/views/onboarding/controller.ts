@@ -179,7 +179,7 @@ export function useOnboardingController(props: OnboardingControllerProps) {
 				searchText: "create custom model id manual entry",
 			} satisfies SearchableItem;
 		},
-		[activeProviderId],
+		[],
 	);
 
 	const modelList = useSearchableList(modelItems, createCustomModelItem);

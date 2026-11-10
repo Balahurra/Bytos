@@ -252,15 +252,13 @@ Remaining accepted risks are listed in `SECURITY.md` and in section D below.
 - **Publisher/name:** `bytos.bytos`
 - **VS Code engine:** `^1.101.0`
 - **File size:** `17,024,854` bytes (16.24 MB)
-- **SHA-256:** `001aeee16ca77606a89ff3bc5ddafe1bd1dba8eee86400d1d681b6d15c8c818a` (pre-final rebuild; final value in the build log below)
+- **SHA-256:** `94af4f021fcd78bab25ceac8fd38393a737b3a87094da675c3735ba07ee2aee8`
 - **Files:** 238
 - **Native/executable members:** 15 (whisper DLL/EXE and the Windows audio helper)
 - **Runtime inventory:** `dist/extension.js` (19.9 MB) + `dist/plugin-runtime` (90 files) + `webview-ui/build` (106 files) + assets/licenses.
 - **Security scan:** release gate PASS (0 high/critical; 2 low residual documented; no secrets; no test/development payloads).
 - **License gate:** PASS (`licenses:check:vsix` against the new VSIX).
 - Local installed VSIX was **not** updated: this repository has no supported local install workflow; publishing was not performed.
-
-> The final rebuild after the last source edits is recorded in the transcript; use the SHA-256 printed by the final `check-vsix.mjs` run as the authoritative artifact hash.
 
 ---
 

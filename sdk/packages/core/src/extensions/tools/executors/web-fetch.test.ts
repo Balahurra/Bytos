@@ -1,10 +1,14 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
 import { createWebFetchExecutor } from "./web-fetch"
 
-function responseWithUrl(body: string, url: string): Response {
+function responseWithUrl(
+	body: string,
+	url: string,
+	contentType = "text/plain",
+): Response {
 	const response = new Response(body, {
 		status: 200,
-		headers: { "content-type": "text/plain" },
+		headers: { "content-type": contentType },
 	})
 	Object.defineProperty(response, "url", { value: url })
 	return response
@@ -51,5 +55,49 @@ describe("createWebFetchExecutor SSRF guards", () => {
 
 		const result = await fetchContent("https://example.com/", "x", context)
 		expect(result).toContain("hello world")
+	})
+
+	it("strips markup, script/style raw text and comments from HTML", async () => {
+		const html = [
+			"<html><head><style>body{color:red}</style></head><body>",
+			"<script>alert('bad()')</script >",
+			"<h1>Title</h1><p>A &amp; B</p><!-- hidden -->",
+			'<SCRIPT type="text/javascript">danger()</script foo="bar">',
+			"<p>Done</p></body></html>",
+		].join("")
+		vi.stubGlobal(
+			"fetch",
+			vi.fn(async () =>
+				responseWithUrl(html, "https://example.com/", "text/html; charset=utf-8"),
+			),
+		)
+		const fetchContent = createWebFetchExecutor()
+
+		const result = await fetchContent("https://example.com/", "x", context)
+		expect(result).toContain("Title")
+		expect(result).toContain("A & B")
+		expect(result).toContain("Done")
+		expect(result).not.toContain("alert")
+		expect(result).not.toContain("danger")
+		expect(result).not.toContain("color:red")
+		expect(result).not.toContain("hidden")
+	})
+
+	it("decodes entities once instead of double-unescaping", async () => {
+		vi.stubGlobal(
+			"fetch",
+			vi.fn(async () =>
+				responseWithUrl(
+					"<p>&amp;lt;script&amp;gt; &amp;amp; &#65; &#x42;</p>",
+					"https://example.com/",
+					"text/html",
+				),
+			),
+		)
+		const fetchContent = createWebFetchExecutor()
+
+		const result = await fetchContent("https://example.com/", "x", context)
+		expect(result).toContain("&lt;script&gt; &amp; A B")
+		expect(result).not.toContain("<script>")
 	})
 })

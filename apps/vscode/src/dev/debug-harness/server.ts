@@ -1565,7 +1565,9 @@ const server = http.createServer(async (req, res) => {
 			const elapsed = Date.now() - startTime
 			log(`✘ (${elapsed}ms)`, e.message)
 			res.writeHead(500, { "Content-Type": "application/json" })
-			res.end(JSON.stringify({ error: e.message, stack: e.stack?.split("\n").slice(0, 5) }))
+			// Stack traces stay in the harness log; the HTTP response only
+			// carries the error message.
+			res.end(JSON.stringify({ error: e.message }))
 		}
 		return
 	}

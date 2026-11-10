@@ -142,11 +142,28 @@ export function chunkText(chunk: unknown): string {
 }
 
 export function openExternalUrl(url: string): void {
+	let parsed: URL;
+	try {
+		parsed = new URL(url);
+	} catch {
+		return;
+	}
+	// Only hand protocols with a browser handler to the OS. This keeps a
+	// caller-supplied value from invoking arbitrary registered handlers.
+	if (!["http:", "https:", "mailto:"].includes(parsed.protocol)) {
+		return;
+	}
+	const href = parsed.toString();
 	const platform = process.platform;
+	// On Windows, explorer.exe opens the URL with its registered handler and
+	// avoids passing caller-controlled text through cmd.exe.
 	const command =
-		platform === "darwin" ? "open" : platform === "win32" ? "cmd" : "xdg-open";
-	const args = platform === "win32" ? ["/c", "start", "", url] : [url];
-	const child = spawn(command, args, {
+		platform === "darwin"
+			? "open"
+			: platform === "win32"
+				? "explorer.exe"
+				: "xdg-open";
+	const child = spawn(command, [href], {
 		stdio: "ignore",
 		detached: true,
 		// Prevent a console window from flashing on Windows; the launched

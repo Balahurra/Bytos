@@ -902,14 +902,18 @@ describe("createShellExecutor", () => {
 		const tempDir = await mkdtemp(join(tmpdir(), "shell-abort-tree-"));
 		const readyPath = join(tempDir, "ready");
 		const descendantPath = join(tempDir, "descendant-survived");
+		// Paths travel through the environment so the generated scripts stay
+		// constant instead of interpolating local filesystem paths into code.
+		process.env.BYTOS_TEST_READY_PATH = readyPath;
+		process.env.BYTOS_TEST_DESCENDANT_PATH = descendantPath;
 		const ac = new AbortController();
 		const shell = createShellExecutor();
-		const descendantScript = `setTimeout(() => require("node:fs").writeFileSync(${JSON.stringify(descendantPath)}, "survived"), 1_000)`;
+		const descendantScript = `setTimeout(() => require("node:fs").writeFileSync(process.env.BYTOS_TEST_DESCENDANT_PATH, "survived"), 1_000)`;
 		const parentScript = [
 			'const { spawn } = require("node:child_process")',
 			'const { writeFileSync } = require("node:fs")',
 			`spawn(process.execPath, ["-e", ${JSON.stringify(descendantScript)}], { stdio: "ignore" })`,
-			`writeFileSync(${JSON.stringify(readyPath)}, "ready")`,
+			'writeFileSync(process.env.BYTOS_TEST_READY_PATH, "ready")',
 			"setInterval(() => {}, 1_000)",
 		].join(";");
 
@@ -926,6 +930,8 @@ describe("createShellExecutor", () => {
 			expect(await fileExists(descendantPath)).toBe(false);
 		} finally {
 			await rm(tempDir, { recursive: true, force: true });
+			delete process.env.BYTOS_TEST_READY_PATH;
+			delete process.env.BYTOS_TEST_DESCENDANT_PATH;
 		}
 	});
 

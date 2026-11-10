@@ -55,19 +55,15 @@ export const getOcaConfig = (): OcaConfig => {
 
 // Generates a cryptographically random string (for state/nonce)
 export function generateRandomString(length = 32, chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789") {
-	const randomBytes = crypto.randomBytes(length)
-	return Array.from(randomBytes)
-		.map((b) => chars[b % chars.length])
-		.join("")
+	// randomInt performs rejection sampling internally, so every character is
+	// uniformly distributed even when chars.length is not a power of two.
+	return Array.from({ length }, () => chars[crypto.randomInt(chars.length)]).join("")
 }
 
 // PKCE code verifier (high entropy)
 export function generateCodeVerifier(length = 128): string {
 	const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"
-	const randomBytes = crypto.randomBytes(length)
-	return Array.from(randomBytes)
-		.map((b) => chars[b % chars.length])
-		.join("")
+	return Array.from({ length }, () => chars[crypto.randomInt(chars.length)]).join("")
 }
 
 // PKCE code challenge (SHA-256, base64-url)

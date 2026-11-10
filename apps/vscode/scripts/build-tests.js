@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const { execSync } = require("child_process")
+const { execFileSync } = require("child_process")
 const fs = require("fs")
 const path = require("path")
 const esbuild = require("esbuild")
@@ -70,8 +70,7 @@ fs.rmSync(path.join(__dirname, "..", "out", "packages"), { recursive: true, forc
 // runner does not provide. Generate a tsconfig that excludes them so the
 // integration compile only ever sees mocha-owned tests.
 const projectRoot = path.join(__dirname, "..")
-const nonMochaTestImport =
-	/from\s+["'](?:bun:test|vitest(?:\/[^"']*)?|@vitest\/[^"']*)["']/
+const nonMochaTestImport = /from\s+["'](?:bun:test|vitest(?:\/[^"']*)?|@vitest\/[^"']*)["']/
 function collectNonMochaTestFiles(dir, acc) {
 	for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
 		if (entry.name === "node_modules") continue
@@ -94,7 +93,12 @@ baseTestConfig.exclude = [...(baseTestConfig.exclude ?? []), ...nonMochaOwnedTes
 const generatedConfigPath = path.join(projectRoot, "tsconfig.test.generated.json")
 fs.writeFileSync(generatedConfigPath, JSON.stringify(baseTestConfig, null, "\t"))
 
-execSync(`tsc -p ${JSON.stringify(generatedConfigPath)} --outDir out`, { encoding: "utf-8" })
+// Run tsc directly instead of through a shell so the generated config path is
+// passed as an argv entry and can never be reinterpreted as shell syntax.
+const tscBin = path.join(path.dirname(require.resolve("typescript/package.json")), "bin", "tsc")
+execFileSync(process.execPath, [tscBin, "-p", generatedConfigPath, "--outDir", "out"], {
+	encoding: "utf-8",
+})
 
 main().catch((e) => {
 	console.error(e)

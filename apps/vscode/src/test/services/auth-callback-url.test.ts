@@ -24,7 +24,7 @@ beforeAll(async () => {
  */
 describe("Auth Callback URL", () => {
 	describe("AuthHandler.getCallbackUrl (standalone/CLI)", () => {
-		let authHandler: AuthHandler
+		let authHandler: ReturnType<typeof AuthHandler.getInstance>
 
 		afterEach(() => {
 			authHandler?.stop()

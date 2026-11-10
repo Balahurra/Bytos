@@ -45,9 +45,11 @@ export function slugifyDiagramName(
 		.replace(/[\u0300-\u036f]/g, "")
 		.toLowerCase()
 		.replace(/[^a-z0-9]+/g, "-")
-		.replace(/^-+|-+$/g, "");
+		// The previous pass already collapses runs, so only one leading or
+		// trailing hyphen can remain; fixed-length alternatives stay linear.
+		.replace(/^-|-$/g, "");
 	if (slug.length <= maxLength) return slug;
-	return slug.slice(0, maxLength).replace(/-+$/g, "");
+	return slug.slice(0, maxLength).replace(/-$/, "");
 }
 
 /**

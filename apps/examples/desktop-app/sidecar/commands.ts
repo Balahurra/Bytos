@@ -1668,11 +1668,21 @@ async function listUserInstructionConfigs(
 
 function openFileInEditor(filePath: string): void {
 	const platform = process.platform;
-	const cmd =
-		platform === "darwin" ? "open" : platform === "win32" ? "cmd" : "xdg-open";
-	const cmdArgs =
-		platform === "win32" ? ["/c", "start", "", filePath] : [filePath];
-	const child = spawn(cmd, cmdArgs, { stdio: "ignore", detached: true });
+	if (platform === "win32") {
+		// explorer.exe opens the file with its registered association without
+		// involving cmd.exe, so the path is never parsed as a shell command.
+		const child = spawn("explorer.exe", [filePath], {
+			stdio: "ignore",
+			detached: true,
+			windowsHide: true,
+		});
+		// An unhandled child error event would crash the sidecar process.
+		child.once("error", () => {});
+		child.unref();
+		return;
+	}
+	const cmd = platform === "darwin" ? "open" : "xdg-open";
+	const child = spawn(cmd, [filePath], { stdio: "ignore", detached: true });
 	// An unhandled child error event would crash the sidecar process.
 	child.once("error", () => {});
 	child.unref();
@@ -1785,14 +1795,31 @@ function launchEditorCli(executable: string, filePath: string): boolean {
 	// spawn() cannot launch directly — route those through cmd.exe.
 	const isWindowsShim =
 		process.platform === "win32" && /\.(cmd|bat)$/i.test(executable);
-	if (isWindowsShim && WINDOWS_CMD_UNSAFE_PATTERN.test(executable)) {
+	if (
+		isWindowsShim &&
+		(WINDOWS_CMD_UNSAFE_PATTERN.test(executable) ||
+			WINDOWS_CMD_UNSAFE_PATTERN.test(filePath))
+	) {
 		return false;
 	}
 	const child = isWindowsShim
-		? spawn("cmd", ["/c", executable, filePath], {
-				stdio: "ignore",
-				detached: true,
-			})
+		? spawn(
+				"cmd.exe",
+				["/d", "/s", "/c", `""%BYTOS_EDITOR%" "%BYTOS_FILE%""`],
+				{
+					stdio: "ignore",
+					detached: true,
+					// Pass the already-validated values through the environment so
+					// cmd.exe's command line is a constant and never contains a
+					// caller-supplied path.
+					windowsVerbatimArguments: true,
+					env: {
+						...process.env,
+						BYTOS_EDITOR: executable,
+						BYTOS_FILE: filePath,
+					},
+				},
+			)
 		: spawn(executable, [filePath], {
 				stdio: "ignore",
 				detached: true,

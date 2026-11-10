@@ -1,92 +1,106 @@
 name: 🐛 Bug Report
-description: File a bug report
+description: Report a reproducible bug in the Bytos VS Code extension
 labels: ['bug']
 body:
   - type: markdown
     attributes:
       value: |
-        **Important:** All bug reports must be reproducible using Claude Sonnet 4.5. Bytos uses complex prompts so less capable models may not work as expected.
+        Thanks for taking the time to report a bug.
+
+        Before opening this issue, please search existing issues and check the
+        troubleshooting docs. **Do not report security vulnerabilities here**;
+        use the private advisory link in `SECURITY.md`.
+
+        Include enough detail for someone else to reproduce the problem. Remove
+        API keys, tokens, and private code from logs before pasting them.
   - type: dropdown
-    id: bytos-surface
+    id: component
     attributes:
-      label: Bytos Surface
-      description: Which Bytos surface are you reporting a bug for?
+      label: Area
+      description: Which part of the VS Code extension is affected?
       options:
-        - VSCode Extension
-        - JetBrains Plugin
-        - CLI
-        - Desktop App
-        - Cloud Platform
+        - Agent / chat
+        - Auto Phase Plan
+        - Voice / microphone
+        - Provider or model
+        - MCP / tools
+        - Installation or update
+        - Other
       default: 0
     validations:
       required: true
   - type: input
     id: bytos-version
     attributes:
-      label: Bytos Version
-      description: What version of Bytos are you using? (You can find this at the bottom of the Settings view)
-      placeholder: 'e.g., 1.2.3'
+      label: Bytos version
+      description: Find this at the bottom of the Bytos Settings view.
+      placeholder: 'e.g., 1.0.2'
     validations:
       required: true
-  - type: checkboxes
-    id: beta
+  - type: input
+    id: vscode-version
     attributes:
-      label: Beta version
+      label: VS Code version
+      description: Open Help → About (or Code → About on macOS) and copy the version.
+      placeholder: 'e.g., 1.101.0'
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
       options:
-        - label: I am using a beta version of Bytos
+        - Windows 11
+        - Windows 10
+        - macOS
+        - Linux
+        - Other
+      default: 0
+    validations:
+      required: true
+  - type: input
+    id: provider-model
+    attributes:
+      label: Provider and model
+      description: Which provider and model were selected when the issue occurred?
+      placeholder: 'e.g., OpenRouter / anthropic/claude-sonnet; Ollama / qwen2.5-coder'
+    validations:
+      required: false
   - type: textarea
     id: what-happened
     attributes:
       label: What happened?
-      description: Also tell us, what did you expect to happen?
-      placeholder: Tell us what you see!
+      description: Describe the actual behavior and what you expected instead.
+      placeholder: Tell us what you saw.
     validations:
       required: true
   - type: textarea
     id: steps
     attributes:
       label: Steps to reproduce
-      description: How do you trigger this bug? Please walk us through it step by step.
+      description: A minimal, ordered reproduction is the most useful part of a bug report.
       value: |
         1.
         2.
         3.
     validations:
-      required: false
-  - type: input
-    id: provider-model
-    attributes:
-      label: Provider/Model
-      description: What provider and model were you using when the issue occurred?
-      placeholder: 'e.g., bytos:anthropic/claude-sonnet-4.5, gemini:gemini-2.5-pro-exp-03-25'
-    validations:
-      required: false
+      required: true
   - type: textarea
-    id: ide-diagnostics
+    id: diagnostics
     attributes:
-      label: Diagnostics
-      description: |
-        Paste the diagnostics for your Bytos surface. This captures the build, runtime, and host details we need.
-        - VSCode Extension: open `Help → About` (Windows/Linux) or `Code → About Visual Studio Code` (macOS), then copy the info.
-        - JetBrains Plugin: open `Help → About` (Windows/Linux) or `<IDE name> → About` (macOS), then click `Copy` to grab build, runtime, OS, memory, and cores.
-        - CLI: there is no About dialog. Run `bytos --version` and paste the output.
-        - Desktop App: paste the app version from the Settings view.
-        - Cloud Platform: paste your browser name and version, plus the page URL where the issue occurred.
-      placeholder: Paste the copied About info, `bytos --version` output, or browser/app details here.
+      label: Logs and diagnostics
+      description: Paste relevant output or screenshots. Redact API keys, tokens, and private code.
+      placeholder: VS Code Output panel, terminal output, or a screenshot description.
     validations:
       required: false
-  - type: textarea
-    id: system-info
+  - type: checkboxes
+    id: checks
     attributes:
-      label: System Information
-      description: What operating system and hardware are you using?
-      placeholder: |
-        Operating System: Windows 11, macOS Sonoma, Ubuntu 22.04, etc.
-        Hardware: CPU, GPU, RAM specifications if relevant
-        e.g.,
-        OS: Windows 11
-        CPU: Intel Core i7-11700K
-        GPU: NVIDIA GeForce RTX 3070
-        RAM: 32GB DDR4
-    validations:
-      required: false
+      label: Checklist
+      options:
+        - label: I searched existing issues for the same problem.
+          required: true
+        - label: I removed API keys, tokens, and private code from the report.
+          required: true
+        - label: This is not a security vulnerability (those go through the private advisory link).
+          required: true

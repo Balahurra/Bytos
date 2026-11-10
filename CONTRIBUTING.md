@@ -16,7 +16,7 @@ Bug reports help make Bytos better for everyone! Before creating a new issue, pl
 All contributions must begin with a GitHub Issue, unless the change is for small bug fixes, typo corrections, minor wording improvements, or simple type fixes that don't change functionality.
 **For features and contributions**:
 - First check the [open issues](https://github.com/Balahurra/Bytos/issues) for similar ideas
-- If your idea is new, create a new feature request  
+- If your idea is new, open a [Feature Request issue](https://github.com/Balahurra/Bytos/issues/new?template=feature_request.yml)
 - Wait for approval from core maintainers before starting implementation
 - Once approved, feel free to begin working on a PR with the help of our community!
 
@@ -40,7 +40,7 @@ We also welcome contributions to our [documentation](https://github.com/Balahurr
     ```
 2. Open the project in VSCode:
     ```bash
-    code bytos
+    code Bytos
     ```
 3. Install [bun](https://bun.com)
 4. Install the necessary dependencies for the extension and webview-gui:
@@ -49,6 +49,11 @@ We also welcome contributions to our [documentation](https://github.com/Balahurr
     cd sdk && bun run build && cd ..
     ```
 5. Generate Protocol Buffer files (required before first build):
+    ```bash
+    cd apps/vscode
+    bun run protos
+    cd ../..
+    ```
 6. Launch by pressing `F5` (or `Run`->`Start Debugging`) to open a new VSCode window with the extension loaded. (You may need to install the [esbuild problem matchers extension](https://marketplace.visualstudio.com/items?itemName=connor4312.esbuild-problem-matchers) if you run into issues building the project.)
 
 

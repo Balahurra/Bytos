@@ -128,6 +128,12 @@ export interface RecognitionEngine {
 export interface EngineInitOptions {
 	/** Directory that contains the whisper binary and its DLLs. */
 	engineRoot: string
+	/**
+	 * Optional per-user storage root. The locator also searches
+	 * `<storageRoot>/voice/whisper`, which keeps an engine installed outside the
+	 * extension working. Defaults to `engineRoot` for backward compatibility.
+	 */
+	storageRoot?: string
 	/** Directory that holds verified models. */
 	modelDir: string
 	/** Injectable for tests. */

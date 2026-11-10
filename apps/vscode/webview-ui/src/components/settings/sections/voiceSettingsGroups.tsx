@@ -32,16 +32,30 @@ const describeEngineState = (state: string | undefined): string => {
 
 /** One sentence explaining the microphone situation, from host data only. */
 const microphoneHelp = (enabled: boolean, status: VoiceServiceStatus | undefined): string => {
-	if (!enabled) {
-		return "Turn on Voice to read the available microphones."
-	}
 	if (!status) {
 		return "Reading the microphone list from the host…"
+	}
+	const activeCount = (status.devices ?? []).filter((device) => device.state === "active").length
+	if (!enabled) {
+		return activeCount > 0
+			? `Found ${activeCount} microphone${activeCount === 1 ? "" : "s"}. Turn on Voice to choose one.`
+			: "Turn on Voice to read the available microphones."
 	}
 	if (status.microphoneAvailable) {
 		return "Bytos records from this device only while the microphone button is active."
 	}
-	return "No microphone was found. Connect one, then press Refresh."
+	switch (status.microphoneErrorCode) {
+		case "CAPTURE_HELPER_MISSING":
+			return "The bundled microphone helper is missing from this installation. Reinstall Bytos, then press Refresh."
+		case "MICROPHONE_ACCESS_DENIED":
+			return "Microphone access is blocked by Windows privacy settings. Allow microphone access, then press Refresh."
+		case "CAPTURE_HELPER_FAILED":
+			return "The microphone helper could not start. Press Refresh; if it keeps failing, reinstall Bytos."
+		case "CAPTURE_ENUMERATION_FAILED":
+			return "Windows did not return a device list. Check your audio driver, then press Refresh."
+		default:
+			return "No microphone was found. Connect one, then press Refresh."
+	}
 }
 
 export const GeneralVoiceGroup = ({
@@ -87,8 +101,8 @@ export const GeneralVoiceGroup = ({
 					<StatusLine label="Status" value={runtimeLabel} />
 					<StatusLine
 						label="Microphone"
-						muted={!enabled}
-						value={!enabled ? "Not checked" : microphoneAvailable ? "Available" : "Unavailable"}
+						muted={!microphoneAvailable}
+						value={microphoneAvailable ? "Available" : enabled ? "Unavailable" : "Not checked"}
 					/>
 					<StatusLine label="Engine" muted={!enabled} value={enabled ? describeEngineState(engineState) : "—"} />
 					{canCapture && osLabel && <StatusLine label="Platform" muted value={osLabel} />}

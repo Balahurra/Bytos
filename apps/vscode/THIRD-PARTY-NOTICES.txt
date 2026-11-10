@@ -14,7 +14,7 @@ actually distributed, its notice is still provided here.
 This file is not a legal opinion. See LICENSE-COMPLIANCE-REPORT.md for
 verified obligations and remaining uncertainties.
 
-Generated: 2026-11-09T02:13:41.236Z
+Generated: 2026-11-10T02:06:01.267Z
 Packages: 2331
 
 License summary
@@ -2493,6 +2493,20 @@ This is free and unencumbered software released into the public domain.
 Anyone is free to copy, modify, publish, use, compile, sell, or distribute
 this software, either in source code form or as a compiled binary, for any
 purpose, commercial or non-commercial, and by any means.
+
+Native binaries
+---------------
+Bytos Voice ships native binaries that are not npm packages:
+
+- bv-os-audio-helper.exe (0.1.0) - Bytos-authored WASAPI capture helper.
+  Licensed under the Apache License 2.0, same as Bytos. Contains no
+  third-party code.
+- whisper.cpp (release b5454) - MIT License,
+  Copyright (c) 2023-2026 The ggml authors.
+  Project: https://github.com/ggml-org/whisper.cpp
+  Files: whisper-cli.exe, whisper.dll, ggml.dll, ggml-base.dll, llama.dll,
+  ggml-cpu-*.dll. The MIT license text above applies. The full license text
+  is also bundled at assets/voice/whisper/LICENSE.whisper.cpp.txt.
 
 Unresolved licenses
 -------------------

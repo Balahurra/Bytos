@@ -61,7 +61,11 @@ export async function runtimeFor(controller: Controller): Promise<VoiceRuntime> 
 	if (!current || typeof runtime.refreshCapability !== "function") {
 		return runtime
 	}
-	if (current.backend === "none" && current.reason !== "VOICE_DISABLED") {
+	// Only the settings-driven half is recomputed here. If the host itself is
+	// unavailable (unsupported platform, remote/web host, missing helper) or a
+	// real enumeration found no active microphone, keep that verdict: flipping
+	// `voiceEnabled` must never turn a missing device into a working one.
+	if (current.reason !== "" && current.reason !== "VOICE_DISABLED") {
 		return runtime
 	}
 	const enabled = settings.voiceEnabled === true
@@ -109,34 +113,77 @@ export function toVoiceErrorCode(error: unknown): string {
 }
 
 /**
+ * Reasons that describe the host itself rather than the user's settings. When
+ * one of these is set, spawning the helper cannot succeed no matter what is
+ * plugged in, so the Settings panel must stay honest instead of retrying.
+ */
+const HOST_UNAVAILABLE_REASONS = new Set([
+	"WEB_UI_UNSUPPORTED",
+	"REMOTE_HOST_UNSUPPORTED",
+	"PLATFORM_NOT_SUPPORTED_IN_F1",
+	"CAPTURE_HELPER_MISSING",
+	"RECORDER_ISOLATION_UNVERIFIED",
+])
+
+/** True when the host cannot enumerate a microphone for a structural reason. */
+function isHostVoiceUnavailable(reason: string | undefined): boolean {
+	return !!reason && HOST_UNAVAILABLE_REASONS.has(reason)
+}
+
+/**
  * Enumerates real capture devices and reports whether a usable microphone is
  * actually present.
  *
  * This is the only metadata call in the Settings surface that can spawn the F1
  * helper, and it happens only when the user asks for it (opening Voice settings
  * or pressing Refresh). The result is metadata — ids, names, states — never audio.
+ *
+ * F4.1 fix: enumeration is no longer gated on `voiceEnabled` or on a stale
+ * `NO_CAPTURE_DEVICE` verdict. Pressing Refresh must find a microphone that was
+ * plugged in after install, and the device list must be readable before Voice is
+ * switched on. Only structural host reasons skip the spawn.
  */
-export async function readMicrophoneState(runtime: VoiceRuntime): Promise<{
+export async function readMicrophoneState(
+	runtime: VoiceRuntime,
+	options: { voiceEnabled?: boolean } = {},
+): Promise<{
 	available: boolean
 	devices: Array<{ id: string; name: string; state: string; isDefault: boolean }>
 	errorCode: string
 }> {
 	const capability = runtime.capability
-	if (!capability.canCapture) {
-		return { available: false, devices: [], errorCode: capability.reason || "VOICE_DISABLED" }
+	if (isHostVoiceUnavailable(capability.reason)) {
+		return { available: false, devices: [], errorCode: capability.reason }
 	}
 	try {
 		const { devices } = await runtime.coordinator.listDevices()
 		const usable = devices.filter((device) => device.state === "active")
+		const available = usable.length > 0
+		const enabled = options.voiceEnabled ?? capability.canCapture
+		// Fold the fresh observation back into the capability object so
+		// `startCapture` and the composer see the same reality the panel shows.
+		if (typeof runtime.refreshCapability === "function") {
+			runtime.refreshCapability({
+				...capability,
+				canCapture: available && enabled,
+				reason: available ? (enabled ? "" : "VOICE_DISABLED") : "NO_CAPTURE_DEVICE",
+				detail: available
+					? enabled
+						? ""
+						: "Voice is disabled in settings."
+					: "No active microphone was found on this machine.",
+				deviceCount: usable.length,
+			})
+		}
 		return {
-			available: usable.length > 0,
+			available,
 			devices: devices.map((device) => ({
 				id: device.id,
 				name: device.name,
 				state: device.state,
 				isDefault: device.isDefault,
 			})),
-			errorCode: usable.length > 0 ? "" : "NO_CAPTURE_DEVICE",
+			errorCode: available ? "" : "NO_CAPTURE_DEVICE",
 		}
 	} catch (error) {
 		return { available: false, devices: [], errorCode: toVoiceErrorCode(error) }

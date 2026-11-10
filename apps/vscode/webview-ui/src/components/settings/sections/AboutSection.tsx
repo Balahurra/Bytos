@@ -34,30 +34,22 @@ const AboutSection = ({ version, extensionVariant, renderSectionHeader }: AboutS
 
 					<h3 className="text-md font-semibold">Community & Support</h3>
 					<p>
-						<VSCodeLink href="https://github.com/bytos/bytos">X</VSCodeLink>
+						<VSCodeLink href="https://discord.gg/2hSFZY9Bs">Discord</VSCodeLink>
 						{" • "}
-						<VSCodeLink href="https://github.com/bytos/bytos/discussions">Discord</VSCodeLink>
+						<VSCodeLink href="https://github.com/Balahurra/Bytos">GitHub</VSCodeLink>
 						{" • "}
-						<VSCodeLink href="https://github.com/bytos/bytos/discussions"> Discussions</VSCodeLink>
-					</p>
-
-					<h3 className="text-md font-semibold">Development</h3>
-					<p>
-						<VSCodeLink href="https://github.com/bytos/bytos">GitHub</VSCodeLink>
-						{" • "}
-						<VSCodeLink href="https://github.com/bytos/bytos/issues"> Issues</VSCodeLink>
-						{" • "}
-						<VSCodeLink href="https://github.com/bytos/bytos/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop">
-							{" "}
-							Feature Requests
-						</VSCodeLink>
+						<VSCodeLink href="https://github.com/Balahurra/Bytos/issues">Report an Issue</VSCodeLink>
 					</p>
 
 					<h3 className="text-md font-semibold">Resources</h3>
 					<p>
-						<VSCodeLink href="https://github.com/bytos/bytos">Documentation</VSCodeLink>
+						<VSCodeLink href="https://bytos.dev/">Website</VSCodeLink>
 						{" • "}
-						<VSCodeLink href="https://bytos.dev/">https://bytos.dev</VSCodeLink>
+						<VSCodeLink href="https://marketplace.visualstudio.com/items?itemName=Bytos.bytos">
+							VS Code Marketplace
+						</VSCodeLink>
+						{" • "}
+						<VSCodeLink href="https://github.com/Balahurra/Bytos/tree/main/docs">Documentation</VSCodeLink>
 					</p>
 				</div>
 			</Section>

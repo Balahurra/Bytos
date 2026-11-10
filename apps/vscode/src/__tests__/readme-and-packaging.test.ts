@@ -53,8 +53,11 @@ describe("packaged README", () => {
 		expect(text).toContain("security/advisories/new")
 	})
 
-	it("does not link to a Marketplace listing that may not exist yet", () => {
-		expect(text).not.toContain("marketplace.visualstudio.com/items?itemName=bytos.bytos")
+	it("links to the published Marketplace listing and the official community channels", () => {
+		expect(text).toContain("marketplace.visualstudio.com/items?itemName=Bytos.bytos")
+		expect(text).toContain("https://bytos.dev/")
+		expect(text).toContain("https://github.com/Balahurra/Bytos")
+		expect(text).toContain("https://discord.gg/2hSFZY9Bs")
 	})
 
 	it("does not claim a provider integration or compliance status that is not implemented", () => {

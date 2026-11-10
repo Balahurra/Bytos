@@ -14,6 +14,18 @@ subscription, credit balance, or Bytos backend in this build: you connect the
 model provider you already pay for.
 
 <p align="center">
+  <code>autonomous coding agent</code> · <code>automatic coding agent</code> ·
+  <code>auto phase coding agent</code> · <code>VS Code AI coding assistant</code>
+</p>
+
+<p align="center">
+  <a href="https://bytos.dev/">Website</a> |
+  <a href="https://github.com/Balahurra/Bytos">GitHub</a> |
+  <a href="https://marketplace.visualstudio.com/items?itemName=Bytos.bytos">VS Code Marketplace</a> |
+  <a href="https://discord.gg/2hSFZY9Bs">Discord</a>
+</p>
+
+<p align="center">
   <img src="https://raw.githubusercontent.com/Balahurra/Bytos/main/assets/docs/demo.gif" alt="Bytos chat-first agent inside Visual Studio Code" width="820" />
 </p>
 
@@ -61,28 +73,45 @@ calls Cline's hosted API directly (`https://api.cline.bot/api/v1`) so you can ke
 that key and billing relationship. Cline's pricing and terms apply; this is a
 compatibility provider, not a Bytos subscription.
 
-## Auto Phase
+## Auto Phase Plan mode
 
-Auto Phase is sequential multi-phase orchestration. You define a plan of up to ten
-phases, and Bytos runs them one after another; each phase is its own Act-mode
-task:
+**Auto Phase Plan** is Bytos's sequential, automatic **10-phase orchestration**
+mode - an autonomous coding agent pipeline, not a parallel multi-agent fan-out.
+Open the mode selector in the chat input and choose **Auto**. You define the plan
+once in **Settings > Auto Phase Plan**, and Bytos walks it for you:
 
-- each phase has its own prompt, provider, model, attachments, and MCP server
-  allowlist;
-- the plan is saved in extension state, and phase API keys are stored in VS Code
-  SecretStorage;
-- each phase can receive the previous phase's short completion report as context;
-- when a phase fails or reports `BLOCKED` / `FAILED`, you can stop the run,
-  continue with the next phase automatically, or be asked each time;
-- every run writes a detailed Markdown report to
-  `.bytos/auto-phase-reports/<run-id>/report.md`, and the chat shows a short
-  summary with a link to that report;
-- an optional AI-generated final summary is available and off by default;
-- starting Auto Phase shows a confirmation warning, and you can stop the run at
-  any time;
-- phases are sequential, not parallel.
+- **Up to ten ordered phases** advance automatically from phase 1 to the last
+  phase you configured. Phases run in order, one at a time, and stop at your final
+  phase.
+- **Every phase is its own Act-mode task**, with its own prompt and tool loop.
+  Phase 2 does not inherit phase 1's live context. Enable **Pass each phase's short
+  report to the next phase** when you want the previous completion report carried
+  forward as context.
+- **Per-phase MCP, provider, model, and API key.** Each phase can use a different
+  provider, model, key, attachments, and MCP server allowlist. Phase API keys are
+  stored in VS Code SecretStorage.
+- **Phase settings are isolated.** A phase's provider, model, key, prompt, and MCP
+  selection belong to that phase; finishing a phase never copies its settings into
+  the next one unless you explicitly copy them. Each phase starts from its own
+  configuration.
+- **Your failure policy.** On a failure or a `BLOCKED` / `FAILED` report, choose
+  **Stop the plan**, **Continue with the next phase automatically**, or **Ask me
+  when a phase fails** (the default). Auth, API-key, credit, and quota failures are
+  never auto-continued silently.
+- **A report for every phase, plus an overall summary.** Each run writes
+  `.bytos/auto-phase-reports/<run-id>/report.md` with each phase's prompt,
+  provider/model, status, duration, error, and completion report. At the end Bytos
+  composes an overall summary of all phases - what happened in which phase, where
+  it stopped, and what is left - and stores the phase summaries together in that
+  Markdown file. The chat shows a short summary with a link to the full report.
+- **Optional AI final summary**, off by default. When enabled, the last phase's
+  provider/model writes the closing summary; when off, it is generated
+  deterministically from the phase reports.
+- **Explicit start and stop.** Starting a plan shows a confirmation warning, and
+  the run can be stopped at any time; stopping still writes the partial report and
+  marks the remaining phases as skipped.
 
-Auto Phase is opt-in. Normal chat does not use it.
+Auto Phase is opt-in and separate from normal chat. Phases never run in parallel.
 
 ## Permissions and data handling
 
@@ -110,6 +139,8 @@ Available in this release:
 - file editing with diffs, terminal execution, browser automation, and MCP tools;
 - hooks, skills, worktrees, checkpoints, and task history;
 - sequential Auto Phase plans with per-phase settings;
+- local voice dictation with a bundled whisper.cpp engine, microphone discovery,
+  per-device selection, and on-demand speech models; audio is held in memory only;
 - opt-in telemetry, disabled by default.
 
 Not part of this extension package:
@@ -124,6 +155,10 @@ this listing.
 
 ## Support
 
+- **Website:** https://bytos.dev/
+- **GitHub:** https://github.com/Balahurra/Bytos
+- **VS Code Marketplace:** https://marketplace.visualstudio.com/items?itemName=Bytos.bytos
+- **Discord:** https://discord.gg/2hSFZY9Bs
 - **Bugs and feature requests:** https://github.com/Balahurra/Bytos/issues
 - **Security reports:** https://github.com/Balahurra/Bytos/security/advisories/new (see SECURITY.md)
 

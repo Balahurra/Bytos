@@ -16,6 +16,9 @@
 </p>
 
 <p align="center">
+  <a href="https://bytos.dev/">Website</a> |
+  <a href="https://marketplace.visualstudio.com/items?itemName=Bytos.bytos">VS Code Marketplace</a> |
+  <a href="https://discord.gg/2hSFZY9Bs">Discord</a> |
   <a href="docs/">Documentation</a> |
   <a href="CONTRIBUTING.md">Contributing</a> |
   <a href="SECURITY.md">Security</a> |
@@ -24,14 +27,28 @@
 
 ---
 
+<!-- GitHub does not render relative <video> tags in READMEs: the demo is a
+     clickable poster that opens the MP4 stored in this repository. -->
 <p align="center">
-  <img src="assets/docs/demo.gif" alt="Bytos running inside Visual Studio Code" width="820" />
+  <a href="https://raw.githubusercontent.com/Balahurra/Bytos/main/video/Bytos-video-1.mp4" title="Watch the full Bytos demo">
+    <img src="assets/docs/demo.gif" alt="Bytos demo — click to watch the full video" width="820" />
+  </a>
 </p>
 
-Bytos is a chat-first AI coding agent for Visual Studio Code. It plans before it
-edits, asks before it acts, and keeps you in control at every step. It reads your
-repository, writes and refactors code, runs commands, browses the web, and calls
-MCP tools with your approval.
+<p align="center">
+  ▶ <a href="https://raw.githubusercontent.com/Balahurra/Bytos/main/video/Bytos-video-1.mp4"><strong>Watch the full Bytos demo (MP4)</strong></a>
+</p>
+
+<p align="center">
+  <code>autonomous coding agent</code> · <code>automatic coding agent</code> ·
+  <code>auto phase coding agent</code> · <code>autonomous AI agent</code> ·
+  <code>VS Code AI coding assistant</code>
+</p>
+
+Bytos is a chat-first, autonomous AI coding agent for Visual Studio Code. It plans
+before it edits, asks before it acts, and keeps you in control at every step. It
+reads your repository, writes and refactors code, runs commands, browses the web,
+and calls MCP tools with your approval.
 
 This release is a free, **bring-your-own-key (BYOK)** build. There is no Bytos
 account, subscription, or hosted backend: you connect the model provider you
@@ -53,6 +70,8 @@ plaintext settings file, and are never sent to the webview.
 - **Sequential Auto Phase plans.** Define up to ten phases, each with its own
   provider, model, prompt, attachments, and MCP allowlist. Phases run one after
   another - not in parallel.
+- **Local voice dictation.** Record in the composer, pick the microphone in
+  Settings → Voice, and transcribe locally; audio is held in memory only.
 - **Extensible.** MCP servers, hooks, skills, worktrees, checkpoints, and a typed
   SDK.
 
@@ -63,7 +82,7 @@ is packaged for the Marketplace.
 
 | Component | Path | Distribution |
 | --- | --- | --- |
-| **VS Code extension** | `apps/vscode` | **The product.** Build the VSIX with `node scripts/package-release.mjs` (Marketplace listing pending) |
+| **VS Code extension** | `apps/vscode` | **The product.** Install from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=Bytos.bytos) or build the VSIX with `node scripts/package-release.mjs` |
 | Agent core | `sdk/packages` | Internal engine used by the extension; not published to npm yet |
 | CLI, hub, desktop, examples | `apps/cli`, `apps/bytos-hub`, `apps/examples` | Workspace sources kept for development; **not included in the VSIX and not distributed in this release** |
 
@@ -72,14 +91,14 @@ integration.
 
 ## Install
 
-The Marketplace listing is pending. Until it is published, install the verified
-VSIX from a release artifact or build it from source:
+Install **Bytos** from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=Bytos.bytos),
+or build and install the verified VSIX from source:
 
 ```bash
 bun install
 cd apps/vscode
 node scripts/package-release.mjs
-code --install-extension ../../bytos-1.0.1.vsix
+code --install-extension ../../bytos-1.0.2.vsix
 ```
 
 Then open the Bytos view in the activity bar.
@@ -100,25 +119,64 @@ and asks before it edits files, runs commands, opens a browser, or calls an MCP
 tool. You can review diffs, stop a task, compare checkpoints, and restore the
 workspace to an earlier step.
 
-## Auto Phase
+## Auto Phase Plan mode
 
-Auto Phase is sequential multi-phase orchestration, not a parallel multi-agent
-system. Open the mode selector in the chat input and choose **Auto Phase**:
+**Auto Phase Plan** is Bytos's sequential, automatic **10-phase orchestration**
+mode. It is not a parallel multi-agent fan-out: it is one deterministic pipeline
+where every phase starts only after the previous one has finished. Open the mode
+selector in the chat input and choose **Auto**.
 
-- up to ten phases run in order; each phase is its own Act-mode task;
-- every phase has its own prompt, provider, model, attachments, and MCP server
-  allowlist;
-- the plan is stored in extension state and phase API keys are stored in VS Code
-  SecretStorage;
-- each phase can receive the previous phase's short completion report as context;
-- when a phase fails or reports `BLOCKED` / `FAILED`, the run can stop, continue
-  with the next phase automatically, or ask you each time;
-- every run writes a detailed Markdown report to
-  `.bytos/auto-phase-reports/<run-id>/report.md`, and the chat shows a short
-  summary with a link to that report;
-- an optional AI-generated final summary is available and off by default;
-- starting a run shows a confirmation warning, and the run can be stopped at any
-  time.
+You define the plan once in **Settings → Auto Phase Plan**, then start it from the
+composer. The run walks the plan for you:
+
+1. **Up to ten ordered phases, advanced automatically.** Phase 1 starts first and
+   Bytos moves to the next phase on its own until it reaches the last phase you
+   configured. You do not have to use all ten: the run stops at your final phase.
+   Phases always execute in order, one at a time.
+2. **Every phase is its own Act-mode task.** Each phase gets a fresh task, its own
+   prompt, and its own tool loop. Phase 2 does not inherit phase 1's live context.
+   If you want continuity, enable **Pass each phase's short report to the next
+   phase**; the next phase then receives the previous phase's completion report as
+   context.
+3. **Per-phase MCP, provider, model, and API key.** Each phase can use a different
+   provider, model, API key, attachments, and MCP server allowlist. Route a cheap,
+   fast model to scaffolding and the strongest model to the final review without
+   editing global settings between phases.
+4. **Phase settings are isolated.** A phase's provider, model, key, prompt,
+   attachments, and MCP selection belong to that phase. When a phase finishes, its
+   settings do **not** leak or jump into the next phase unless you explicitly copy
+   them; the next phase starts from its own configuration. This is what makes a
+   ten-phase plan predictable.
+5. **Your failure policy.** If a phase fails, or reports `BLOCKED` / `FAILED`, you
+   choose **Stop the plan**, **Continue with the next phase automatically**, or
+   **Ask me when a phase fails**. The default is to ask. Auth, API-key, credit, and
+   quota failures are never auto-continued silently.
+6. **A report for every phase, and one overall summary at the end.** Every run
+   writes a detailed Markdown report to
+   `.bytos/auto-phase-reports/<run-id>/report.md` containing each phase's prompt,
+   provider/model, status, duration, error, and completion report. After the last
+   phase, Bytos composes an overall summary of the whole run — what happened in
+   which phase, where it stopped, and what is left — and stores all phase summaries
+   together in that Markdown file. The chat shows a short summary with a link to
+   the full report, so you can audit the run without reading the transcript.
+7. **Optional AI final summary.** Off by default. When enabled, the last phase's
+   provider and model write the closing summary (one extra model call). When off,
+   the summary is generated deterministically from the phase reports.
+8. **Explicit start and a stop button.** Starting a plan shows a confirmation
+   warning, and you can stop the run at any time; stopping still writes the partial
+   report and marks the remaining phases as skipped.
+
+<p align="center">
+  <img src="autopp/ss1.png" alt="Auto Phase Plan settings: ordered phases, failure handling, and report options" width="260" />
+  <img src="autopp/ss2.png" alt="Auto Phase failure policy: stop the plan, continue automatically, or ask on error" width="260" />
+  <img src="autopp/ss3.png" alt="One Auto Phase with its own prompt, provider, API key, model, and advanced settings" width="260" />
+</p>
+<p align="center">
+  <sub>Auto Phase Plan: ordered phases · failure policy · a phase with its own provider, API key, and model.</sub>
+</p>
+
+Auto Phase is opt-in and separate from normal chat. Each phase is its own task, and
+phases never run in parallel.
 
 ## Feature status
 
@@ -129,11 +187,13 @@ Available in this release:
 - file editing with diffs, terminal execution, browser automation, and MCP tools;
 - hooks, skills, worktrees, checkpoints, and task history;
 - sequential Auto Phase plans with per-phase settings;
+- local voice dictation: bundled whisper.cpp engine, microphone discovery,
+  per-device selection, and a Turkish/English/German composer UI; speech models
+  download on demand, and audio stays in memory and never leaves your machine;
 - opt-in telemetry, disabled by default.
 
 Not shipped in this release:
 
-- Marketplace publication (preparation is complete; the listing is pending);
 - CLI, hub, desktop, and example applications;
 - any Bytos account, subscription, or hosted backend;
 - SDK publication to npm.
@@ -205,9 +265,11 @@ using them in a fork or distribution.
 
 ## Links
 
-- Source: <https://github.com/Balahurra/Bytos>
+- **Website:** <https://bytos.dev/>
+- **GitHub:** <https://github.com/Balahurra/Bytos>
+- **VS Code Marketplace:** <https://marketplace.visualstudio.com/items?itemName=Bytos.bytos>
+- **Discord:** <https://discord.gg/2hSFZY9Bs>
 - Documentation: [docs/](docs/)
 - Issues: <https://github.com/Balahurra/Bytos/issues>
 - Security: <https://github.com/Balahurra/Bytos/security/advisories/new> (see [SECURITY.md](SECURITY.md))
 - Privacy: [apps/vscode/PRIVACY.md](apps/vscode/PRIVACY.md)
-- Marketplace metadata preparation: [docs/release-audit/06-MARKETPLACE-METADATA.md](docs/release-audit/06-MARKETPLACE-METADATA.md)

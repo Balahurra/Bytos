@@ -47,7 +47,7 @@ const GeneralSettingsSection = ({ renderSectionHeader }: GeneralSettingsSectionP
 						See our{" "}
 						<VSCodeLink
 							className="text-inherit"
-							href="https://github.com/bytos/bytos"
+							href="https://github.com/Balahurra/Bytos"
 							style={{ fontSize: "inherit", textDecoration: "underline" }}>
 							telemetry overview
 						</VSCodeLink>{" "}

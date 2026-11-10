@@ -45,22 +45,26 @@ const deviceList = [
 ]
 
 function fakeRuntime(options: { canCapture?: boolean; reason?: string; devices?: typeof deviceList } = {}) {
-	return {
-		capability: {
-			canCapture: options.canCapture ?? true,
-			backend: "wasapi",
-			reason: options.reason ?? "",
-			detail: "",
-			osLabel: "Windows x64 (local)",
-			platform: "win32",
-			arch: "x64",
-			remoteName: undefined,
-			helperPath: "helper.exe",
-			deviceCount: 1,
-			permission: "granted",
-		},
+	const capability = {
+		canCapture: options.canCapture ?? true,
+		backend: "wasapi",
+		reason: options.reason ?? "",
+		detail: "",
+		osLabel: "Windows x64 (local)",
+		platform: "win32",
+		arch: "x64",
+		remoteName: undefined,
+		helperPath: "helper.exe",
+		deviceCount: 1,
+		permission: "granted",
+	}
+	const runtime = {
+		capability,
 		captureState: "idle",
 		currentSessionId: "voice-1",
+		refreshCapability: (next: typeof capability) => {
+			runtime.capability = next
+		},
 		snapshot: () => ({
 			state: "idle",
 			sessionId: "voice-1",
@@ -71,10 +75,13 @@ function fakeRuntime(options: { canCapture?: boolean; reason?: string; devices?:
 			lastErrorCode: undefined,
 			lastErrorMessage: undefined,
 		}),
+		devices: options.devices,
+		listDevices: vi.fn(async () => ({ provider: "wasapi", devices: runtime.devices ?? deviceList })),
 		coordinator: {
-			listDevices: async () => ({ provider: "wasapi", devices: options.devices ?? deviceList }),
+			listDevices: () => runtime.listDevices(),
 		},
 	}
+	return runtime
 }
 
 function fakeController(settings: Record<string, unknown> = {}) {
@@ -125,6 +132,46 @@ describe("getVoiceServiceStatus", () => {
 		expect(status.devices.map((device) => device.name)).toEqual(["Microphone Array", "USB Headset"])
 		expect(status.devices[0].isDefault).toBe(true)
 		expect(status.microphoneAvailable).toBe(true)
+	})
+
+	it("enumerates microphones even when Voice is still switched off", async () => {
+		// F4.1: the device list must be readable before the toggle is turned on,
+		// otherwise a fresh install looks as if the machine has no microphone.
+		const runtime = fakeRuntime({ canCapture: false, reason: "VOICE_DISABLED" })
+		runtimeHolder.runtime = runtime
+		const controller = fakeController({ voiceEnabled: false })
+		const status = await getVoiceServiceStatus(controller, EmptyRequest.create())
+		expect(runtime.listDevices).toHaveBeenCalledTimes(1)
+		expect(status.microphoneAvailable).toBe(true)
+		expect(status.devices.map((device) => device.name)).toEqual(["Microphone Array", "USB Headset"])
+		// Capture stays gated on the toggle, but the devices are known.
+		expect(status.capability?.canCapture).toBe(false)
+		expect(status.capability?.unavailableReason).toBe("VOICE_DISABLED")
+	})
+
+	it("does not spawn the helper when the host itself is unsupported", async () => {
+		const runtime = fakeRuntime({ canCapture: false, reason: "CAPTURE_HELPER_MISSING" })
+		runtimeHolder.runtime = runtime
+		const controller = fakeController({ voiceEnabled: true })
+		const status = await getVoiceServiceStatus(controller, EmptyRequest.create())
+		expect(runtime.listDevices).not.toHaveBeenCalled()
+		expect(status.devices).toEqual([])
+		expect(status.microphoneErrorCode).toBe("CAPTURE_HELPER_MISSING")
+	})
+
+	it("picks up a microphone plugged in after the first read (Refresh)", async () => {
+		const runtime = fakeRuntime({ devices: [] })
+		runtimeHolder.runtime = runtime
+		const controller = fakeController({ voiceEnabled: true })
+		const first = await getVoiceServiceStatus(controller, EmptyRequest.create())
+		expect(first.microphoneAvailable).toBe(false)
+		expect(first.microphoneErrorCode).toBe("NO_CAPTURE_DEVICE")
+		// A microphone appears; Refresh must observe it and unlock capture.
+		runtime.devices = deviceList
+		const second = await getVoiceServiceStatus(controller, EmptyRequest.create())
+		expect(second.microphoneAvailable).toBe(true)
+		expect(second.capability?.canCapture).toBe(true)
+		expect(second.capability?.unavailableReason).toBe("")
 	})
 
 	it("reports no microphone with a stable code when enumeration finds none", async () => {

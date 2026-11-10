@@ -237,12 +237,18 @@ async function createRecognitionEngine(modelDirOverride?: string): Promise<Recog
 	try {
 		const { WhisperCliEngine } = await import("./transcription/WhisperCliEngine")
 		const engine = new WhisperCliEngine()
-		// The engine root is the extension tree, so the locator can search the
-		// bundled `assets/voice/whisper` and the development tree's
-		// `test-assets/voice-f2/whisper`. Passing an empty string here would make
-		// the locator fall back to host defaults only and report a missing binary
-		// in a development build that actually has one (F4 end-to-end path).
-		await engine.init({ engineRoot: resolveVoiceEngineRoot(), modelDir })
+		// The extension root is where the bundled engine lives
+		// (`<extensionRoot>/assets/voice/whisper`) and where the development tree
+		// keeps `test-assets/voice-f2/whisper`. The storage root keeps a per-user
+		// `<storage>/voice/whisper` installation usable as well. Passing the
+		// extension root as the engine root is what makes a packaged build find
+		// its own engine instead of searching only global storage.
+		const extensionRoot = runtimeContext?.extensionRoot || activeExtensionRoot()
+		await engine.init({
+			engineRoot: extensionRoot,
+			storageRoot: storageRootFromModelDir(modelDir),
+			modelDir,
+		})
 		return engine
 	} catch {
 		// Missing or tampered engine: capture still works, transcription reports a
@@ -251,33 +257,11 @@ async function createRecognitionEngine(modelDirOverride?: string): Promise<Recog
 	}
 }
 
-/**
- * Absolute root the whisper locator searches for the recogniser.
- *
- * `resolveVoiceModelDir()` already resolves the extension root (dev tree first,
- * then storage); its `<root>/voice/models` tail is replaced by the extension root
- * so `assets/voice/whisper` and `test-assets/voice-f2/whisper` are both reachable.
- * Returns `""` when no host storage is available, which makes the locator use its
- * own defaults.
- */
-function resolveVoiceEngineRoot(): string {
-	const modelDir = resolveVoiceModelDir()
-	if (!modelDir) return ""
-	// Development tree: `<extensionRoot>/test-assets/voice-f2/models`, whose engine
-	// sibling is `<extensionRoot>/test-assets/voice-f2/whisper`.
-	const devMarker = `${path.sep}test-assets${path.sep}voice-f2${path.sep}models`
-	const devIndex = modelDir.indexOf(devMarker)
-	if (devIndex > 0) {
-		return modelDir.slice(0, devIndex)
-	}
-	// Installed layout: `<storage>/voice/models` — the locator derives
-	// `<storage>/voice/whisper` from the storage root itself.
+/** `<storage>/voice/models` -> `<storage>`; undefined for any other layout. */
+function storageRootFromModelDir(modelDir: string): string | undefined {
 	const marker = `${path.sep}voice${path.sep}models`
 	const index = modelDir.indexOf(marker)
-	if (index > 0) {
-		return modelDir.slice(0, index)
-	}
-	return path.dirname(path.dirname(modelDir))
+	return index > 0 ? modelDir.slice(0, index) : undefined
 }
 
 /**

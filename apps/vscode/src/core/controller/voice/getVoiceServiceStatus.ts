@@ -28,19 +28,25 @@ export function setVoiceEngineResolverForTesting(resolver: EngineResolver | unde
  *  - `language` / `modelId` — the persisted preferences, validated on read.
  *
  * Nothing here starts a transcription. The only process that can be started is
- * the F1 enumeration helper, and only when capture is actually possible.
+ * the F1 enumeration helper, and only when the host is structurally capable
+ * (supported platform + helper on disk). It runs even while Voice is switched
+ * off, so the panel can list devices before the user enables the feature.
  */
 export async function getVoiceServiceStatus(controller: Controller, _request: EmptyRequest): Promise<VoiceServiceStatus> {
-	const capability = await getVoiceStatus(controller, EmptyRequest.create())
+	const voiceEnabled = controller.stateManager.getGlobalSettingsKey("voiceEnabled") === true
 
+	// Enumerate first, then read the capability: `readMicrophoneState` folds the
+	// fresh device observation back into the runtime, so the status returned here
+	// and the capability `startCapture` enforces can never disagree. Reading the
+	// capability first would report a stale `NO_CAPTURE_DEVICE` after a hot-plug.
 	let microphone: { available: boolean; errorCode: string; devices: CaptureDeviceInfo[] } = {
 		available: false,
-		errorCode: capability.unavailableReason || "VOICE_DISABLED",
+		errorCode: voiceEnabled ? "NO_CAPTURE_DEVICE" : "VOICE_DISABLED",
 		devices: [],
 	}
 	try {
 		const runtime = await runtimeFor(controller)
-		const state = await readMicrophoneState(runtime)
+		const state = await readMicrophoneState(runtime, { voiceEnabled })
 		microphone = {
 			available: state.available,
 			errorCode: state.errorCode,
@@ -49,6 +55,8 @@ export async function getVoiceServiceStatus(controller: Controller, _request: Em
 	} catch (error) {
 		microphone = { available: false, errorCode: toVoiceErrorCode(error), devices: [] }
 	}
+
+	const capability = await getVoiceStatus(controller, EmptyRequest.create())
 
 	const { resolveVoiceEngine } = await import("./VoiceModelService")
 	const engine = await (engineResolver ?? resolveVoiceEngine)({ extensionRoot: extensionRoot() })

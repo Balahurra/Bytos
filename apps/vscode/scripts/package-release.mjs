@@ -138,6 +138,18 @@ const required = [
 	"dist/plugin-runtime/plugin-sandbox-bootstrap.js",
 	"webview-ui/build/index.html",
 	"assets/icons/icon.png",
+	// Voice: without this helper the installed extension reports
+	// CAPTURE_HELPER_MISSING and Settings → Voice never finds a microphone.
+	"assets/voice/bin/win32-x64/bv-os-audio-helper.exe",
+	// Voice: the bundled whisper.cpp engine (MIT) and its licence. The runtime
+	// verifies every file's SHA-256 before it is allowed to run.
+	"assets/voice/whisper/b5454/whisper-cli.exe",
+	"assets/voice/whisper/b5454/whisper.dll",
+	"assets/voice/whisper/b5454/ggml.dll",
+	"assets/voice/whisper/b5454/ggml-base.dll",
+	"assets/voice/whisper/b5454/llama.dll",
+	"assets/voice/whisper/b5454/ggml-cpu-x64.dll",
+	"assets/voice/whisper/LICENSE.whisper.cpp.txt",
 ]
 const missing = required.filter((file) => !files.includes(file))
 

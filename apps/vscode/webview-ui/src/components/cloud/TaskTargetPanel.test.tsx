@@ -47,7 +47,13 @@ vi.mock("@/services/grpc-client", () => ({
 	},
 }))
 
-const bytosRepo = { id: 7, name: "bytos", fullName: "bytos/bytos", url: "https://github.com/bytos/bytos", defaultBranch: "main" }
+const bytosRepo = {
+	id: 7,
+	name: "bytos",
+	fullName: "bytos/bytos",
+	url: "https://github.com/Balahurra/Bytos",
+	defaultBranch: "main",
+}
 
 describe("TaskTargetPanel", () => {
 	afterEach(() => vi.unstubAllGlobals())

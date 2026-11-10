@@ -68,15 +68,15 @@ evals/
 buf.yaml
 .bytosrules/
 
-# Voice F1: the native capture helper and its build inputs are development/test
-# artifacts only. Whether the helper ships is an F5 packaging decision; F1 must
-# not change what a packaged extension contains.
+# Voice F1: the native C++ source and its build inputs stay development-only.
+# The compiled Windows capture helper DOES ship: without it Settings → Voice
+# cannot enumerate (or record from) a microphone on an installed machine.
 native/**
-assets/voice/**
+assets/voice/README.md
 
-# Voice F2: the pinned whisper engine, the downloaded models and the speech
-# corpus used by the recognition tests are local test assets. They must never be
-# packaged; F5 owns the packaging decision for the engine.
+# Voice F2: the pinned whisper engine ships from `assets/voice/whisper` (included
+# by default). The downloaded models, the speech corpus and the duplicate engine
+# under `test-assets/` are development/test assets only and must not be packaged.
 test-assets/**
 
 # Build metadata that is not read at runtime. The walkthrough, README, NOTICE,

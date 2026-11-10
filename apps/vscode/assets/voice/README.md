@@ -70,6 +70,19 @@ executable, and prints its size and SHA-256.
 Re-running the build script prints the new hash; keep this table in sync when the
 artifact changes.
 
+## Bundled recognition engine
+
+| Field | Value |
+| --- | --- |
+| Engine | whisper.cpp release `b5454` (Windows x64) |
+| Files | `whisper-cli.exe`, `whisper.dll`, `ggml.dll`, `ggml-base.dll`, `llama.dll`, `ggml-cpu-*.dll` |
+| Location | `assets/voice/whisper/b5454/` |
+| License | MIT — `assets/voice/whisper/LICENSE.whisper.cpp.txt` |
+| Integrity | Every file is pinned by size + SHA-256 in `src/core/voice/transcription/models/modelCatalog.ts` |
+
+Speech models are **not** bundled: they are downloaded per user into
+`<global storage>/voice/models` through Settings → Voice.
+
 ## Scope
 
 Windows x64 only. macOS (CoreAudio/TCC) and Linux (PipeWire/PulseAudio) capture are
@@ -78,5 +91,22 @@ and capability detection reports `PLATFORM_NOT_SUPPORTED_IN_F1` on those hosts.
 
 ## Packaging
 
-The helper is a development/F1 artifact. Whether it ships in a packaged extension is
-an **F5** decision; F1 does not change what a packaged build contains.
+The compiled helper **ships inside the VSIX** at
+`assets/voice/bin/win32-x64/bv-os-audio-helper.exe`. Without it, an installed
+build reports `CAPTURE_HELPER_MISSING` and Settings → Voice can never enumerate a
+microphone. `.vscodeignore` keeps the C++ source and build inputs out but includes
+this binary; `scripts/package-release.mjs` and `scripts/check-licenses.mjs` both
+fail the release if it is missing from the archive.
+
+The pinned whisper.cpp engine also ships, at
+`assets/voice/whisper/b5454/` (`whisper-cli.exe` plus its DLL closure). The
+runtime verifies every file against the SHA-256 pins in `modelCatalog.ts` before
+it runs; models themselves are downloaded per user through Settings → Voice. The
+engine is MIT-licensed (see `assets/voice/whisper/LICENSE.whisper.cpp.txt` and
+`THIRD-PARTY-NOTICES.txt`).
+
+The helper is Bytos-authored, not a third-party dependency. Rebuild it with
+`scripts/build-voice-helper.ps1` and keep the SHA-256 table above in sync. The
+engine is fetched into `test-assets/voice-f2/whisper` by
+`scripts/voice-f2-fetch-assets.ps1` and copied to `assets/voice/whisper` for the
+release build.

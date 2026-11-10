@@ -1,35 +1,25 @@
 import { EmptyRequest } from "@shared/proto/bytos/common"
 import { CaptureDeviceInfo, ListCaptureDevicesResponse } from "@shared/proto/bytos/voice"
 import type { Controller } from ".."
-import { runtimeFor, toVoiceErrorText } from "./shared"
+import { readMicrophoneState, runtimeFor, toVoiceErrorText } from "./shared"
 
 /**
  * `listCaptureDevices` — device metadata only (names, stable ids, states).
  *
  * Audio-free by construction: the response carries no samples and no path. This
  * is the one call that spawns the helper for enumeration, and only when a
- * consumer explicitly asks.
+ * consumer explicitly asks. Like Settings → Refresh, it enumerates even while
+ * Voice is switched off, so the user can see what the host can actually record
+ * from before turning the feature on.
  */
 export async function listCaptureDevices(controller: Controller, _request: EmptyRequest): Promise<ListCaptureDevicesResponse> {
 	try {
 		const runtime = await runtimeFor(controller)
-		if (!runtime.capability.canCapture) {
-			return ListCaptureDevicesResponse.create({
-				devices: [],
-				errorCode: runtime.capability.reason || "VOICE_DISABLED",
-			})
-		}
-		const { devices } = await runtime.coordinator.listDevices()
+		const voiceEnabled = controller.stateManager.getGlobalSettingsKey("voiceEnabled") === true
+		const state = await readMicrophoneState(runtime, { voiceEnabled })
 		return ListCaptureDevicesResponse.create({
-			devices: devices.map((device) =>
-				CaptureDeviceInfo.create({
-					id: device.id,
-					name: device.name,
-					state: device.state,
-					isDefault: device.isDefault,
-				}),
-			),
-			errorCode: "",
+			devices: state.devices.map((device) => CaptureDeviceInfo.create(device)),
+			errorCode: state.errorCode,
 		})
 	} catch (error) {
 		return ListCaptureDevicesResponse.create({ devices: [], errorCode: toVoiceErrorText(error) })

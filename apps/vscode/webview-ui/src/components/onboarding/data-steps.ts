@@ -60,7 +60,7 @@ const BYTOS_PASS_USER_TYPE_SELECTION: UserTypeSelection = {
 	title: "BytosPass",
 	description: "Low cost subscription plan for best open weights model.",
 	type: NEW_USER_TYPE.BYTOS_PASS,
-	learnMoreUrl: "https://github.com/bytos/bytos",
+	learnMoreUrl: "https://github.com/Balahurra/Bytos",
 }
 
 const BASE_USER_TYPE_SELECTIONS: UserTypeSelection[] = [

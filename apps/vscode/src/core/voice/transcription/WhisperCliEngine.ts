@@ -64,10 +64,22 @@ export class WhisperCliEngine implements RecognitionEngine {
 		}
 		this.store = new ModelStore({ modelDir: options.modelDir })
 		// The caller-supplied engine root wins over the host defaults, so an
-		// explicitly configured (or test) location is never silently ignored.
-		const resolved = await requireVerifiedWhisperBinary(
-			options.engineRoot ? { extensionRoot: options.engineRoot, storageRoot: options.engineRoot } : {},
-		)
+		// explicitly configured (or test) location is never silently ignored. The
+		// extension root finds the bundled `<extensionRoot>/assets/voice/whisper`
+		// engine; the storage root keeps a per-user `<storage>/voice/whisper`
+		// installation working too.
+		const locatorOptions: {
+			extensionRoot?: string
+			storageRoot?: string
+		} = {}
+		if (options.engineRoot) {
+			locatorOptions.extensionRoot = options.engineRoot
+		}
+		const storageRoot = options.storageRoot ?? options.engineRoot
+		if (storageRoot) {
+			locatorOptions.storageRoot = storageRoot
+		}
+		const resolved = await requireVerifiedWhisperBinary(locatorOptions)
 		this.executablePath = resolved.executablePath
 		this.status = { ready: true, binaryPath: resolved.executablePath, supportedPlatform: true }
 		return this.status

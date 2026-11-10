@@ -9,6 +9,7 @@
 - Cross-device session restore: the Supabase session is stored in VS Code SecretStorage and refreshed in the background; "Keep me signed in" is honoured per sign-in.
 - Local voice dictation in the chat composer. The microphone button sits left of Send: press it to record, then press **Metne Çevir** / **Transcribe** / **In Text umwandeln** to convert the recording to text, which is appended to the existing draft for you to edit and send yourself. Recognition runs locally with whisper.cpp; audio is held in memory only and never leaves the machine.
 - Voice dictation UI is localised in Turkish, English and German.
+- The pinned whisper.cpp speech-recognition engine now ships inside the VSIX, so local voice dictation works after you download a model. The engine is MIT-licensed and its native binaries are listed in `THIRD-PARTY-NOTICES.txt`.
 
 ### Changed
 
@@ -26,6 +27,8 @@
 - Voice input no longer treats ordinary speech as silence: the level gate was far above what a built-in laptop microphone actually produces, which discarded the recording before it could be transcribed.
 - The microphone selected in **Settings → Voice** is now the one used for dictation; previously the composer always recorded from the system default.
 - Voice input no longer inserts the recogniser's non-speech markers (for example `[Applaus]` or `[MÜZİK ÇALIYOR]`) into your message as if you had said them.
+- The Windows capture helper now ships inside the VSIX, so **Settings → Voice** can enumerate the microphone on every installed Windows x64 machine instead of reporting `CAPTURE_HELPER_MISSING`.
+- **Settings → Voice → Refresh** now performs a real re-enumeration even while Voice is switched off, so a microphone plugged in after install is found without a reload, and the device list no longer stays stuck on a stale `NO_CAPTURE_DEVICE` result.
 
 
 ### Security

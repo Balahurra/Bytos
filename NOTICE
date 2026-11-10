@@ -23,6 +23,13 @@ THIRD-PARTY-NOTICES.txt, together with their applicable license texts and
 copyright notices. A copy of the Apache License, Version 2.0 is included in
 LICENSE.
 
+Bytos Voice bundles the whisper.cpp speech-recognition engine (release b5454),
+Copyright (c) 2023-2026 The ggml authors, under the MIT License. The full
+license text is reproduced in THIRD-PARTY-NOTICES.txt and at
+apps/vscode/assets/voice/whisper/LICENSE.whisper.cpp.txt. The bv-os-audio-helper
+WASAPI capture helper is Bytos-authored and is covered by the Apache License
+2.0.
+
 If you distribute a modified version of Bytos, you must preserve this NOTICE,
 the upstream copyright notice in LICENSE, and the third-party notices that
 apply to the components you distribute.

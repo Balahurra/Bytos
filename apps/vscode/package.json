@@ -1,7 +1,7 @@
 {
 	"name": "bytos",
 	"displayName": "Bytos",
-	"description": "Bytos is an open-source AI coding agent for Visual Studio Code. It plans before it edits, asks before it acts, and can edit files, run commands, use the browser, and call MCP tools with your approval. Bring your own API key (BYOK); no Bytos account or backend is required.",
+	"description": "Bytos is an open-source autonomous AI coding agent for Visual Studio Code. It plans before it edits, asks before it acts, and can edit files, run commands, use the browser, and call MCP tools with your approval. Auto Phase Plan runs up to 10 sequential, automatic phases with per-phase provider, model, API key, and MCP settings - each phase its own task, with an overall Markdown report. Bring your own API key (BYOK); no Bytos account or backend is required.",
 	"version": "1.0.2",
 	"icon": "assets/icons/icon.png",
 	"publisher": "bytos",
@@ -20,7 +20,7 @@
 		"type": "git",
 		"url": "https://github.com/Balahurra/Bytos"
 	},
-	"homepage": "https://bytos.dev",
+	"homepage": "https://bytos.dev/",
 	"bugs": {
 		"url": "https://github.com/Balahurra/Bytos/issues"
 	},
@@ -39,13 +39,21 @@
 		"ai-coding-agent",
 		"ai-coding-assistant",
 		"autonomous-agent",
+		"autonomous-coding-agent",
+		"automatic-coding-agent",
+		"auto-phase",
+		"auto-phase-coding-agent",
+		"agentic-coding",
 		"coding-assistant",
+		"coding-agent",
 		"developer-tools",
 		"llm",
 		"mcp",
 		"model-context-protocol",
+		"multi-phase",
 		"multi-provider",
 		"open-source",
+		"sequential-agents",
 		"vs-code",
 		"vscode-extension",
 		"byok"

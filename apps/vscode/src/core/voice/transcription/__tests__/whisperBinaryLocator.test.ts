@@ -21,6 +21,8 @@ import {
 const ASSETS = path.resolve(process.cwd(), "test-assets", "voice-f2")
 const REAL_ENGINE = path.join(ASSETS, "whisper", PINNED_WHISPER_BINARY.subdir)
 const realEnginePresent = fs.existsSync(path.join(REAL_ENGINE, PINNED_WHISPER_BINARY.executable))
+const BUNDLED_ENGINE = path.resolve(process.cwd(), "assets", "voice", "whisper", PINNED_WHISPER_BINARY.subdir)
+const bundledEnginePresent = fs.existsSync(path.join(BUNDLED_ENGINE, PINNED_WHISPER_BINARY.executable))
 
 let scratch: string
 
@@ -112,6 +114,21 @@ describe("missing engine", () => {
 		await expect(requireVerifiedWhisperBinary(onlyRoot(empty))).rejects.toThrowError(
 			expect.objectContaining({ code: "WHISPER_BINARY_MISSING" }),
 		)
+	})
+})
+
+describe.skipIf(!bundledEnginePresent)("bundled engine", () => {
+	it("finds the engine shipped under <extensionRoot>/assets/voice/whisper", async () => {
+		// This is the path an installed VSIX uses. The engine root passed by the
+		// runtime is the extension root, not global storage.
+		const result = await locateVerifiedWhisperBinary({
+			platform: "win32",
+			arch: "x64",
+			extensionRoot: process.cwd(),
+			env: {} as NodeJS.ProcessEnv,
+		})
+		expect(result.ok).toBe(true)
+		expect(result.executablePath).toBe(path.join(BUNDLED_ENGINE, PINNED_WHISPER_BINARY.executable))
 	})
 })
 

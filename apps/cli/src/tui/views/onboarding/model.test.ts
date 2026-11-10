@@ -167,14 +167,13 @@ describe("onboarding model helpers", () => {
 
 	it("formats OAuth provider labels for onboarding status views", () => {
 		expect(getOAuthProviderLabel("bytos")).toBe("Bytos");
-		expect(getOAuthProviderLabel("cline-pass")).toBe("ClinePass");
 		expect(getOAuthProviderLabel("openai-codex")).toBe("ChatGPT");
 		expect(getOAuthProviderLabel("oca")).toBe("oca");
 	});
 
-	it("uses the featured Bytos model picker for the Bytos and ClinePass providers", () => {
+	it("uses the featured Bytos model picker only for the Bytos provider", () => {
 		expect(shouldUseFeaturedBytosModelPicker("bytos")).toBe(true);
-		expect(shouldUseFeaturedBytosModelPicker("cline-pass")).toBe(true);
+		expect(shouldUseFeaturedBytosModelPicker("cline-pass")).toBe(false);
 		expect(shouldUseFeaturedBytosModelPicker("anthropic")).toBe(false);
 	});
 });

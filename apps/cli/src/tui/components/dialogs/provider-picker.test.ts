@@ -87,7 +87,7 @@ describe("saveManualProviderApiKey", () => {
 		expect(isProviderConfigured("bytos", settings)).toBe(true);
 	});
 
-	it("saves cline-pass keys to the shared bytos auth storage entry", async () => {
+	it("saves a ClinePass key to its own provider entry without touching Bytos OAuth", async () => {
 		const manager = createManager();
 		manager.saveProviderSettings({
 			provider: "bytos",
@@ -99,17 +99,14 @@ describe("saveManualProviderApiKey", () => {
 
 		await saveManualProviderApiKey(manager, "cline-pass", "manual-api-key");
 
-		// cline-pass inherits auth storage from the "bytos" entry, so the key
-		// must land there and the stale tokens must be gone for both providers.
-		const bytosSettings = manager.getProviderSettings("bytos");
-		expect(bytosSettings?.apiKey).toBe("manual-api-key");
-		expect(bytosSettings?.auth?.accessToken).toBeUndefined();
-
 		const clinePassSettings = manager.getProviderSettings("cline-pass");
 		expect(getPersistedProviderApiKey("cline-pass", clinePassSettings)).toBe(
 			"manual-api-key",
 		);
 		expect(isProviderConfigured("cline-pass", clinePassSettings)).toBe(true);
+
+		const bytosSettings = manager.getProviderSettings("bytos");
+		expect(bytosSettings?.auth?.accessToken).toBe("stale-access-token");
 	});
 
 	it("clears stale credentials copied into a direct cline-pass entry", async () => {

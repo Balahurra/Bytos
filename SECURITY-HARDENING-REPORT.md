@@ -215,6 +215,10 @@ Remaining accepted risks are listed in `SECURITY.md` and in section D below.
 | Suite | Result | Notes |
 |---|---|---|
 | Full workspace typecheck (`bun run types`) | PASS | all workspaces |
+| Installed-VSIX smoke test (real VS Code 1.145.2) | PASS | installed extension activated, chat input, Settings/API Configuration, Auto Phase Plan, Features/MCP, Account panel |
+| Installed extension bundle identity | PASS | installed `dist/extension.js` SHA-256 equals the VSIX member |
+| E2E `auth.test.ts` (with Codex OAuth cases) | PASS 4/4 | real VS Code Electron + Playwright |
+| E2E chat/file-edit/editor/hooks/powershell | PASS 9 passed, 1 flaky (passed on retry), 1 skipped | skipped = Store PowerShell 7 not installed; no implementation failure |
 | VS Code webview tests | PASS 685/685 | Vitest 4.1.12 / Vite 8.3.7 |
 | VS Code Vitest suite | PASS 2066/2066 | 155 files |
 | `@bytos/llms` | PASS 1041, 35 skipped | 52 files |
@@ -241,7 +245,9 @@ Remaining accepted risks are listed in `SECURITY.md` and in section D below.
 
 **CLI:** `main.test.ts` 89/90 passed after updating the two expected fail-closed defaults; remaining failure (`ClinePass` migration-notice argument) is unrelated to this change. Plugin/doctor/Slack/update failures are Windows/environment and pre-existing.
 
-**Not run / environment limitations:** VS Code Electron integration tests, Playwright e2e, and full desktop Tauri build (missing generated sidecar + macOS signing environment). They are not claimed as PASS.
+**Installed extension runtime diagnostics:** the isolated installed-VSIX session produced no uncaught exception, no webview page error, and no extension-host activation failure. Developer Tools showed only Node’s `DEP0169 url.parse()` deprecation warning (from the host/dependency path) and one expected provider authentication error because the isolated profile had no valid DeepSeek key. The error was surfaced correctly in the UI with Retry/Start New Task.
+
+**Not run / environment limitations:** the full VS Code Electron mocha integration suite and full desktop Tauri build were not completed in this environment (the latter stops at the missing generated sidecar resource and macOS signing). The selected Playwright E2E flows above were completed.
 
 ---
 
@@ -252,13 +258,15 @@ Remaining accepted risks are listed in `SECURITY.md` and in section D below.
 - **Publisher/name:** `bytos.bytos`
 - **VS Code engine:** `^1.101.0`
 - **File size:** `17,024,854` bytes (16.24 MB)
-- **SHA-256:** `94af4f021fcd78bab25ceac8fd38393a737b3a87094da675c3735ba07ee2aee8`
+- **SHA-256:** `536fd420b81d59cb03d4b6f12ab2b050e8f60f65997d27b105fb7ce56c8e9242`
 - **Files:** 238
 - **Native/executable members:** 15 (whisper DLL/EXE and the Windows audio helper)
 - **Runtime inventory:** `dist/extension.js` (19.9 MB) + `dist/plugin-runtime` (90 files) + `webview-ui/build` (106 files) + assets/licenses.
 - **Security scan:** release gate PASS (0 high/critical; 2 low residual documented; no secrets; no test/development payloads).
 - **License gate:** PASS (`licenses:check:vsix` against the new VSIX).
-- Local installed VSIX was **not** updated: this repository has no supported local install workflow; publishing was not performed.
+- **Local installation:** PASS — `code --install-extension apps/vscode/bytos-1.0.2.vsix --force` installed `bytos.bytos@1.0.2`; the installed `dist/extension.js` hash matches the VSIX member.
+- **Installed feature smoke:** PASS — Bytos webview/chat, Settings/API Configuration, Auto Phase Plan, Features/MCP, and the Account panel all opened in a real installed VS Code 1.145.2 session.
+- Publishing/deployment was not performed.
 
 ---
 
@@ -271,7 +279,10 @@ Local commits (in order):
 - `0765595` — `security: remove unused inherited menubar example`
 - `3b61076` — `security: add CI gates, release checks and hardening report`
 - `3870977` — `chore(licenses): refresh notices for hardened build`
+- `f332fd3` — `docs(security): record hardening commit and artifact hashes`
+- final validation commit — `docs(security): record final 1.0.2 VSIX validation` (this commit; see `git log -1` for its hash)
 
+**Working tree status at final validation:** clean (`git status --porcelain` empty).
 **No push, no tag, no release, no deployment, and no Marketplace upload occurred.**
 
 Modified areas: dependency manifests/lockfiles, desktop Cargo lock/toml, VS Code OTel/MCP/webview/runtime files, CLI defaults and tests, SDK core path/SSRF/MCP code and tests, security workflow/scripts, Dependabot, SECURITY.md, generated third-party notices, and removal of `apps/examples/menubar`.

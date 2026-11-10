@@ -14,17 +14,17 @@ actually distributed, its notice is still provided here.
 This file is not a legal opinion. See LICENSE-COMPLIANCE-REPORT.md for
 verified obligations and remaining uncertainties.
 
-Generated: 2026-11-10T13:44:38.008Z
-Packages: 2257
+Generated: 2026-11-10T17:10:52.128Z
+Packages: 2374
 
 License summary
 ---------------
-MIT	1656
-Apache-2.0	325
-ISC	106
-BSD-3-Clause	50
-BSD-2-Clause	34
-BlueOak-1.0.0	17
+MIT	1744
+Apache-2.0	339
+ISC	108
+BSD-3-Clause	57
+BSD-2-Clause	35
+BlueOak-1.0.0	21
 MIT OR Apache-2.0	7
 MPL-2.0	7
 Unlicense	7
@@ -37,6 +37,7 @@ Apache-2.0 OR MIT	3
 Apache-2.0 AND LGPL-3.0-or-later	2
 CC-BY-4.0	2
 BSD	2
+(BSD-3-Clause OR GPL-2.0)	2
 0BSD	2
 (MIT OR CC0-1.0)	2
 WTFPL	1
@@ -49,7 +50,6 @@ Python-2.0	1
 (MIT OR WTFPL)	1
 (AFL-2.1 OR BSD-3-Clause)	1
 (MIT OR GPL-3.0-or-later)	1
-(BSD-3-Clause OR GPL-2.0)	1
 (MIT AND Zlib)	1
 (Apache-2.0 AND MIT)	1
 (BSD-2-Clause OR MIT OR Apache-2.0)	1
@@ -118,10 +118,13 @@ Name	Version	License	Repository	Copyright
 @azure/core-tracing	1.4.0	MIT	https://github.com/Azure/azure-sdk-for-js	Copyright (c) Microsoft Corporation.
 @azure/core-util	1.14.0	MIT	https://github.com/Azure/azure-sdk-for-js	Copyright (c) Microsoft Corporation.
 @azure/identity	4.13.2	MIT	https://github.com/Azure/azure-sdk-for-js	Copyright (c) Microsoft Corporation.
+@azure/identity	4.14.1	MIT	https://github.com/Azure/azure-sdk-for-js	Copyright (c) Microsoft Corporation.
 @azure/logger	1.4.0	MIT	https://github.com/Azure/azure-sdk-for-js	Copyright (c) Microsoft Corporation.
 @azure/msal-browser	5.19.0	MIT	https://github.com/AzureAD/microsoft-authentication-library-for-js	Copyright (c) Microsoft Corporation. All rights reserved.
 @azure/msal-common	16.13.0	MIT	https://github.com/AzureAD/microsoft-authentication-library-for-js	Copyright (c) Microsoft Corporation. All rights reserved.
+@azure/msal-common	16.16.1	MIT	https://github.com/AzureAD/microsoft-authentication-library-for-js	Copyright (c) Microsoft Corporation. All rights reserved.
 @azure/msal-node	5.6.0	MIT	https://github.com/AzureAD/microsoft-authentication-library-for-js	Copyright (c) 2020 Microsoft
+@azure/msal-node	7.2.1	MIT	https://github.com/AzureAD/microsoft-authentication-library-for-js	Copyright (c) 2020 Microsoft
 @babel/code-frame	7.29.7	MIT	https://github.com/babel/babel	Copyright (c) 2014-present Sebastian McKenzie and other contributors
 @babel/compat-data	7.29.7	MIT	https://github.com/babel/babel	Copyright (c) 2014-present Sebastian McKenzie and other contributors
 @babel/core	7.29.7	MIT	https://github.com/babel/babel	Copyright (c) 2014-present Sebastian McKenzie and other contributors
@@ -195,6 +198,7 @@ Name	Version	License	Repository	Copyright
 @emotion/is-prop-valid	1.4.0	MIT	https://github.com/emotion-js/emotion/tree/main/packages/is-prop-valid	Copyright (c) Emotion team and other contributors
 @emotion/memoize	0.9.0	MIT	https://github.com/emotion-js/emotion/tree/main/packages/memoize	Copyright (c) Emotion team and other contributors
 @esbuild/win32-x64	0.25.12	MIT	https://github.com/evanw/esbuild	
+@esbuild/win32-x64	0.27.2	MIT	https://github.com/evanw/esbuild	
 @esbuild/win32-x64	0.27.7	MIT	https://github.com/evanw/esbuild	
 @esbuild/win32-x64	0.28.2	MIT	https://github.com/evanw/esbuild	
 @eslint-community/eslint-utils	4.10.1	MIT	https://github.com/eslint-community/eslint-utils	Copyright (c) 2018 Toru Nagashima
@@ -225,6 +229,8 @@ Name	Version	License	Repository	Copyright
 @gramio/types	9.6.1	MIT	https://github.com/gramiojs/types	Copyright (c) 2024 Kravets
 @graphql-typed-document-node/core	3.2.0	MIT	git@github.com:dotansimha/graphql-typed-document-node	Copyright (c) 2020-2023 Dotan Simha
 @grpc/grpc-js	1.14.4	Apache-2.0	https://github.com/grpc/grpc-node/tree/master/packages/grpc-js	"Licensor" shall mean the copyright owner or entity authorized by
+@grpc/grpc-js	1.14.5	Apache-2.0	https://github.com/grpc/grpc-node/tree/master/packages/grpc-js	"Licensor" shall mean the copyright owner or entity authorized by
+@grpc/grpc-js	1.14.7	Apache-2.0	https://github.com/grpc/grpc-node/tree/master/packages/grpc-js	"Licensor" shall mean the copyright owner or entity authorized by
 @grpc/proto-loader	0.7.15	Apache-2.0	https://github.com/grpc/grpc-node	"Licensor" shall mean the copyright owner or entity authorized by
 @grpc/proto-loader	0.8.1	Apache-2.0	https://github.com/grpc/grpc-node	"Licensor" shall mean the copyright owner or entity authorized by
 @grpc/reflection	1.0.4	Apache-2.0	https://github.com/grpc/grpc-node	"Licensor" shall mean the copyright owner or entity authorized by
@@ -308,6 +314,9 @@ Name	Version	License	Repository	Copyright
 @heroui/use-viewport-size	2.0.1	MIT	https://github.com/heroui-inc/heroui	Copyright (c) 2020 Next UI Inc.
 @heroui/user	2.2.26	MIT	https://github.com/heroui-inc/heroui	Copyright (c) 2020 Next UI Inc.
 @hono/node-server	1.19.17	MIT	https://github.com/honojs/node-server	Copyright (c) 2022 - present, Yusuke Wada and Hono contributors
+@hono/node-server	1.19.9	MIT	https://github.com/honojs/node-server	
+@hono/node-server	2.1.3	MIT	https://github.com/honojs/node-server	Copyright (c) 2022 - present, Yusuke Wada and Hono contributors
+@hono/node-server	2.1.6	MIT	https://github.com/honojs/node-server	Copyright (c) 2022 - present, Yusuke Wada and Hono contributors
 @hono/node-ws	1.3.1	MIT	https://github.com/honojs/middleware	
 @hookform/resolvers	3.10.0	MIT	https://github.com/react-hook-form/resolvers	Copyright (c) 2019-present Beier(Bill) Luo
 @humanfs/core	0.19.2	Apache-2.0	https://github.com/humanwhocodes/humanfs	"Licensor" shall mean the copyright owner or entity authorized by
@@ -328,6 +337,7 @@ Name	Version	License	Repository	Copyright
 @isaacs/cliui	8.0.2	ISC	yargs/cliui	Copyright (c) 2015, Contributors
 @isaacs/cliui	9.0.0	BlueOak-1.0.0	ssh://git@github.com:isaacs/cliui	## Copyright
 @isaacs/fs-minipass	4.0.1	ISC	https://github.com/npm/fs-minipass	Copyright (c) Isaac Z. Schlueter and Contributors
+@isaacs/nonrecursive-glob-match	1.1.0	BlueOak-1.0.0		## Copyright
 @istanbuljs/schema	0.1.6	MIT	https://github.com/istanbuljs/schema	Copyright (c) 2019 CFWare, LLC
 @jerome-benoit/sap-ai-provider	5.0.3	Apache-2.0	https://github.com/jerome-benoit/sap-ai-provider	"Licensor" shall mean the copyright owner or entity authorized by
 @jest/diff-sequences	30.4.0	MIT	https://github.com/jestjs/jest	Copyright (c) Meta Platforms, Inc. and affiliates.
@@ -337,10 +347,12 @@ Name	Version	License	Repository	Copyright
 @jest/schemas	30.4.1	MIT	https://github.com/jestjs/jest	Copyright (c) Meta Platforms, Inc. and affiliates.
 @jest/types	29.6.3	MIT	https://github.com/jestjs/jest	Copyright (c) Meta Platforms, Inc. and affiliates.
 @joshwooding/vite-plugin-react-docgen-typescript	0.6.1	MIT	https://github.com/joshwooding/vite-plugin-react-docgen-typescript	
+@joshwooding/vite-plugin-react-docgen-typescript	0.7.0	MIT	https://github.com/joshwooding/vite-plugin-react-docgen-typescript	
 @jridgewell/gen-mapping	0.3.13	MIT	https://github.com/jridgewell/sourcemaps	Copyright 2024 Justin Ridgewell <justin@ridgewell.name>
 @jridgewell/remapping	2.3.5	MIT	https://github.com/jridgewell/sourcemaps	Copyright 2024 Justin Ridgewell <justin@ridgewell.name>
 @jridgewell/resolve-uri	3.1.2	MIT	https://github.com/jridgewell/resolve-uri	Copyright 2019 Justin Ridgewell <jridgewell@google.com>
 @jridgewell/sourcemap-codec	1.5.5	MIT	https://github.com/jridgewell/sourcemaps	Copyright 2024 Justin Ridgewell <justin@ridgewell.name>
+@jridgewell/sourcemap-codec	1.6.0	MIT	https://github.com/jridgewell/sourcemaps	Copyright 2024 Justin Ridgewell <justin@ridgewell.name>
 @jridgewell/trace-mapping	0.3.31	MIT	https://github.com/jridgewell/sourcemaps	Copyright 2024 Justin Ridgewell <justin@ridgewell.name>
 @js-sdsl/ordered-map	4.4.2	MIT	https://github.com/js-sdsl/js-sdsl	Copyright (c) 2021 Zilong Yao
 @kwsites/file-exists	1.1.1	MIT	git@github.com:kwsites/file-exists	Copyright (c) 2015 Steve King
@@ -361,8 +373,16 @@ Name	Version	License	Repository	Copyright
 @microsoft/tui-test	0.0.2	MIT	https://github.com/microsoft/tui-test	Copyright (c) Microsoft Corporation.
 @mixmark-io/domino	2.2.0	BSD-2-Clause	https://github.com/mixmark-io/domino	Copyright (c) 2011 The Mozilla Foundation.
 @modelcontextprotocol/sdk	1.30.0	MIT	https://github.com/modelcontextprotocol/typescript-sdk	Copyright (c) 2024 Anthropic, PBC
+@modelcontextprotocol/sdk	1.32.0	MIT	https://github.com/modelcontextprotocol/typescript-sdk	Copyright (c) 2024 Anthropic, PBC
+@modelcontextprotocol/sdk	1.32.2	MIT	https://github.com/modelcontextprotocol/typescript-sdk	Copyright (c) 2024 Anthropic, PBC
+@napi-rs/keyring	1.3.0	MIT	https://github.com/Brooooooklyn/keyring-node	Copyright (c) 2020 N-API for Rust
+@napi-rs/keyring-win32-x64-msvc	1.3.0	MIT	https://github.com/Brooooooklyn/keyring-node	
 @next/env	16.2.11	MIT	https://github.com/vercel/next.js	
+@next/env	16.4.1	MIT	https://github.com/vercel/next.js	
+@next/env	16.4.6	MIT	https://github.com/vercel/next.js	
 @next/swc-win32-x64-msvc	16.2.11	MIT	https://github.com/vercel/next.js	
+@next/swc-win32-x64-msvc	16.4.1	MIT	https://github.com/vercel/next.js	
+@next/swc-win32-x64-msvc	16.4.6	MIT	https://github.com/vercel/next.js	
 @nodelib/fs.scandir	2.1.5	MIT	https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.scandir	Copyright (c) Denis Malinochkin
 @nodelib/fs.stat	2.0.5	MIT	https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.stat	Copyright (c) Denis Malinochkin
 @nodelib/fs.walk	1.2.8	MIT	https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.walk	Copyright (c) Denis Malinochkin
@@ -378,20 +398,27 @@ Name	Version	License	Repository	Copyright
 @opentelemetry/core	1.30.1	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
 @opentelemetry/core	2.10.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
 @opentelemetry/core	2.6.1	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
+@opentelemetry/exporter-logs-otlp-grpc	0.214.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
 @opentelemetry/exporter-logs-otlp-grpc	0.56.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
 @opentelemetry/exporter-logs-otlp-http	0.214.0	Apache-2.0	https://github.com/open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
 @opentelemetry/exporter-logs-otlp-http	0.56.0	Apache-2.0	https://github.com/open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
+@opentelemetry/exporter-logs-otlp-proto	0.214.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
 @opentelemetry/exporter-logs-otlp-proto	0.56.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
+@opentelemetry/exporter-metrics-otlp-grpc	0.214.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
 @opentelemetry/exporter-metrics-otlp-grpc	0.56.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
 @opentelemetry/exporter-metrics-otlp-http	0.214.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
 @opentelemetry/exporter-metrics-otlp-http	0.56.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
+@opentelemetry/exporter-metrics-otlp-proto	0.214.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
 @opentelemetry/exporter-metrics-otlp-proto	0.56.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
+@opentelemetry/exporter-trace-otlp-grpc	0.214.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
 @opentelemetry/exporter-trace-otlp-grpc	0.56.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
 @opentelemetry/exporter-trace-otlp-http	0.214.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
 @opentelemetry/exporter-trace-otlp-http	0.56.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
+@opentelemetry/exporter-trace-otlp-proto	0.214.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
 @opentelemetry/exporter-trace-otlp-proto	0.56.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
 @opentelemetry/otlp-exporter-base	0.214.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
 @opentelemetry/otlp-exporter-base	0.56.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
+@opentelemetry/otlp-grpc-exporter-base	0.214.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
 @opentelemetry/otlp-grpc-exporter-base	0.56.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
 @opentelemetry/otlp-transformer	0.214.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
 @opentelemetry/otlp-transformer	0.56.0	Apache-2.0	open-telemetry/opentelemetry-js	"Licensor" shall mean the copyright owner or entity authorized by
@@ -420,7 +447,11 @@ Name	Version	License	Repository	Copyright
 @opentui/core	0.4.3	MIT	https://github.com/anomalyco/opentui	Copyright (c) 2025 opentui
 @opentui/core-win32-x64	0.4.3	MIT	https://github.com/anomalyco/opentui	Copyright (c) 2025 opentui
 @opentui/react	0.4.3	MIT	https://github.com/anomalyco/opentui	Copyright (c) 2025 opentui
+@oxc-parser/binding-win32-x64-msvc	0.127.0	MIT	https://github.com/oxc-project/oxc	
+@oxc-project/types	0.127.0	MIT	https://github.com/oxc-project/oxc	Copyright (c) 2024-present VoidZero Inc. & Contributors
 @oxc-project/types	0.146.0	MIT	https://github.com/oxc-project/oxc	Copyright (c) 2024-present VoidZero Inc. & Contributors
+@oxc-project/types	0.156.0	MIT	https://github.com/oxc-project/oxc	Copyright (c) 2024-present VoidZero Inc. & Contributors
+@oxc-resolver/binding-win32-x64-msvc	11.21.2	MIT	https://github.com/oxc-project/oxc-resolver	
 @pierre/diffs	1.3.6	apache-2.0		"Licensor" shall mean the copyright owner or entity authorized by the
 @pierre/theme	2.0.0	apache-2.0	https://github.com/pierrecomputer/pierre	"Licensor" shall mean the copyright owner or entity authorized by the
 @pierre/theming	1.0.1	apache-2.0		"Licensor" shall mean the copyright owner or entity authorized by the
@@ -442,6 +473,7 @@ Name	Version	License	Repository	Copyright
 @protobufjs/pool	1.1.0	BSD-3-Clause	https://github.com/dcodeIO/protobuf.js	Copyright (c) 2016, Daniel Wirtz All rights reserved.
 @protobufjs/utf8	1.1.2	BSD-3-Clause	https://github.com/protobufjs/protobuf.js	Copyright (c) 2016, Daniel Wirtz All rights reserved.
 @puppeteer/browsers	2.6.1	Apache-2.0	https://github.com/puppeteer/puppeteer/tree/main/packages/browsers	
+@puppeteer/browsers	3.2.7	Apache-2.0	https://github.com/puppeteer/puppeteer/tree/main/packages/browsers	
 @radix-ui/number	1.1.1	MIT	https://github.com/radix-ui/primitives	
 @radix-ui/number	1.1.3	MIT	https://github.com/radix-ui/primitives	Copyright (c) 2022 WorkOS
 @radix-ui/primitive	1.1.3	MIT	https://github.com/radix-ui/primitives	Copyright (c) 2022 WorkOS
@@ -663,6 +695,7 @@ Name	Version	License	Repository	Copyright
 @resvg/resvg-wasm	2.6.2	MPL-2.0	git@github.com:yisibl/resvg-js	
 @rive-app/react-webgl2	4.32.1	MIT	https://github.com/rive-app/rive-react	
 @rive-app/webgl2	2.40.1	MIT	https://github.com/rive-app/rive-wasm/tree/master/js	
+@rolldown/binding-win32-x64-msvc	1.2.18	MIT	https://github.com/rolldown/rolldown	
 @rolldown/binding-win32-x64-msvc	1.2.5	MIT	https://github.com/rolldown/rolldown	
 @rolldown/pluginutils	1.0.0-beta.27	MIT	https://github.com/rolldown/rolldown	Copyright (c) 2024-present VoidZero Inc. & Contributors
 @rolldown/pluginutils	1.0.1	MIT	https://github.com/rolldown/plugins	Copyright (c) 2026-present, rolldown/plugins repository contributors
@@ -740,14 +773,21 @@ Name	Version	License	Repository	Copyright
 @spectrum-icons/workflow	4.3.1	Apache-2.0	https://github.com/adobe/react-spectrum	"Licensor" shall mean the copyright owner or entity authorized by
 @speed-highlight/core	1.2.24	CC0-1.0	git://github.com/speed-highlight/core	exclusive Copyright and Related Rights (defined below) upon the creator
 @standard-schema/spec	1.1.0	MIT	https://github.com/standard-schema/standard-schema	Copyright (c) 2024 Colin McDonnell
+@storybook/addon-a11y	10.6.7	MIT	https://github.com/storybookjs/storybook	
 @storybook/addon-a11y	9.1.20	MIT	https://github.com/storybookjs/storybook	
+@storybook/addon-docs	10.6.7	MIT	https://github.com/storybookjs/storybook	
 @storybook/addon-docs	9.1.20	MIT	https://github.com/storybookjs/storybook	
+@storybook/builder-vite	10.6.7	MIT	https://github.com/storybookjs/storybook	
 @storybook/builder-vite	9.1.20	MIT	https://github.com/storybookjs/storybook	
 @storybook/csf-plugin	9.1.20	MIT	https://github.com/storybookjs/storybook	
 @storybook/global	5.0.0	MIT	git://github.com/storybookjs/global	Copyright (c) 2022 Norbert de Langen.
 @storybook/icons	1.6.0	MIT	https://github.com/storybookjs/icons	Copyright (c) 2022 Tim Mikeladze
+@storybook/icons	2.2.0	MIT	https://github.com/storybookjs/icons	Copyright (c) 2022 Tim Mikeladze
+@storybook/react	10.6.7	MIT	https://github.com/storybookjs/storybook	
 @storybook/react	9.1.20	MIT	https://github.com/storybookjs/storybook	
+@storybook/react-dom-shim	10.6.7	MIT	https://github.com/storybookjs/storybook	
 @storybook/react-dom-shim	9.1.20	MIT	https://github.com/storybookjs/storybook	
+@storybook/react-vite	10.6.7	MIT	https://github.com/storybookjs/storybook	
 @storybook/react-vite	9.1.20	MIT	https://github.com/storybookjs/storybook	
 @streamdown/cjk	1.0.3	Apache-2.0	https://github.com/vercel/streamdown	Copyright 2023 Vercel, Inc.
 @streamdown/code	1.1.1	Apache-2.0	https://github.com/vercel/streamdown	Copyright 2023 Vercel, Inc.
@@ -759,6 +799,7 @@ Name	Version	License	Repository	Copyright
 @swc/core-win32-x64-msvc	1.16.1	Apache-2.0 AND MIT	https://github.com/swc-project/swc	"Licensor" shall mean the copyright owner or entity authorized by
 @swc/counter	0.1.3	Apache-2.0	https://github.com/swc-project/pkgs	
 @swc/helpers	0.5.15	Apache-2.0	https://github.com/swc-project/swc	"Licensor" shall mean the copyright owner or entity authorized by
+@swc/helpers	0.5.23	Apache-2.0	https://github.com/swc-project/swc	"Licensor" shall mean the copyright owner or entity authorized by
 @swc/types	0.1.28	Apache-2.0	https://github.com/swc-project/swc	"Licensor" shall mean the copyright owner or entity authorized by
 @tailwindcss/node	4.3.3	MIT	https://github.com/tailwindlabs/tailwindcss	Copyright (c) Tailwind Labs, Inc.
 @tailwindcss/oxide	4.3.3	MIT	https://github.com/tailwindlabs/tailwindcss	Copyright (c) Tailwind Labs, Inc.
@@ -773,6 +814,7 @@ Name	Version	License	Repository	Copyright
 @tauri-apps/plugin-notification	2.3.3	MIT OR Apache-2.0	https://github.com/tauri-apps/plugins-workspace	PackageCopyrightText: 2019-2022, The Tauri Programme in the Commons Conservancy
 @testing-library/dom	10.4.1	MIT	https://github.com/testing-library/dom-testing-library	Copyright (c) 2017 Kent C. Dodds
 @testing-library/jest-dom	6.10.0	MIT	https://github.com/testing-library/jest-dom	Copyright (c) 2017 Kent C. Dodds
+@testing-library/jest-dom	6.9.1	MIT	https://github.com/testing-library/jest-dom	Copyright (c) 2017 Kent C. Dodds
 @testing-library/react	16.3.2	MIT	https://github.com/testing-library/react-testing-library	Copyright (c) 2017-Present Kent C. Dodds
 @testing-library/user-event	14.6.6	MIT	https://github.com/testing-library/user-event	Copyright (c) 2020 Giorgio Polvara
 @textlint/ast-node-types	15.8.0	MIT	https://github.com/textlint/textlint	Copyright (c) 2014-present azu
@@ -907,33 +949,43 @@ Name	Version	License	Repository	Copyright
 @vitejs/plugin-react-swc	3.11.0	MIT	https://github.com/vitejs/vite-plugin-react	Copyright (c) Arnaud Barré (https://github.com/ArnaudBarre)
 @vitejs/plugin-react-swc	4.3.3	MIT	https://github.com/vitejs/vite-plugin-react	Copyright (c) Arnaud Barré (https://github.com/ArnaudBarre)
 @vitest/coverage-v8	3.2.7	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present Vitest Team
+@vitest/coverage-v8	4.1.12	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors
 @vitest/expect	3.2.4	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present Vitest Team
 @vitest/expect	3.2.7	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present Vitest Team
 @vitest/expect	4.1.11	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors
+@vitest/expect	4.1.12	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors
 @vitest/mocker	3.2.4	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present Vitest Team
 @vitest/mocker	3.2.7	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present Vitest Team
 @vitest/mocker	4.1.11	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors
+@vitest/mocker	4.1.12	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors
 @vitest/pretty-format	3.2.4	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present Vitest Team
 @vitest/pretty-format	3.2.7	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present Vitest Team
 @vitest/pretty-format	4.1.11	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors
+@vitest/pretty-format	4.1.12	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors
 @vitest/runner	3.2.7	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present Vitest Team
 @vitest/runner	4.1.11	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors
+@vitest/runner	4.1.12	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors
 @vitest/snapshot	3.2.7	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present Vitest Team
 @vitest/snapshot	4.1.11	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors
+@vitest/snapshot	4.1.12	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors
 @vitest/spy	3.2.4	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present Vitest Team
 @vitest/spy	3.2.7	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present Vitest Team
 @vitest/spy	4.1.11	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors
+@vitest/spy	4.1.12	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors
 @vitest/utils	3.2.4	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present Vitest Team
 @vitest/utils	3.2.7	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present Vitest Team
 @vitest/utils	4.1.11	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors
+@vitest/utils	4.1.12	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors
 @vladfrangu/async_event_emitter	2.4.7	MIT	https://github.com/vladfrangu/async_event_emitter	Copyright © `2022` `Vlad Frangu`
 @vscode/codicons	0.0.36	CC-BY-4.0	https://github.com/microsoft/vscode-codicons	original works of authorship and other material subject to copyright
 @vscode/test-cli	0.0.12	MIT	https://github.com/Microsoft/vscode-test-cli	Copyright (c) Microsoft Corporation.
 @vscode/test-electron	3.1.0	MIT	https://github.com/Microsoft/vscode-test	Copyright (c) Microsoft Corporation. All rights reserved.
 @vscode/vsce	3.9.2	MIT	https://github.com/Microsoft/vsce	Copyright (c) Microsoft Corporation
+@vscode/vsce	4.1.0	MIT	https://github.com/Microsoft/vsce	Copyright (c) Microsoft Corporation
 @vscode/vsce-sign	2.1.0	UNKNOWN	https://github.com/Microsoft/node-vsce-sign	
 @vscode/vsce-sign-win32-x64	2.0.6	UNKNOWN	https://github.com/Microsoft/node-vscode-sign	
 @vscode/webview-ui-toolkit	1.4.0	MIT	https://github.com/microsoft/vscode-webview-ui-toolkit	Copyright (c) Microsoft Corporation.
+@webcontainer/env	1.1.1	MIT	stackblitz/webcontainer-core	Copyright (c) 2019-present, StackBlitz Inc.
 @workflow/serde	4.1.0	Apache-2.0	https://github.com/vercel/workflow	
 @workflow/serde	4.1.0-beta.2	Apache-2.0	https://github.com/vercel/workflow	
 @xmldom/xmldom	0.8.15	MIT	git://github.com/xmldom/xmldom	Copyright 2019 - present Christopher J. Brody and other contributors, as listed in: https://github.com/xmldom/xmldom/graphs/contributors
@@ -985,6 +1037,7 @@ assertion-error	2.0.1	MIT	git@github.com:chaijs/assertion-error	Copyright (c) 20
 ast-types	0.13.4	MIT	git://github.com/benjamn/ast-types	Copyright (c) 2013 Ben Newman <bn@cs.stanford.edu>
 ast-types	0.16.1	MIT	git://github.com/benjamn/ast-types	Copyright (c) 2013 Ben Newman <bn@cs.stanford.edu>
 ast-v8-to-istanbul	0.3.12	MIT	https://github.com/AriPerkkio/ast-v8-to-istanbul	Copyright (c) 2026 Ari Perkkiö
+ast-v8-to-istanbul	1.0.8	MIT	https://github.com/AriPerkkio/ast-v8-to-istanbul	Copyright (c) 2026 Ari Perkkiö
 astral-regex	2.0.0	MIT	kevva/astral-regex	Copyright (c) Kevin Mårtensson <kevinmartensson@gmail.com> (github.com/kevva)
 async	3.2.6	MIT	https://github.com/caolan/async	Copyright (c) 2010-2018 Caolan McMahon
 async-retry	1.3.3	MIT	vercel/async-retry	Copyright (c) 2021 Vercel, Inc.
@@ -1018,11 +1071,15 @@ bindings	1.5.0	MIT	git://github.com/TooTallNate/node-bindings	Copyright (c) 2012
 blake3-wasm	2.1.5	MIT	https://github.com/connor4312/blake3	Copyright (c) 2019 Connor Peet
 bluebird	3.4.7	MIT	git://github.com/petkaantonov/bluebird	Copyright (c) 2013-2015 Petka Antonov
 body-parser	2.3.0	MIT	expressjs/body-parser	Copyright (c) 2014 Jonathan Ong <me@jongleberry.com>
+body-parser	2.4.0	MIT	expressjs/body-parser	Copyright (c) 2014 Jonathan Ong <me@jongleberry.com>
 boolbase	1.0.0	ISC	https://github.com/fb55/boolbase	
 boundary	2.0.0	BSD-2-Clause	https://github.com/textlint/boundary	* Redistributions of source code must retain the above copyright
 bowser	2.14.1	MIT	https://github.com/bowser-js/bowser	Copyright 2015, Dustin Diaz (the "Original Author")
 brace-expansion	1.1.18	MIT	git://github.com/juliangruber/brace-expansion	Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
+brace-expansion	1.1.21	MIT	git://github.com/juliangruber/brace-expansion	Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
 brace-expansion	2.1.4	MIT	git://github.com/juliangruber/brace-expansion	Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
+brace-expansion	2.1.7	MIT	git://github.com/juliangruber/brace-expansion	Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
+brace-expansion	5.0.12	MIT	https://github.com/juliangruber/brace-expansion	Copyright Julian Gruber <julian@juliangruber.com>
 brace-expansion	5.0.9	MIT	https://github.com/juliangruber/brace-expansion	Copyright Julian Gruber <julian@juliangruber.com>
 braces	3.0.3	MIT	micromatch/braces	Copyright (c) 2014-present, Jon Schlinkert.
 browser-stdout	1.3.1	ISC	http://github.com/kumavis/browser-stdout	Copyright 2018 kumavis
@@ -1070,15 +1127,18 @@ chokidar	4.0.3	MIT	https://github.com/paulmillr/chokidar	Copyright (c) 2012 Paul
 chownr	3.0.0	BlueOak-1.0.0	git://github.com/isaacs/chownr	## Copyright
 chrome-launcher	1.2.1	Apache-2.0	https://github.com/GoogleChrome/chrome-launcher/	"Licensor" shall mean the copyright owner or entity authorized by
 chromium-bidi	0.11.0	Apache-2.0	https://github.com/GoogleChromeLabs/chromium-bidi	"Licensor" shall mean the copyright owner or entity authorized by
+chromium-bidi	157.0.8090-0	Apache-2.0	https://github.com/GoogleChromeLabs/chromium-bidi	"Licensor" shall mean the copyright owner or entity authorized by
 ci-info	3.9.0	MIT	https://github.com/watson/ci-info	Copyright (c) 2016 Thomas Watson Steen
 class-variance-authority	0.7.1	Apache-2.0	https://github.com/joe-bell/cva	"Licensor" shall mean the copyright owner or entity authorized by
 classcat	5.0.5	MIT	jorgebucaran/classcat	Copyright © Jorge Bucaran <<https://jorgebucaran.com>>
 cli-cursor	5.0.0	MIT	sindresorhus/cli-cursor	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+cli-progress	3.12.0	MIT	npkgz/cli-progress	Copyright (c) 2015-2022 Andi Dittrich
 cli-spinners	2.9.2	MIT	sindresorhus/cli-spinners	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 cli-spinners	3.4.0	MIT	sindresorhus/cli-spinners	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 cli-truncate	5.2.0	MIT	sindresorhus/cli-truncate	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 client-only	0.0.1	MIT	https://reactjs.org/	
 cliui	8.0.1	ISC	yargs/cliui	Copyright (c) 2015, Contributors
+cliui	9.0.1	ISC	yargs/cliui	Copyright (c) 2015, Contributors
 clone	1.0.4	MIT	git://github.com/pvorb/node-clone	Copyright © 2011-2015 Paul Vorbach <paul@vorba.ch>
 clone	2.1.2	MIT	git://github.com/pvorb/node-clone	Copyright © 2011-2015 Paul Vorbach <paul@vorba.ch>
 clsx	2.1.1	MIT	lukeed/clsx	Copyright (c) Luke Edwards <luke.edwards05@gmail.com> (lukeed.com)
@@ -1102,6 +1162,7 @@ comma-separated-tokens	2.0.3	MIT	wooorm/comma-separated-tokens	Copyright (c) 201
 commander	11.1.0	MIT	https://github.com/tj/commander.js	Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
 commander	12.1.0	MIT	https://github.com/tj/commander.js	Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
 commander	14.0.3	MIT	https://github.com/tj/commander.js	Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
+commander	15.1.0	MIT	https://github.com/tj/commander.js	Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
 commander	7.2.0	MIT	https://github.com/tj/commander.js	Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
 commander	8.3.0	MIT	https://github.com/tj/commander.js	Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
 compress-commons	6.0.2	MIT	https://github.com/archiverjs/node-compress-commons	Copyright (c) 2014 Chris Talkington, contributors.
@@ -1213,6 +1274,7 @@ detect-libc	2.1.2	Apache-2.0	git://github.com/lovell/detect-libc	"Licensor" shal
 detect-node-es	1.1.0	MIT	https://github.com/thekashey/detect-node	Copyright (c) 2017 Ilya Kantor
 devlop	1.1.0	MIT	wooorm/devlop	Copyright (c) 2023 Titus Wormer <tituswormer@gmail.com>
 devtools-protocol	0.0.1367902	BSD-3-Clause	https://github.com/ChromeDevTools/devtools-protocol	// Copyright 2014 The Chromium Authors. All rights reserved.
+devtools-protocol	0.0.1717327	BSD-3-Clause	https://github.com/ChromeDevTools/devtools-protocol	// Copyright 2014 The Chromium Authors. All rights reserved.
 diff	8.0.4	BSD-3-Clause	https://github.com/kpdecker/jsdiff	Copyright (c) 2009-2015, Kevin Decker <kpdecker@gmail.com>
 diff-sequences	29.6.3	MIT	https://github.com/jestjs/jest	Copyright (c) Meta Platforms, Inc. and affiliates.
 dify-ai-provider	1.1.1	MIT	https://github.com/warmwind/dify-ai-provider	Copyright (c) 2024 Oscar Jiang
@@ -1247,6 +1309,7 @@ embla-carousel-reactive-utils	8.6.0	MIT	https://github.com/davidjerleke/embla-ca
 emoji-regex	10.6.0	MIT	https://github.com/mathiasbynens/emoji-regex	Copyright Mathias Bynens <https://mathiasbynens.be/>
 emoji-regex	8.0.0	MIT	https://github.com/mathiasbynens/emoji-regex	Copyright Mathias Bynens <https://mathiasbynens.be/>
 emoji-regex	9.2.2	MIT	https://github.com/mathiasbynens/emoji-regex	Copyright Mathias Bynens <https://mathiasbynens.be/>
+empathic	2.1.0	MIT	lukeed/empathic	Copyright (c) Luke Edwards <luke.edwards05@gmail.com> (lukeed.com)
 enabled	2.0.0	MIT	git://github.com/3rd-Eden/enabled	Copyright (c) 2015 Arnout Kazemier, Martijn Swaagman, the Contributors.
 encodeurl	2.0.0	MIT	pillarjs/encodeurl	Copyright (c) 2016 Douglas Christopher Wilson
 encoding-sniffer	0.2.1	MIT	git://github.com/fb55/encoding-sniffer	Copyright (c) 2022 Felix Boehm <me@feedic.com>
@@ -1256,6 +1319,7 @@ enquirer	2.4.1	MIT	enquirer/enquirer	Copyright (c) 2016-present, Jon Schlinkert.
 entities	4.5.0	BSD-2-Clause	git://github.com/fb55/entities	Copyright (c) Felix Böhm
 entities	6.0.1	BSD-2-Clause	git://github.com/fb55/entities	Copyright (c) Felix Böhm
 entities	7.0.1	BSD-2-Clause	https://github.com/fb55/entities	Copyright (c) Felix Böhm
+entities	9.0.0	BSD-2-Clause	https://github.com/fb55/entities	Copyright (c) Felix Böhm
 env-paths	2.2.1	MIT	sindresorhus/env-paths	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
 environment	1.1.0	MIT	sindresorhus/environment	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 error-ex	1.3.4	MIT	qix-/node-error-ex	Copyright (c) 2015 JD Ballard
@@ -1270,6 +1334,7 @@ es-object-atoms	1.1.2	MIT	https://github.com/ljharb/es-object-atoms	Copyright (c
 es-set-tostringtag	2.1.0	MIT	https://github.com/es-shims/es-set-tostringtag	Copyright (c) 2022 ECMAScript Shims
 es-toolkit	1.51.0	MIT	https://github.com/toss/es-toolkit	Copyright (c) 2024 Viva Republica, Inc.
 esbuild	0.25.12	MIT	https://github.com/evanw/esbuild	Copyright (c) 2020 Evan Wallace
+esbuild	0.27.2	MIT	https://github.com/evanw/esbuild	Copyright (c) 2020 Evan Wallace
 esbuild	0.27.7	MIT	https://github.com/evanw/esbuild	Copyright (c) 2020 Evan Wallace
 esbuild	0.28.2	MIT	https://github.com/evanw/esbuild	Copyright (c) 2020 Evan Wallace
 esbuild-register	3.6.0	MIT		Copyright (c) EGOIST <0x142857@gmail.com> (https://egoist.sh)
@@ -1325,6 +1390,7 @@ fast-shallow-equal	1.0.0	Unlicense	https://github.com/streamich/fast-shallow-equ
 fast-string-truncated-width	3.0.3	MIT	github:fabiospampinato/fast-string-truncated-width	Copyright (c) 2024-present Fabio Spampinato
 fast-string-width	3.0.2	MIT	github:fabiospampinato/fast-string-width	Copyright (c) 2024-present Fabio Spampinato
 fast-uri	4.1.3	BSD-3-Clause	https://github.com/fastify/fast-uri	Copyright (c) 2011-2021, Gary Court until https://github.com/garycourt/uri-js/commit/a1acf730b4bba3f1097c9f52e7d9d3aba8cdcaae
+fast-uri	4.2.3	BSD-3-Clause	https://github.com/fastify/fast-uri	Copyright (c) 2011-2021, Gary Court until https://github.com/garycourt/uri-js/commit/a1acf730b4bba3f1097c9f52e7d9d3aba8cdcaae
 fast-wrap-ansi	0.2.2	MIT	https://github.com/43081j/fast-wrap-ansi	Copyright (c) 2025 James Garbutt
 fastest-stable-stringify	2.0.2	MIT	https://github.com/streamich/fastest-stable-stringify	The above copyright notice and this permission notice shall be included in all
 fastq	1.20.1	ISC	https://github.com/mcollina/fastq	Copyright (c) 2015-2020, Matteo Collina <matteo.collina@gmail.com>
@@ -1346,6 +1412,8 @@ flat-cache	4.0.1	MIT	jaredwray/flat-cache	Copyright (c) Roy Riojas and Jared Wra
 flatted	3.4.4	ISC	https://github.com/WebReflection/flatted	Copyright (c) 2018-2020, Andrea Giammarchi, @WebReflection
 fn.name	1.1.0	MIT	https://github.com/3rd-Eden/fn.name	Copyright (c) 2015 Arnout Kazemier, Martijn Swaagman, the Contributors.
 follow-redirects	1.16.0	MIT	ssh://git@github.com/follow-redirects/follow-redirects	Copyright 2014–present Olivier Lalonde <olalonde@gmail.com>, James Talmage <james@talmage.io>, Ruben Verborgh
+follow-redirects	1.16.2	MIT	ssh://git@github.com/follow-redirects/follow-redirects	Copyright 2014–present Olivier Lalonde <olalonde@gmail.com>, James Talmage <james@talmage.io>, Ruben Verborgh
+follow-redirects	1.16.3	MIT	ssh://git@github.com/follow-redirects/follow-redirects	Copyright 2014–present Olivier Lalonde <olalonde@gmail.com>, James Talmage <james@talmage.io>, Ruben Verborgh
 foreground-child	3.3.1	ISC	https://github.com/tapjs/foreground-child	Copyright (c) 2015-2023 Isaac Z. Schlueter and Contributors
 form-data	4.0.6	MIT	git://github.com/form-data/form-data	Copyright (c) 2012 Felix Geisendörfer (felix@debuggable.com) and contributors
 form-data-encoder	1.7.2	MIT	octet-stream/form-data-encoder	Copyright (c) 2021-present Nick K.
@@ -1383,6 +1451,7 @@ github-from-package	0.0.0	MIT	git://github.com/substack/github-from-package	The 
 glob	10.5.0	ISC	git://github.com/isaacs/node-glob	Copyright (c) 2009-2023 Isaac Z. Schlueter and Contributors
 glob	11.1.0	BlueOak-1.0.0	git@github.com:isaacs/node-glob	## Copyright
 glob	13.0.6	BlueOak-1.0.0	git@github.com:isaacs/node-glob	## Copyright
+glob	14.0.4	BlueOak-1.0.0	git@github.com:isaacs/node-glob	## Copyright
 glob-parent	5.1.2	ISC	gulpjs/glob-parent	Copyright (c) 2015, 2019 Elan Shanker
 glob-parent	6.0.2	ISC	gulpjs/glob-parent	Copyright (c) 2015, 2019 Elan Shanker, 2021 Blaine Bublitz <blaine.bublitz@gmail.com>, Eric Schoffstall <yo@contra.io> and other contributors
 globals	14.0.0	MIT	sindresorhus/globals	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
@@ -1431,6 +1500,7 @@ he	1.2.0	MIT	https://github.com/mathiasbynens/he	Copyright Mathias Bynens <https
 hermes-estree	0.25.1	MIT	git@github.com:facebook/hermes	Copyright (c) Meta Platforms, Inc. and affiliates.
 hermes-parser	0.25.1	MIT	git@github.com:facebook/hermes	Copyright (c) Meta Platforms, Inc. and affiliates.
 highlight.js	11.11.2	BSD-3-Clause	git://github.com/highlightjs/highlight.js	Copyright (c) 2006, Ivan Sagalaev.
+hono	4.13.11	MIT	https://github.com/honojs/hono	Copyright (c) 2021 - present, Yusuke Wada and Hono contributors
 hono	4.13.5	MIT	https://github.com/honojs/hono	Copyright (c) 2021 - present, Yusuke Wada and Hono contributors
 hosted-git-info	4.1.0	ISC	https://github.com/npm/hosted-git-info	Copyright (c) 2015, Rebecca Turner
 hosted-git-info	7.0.2	ISC	https://github.com/npm/hosted-git-info	Copyright (c) 2015, Rebecca Turner
@@ -1454,6 +1524,8 @@ ieee754	1.2.1	BSD-3-Clause	git://github.com/feross/ieee754	Copyright 2008 Fair O
 ignore	5.3.2	MIT	git@github.com:kaelzhang/node-ignore	Copyright (c) 2013 Kael Zhang <i@kael.me>, contributors
 ignore	7.0.6	MIT	git@github.com:kaelzhang/node-ignore	Copyright (c) 2013 Kael Zhang <i@kael.me>, contributors
 image-size	2.0.2	MIT	git://github.com/image-size/image-size	Copyright © 2013-Present Aditya Yadav, http://netroy.in
+image-size	2.0.3	MIT	https://codeberg.org/image-size/image-size	Copyright © 2013-Present Aditya Yadav, http://netroy.in
+image-size	2.1.0	MIT	https://codeberg.org/image-size/image-size	Copyright © 2013-Present Aditya Yadav, http://netroy.in
 immediate	3.0.6	MIT	git://github.com/calvinmetcalf/immediate	Copyright (c) 2012 Barnesandnoble.com, llc, Donavon West, Domenic Denicola, Brian Cavalier
 import-fresh	3.3.1	MIT	sindresorhus/import-fresh	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 import-meta-resolve	4.2.0	MIT	wooorm/import-meta-resolve	Copyright (c) Titus Wormer <mailto:tituswormer@gmail.com>
@@ -1471,6 +1543,7 @@ internmap	1.0.1	ISC	https://github.com/mbostock/internmap	Copyright 2021 Mike Bo
 internmap	2.0.3	ISC	https://github.com/mbostock/internmap	Copyright 2021 Mike Bostock
 intl-messageformat	10.7.18	BSD-3-Clause	git@github.com:formatjs/formatjs	Copyright (c) 2023, Oath Inc.
 ip-address	10.5.0	MIT	https://github.com/beaugunderson/ip-address	Copyright (C) 2011 by Beau Gunderson
+ip-address	10.7.4	MIT	https://github.com/beaugunderson/ip-address	Copyright (C) 2011 by Beau Gunderson
 ipaddr.js	1.9.1	MIT	git://github.com/whitequark/ipaddr.js	Copyright (C) 2011-2017 whitequark <whitequark@whitequark.org>
 is-alphabetical	1.0.4	MIT	wooorm/is-alphabetical	Copyright (c) 2016 Titus Wormer <tituswormer@gmail.com>
 is-alphabetical	2.0.1	MIT	wooorm/is-alphabetical	Copyright (c) 2016 Titus Wormer <tituswormer@gmail.com>
@@ -1557,6 +1630,7 @@ jwa	2.0.1	MIT	git://github.com/brianloveswords/node-jwa	Copyright (c) 2013 Brian
 jws	4.0.1	MIT	git://github.com/brianloveswords/node-jws	Copyright (c) 2013 Brian J. Brennan
 jwt-decode	4.0.0	MIT	git://github.com/auth0/jwt-decode	Copyright (c) 2015 Auth0, Inc. <support@auth0.com> (http://auth0.com)
 katex	0.16.47	MIT	https://github.com/KaTeX/KaTeX	Copyright (c) 2013-2020 Khan Academy and other contributors
+katex	0.18.10	MIT	https://github.com/KaTeX/KaTeX	Copyright (c) 2013-2020 Khan Academy and other contributors
 keytar	7.9.0	MIT	https://github.com/atom/node-keytar	Copyright (c) 2013 GitHub Inc.
 keyv	4.5.4	MIT	https://github.com/jaredwray/keyv	
 khroma	2.1.0	MIT	github:fabiospampinato/khroma	Copyright (c) 2019-present Fabio Spampinato, Andrew Maney
@@ -1620,15 +1694,19 @@ lucide-react	0.577.0	ISC	https://github.com/lucide-icons/lucide	Copyright (c) fo
 lz-string	1.5.0	MIT	https://github.com/pieroxy/lz-string	Copyright (c) 2013 pieroxy
 magic-bytes.js	1.13.1	MIT	https://github.com/LarsKoelpin/magic-bytes	Copyright (c) 2022 Lars Kölpin
 magic-string	0.30.21	MIT	https://github.com/Rich-Harris/magic-string	Copyright 2018 Rich Harris
+magic-string	1.4.5	MIT	https://github.com/Rich-Harris/magic-string	Copyright 2018 Rich Harris
 magicast	0.3.5	MIT	unjs/magicast	Copyright (c) Pooya Parsa <pooya@pi0.io> and Anthony Fu <https://github.com/antfu>
+magicast	0.5.5	MIT	unjs/magicast	Copyright (c) Pooya Parsa <pooya@pi0.io> and Anthony Fu <https://github.com/antfu>
 make-dir	4.0.0	MIT	sindresorhus/make-dir	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 make-error	1.3.6	ISC	git://github.com/JsCommunity/make-error	Copyright 2014 Julien Fontanet
 mammoth	1.12.1	BSD-2-Clause	https://github.com/mwilliamson/mammoth.js	Copyright (c) 2013, Michael Williamson
 markdown-it	14.3.0	MIT	markdown-it/markdown-it	Copyright (c) 2014 Vitaly Puzrin, Alex Kocharin.
+markdown-it	14.3.3	MIT	markdown-it/markdown-it	Copyright (c) 2014 Vitaly Puzrin, Alex Kocharin.
 markdown-table	3.0.4	MIT	wooorm/markdown-table	Copyright (c) Titus Wormer <tituswormer@gmail.com>
 marked	15.0.12	MIT	git://github.com/markedjs/marked	Copyright (c) 2018+, MarkedJS (https://github.com/markedjs/)
 marked	16.4.2	MIT	git://github.com/markedjs/marked	Copyright (c) 2018+, MarkedJS (https://github.com/markedjs/)
 marked	17.0.1	MIT	git://github.com/markedjs/marked	Copyright (c) 2018+, MarkedJS (https://github.com/markedjs/)
+marked	18.2.0	MIT	https://github.com/markedjs/marked	Copyright (c) 2018+, MarkedJS (https://github.com/markedjs/)
 marky	1.3.0	Apache-2.0	https://github.com/nolanlawson/marky	"Licensor" shall mean the copyright owner or entity authorized by the
 math-intrinsics	1.1.0	MIT	https://github.com/es-shims/math-intrinsics	Copyright (c) 2024 ECMAScript Shims
 mdast-util-definitions	4.0.0	MIT	syntax-tree/mdast-util-definitions	Copyright (c) 2015-2016 Titus Wormer <tituswormer@gmail.com>
@@ -1708,6 +1786,7 @@ mimic-response	3.1.0	MIT	sindresorhus/mimic-response	Copyright (c) Sindre Sorhus
 min-indent	1.0.1	MIT	https://github.com/thejameskyle/min-indent	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com), James Kyle <me@thejameskyle.com> (thejameskyle.com)
 miniflare	5.20261104.0-beta	MIT	https://github.com/cloudflare/workers-sdk	
 minimatch	10.2.6	BlueOak-1.0.0	git@github.com:isaacs/minimatch	## Copyright
+minimatch	11.0.6	BlueOak-1.0.0	ssh://git@github.com/isaacs/minimatch	## Copyright
 minimatch	3.1.5	ISC	git://github.com/isaacs/minimatch	Copyright (c) Isaac Z. Schlueter and Contributors
 minimatch	5.1.9	ISC	git://github.com/isaacs/minimatch	Copyright (c) 2011-2023 Isaac Z. Schlueter and Contributors
 minimatch	9.0.9	ISC	git://github.com/isaacs/minimatch	Copyright (c) 2011-2023 Isaac Z. Schlueter and Contributors
@@ -1717,6 +1796,7 @@ minizlib	3.1.0	MIT	https://github.com/isaacs/minizlib	Copyright (c) 2017-2023 Is
 mitt	3.0.1	MIT	developit/mitt	Copyright (c) 2021 Jason Miller
 mkdirp-classic	0.5.3	MIT	https://github.com/mafintosh/mkdirp-classic	Copyright (c) 2020 James Halliday (mail@substack.net) and Mathias Buus
 mocha	11.8.0	MIT	https://github.com/mochajs/mocha	Copyright (c) 2011-2024 OpenJS Foundation and contributors, https://openjsf.org
+modern-tar	0.8.6	MIT	https://github.com/ayuhito/modern-tar	Copyright (c) 2025 Ayuhito
 motion	12.43.0	MIT	https://github.com/motiondivision/motion	Copyright (c) 2024 [Motion](https://motion.dev) B.V.
 motion-dom	12.43.0	MIT	https://github.com/motiondivision/motion	Copyright (c) 2024 [Motion](https://motion.dev) B.V.
 motion-utils	12.39.0	MIT	https://github.com/motiondivision/motion	Copyright (c) 2024 [Motion](https://motion.dev) B.V.
@@ -1724,12 +1804,15 @@ ms	2.1.3	MIT	vercel/ms	Copyright (c) 2020 Vercel, Inc.
 mute-stream	0.0.8	ISC	git://github.com/isaacs/mute-stream	Copyright (c) Isaac Z. Schlueter and Contributors
 nano-css	5.6.2	Unlicense	https://github.com/streamich/nano-css	In jurisdictions that recognize copyright laws, the author or authors
 nanoid	3.3.18	MIT	ai/nanoid	Copyright 2017 Andrey Sitnik <andrey@sitnik.ru>
+nanoid	3.3.20	MIT	ai/nanoid	Copyright 2017 Andrey Sitnik <andrey@sitnik.ru>
 nanoid	5.1.16	MIT	ai/nanoid	Copyright 2017 Andrey Sitnik <andrey@sitnik.es>
 napi-build-utils	2.0.0	MIT	https://github.com/inspiredware/napi-build-utils	Copyright (c) 2018 inspiredware
 natural-compare	1.4.0	MIT	git://github.com/litejs/natural-compare-lite	
 negotiator	1.1.0	MIT	jshttp/negotiator	Copyright (c) 2012-2014 Federico Romero
 netmask	2.1.1	MIT	git://github.com/rs/node-netmask	Copyright (c) 2011 Olivier Poitrey rs@rhapsodyk.net
 next	16.2.11	MIT	vercel/next.js	Copyright (c) 2025 Vercel, Inc.
+next	16.4.1	MIT	vercel/next.js	Copyright (c) 2025 Vercel, Inc.
+next	16.4.6	MIT	vercel/next.js	Copyright (c) 2025 Vercel, Inc.
 next-themes	0.4.6	MIT	https://github.com/pacocoursey/next-themes	Copyright (c) 2022 Paco Coursey
 nice-grpc	2.1.17	MIT	https://github.com/deeplay-io/nice-grpc	Copyright (c) 2021 Deeplay
 nice-grpc-common	2.0.4	MIT	https://github.com/deeplay-io/nice-grpc	Copyright (c) 2021 Deeplay
@@ -1742,6 +1825,7 @@ node-ensure	0.0.0	MIT	https://github.com/bauerca/node-ensure
 node-fetch	2.7.0	MIT	https://github.com/bitinn/node-fetch	Copyright (c) 2016 David Frank
 node-fetch	3.3.2	MIT	https://github.com/node-fetch/node-fetch	Copyright (c) 2016 - 2020 Node Fetch Team
 node-forge	1.4.0	(BSD-3-Clause OR GPL-2.0)	https://github.com/digitalbazaar/forge	use this project in commercial projects as long as the copyright header is
+node-forge	1.4.1	(BSD-3-Clause OR GPL-2.0)	https://github.com/digitalbazaar/forge	use this project in commercial projects as long as the copyright header is
 node-int64	0.4.0	MIT	https://github.com/broofa/node-int64	Copyright (c) 2014 Robert Kieffer
 node-machine-id	1.1.12	MIT	git@github.com:automation-stack/node-machine-id	Copyright (c) 2016 Aleksandr Komlev
 node-pty	1.2.0-beta.11	MIT	git://github.com/microsoft/node-pty	Copyright (c) 2012-2015, Christopher Jeffrey (https://github.com/chjj/)
@@ -1778,6 +1862,8 @@ opossum	10.0.0	Apache-2.0	https://github.com/nodeshift/opossum	"Licensor" shall 
 option	0.2.4	BSD-2-Clause	https://github.com/mwilliamson/node-options	Copyright (c) 2013, Michael Williamson
 optionator	0.9.4	MIT	git://github.com/gkz/optionator	Copyright (c) George Zahariev
 ora	8.2.0	MIT	sindresorhus/ora	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+oxc-parser	0.127.0	MIT	https://github.com/oxc-project/oxc	Copyright (c) 2024-present VoidZero Inc. & Contributors
+oxc-resolver	11.21.2	MIT	https://github.com/oxc-project/oxc-resolver	
 p-finally	1.0.0	MIT	sindresorhus/p-finally	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
 p-limit	2.3.0	MIT	sindresorhus/p-limit	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
 p-limit	3.1.0	MIT	sindresorhus/p-limit	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
@@ -1806,6 +1892,7 @@ parse-ms	3.0.0	MIT	sindresorhus/parse-ms	Copyright (c) Sindre Sorhus <sindresorh
 parse-ms	4.0.0	MIT	sindresorhus/parse-ms	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 parse-semver	1.1.1	MIT	tunnckoCore/parse-semver	Copyright (c) 2015-2016 [Charlike Make Reagent](http://j.mp/1stW47C)
 parse5	7.3.0	MIT	git://github.com/inikulin/parse5	Copyright (c) 2013-2019 Ivan Nikulin (ifaaan@gmail.com, https://github.com/inikulin)
+parse5	8.1.1	MIT	git://github.com/inikulin/parse5	Copyright (c) 2013-2019 Ivan Nikulin (ifaaan@gmail.com, https://github.com/inikulin)
 parse5-htmlparser2-tree-adapter	7.1.0	MIT	git://github.com/inikulin/parse5	Copyright (c) 2013-2019 Ivan Nikulin (ifaaan@gmail.com, https://github.com/inikulin)
 parse5-parser-stream	7.1.2	MIT	git://github.com/inikulin/parse5	Copyright (c) 2013-2019 Ivan Nikulin (ifaaan@gmail.com, https://github.com/inikulin)
 parseurl	1.3.3	MIT	pillarjs/parseurl	Copyright (c) 2014 Jonathan Ong <me@jongleberry.com>
@@ -1820,6 +1907,7 @@ path-key	4.0.0	MIT	sindresorhus/path-key	Copyright (c) Sindre Sorhus <sindresorh
 path-parse	1.0.7	MIT	https://github.com/jbgutierrez/path-parse	Copyright (c) 2015 Javier Blanco
 path-scurry	1.11.1	BlueOak-1.0.0	https://github.com/isaacs/path-scurry	## Copyright
 path-scurry	2.0.2	BlueOak-1.0.0	https://github.com/isaacs/path-scurry	## Copyright
+path-scurry	3.0.0	BlueOak-1.0.0	https://github.com/isaacs/path-scurry	## Copyright
 path-to-regexp	6.3.0	MIT	https://github.com/pillarjs/path-to-regexp	Copyright (c) 2014 Blake Embrey (hello@blakeembrey.com)
 path-to-regexp	8.4.2	MIT	https://github.com/pillarjs/path-to-regexp	Copyright (c) 2014 Blake Embrey (hello@blakeembrey.com)
 path-type	6.0.0	MIT	sindresorhus/path-type	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
@@ -1844,8 +1932,12 @@ pluralize	8.0.0	MIT	https://github.com/blakeembrey/pluralize	Copyright (c) 2013 
 points-on-curve	0.2.0	MIT	https://github.com/pshihn/bezier-points	Copyright (c) 2020 Preet Shihn
 points-on-path	0.2.1	MIT	https://github.com/pshihn/points-on-path	Copyright (c) 2020 Preet
 postcss	8.4.31	MIT	postcss/postcss	Copyright 2013 Andrey Sitnik <andrey@sitnik.ru>
+postcss	8.5.23	MIT	postcss/postcss	Copyright 2013 Andrey Sitnik <andrey@sitnik.es>
 postcss	8.5.26	MIT	postcss/postcss	Copyright 2013 Andrey Sitnik <andrey@sitnik.es>
+postcss	8.5.32	MIT	postcss/postcss	Copyright 2013 Andrey Sitnik <andrey@sitnik.es>
 postcss-selector-parser	7.1.5	MIT	https://github.com/postcss/postcss-selector-parser	Copyright (c) Ben Briggs <beneb.info@gmail.com> (http://beneb.info)
+postcss-selector-parser	7.1.6	MIT	https://github.com/postcss/postcss-selector-parser	Copyright (c) Ben Briggs <beneb.info@gmail.com> (http://beneb.info)
+postcss-selector-parser	7.2.0	MIT	https://github.com/postcss/postcss-selector-parser	Copyright (c) Ben Briggs <beneb.info@gmail.com> (http://beneb.info)
 postcss-value-parser	4.2.0	MIT	https://github.com/TrySound/postcss-value-parser	Copyright (c) Bogdan Chadkin <trysound@yandex.ru>
 posthog-js	1.419.4	(Apache-2.0 AND MIT)	https://github.com/PostHog/posthog-js	Copyright 2020 Posthog / Hiberly, Inc.
 posthog-node	5.51.2	MIT	https://github.com/PostHog/posthog-js	Copyright 2020 Posthog / Hiberly, Inc.
@@ -1878,8 +1970,12 @@ pump	3.0.4	MIT	git://github.com/mafintosh/pump	Copyright (c) 2014 Mathias Buus
 punycode	2.3.1	MIT	https://github.com/mathiasbynens/punycode.js	Copyright Mathias Bynens <https://mathiasbynens.be/>
 punycode.js	2.3.1	MIT	https://github.com/mathiasbynens/punycode.js	Copyright Mathias Bynens <https://mathiasbynens.be/>
 puppeteer-chromium-resolver	23.0.0	MIT	https://github.com/cenfun/puppeteer-chromium-resolver	Copyright (c) 2021 cenfun
+puppeteer-chromium-resolver	25.0.0	MIT	https://github.com/cenfun/puppeteer-chromium-resolver	Copyright (c) 2021 cenfun
 puppeteer-core	23.11.1	Apache-2.0	https://github.com/puppeteer/puppeteer/tree/main/packages/puppeteer-core	
+puppeteer-core	25.17.0	Apache-2.0	https://github.com/puppeteer/puppeteer/tree/main/packages/puppeteer-core	
 qs	6.15.3	BSD-3-Clause	https://github.com/ljharb/qs	Copyright (c) 2014, Nathan LaFreniere and other [contributors](https://github.com/ljharb/qs/graphs/contributors)
+qs	6.16.1	BSD-3-Clause	https://github.com/ljharb/qs	Copyright (c) 2014, Nathan LaFreniere and other [contributors](https://github.com/ljharb/qs/graphs/contributors)
+qs	6.17.1	BSD-3-Clause	https://github.com/ljharb/qs	Copyright (c) 2014, Nathan LaFreniere and other [contributors](https://github.com/ljharb/qs/graphs/contributors)
 query-selector-shadow-dom	1.0.1	MIT	https://github.com/webdriverio/query-selector-shadow-dom	Copyright (c) 2020 George Griffiths
 queue-microtask	1.2.3	MIT	git://github.com/feross/queue-microtask	Copyright (c) Feross Aboukhadijeh
 quick-format-unescaped	4.0.4	MIT	https://github.com/davidmarkclements/quick-format	Copyright (c) 2016-2019 David Mark Clements
@@ -1969,6 +2065,7 @@ rfdc	1.4.1	MIT	https://github.com/davidmarkclements/rfdc	Copyright 2019 "David M
 rimraf	5.0.10	ISC	git://github.com/isaacs/rimraf	Copyright (c) 2011-2023 Isaac Z. Schlueter and Contributors
 rimraf	6.1.3	BlueOak-1.0.0	git@github.com:isaacs/rimraf	## Copyright
 robust-predicates	3.0.3	Unlicense	https://github.com/mourner/robust-predicates	In jurisdictions that recognize copyright laws, the author or authors
+rolldown	1.2.18	MIT	https://github.com/rolldown/rolldown	Copyright (c) 2024-present VoidZero Inc. & Contributors
 rolldown	1.2.5	MIT	https://github.com/rolldown/rolldown	Copyright (c) 2024-present VoidZero Inc. & Contributors
 rollup	4.63.0	MIT	https://github.com/rollup/rollup	Copyright (c) 2017 [these people](https://github.com/rollup/rollup/graphs/contributors)
 roughjs	4.6.6	MIT	https://github.com/pshihn/rough	Copyright (c) 2019 Preet Shihn
@@ -1995,6 +2092,8 @@ semver	7.8.5	ISC	https://github.com/npm/node-semver	Copyright (c) Isaac Z. Schlu
 send	1.2.1	MIT	pillarjs/send	Copyright (c) 2012 TJ Holowaychuk
 serialize-error	11.0.3	MIT	sindresorhus/serialize-error	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 serialize-javascript	7.1.0	BSD-3-Clause	https://github.com/yahoo/serialize-javascript	Copyright 2014 Yahoo! Inc.
+serialize-javascript	7.1.3	BSD-3-Clause	https://github.com/yahoo/serialize-javascript	Copyright 2014 Yahoo! Inc.
+serialize-javascript	7.1.4	BSD-3-Clause	https://github.com/yahoo/serialize-javascript	Copyright 2014 Yahoo! Inc.
 serve-static	2.2.1	MIT	expressjs/serve-static	Copyright (c) 2010 Sencha Inc.
 set-harmonic-interval	1.0.1	Unlicense	streamich/set-harmonic-interval	In jurisdictions that recognize copyright laws, the author or authors of this software dedicate any and all copyright interest in the software to the public domain. We make this dedication for the benefit of the public a
 setimmediate	1.0.5	MIT	YuzuJS/setImmediate	Copyright (c) 2012 Barnesandnoble.com, llc, Donavon West, and Domenic Denicola
@@ -2005,6 +2104,7 @@ sharp	0.35.5	Apache-2.0	https://github.com/lovell/sharp	"Licensor" shall mean th
 shebang-command	2.0.0	MIT	kevva/shebang-command	Copyright (c) Kevin Mårtensson <kevinmartensson@gmail.com> (github.com/kevva)
 shebang-regex	3.0.0	MIT	sindresorhus/shebang-regex	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
 shell-quote	1.10.0	MIT	http://github.com/ljharb/shell-quote	Copyright (c) 2013 James Halliday (mail@substack.net)
+shell-quote	1.11.0	MIT	http://github.com/ljharb/shell-quote	Copyright (c) 2013 James Halliday (mail@substack.net)
 shiki	3.23.0	MIT	https://github.com/shikijs/shiki	Copyright (c) 2021 Pine Wu
 shiki	4.4.3	MIT	https://github.com/shikijs/shiki	Copyright (c) 2021 Pine Wu
 should	13.2.3	MIT	https://github.com/shouldjs/should.js	Copyright(c) 2010-2013 TJ Holowaychuk <tj@vision-media.ca>
@@ -2041,6 +2141,7 @@ sonner	2.0.8	MIT	https://github.com/emilkowalski/sonner	Copyright (c) 2023 Emil 
 source-map	0.5.6	BSD-3-Clause	http://github.com/mozilla/source-map	Copyright (c) 2009-2011, Mozilla Foundation and contributors
 source-map	0.6.1	BSD-3-Clause	http://github.com/mozilla/source-map	Copyright (c) 2009-2011, Mozilla Foundation and contributors
 source-map-js	1.2.1	BSD-3-Clause	7rulnik/source-map-js	Copyright (c) 2009-2011, Mozilla Foundation and contributors
+source-map-js	1.2.2	BSD-3-Clause	7rulnik/source-map-js	Copyright (c) 2009-2011, Mozilla Foundation and contributors
 space-separated-tokens	1.1.5	MIT	wooorm/space-separated-tokens	Copyright (c) 2016 Titus Wormer <tituswormer@gmail.com>
 space-separated-tokens	2.0.2	MIT	wooorm/space-separated-tokens	Copyright (c) 2016 Titus Wormer <tituswormer@gmail.com>
 spdx-correct	3.2.0	Apache-2.0	jslicense/spdx-correct.js	"Licensor" shall mean the copyright owner or entity authorized by
@@ -2060,7 +2161,9 @@ statuses	2.0.2	MIT	jshttp/statuses	Copyright (c) 2014 Jonathan Ong <me@jongleber
 std-env	3.10.0	MIT	unjs/std-env	Copyright (c) Pooya Parsa <pooya@pi0.io>
 std-env	4.2.0	MIT	unjs/std-env	Copyright (c) Pooya Parsa <pooya@pi0.io>
 stdin-discarder	0.2.2	MIT	sindresorhus/stdin-discarder	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+storybook	10.6.7	MIT	https://github.com/storybookjs/storybook	
 storybook	9.1.20	MIT	https://github.com/storybookjs/storybook	
+storybook	9.1.21	MIT	https://github.com/storybookjs/storybook	
 streamdown	2.6.0	Apache-2.0	https://github.com/vercel/streamdown	Copyright 2023 Vercel, Inc.
 streamx	2.28.1	MIT	https://github.com/mafintosh/streamx	Copyright (c) 2019 Mathias Buus
 string_decoder	1.1.1	MIT	git://github.com/nodejs/string_decoder	Copyright Node.js contributors. All rights reserved.
@@ -2099,6 +2202,7 @@ supports-hyperlinks	3.2.0	MIT	chalk/supports-hyperlinks	Copyright (c) Sindre Sor
 supports-preserve-symlinks-flag	1.0.0	MIT	https://github.com/inspect-js/node-supports-preserve-symlinks-flag	Copyright (c) 2022 Inspect JS
 swr	2.5.1	MIT	github:vercel/swr	Copyright (c) 2023 Vercel, Inc.
 symbol-tree	3.2.4	MIT	https://github.com/jsdom/js-symbol-tree	Copyright (c) 2015 Joris van der Wel
+systeminformation	5.33.16	MIT	https://github.com/sebhildebrandt/systeminformation	Copyright (c) 2014-2026 Sebastian Hildebrandt
 systeminformation	5.33.3	MIT	https://github.com/sebhildebrandt/systeminformation	Copyright (c) 2014-2026 Sebastian Hildebrandt
 tabbable	5.3.3	MIT	https://github.com/focus-trap/tabbable	Copyright (c) 2015 David Clark
 table	6.9.0	BSD-3-Clause	https://github.com/gajus/table	Copyright (c) 2018, Gajus Kuizinas (http://gajus.com/)
@@ -2174,6 +2278,7 @@ type-fest	2.19.0	(MIT OR CC0-1.0)	sindresorhus/type-fest
 type-fest	4.41.0	(MIT OR CC0-1.0)	sindresorhus/type-fest	exclusive Copyright and Related Rights (defined below) upon the creator
 type-is	2.1.0	MIT	jshttp/type-is	Copyright (c) 2014 Jonathan Ong <me@jongleberry.com>
 typed-query-selector	2.12.2	MIT	g-plane/typed-query-selector	Copyright (c) 2020-present Pig Fang
+typed-query-selector	2.12.3	MIT	g-plane/typed-query-selector	Copyright (c) 2020-present Pig Fang
 typed-rest-client	1.8.11	MIT	https://github.com/Microsoft/typed-rest-client	Copyright (c) Microsoft Corporation
 typescript	5.7.3	Apache-2.0	https://github.com/microsoft/TypeScript	"Licensor" shall mean the copyright owner or entity authorized by the copyright owner that is granting the License.
 typescript	5.9.3	Apache-2.0	https://github.com/microsoft/TypeScript	"Licensor" shall mean the copyright owner or entity authorized by the copyright owner that is granting the License.
@@ -2183,6 +2288,7 @@ uc.micro	2.1.0	MIT	markdown-it/uc.micro	Copyright Mathias Bynens <https://mathia
 unbzip2-stream	1.4.3	MIT	https://github.com/regular/unbzip2-stream	Copyright (c) 2017 by Jan Boelsche (jan@lagomorph.de)
 underscore	1.13.8	MIT	git://github.com/jashkenas/underscore	Copyright (c) 2009-2022 Jeremy Ashkenas, Julian Gonggrijp, and DocumentCloud and Investigative Reporters & Editors
 undici	7.29.0	MIT	https://github.com/nodejs/undici	Copyright (c) Matteo Collina and Undici contributors
+undici	7.30.1	MIT	https://github.com/nodejs/undici	Copyright (c) Matteo Collina and Undici contributors
 undici-types	5.26.5	MIT	https://github.com/nodejs/undici	
 undici-types	6.21.0	MIT	https://github.com/nodejs/undici	Copyright (c) Matteo Collina and Undici contributors
 undici-types	7.18.2	MIT	https://github.com/nodejs/undici	Copyright (c) Matteo Collina and Undici contributors
@@ -2212,6 +2318,7 @@ unist-util-visit-parents	6.0.2	MIT	syntax-tree/unist-util-visit-parents	Copyrigh
 universalify	2.0.1	MIT	https://github.com/RyanZim/universalify	Copyright (c) 2017, Ryan Zimmerman <opensrc@ryanzim.com>
 unpipe	1.0.0	MIT	stream-utils/unpipe	Copyright (c) 2015 Douglas Christopher Wilson <doug@somethingdoug.com>
 unplugin	1.16.1	MIT	https://github.com/unjs/unplugin	Copyright (c) 2021-PRESENT Nuxt Contrib
+unplugin	2.3.11	MIT	https://github.com/unjs/unplugin	Copyright (c) 2021-PRESENT Nuxt Contrib
 update-browserslist-db	1.3.1	MIT	browserslist/update-db	Copyright 2022 Andrey Sitnik <andrey@sitnik.es> and other contributors
 uri-js	4.4.1	BSD-2-Clause	http://github.com/garycourt/uri-js	Copyright 2011 Gary Court. All rights reserved.
 url-join	4.0.1	MIT	git://github.com/jfromaniello/url-join	Copyright (c) 2015 José F. Romaniello
@@ -2240,10 +2347,14 @@ vfile-message	2.0.4	MIT	vfile/vfile-message	Copyright (c) 2017 Titus Wormer <tit
 vfile-message	4.0.3	MIT	vfile/vfile-message	Copyright (c) Titus Wormer <tituswormer@gmail.com>
 victory-vendor	36.9.2	MIT AND ISC	https://github.com/FormidableLabs/victory	
 vite	7.3.6	MIT	https://github.com/vitejs/vite	Copyright (c) 2019-present, VoidZero Inc. and Vite contributors
+vite	7.3.7	MIT	https://github.com/vitejs/vite	Copyright (c) 2019-present, VoidZero Inc. and Vite contributors
 vite	8.2.2	MIT	https://github.com/vitejs/vite	Copyright (c) 2019-present, VoidZero Inc. and Vite contributors
+vite	8.2.4	MIT	https://github.com/vitejs/vite	Copyright (c) 2019-present, VoidZero Inc. and Vite contributors
+vite	8.3.7	MIT	https://github.com/vitejs/vite	Copyright (c) 2019-present, VoidZero Inc. and Vite contributors
 vite-node	3.2.4	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present Vitest Team
 vitest	3.2.7	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present Vitest Team
 vitest	4.1.11	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors
+vitest	4.1.12	MIT	https://github.com/vitest-dev/vitest	Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors
 voca	1.4.1	MIT	https://github.com/panzerdp/voca	Copyright (c) 2016 Dmitri Pavlutin
 vscode-uri	3.2.0	MIT	https://github.com/microsoft/vscode-uri	Copyright (c) Microsoft
 w3c-xmlserializer	5.0.0	MIT	jsdom/w3c-xmlserializer	Copyright © Sebastian Mayr
@@ -2255,6 +2366,7 @@ web-streams-polyfill	4.0.0-beta.3	MIT	https://github.com/MattiasBuelens/web-stre
 web-tree-sitter	0.25.10	MIT	https://github.com/tree-sitter/tree-sitter	Copyright (c) 2018-2024 Max Brunsfeld
 web-vitals	5.3.0	Apache-2.0	https://github.com/GoogleChrome/web-vitals	"Licensor" shall mean the copyright owner or entity authorized by
 web-vitals	6.0.0	Apache-2.0	https://github.com/GoogleChrome/web-vitals	"Licensor" shall mean the copyright owner or entity authorized by
+webdriver-bidi-protocol	1.0.2	Apache-2.0	https://github.com/GoogleChromeLabs/webdriver-bidi-protocol	"Licensor" shall mean the copyright owner or entity authorized by
 webidl-conversions	3.0.1	BSD-2-Clause	jsdom/webidl-conversions	Copyright (c) 2014, Domenic Denicola
 webidl-conversions	7.0.0	BSD-2-Clause	jsdom/webidl-conversions	Copyright (c) 2014, Domenic Denicola
 webpack-virtual-modules	0.6.2	MIT	https://github.com/sysgears/webpack-virtual-modules	Copyright (c) 2017 SysGears
@@ -2279,6 +2391,7 @@ wrappy	1.0.2	ISC	https://github.com/npm/wrappy	Copyright (c) Isaac Z. Schlueter 
 ws	7.5.13	MIT	websockets/ws	Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>
 ws	8.21.0	MIT	https://github.com/websockets/ws	Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>
 ws	8.21.3	MIT	https://github.com/websockets/ws	Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>
+ws	8.22.2	MIT	https://github.com/websockets/ws	Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>
 wsl-utils	0.1.0	MIT	sindresorhus/wsl-utils	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 wsl-utils	1.0.0	MIT	sindresorhus/wsl-utils	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 xml-name-validator	5.0.0	Apache-2.0	jsdom/xml-name-validator	"Licensor" shall mean the copyright owner or entity authorized by
@@ -2293,7 +2406,9 @@ yallist	4.0.0	ISC	https://github.com/isaacs/yallist	Copyright (c) Isaac Z. Schlu
 yallist	5.0.0	BlueOak-1.0.0	https://github.com/isaacs/yallist	## Copyright
 yaml	2.9.0	ISC	github:eemeli/yaml	Copyright Eemeli Aro <eemeli@gmail.com>
 yargs	17.7.3	MIT	https://github.com/yargs/yargs	Copyright 2010 James Halliday (mail@substack.net); Modified work Copyright 2014 Contributors (ben@npmjs.com)
+yargs	18.2.0	MIT	https://github.com/yargs/yargs	Copyright 2010 James Halliday (mail@substack.net); Modified work Copyright 2014 Contributors (ben@npmjs.com)
 yargs-parser	21.1.1	ISC	https://github.com/yargs/yargs-parser	Copyright (c) 2016, Contributors
+yargs-parser	22.0.0	ISC	https://github.com/yargs/yargs-parser	Copyright (c) 2016, Contributors
 yargs-unparser	2.0.0	MIT	yargs/yargs-unparser	Copyright (c) 2017 Made With MOXY Lda <hello@moxy.studio>
 yauzl	2.10.0	MIT	https://github.com/thejoshwolfe/yauzl	Copyright (c) 2014 Josh Wolfe
 yauzl	3.4.0	MIT	https://github.com/thejoshwolfe/yauzl	Copyright (c) 2014 Josh Wolfe
@@ -2312,6 +2427,8 @@ zod	3.25.76	MIT	https://github.com/colinhacks/zod	Copyright (c) 2025 Colin McDon
 zod	4.3.6	MIT	https://github.com/colinhacks/zod	Copyright (c) 2025 Colin McDonnell
 zod	4.4.3	MIT	https://github.com/colinhacks/zod	Copyright (c) 2025 Colin McDonnell
 zod	4.6.5	MIT	https://github.com/colinhacks/zod	Copyright (c) 2025 Colin McDonnell
+zod	4.6.6	MIT	https://github.com/colinhacks/zod	Copyright (c) 2025 Colin McDonnell
+zod	4.6.7	MIT	https://github.com/colinhacks/zod	Copyright (c) 2025 Colin McDonnell
 zod-to-json-schema	3.25.2	ISC	https://github.com/StefanTerdell/zod-to-json-schema	Copyright (c) 2020, Stefan Terdell
 zod-validation-error	4.0.2	MIT	git://github.com/causaly/zod-validation-error	Copyright 2022 Causaly, Inc <front-end@causaly.com>
 zustand	4.5.7	MIT	https://github.com/pmndrs/zustand	Copyright (c) 2019 Paul Henschel

@@ -1,30 +1,30 @@
 {
-	"generatedAt": "2026-11-10T13:44:38.010Z",
-	"total": 2257,
+	"generatedAt": "2026-11-10T17:10:52.130Z",
+	"total": 2374,
 	"summary": [
 		{
 			"license": "MIT",
-			"count": 1656
+			"count": 1744
 		},
 		{
 			"license": "Apache-2.0",
-			"count": 325
+			"count": 339
 		},
 		{
 			"license": "ISC",
-			"count": 106
+			"count": 108
 		},
 		{
 			"license": "BSD-3-Clause",
-			"count": 50
+			"count": 57
 		},
 		{
 			"license": "BSD-2-Clause",
-			"count": 34
+			"count": 35
 		},
 		{
 			"license": "BlueOak-1.0.0",
-			"count": 17
+			"count": 21
 		},
 		{
 			"license": "MIT OR Apache-2.0",
@@ -75,6 +75,10 @@
 			"count": 2
 		},
 		{
+			"license": "(BSD-3-Clause OR GPL-2.0)",
+			"count": 2
+		},
+		{
 			"license": "0BSD",
 			"count": 2
 		},
@@ -120,10 +124,6 @@
 		},
 		{
 			"license": "(MIT OR GPL-3.0-or-later)",
-			"count": 1
-		},
-		{
-			"license": "(BSD-3-Clause OR GPL-2.0)",
 			"count": 1
 		},
 		{
@@ -672,6 +672,14 @@
 			"private": false
 		},
 		{
+			"name": "@azure/identity",
+			"version": "4.14.1",
+			"license": "MIT",
+			"repository": "https://github.com/Azure/azure-sdk-for-js",
+			"copyright": "Copyright (c) Microsoft Corporation.",
+			"private": false
+		},
+		{
 			"name": "@azure/logger",
 			"version": "1.4.0",
 			"license": "MIT",
@@ -696,8 +704,24 @@
 			"private": false
 		},
 		{
+			"name": "@azure/msal-common",
+			"version": "16.16.1",
+			"license": "MIT",
+			"repository": "https://github.com/AzureAD/microsoft-authentication-library-for-js",
+			"copyright": "Copyright (c) Microsoft Corporation. All rights reserved.",
+			"private": false
+		},
+		{
 			"name": "@azure/msal-node",
 			"version": "5.6.0",
+			"license": "MIT",
+			"repository": "https://github.com/AzureAD/microsoft-authentication-library-for-js",
+			"copyright": "Copyright (c) 2020 Microsoft",
+			"private": false
+		},
+		{
+			"name": "@azure/msal-node",
+			"version": "7.2.1",
 			"license": "MIT",
 			"repository": "https://github.com/AzureAD/microsoft-authentication-library-for-js",
 			"copyright": "Copyright (c) 2020 Microsoft",
@@ -1289,6 +1313,14 @@
 		},
 		{
 			"name": "@esbuild/win32-x64",
+			"version": "0.27.2",
+			"license": "MIT",
+			"repository": "https://github.com/evanw/esbuild",
+			"copyright": "",
+			"private": false
+		},
+		{
+			"name": "@esbuild/win32-x64",
 			"version": "0.27.7",
 			"license": "MIT",
 			"repository": "https://github.com/evanw/esbuild",
@@ -1522,6 +1554,22 @@
 		{
 			"name": "@grpc/grpc-js",
 			"version": "1.14.4",
+			"license": "Apache-2.0",
+			"repository": "https://github.com/grpc/grpc-node/tree/master/packages/grpc-js",
+			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
+			"private": false
+		},
+		{
+			"name": "@grpc/grpc-js",
+			"version": "1.14.5",
+			"license": "Apache-2.0",
+			"repository": "https://github.com/grpc/grpc-node/tree/master/packages/grpc-js",
+			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
+			"private": false
+		},
+		{
+			"name": "@grpc/grpc-js",
+			"version": "1.14.7",
 			"license": "Apache-2.0",
 			"repository": "https://github.com/grpc/grpc-node/tree/master/packages/grpc-js",
 			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
@@ -2192,6 +2240,30 @@
 			"private": false
 		},
 		{
+			"name": "@hono/node-server",
+			"version": "1.19.9",
+			"license": "MIT",
+			"repository": "https://github.com/honojs/node-server",
+			"copyright": "",
+			"private": false
+		},
+		{
+			"name": "@hono/node-server",
+			"version": "2.1.3",
+			"license": "MIT",
+			"repository": "https://github.com/honojs/node-server",
+			"copyright": "Copyright (c) 2022 - present, Yusuke Wada and Hono contributors",
+			"private": false
+		},
+		{
+			"name": "@hono/node-server",
+			"version": "2.1.6",
+			"license": "MIT",
+			"repository": "https://github.com/honojs/node-server",
+			"copyright": "Copyright (c) 2022 - present, Yusuke Wada and Hono contributors",
+			"private": false
+		},
+		{
 			"name": "@hono/node-ws",
 			"version": "1.3.1",
 			"license": "MIT",
@@ -2352,6 +2424,14 @@
 			"private": false
 		},
 		{
+			"name": "@isaacs/nonrecursive-glob-match",
+			"version": "1.1.0",
+			"license": "BlueOak-1.0.0",
+			"repository": "",
+			"copyright": "## Copyright",
+			"private": false
+		},
+		{
 			"name": "@istanbuljs/schema",
 			"version": "0.1.6",
 			"license": "MIT",
@@ -2424,6 +2504,14 @@
 			"private": false
 		},
 		{
+			"name": "@joshwooding/vite-plugin-react-docgen-typescript",
+			"version": "0.7.0",
+			"license": "MIT",
+			"repository": "https://github.com/joshwooding/vite-plugin-react-docgen-typescript",
+			"copyright": "",
+			"private": false
+		},
+		{
 			"name": "@jridgewell/gen-mapping",
 			"version": "0.3.13",
 			"license": "MIT",
@@ -2450,6 +2538,14 @@
 		{
 			"name": "@jridgewell/sourcemap-codec",
 			"version": "1.5.5",
+			"license": "MIT",
+			"repository": "https://github.com/jridgewell/sourcemaps",
+			"copyright": "Copyright 2024 Justin Ridgewell <justin@ridgewell.name>",
+			"private": false
+		},
+		{
+			"name": "@jridgewell/sourcemap-codec",
+			"version": "1.6.0",
 			"license": "MIT",
 			"repository": "https://github.com/jridgewell/sourcemaps",
 			"copyright": "Copyright 2024 Justin Ridgewell <justin@ridgewell.name>",
@@ -2616,6 +2712,38 @@
 			"private": false
 		},
 		{
+			"name": "@modelcontextprotocol/sdk",
+			"version": "1.32.0",
+			"license": "MIT",
+			"repository": "https://github.com/modelcontextprotocol/typescript-sdk",
+			"copyright": "Copyright (c) 2024 Anthropic, PBC",
+			"private": false
+		},
+		{
+			"name": "@modelcontextprotocol/sdk",
+			"version": "1.32.2",
+			"license": "MIT",
+			"repository": "https://github.com/modelcontextprotocol/typescript-sdk",
+			"copyright": "Copyright (c) 2024 Anthropic, PBC",
+			"private": false
+		},
+		{
+			"name": "@napi-rs/keyring",
+			"version": "1.3.0",
+			"license": "MIT",
+			"repository": "https://github.com/Brooooooklyn/keyring-node",
+			"copyright": "Copyright (c) 2020 N-API for Rust",
+			"private": false
+		},
+		{
+			"name": "@napi-rs/keyring-win32-x64-msvc",
+			"version": "1.3.0",
+			"license": "MIT",
+			"repository": "https://github.com/Brooooooklyn/keyring-node",
+			"copyright": "",
+			"private": false
+		},
+		{
 			"name": "@next/env",
 			"version": "16.2.11",
 			"license": "MIT",
@@ -2624,8 +2752,40 @@
 			"private": false
 		},
 		{
+			"name": "@next/env",
+			"version": "16.4.1",
+			"license": "MIT",
+			"repository": "https://github.com/vercel/next.js",
+			"copyright": "",
+			"private": false
+		},
+		{
+			"name": "@next/env",
+			"version": "16.4.6",
+			"license": "MIT",
+			"repository": "https://github.com/vercel/next.js",
+			"copyright": "",
+			"private": false
+		},
+		{
 			"name": "@next/swc-win32-x64-msvc",
 			"version": "16.2.11",
+			"license": "MIT",
+			"repository": "https://github.com/vercel/next.js",
+			"copyright": "",
+			"private": false
+		},
+		{
+			"name": "@next/swc-win32-x64-msvc",
+			"version": "16.4.1",
+			"license": "MIT",
+			"repository": "https://github.com/vercel/next.js",
+			"copyright": "",
+			"private": false
+		},
+		{
+			"name": "@next/swc-win32-x64-msvc",
+			"version": "16.4.6",
 			"license": "MIT",
 			"repository": "https://github.com/vercel/next.js",
 			"copyright": "",
@@ -2753,6 +2913,14 @@
 		},
 		{
 			"name": "@opentelemetry/exporter-logs-otlp-grpc",
+			"version": "0.214.0",
+			"license": "Apache-2.0",
+			"repository": "open-telemetry/opentelemetry-js",
+			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
+			"private": false
+		},
+		{
+			"name": "@opentelemetry/exporter-logs-otlp-grpc",
 			"version": "0.56.0",
 			"license": "Apache-2.0",
 			"repository": "open-telemetry/opentelemetry-js",
@@ -2777,7 +2945,23 @@
 		},
 		{
 			"name": "@opentelemetry/exporter-logs-otlp-proto",
+			"version": "0.214.0",
+			"license": "Apache-2.0",
+			"repository": "open-telemetry/opentelemetry-js",
+			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
+			"private": false
+		},
+		{
+			"name": "@opentelemetry/exporter-logs-otlp-proto",
 			"version": "0.56.0",
+			"license": "Apache-2.0",
+			"repository": "open-telemetry/opentelemetry-js",
+			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
+			"private": false
+		},
+		{
+			"name": "@opentelemetry/exporter-metrics-otlp-grpc",
+			"version": "0.214.0",
 			"license": "Apache-2.0",
 			"repository": "open-telemetry/opentelemetry-js",
 			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
@@ -2809,7 +2993,23 @@
 		},
 		{
 			"name": "@opentelemetry/exporter-metrics-otlp-proto",
+			"version": "0.214.0",
+			"license": "Apache-2.0",
+			"repository": "open-telemetry/opentelemetry-js",
+			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
+			"private": false
+		},
+		{
+			"name": "@opentelemetry/exporter-metrics-otlp-proto",
 			"version": "0.56.0",
+			"license": "Apache-2.0",
+			"repository": "open-telemetry/opentelemetry-js",
+			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
+			"private": false
+		},
+		{
+			"name": "@opentelemetry/exporter-trace-otlp-grpc",
+			"version": "0.214.0",
 			"license": "Apache-2.0",
 			"repository": "open-telemetry/opentelemetry-js",
 			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
@@ -2841,6 +3041,14 @@
 		},
 		{
 			"name": "@opentelemetry/exporter-trace-otlp-proto",
+			"version": "0.214.0",
+			"license": "Apache-2.0",
+			"repository": "open-telemetry/opentelemetry-js",
+			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
+			"private": false
+		},
+		{
+			"name": "@opentelemetry/exporter-trace-otlp-proto",
 			"version": "0.56.0",
 			"license": "Apache-2.0",
 			"repository": "open-telemetry/opentelemetry-js",
@@ -2858,6 +3066,14 @@
 		{
 			"name": "@opentelemetry/otlp-exporter-base",
 			"version": "0.56.0",
+			"license": "Apache-2.0",
+			"repository": "open-telemetry/opentelemetry-js",
+			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
+			"private": false
+		},
+		{
+			"name": "@opentelemetry/otlp-grpc-exporter-base",
+			"version": "0.214.0",
 			"license": "Apache-2.0",
 			"repository": "open-telemetry/opentelemetry-js",
 			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
@@ -3088,11 +3304,43 @@
 			"private": false
 		},
 		{
+			"name": "@oxc-parser/binding-win32-x64-msvc",
+			"version": "0.127.0",
+			"license": "MIT",
+			"repository": "https://github.com/oxc-project/oxc",
+			"copyright": "",
+			"private": false
+		},
+		{
+			"name": "@oxc-project/types",
+			"version": "0.127.0",
+			"license": "MIT",
+			"repository": "https://github.com/oxc-project/oxc",
+			"copyright": "Copyright (c) 2024-present VoidZero Inc. & Contributors",
+			"private": false
+		},
+		{
 			"name": "@oxc-project/types",
 			"version": "0.146.0",
 			"license": "MIT",
 			"repository": "https://github.com/oxc-project/oxc",
 			"copyright": "Copyright (c) 2024-present VoidZero Inc. & Contributors",
+			"private": false
+		},
+		{
+			"name": "@oxc-project/types",
+			"version": "0.156.0",
+			"license": "MIT",
+			"repository": "https://github.com/oxc-project/oxc",
+			"copyright": "Copyright (c) 2024-present VoidZero Inc. & Contributors",
+			"private": false
+		},
+		{
+			"name": "@oxc-resolver/binding-win32-x64-msvc",
+			"version": "11.21.2",
+			"license": "MIT",
+			"repository": "https://github.com/oxc-project/oxc-resolver",
+			"copyright": "",
 			"private": false
 		},
 		{
@@ -3258,6 +3506,14 @@
 		{
 			"name": "@puppeteer/browsers",
 			"version": "2.6.1",
+			"license": "Apache-2.0",
+			"repository": "https://github.com/puppeteer/puppeteer/tree/main/packages/browsers",
+			"copyright": "",
+			"private": false
+		},
+		{
+			"name": "@puppeteer/browsers",
+			"version": "3.2.7",
 			"license": "Apache-2.0",
 			"repository": "https://github.com/puppeteer/puppeteer/tree/main/packages/browsers",
 			"copyright": "",
@@ -5033,6 +5289,14 @@
 		},
 		{
 			"name": "@rolldown/binding-win32-x64-msvc",
+			"version": "1.2.18",
+			"license": "MIT",
+			"repository": "https://github.com/rolldown/rolldown",
+			"copyright": "",
+			"private": false
+		},
+		{
+			"name": "@rolldown/binding-win32-x64-msvc",
 			"version": "1.2.5",
 			"license": "MIT",
 			"repository": "https://github.com/rolldown/rolldown",
@@ -5649,6 +5913,14 @@
 		},
 		{
 			"name": "@storybook/addon-a11y",
+			"version": "10.6.7",
+			"license": "MIT",
+			"repository": "https://github.com/storybookjs/storybook",
+			"copyright": "",
+			"private": false
+		},
+		{
+			"name": "@storybook/addon-a11y",
 			"version": "9.1.20",
 			"license": "MIT",
 			"repository": "https://github.com/storybookjs/storybook",
@@ -5657,7 +5929,23 @@
 		},
 		{
 			"name": "@storybook/addon-docs",
+			"version": "10.6.7",
+			"license": "MIT",
+			"repository": "https://github.com/storybookjs/storybook",
+			"copyright": "",
+			"private": false
+		},
+		{
+			"name": "@storybook/addon-docs",
 			"version": "9.1.20",
+			"license": "MIT",
+			"repository": "https://github.com/storybookjs/storybook",
+			"copyright": "",
+			"private": false
+		},
+		{
+			"name": "@storybook/builder-vite",
+			"version": "10.6.7",
 			"license": "MIT",
 			"repository": "https://github.com/storybookjs/storybook",
 			"copyright": "",
@@ -5696,6 +5984,22 @@
 			"private": false
 		},
 		{
+			"name": "@storybook/icons",
+			"version": "2.2.0",
+			"license": "MIT",
+			"repository": "https://github.com/storybookjs/icons",
+			"copyright": "Copyright (c) 2022 Tim Mikeladze",
+			"private": false
+		},
+		{
+			"name": "@storybook/react",
+			"version": "10.6.7",
+			"license": "MIT",
+			"repository": "https://github.com/storybookjs/storybook",
+			"copyright": "",
+			"private": false
+		},
+		{
 			"name": "@storybook/react",
 			"version": "9.1.20",
 			"license": "MIT",
@@ -5705,7 +6009,23 @@
 		},
 		{
 			"name": "@storybook/react-dom-shim",
+			"version": "10.6.7",
+			"license": "MIT",
+			"repository": "https://github.com/storybookjs/storybook",
+			"copyright": "",
+			"private": false
+		},
+		{
+			"name": "@storybook/react-dom-shim",
 			"version": "9.1.20",
+			"license": "MIT",
+			"repository": "https://github.com/storybookjs/storybook",
+			"copyright": "",
+			"private": false
+		},
+		{
+			"name": "@storybook/react-vite",
+			"version": "10.6.7",
 			"license": "MIT",
 			"repository": "https://github.com/storybookjs/storybook",
 			"copyright": "",
@@ -5794,6 +6114,14 @@
 		{
 			"name": "@swc/helpers",
 			"version": "0.5.15",
+			"license": "Apache-2.0",
+			"repository": "https://github.com/swc-project/swc",
+			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
+			"private": false
+		},
+		{
+			"name": "@swc/helpers",
+			"version": "0.5.23",
 			"license": "Apache-2.0",
 			"repository": "https://github.com/swc-project/swc",
 			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
@@ -5906,6 +6234,14 @@
 		{
 			"name": "@testing-library/jest-dom",
 			"version": "6.10.0",
+			"license": "MIT",
+			"repository": "https://github.com/testing-library/jest-dom",
+			"copyright": "Copyright (c) 2017 Kent C. Dodds",
+			"private": false
+		},
+		{
+			"name": "@testing-library/jest-dom",
+			"version": "6.9.1",
 			"license": "MIT",
 			"repository": "https://github.com/testing-library/jest-dom",
 			"copyright": "Copyright (c) 2017 Kent C. Dodds",
@@ -6984,6 +7320,14 @@
 			"private": false
 		},
 		{
+			"name": "@vitest/coverage-v8",
+			"version": "4.1.12",
+			"license": "MIT",
+			"repository": "https://github.com/vitest-dev/vitest",
+			"copyright": "Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors",
+			"private": false
+		},
+		{
 			"name": "@vitest/expect",
 			"version": "3.2.4",
 			"license": "MIT",
@@ -7002,6 +7346,14 @@
 		{
 			"name": "@vitest/expect",
 			"version": "4.1.11",
+			"license": "MIT",
+			"repository": "https://github.com/vitest-dev/vitest",
+			"copyright": "Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors",
+			"private": false
+		},
+		{
+			"name": "@vitest/expect",
+			"version": "4.1.12",
 			"license": "MIT",
 			"repository": "https://github.com/vitest-dev/vitest",
 			"copyright": "Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors",
@@ -7032,6 +7384,14 @@
 			"private": false
 		},
 		{
+			"name": "@vitest/mocker",
+			"version": "4.1.12",
+			"license": "MIT",
+			"repository": "https://github.com/vitest-dev/vitest",
+			"copyright": "Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors",
+			"private": false
+		},
+		{
 			"name": "@vitest/pretty-format",
 			"version": "3.2.4",
 			"license": "MIT",
@@ -7050,6 +7410,14 @@
 		{
 			"name": "@vitest/pretty-format",
 			"version": "4.1.11",
+			"license": "MIT",
+			"repository": "https://github.com/vitest-dev/vitest",
+			"copyright": "Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors",
+			"private": false
+		},
+		{
+			"name": "@vitest/pretty-format",
+			"version": "4.1.12",
 			"license": "MIT",
 			"repository": "https://github.com/vitest-dev/vitest",
 			"copyright": "Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors",
@@ -7072,6 +7440,14 @@
 			"private": false
 		},
 		{
+			"name": "@vitest/runner",
+			"version": "4.1.12",
+			"license": "MIT",
+			"repository": "https://github.com/vitest-dev/vitest",
+			"copyright": "Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors",
+			"private": false
+		},
+		{
 			"name": "@vitest/snapshot",
 			"version": "3.2.7",
 			"license": "MIT",
@@ -7082,6 +7458,14 @@
 		{
 			"name": "@vitest/snapshot",
 			"version": "4.1.11",
+			"license": "MIT",
+			"repository": "https://github.com/vitest-dev/vitest",
+			"copyright": "Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors",
+			"private": false
+		},
+		{
+			"name": "@vitest/snapshot",
+			"version": "4.1.12",
 			"license": "MIT",
 			"repository": "https://github.com/vitest-dev/vitest",
 			"copyright": "Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors",
@@ -7112,6 +7496,14 @@
 			"private": false
 		},
 		{
+			"name": "@vitest/spy",
+			"version": "4.1.12",
+			"license": "MIT",
+			"repository": "https://github.com/vitest-dev/vitest",
+			"copyright": "Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors",
+			"private": false
+		},
+		{
 			"name": "@vitest/utils",
 			"version": "3.2.4",
 			"license": "MIT",
@@ -7130,6 +7522,14 @@
 		{
 			"name": "@vitest/utils",
 			"version": "4.1.11",
+			"license": "MIT",
+			"repository": "https://github.com/vitest-dev/vitest",
+			"copyright": "Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors",
+			"private": false
+		},
+		{
+			"name": "@vitest/utils",
+			"version": "4.1.12",
 			"license": "MIT",
 			"repository": "https://github.com/vitest-dev/vitest",
 			"copyright": "Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors",
@@ -7176,6 +7576,14 @@
 			"private": false
 		},
 		{
+			"name": "@vscode/vsce",
+			"version": "4.1.0",
+			"license": "MIT",
+			"repository": "https://github.com/Microsoft/vsce",
+			"copyright": "Copyright (c) Microsoft Corporation",
+			"private": false
+		},
+		{
 			"name": "@vscode/vsce-sign",
 			"version": "2.1.0",
 			"license": "UNKNOWN",
@@ -7197,6 +7605,14 @@
 			"license": "MIT",
 			"repository": "https://github.com/microsoft/vscode-webview-ui-toolkit",
 			"copyright": "Copyright (c) Microsoft Corporation.",
+			"private": false
+		},
+		{
+			"name": "@webcontainer/env",
+			"version": "1.1.1",
+			"license": "MIT",
+			"repository": "stackblitz/webcontainer-core",
+			"copyright": "Copyright (c) 2019-present, StackBlitz Inc.",
 			"private": false
 		},
 		{
@@ -7608,6 +8024,14 @@
 			"private": false
 		},
 		{
+			"name": "ast-v8-to-istanbul",
+			"version": "1.0.8",
+			"license": "MIT",
+			"repository": "https://github.com/AriPerkkio/ast-v8-to-istanbul",
+			"copyright": "Copyright (c) 2026 Ari Perkkiö",
+			"private": false
+		},
+		{
 			"name": "astral-regex",
 			"version": "2.0.0",
 			"license": "MIT",
@@ -7872,6 +8296,14 @@
 			"private": false
 		},
 		{
+			"name": "body-parser",
+			"version": "2.4.0",
+			"license": "MIT",
+			"repository": "expressjs/body-parser",
+			"copyright": "Copyright (c) 2014 Jonathan Ong <me@jongleberry.com>",
+			"private": false
+		},
+		{
 			"name": "boolbase",
 			"version": "1.0.0",
 			"license": "ISC",
@@ -7905,10 +8337,34 @@
 		},
 		{
 			"name": "brace-expansion",
+			"version": "1.1.21",
+			"license": "MIT",
+			"repository": "git://github.com/juliangruber/brace-expansion",
+			"copyright": "Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>",
+			"private": false
+		},
+		{
+			"name": "brace-expansion",
 			"version": "2.1.4",
 			"license": "MIT",
 			"repository": "git://github.com/juliangruber/brace-expansion",
 			"copyright": "Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>",
+			"private": false
+		},
+		{
+			"name": "brace-expansion",
+			"version": "2.1.7",
+			"license": "MIT",
+			"repository": "git://github.com/juliangruber/brace-expansion",
+			"copyright": "Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>",
+			"private": false
+		},
+		{
+			"name": "brace-expansion",
+			"version": "5.0.12",
+			"license": "MIT",
+			"repository": "https://github.com/juliangruber/brace-expansion",
+			"copyright": "Copyright Julian Gruber <julian@juliangruber.com>",
 			"private": false
 		},
 		{
@@ -8288,6 +8744,14 @@
 			"private": false
 		},
 		{
+			"name": "chromium-bidi",
+			"version": "157.0.8090-0",
+			"license": "Apache-2.0",
+			"repository": "https://github.com/GoogleChromeLabs/chromium-bidi",
+			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
+			"private": false
+		},
+		{
 			"name": "ci-info",
 			"version": "3.9.0",
 			"license": "MIT",
@@ -8317,6 +8781,14 @@
 			"license": "MIT",
 			"repository": "sindresorhus/cli-cursor",
 			"copyright": "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
+			"private": false
+		},
+		{
+			"name": "cli-progress",
+			"version": "3.12.0",
+			"license": "MIT",
+			"repository": "npkgz/cli-progress",
+			"copyright": "Copyright (c) 2015-2022 Andi Dittrich",
 			"private": false
 		},
 		{
@@ -8354,6 +8826,14 @@
 		{
 			"name": "cliui",
 			"version": "8.0.1",
+			"license": "ISC",
+			"repository": "yargs/cliui",
+			"copyright": "Copyright (c) 2015, Contributors",
+			"private": false
+		},
+		{
+			"name": "cliui",
+			"version": "9.0.1",
 			"license": "ISC",
 			"repository": "yargs/cliui",
 			"copyright": "Copyright (c) 2015, Contributors",
@@ -8538,6 +9018,14 @@
 		{
 			"name": "commander",
 			"version": "14.0.3",
+			"license": "MIT",
+			"repository": "https://github.com/tj/commander.js",
+			"copyright": "Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>",
+			"private": false
+		},
+		{
+			"name": "commander",
+			"version": "15.1.0",
 			"license": "MIT",
 			"repository": "https://github.com/tj/commander.js",
 			"copyright": "Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>",
@@ -9432,6 +9920,14 @@
 			"private": false
 		},
 		{
+			"name": "devtools-protocol",
+			"version": "0.0.1717327",
+			"license": "BSD-3-Clause",
+			"repository": "https://github.com/ChromeDevTools/devtools-protocol",
+			"copyright": "// Copyright 2014 The Chromium Authors. All rights reserved.",
+			"private": false
+		},
+		{
 			"name": "diff",
 			"version": "8.0.4",
 			"license": "BSD-3-Clause",
@@ -9704,6 +10200,14 @@
 			"private": false
 		},
 		{
+			"name": "empathic",
+			"version": "2.1.0",
+			"license": "MIT",
+			"repository": "lukeed/empathic",
+			"copyright": "Copyright (c) Luke Edwards <luke.edwards05@gmail.com> (lukeed.com)",
+			"private": false
+		},
+		{
 			"name": "enabled",
 			"version": "2.0.0",
 			"license": "MIT",
@@ -9770,6 +10274,14 @@
 		{
 			"name": "entities",
 			"version": "7.0.1",
+			"license": "BSD-2-Clause",
+			"repository": "https://github.com/fb55/entities",
+			"copyright": "Copyright (c) Felix Böhm",
+			"private": false
+		},
+		{
+			"name": "entities",
+			"version": "9.0.0",
 			"license": "BSD-2-Clause",
 			"repository": "https://github.com/fb55/entities",
 			"copyright": "Copyright (c) Felix Böhm",
@@ -9882,6 +10394,14 @@
 		{
 			"name": "esbuild",
 			"version": "0.25.12",
+			"license": "MIT",
+			"repository": "https://github.com/evanw/esbuild",
+			"copyright": "Copyright (c) 2020 Evan Wallace",
+			"private": false
+		},
+		{
+			"name": "esbuild",
+			"version": "0.27.2",
 			"license": "MIT",
 			"repository": "https://github.com/evanw/esbuild",
 			"copyright": "Copyright (c) 2020 Evan Wallace",
@@ -10328,6 +10848,14 @@
 			"private": false
 		},
 		{
+			"name": "fast-uri",
+			"version": "4.2.3",
+			"license": "BSD-3-Clause",
+			"repository": "https://github.com/fastify/fast-uri",
+			"copyright": "Copyright (c) 2011-2021, Gary Court until https://github.com/garycourt/uri-js/commit/a1acf730b4bba3f1097c9f52e7d9d3aba8cdcaae",
+			"private": false
+		},
+		{
 			"name": "fast-wrap-ansi",
 			"version": "0.2.2",
 			"license": "MIT",
@@ -10490,6 +11018,22 @@
 		{
 			"name": "follow-redirects",
 			"version": "1.16.0",
+			"license": "MIT",
+			"repository": "ssh://git@github.com/follow-redirects/follow-redirects",
+			"copyright": "Copyright 2014–present Olivier Lalonde <olalonde@gmail.com>, James Talmage <james@talmage.io>, Ruben Verborgh",
+			"private": false
+		},
+		{
+			"name": "follow-redirects",
+			"version": "1.16.2",
+			"license": "MIT",
+			"repository": "ssh://git@github.com/follow-redirects/follow-redirects",
+			"copyright": "Copyright 2014–present Olivier Lalonde <olalonde@gmail.com>, James Talmage <james@talmage.io>, Ruben Verborgh",
+			"private": false
+		},
+		{
+			"name": "follow-redirects",
+			"version": "1.16.3",
 			"license": "MIT",
 			"repository": "ssh://git@github.com/follow-redirects/follow-redirects",
 			"copyright": "Copyright 2014–present Olivier Lalonde <olalonde@gmail.com>, James Talmage <james@talmage.io>, Ruben Verborgh",
@@ -10786,6 +11330,14 @@
 		{
 			"name": "glob",
 			"version": "13.0.6",
+			"license": "BlueOak-1.0.0",
+			"repository": "git@github.com:isaacs/node-glob",
+			"copyright": "## Copyright",
+			"private": false
+		},
+		{
+			"name": "glob",
+			"version": "14.0.4",
 			"license": "BlueOak-1.0.0",
 			"repository": "git@github.com:isaacs/node-glob",
 			"copyright": "## Copyright",
@@ -11177,6 +11729,14 @@
 		},
 		{
 			"name": "hono",
+			"version": "4.13.11",
+			"license": "MIT",
+			"repository": "https://github.com/honojs/hono",
+			"copyright": "Copyright (c) 2021 - present, Yusuke Wada and Hono contributors",
+			"private": false
+		},
+		{
+			"name": "hono",
 			"version": "4.13.5",
 			"license": "MIT",
 			"repository": "https://github.com/honojs/hono",
@@ -11360,6 +11920,22 @@
 			"private": false
 		},
 		{
+			"name": "image-size",
+			"version": "2.0.3",
+			"license": "MIT",
+			"repository": "https://codeberg.org/image-size/image-size",
+			"copyright": "Copyright © 2013-Present Aditya Yadav, http://netroy.in",
+			"private": false
+		},
+		{
+			"name": "image-size",
+			"version": "2.1.0",
+			"license": "MIT",
+			"repository": "https://codeberg.org/image-size/image-size",
+			"copyright": "Copyright © 2013-Present Aditya Yadav, http://netroy.in",
+			"private": false
+		},
+		{
 			"name": "immediate",
 			"version": "3.0.6",
 			"license": "MIT",
@@ -11490,6 +12066,14 @@
 		{
 			"name": "ip-address",
 			"version": "10.5.0",
+			"license": "MIT",
+			"repository": "https://github.com/beaugunderson/ip-address",
+			"copyright": "Copyright (C) 2011 by Beau Gunderson",
+			"private": false
+		},
+		{
+			"name": "ip-address",
+			"version": "10.7.4",
 			"license": "MIT",
 			"repository": "https://github.com/beaugunderson/ip-address",
 			"copyright": "Copyright (C) 2011 by Beau Gunderson",
@@ -12184,6 +12768,14 @@
 			"private": false
 		},
 		{
+			"name": "katex",
+			"version": "0.18.10",
+			"license": "MIT",
+			"repository": "https://github.com/KaTeX/KaTeX",
+			"copyright": "Copyright (c) 2013-2020 Khan Academy and other contributors",
+			"private": false
+		},
+		{
 			"name": "keytar",
 			"version": "7.9.0",
 			"license": "MIT",
@@ -12688,8 +13280,24 @@
 			"private": false
 		},
 		{
+			"name": "magic-string",
+			"version": "1.4.5",
+			"license": "MIT",
+			"repository": "https://github.com/Rich-Harris/magic-string",
+			"copyright": "Copyright 2018 Rich Harris",
+			"private": false
+		},
+		{
 			"name": "magicast",
 			"version": "0.3.5",
+			"license": "MIT",
+			"repository": "unjs/magicast",
+			"copyright": "Copyright (c) Pooya Parsa <pooya@pi0.io> and Anthony Fu <https://github.com/antfu>",
+			"private": false
+		},
+		{
+			"name": "magicast",
+			"version": "0.5.5",
 			"license": "MIT",
 			"repository": "unjs/magicast",
 			"copyright": "Copyright (c) Pooya Parsa <pooya@pi0.io> and Anthony Fu <https://github.com/antfu>",
@@ -12728,6 +13336,14 @@
 			"private": false
 		},
 		{
+			"name": "markdown-it",
+			"version": "14.3.3",
+			"license": "MIT",
+			"repository": "markdown-it/markdown-it",
+			"copyright": "Copyright (c) 2014 Vitaly Puzrin, Alex Kocharin.",
+			"private": false
+		},
+		{
 			"name": "markdown-table",
 			"version": "3.0.4",
 			"license": "MIT",
@@ -12756,6 +13372,14 @@
 			"version": "17.0.1",
 			"license": "MIT",
 			"repository": "git://github.com/markedjs/marked",
+			"copyright": "Copyright (c) 2018+, MarkedJS (https://github.com/markedjs/)",
+			"private": false
+		},
+		{
+			"name": "marked",
+			"version": "18.2.0",
+			"license": "MIT",
+			"repository": "https://github.com/markedjs/marked",
 			"copyright": "Copyright (c) 2018+, MarkedJS (https://github.com/markedjs/)",
 			"private": false
 		},
@@ -13393,6 +14017,14 @@
 		},
 		{
 			"name": "minimatch",
+			"version": "11.0.6",
+			"license": "BlueOak-1.0.0",
+			"repository": "ssh://git@github.com/isaacs/minimatch",
+			"copyright": "## Copyright",
+			"private": false
+		},
+		{
+			"name": "minimatch",
 			"version": "3.1.5",
 			"license": "ISC",
 			"repository": "git://github.com/isaacs/minimatch",
@@ -13464,6 +14096,14 @@
 			"private": false
 		},
 		{
+			"name": "modern-tar",
+			"version": "0.8.6",
+			"license": "MIT",
+			"repository": "https://github.com/ayuhito/modern-tar",
+			"copyright": "Copyright (c) 2025 Ayuhito",
+			"private": false
+		},
+		{
 			"name": "motion",
 			"version": "12.43.0",
 			"license": "MIT",
@@ -13521,6 +14161,14 @@
 		},
 		{
 			"name": "nanoid",
+			"version": "3.3.20",
+			"license": "MIT",
+			"repository": "ai/nanoid",
+			"copyright": "Copyright 2017 Andrey Sitnik <andrey@sitnik.ru>",
+			"private": false
+		},
+		{
+			"name": "nanoid",
 			"version": "5.1.16",
 			"license": "MIT",
 			"repository": "ai/nanoid",
@@ -13562,6 +14210,22 @@
 		{
 			"name": "next",
 			"version": "16.2.11",
+			"license": "MIT",
+			"repository": "vercel/next.js",
+			"copyright": "Copyright (c) 2025 Vercel, Inc.",
+			"private": false
+		},
+		{
+			"name": "next",
+			"version": "16.4.1",
+			"license": "MIT",
+			"repository": "vercel/next.js",
+			"copyright": "Copyright (c) 2025 Vercel, Inc.",
+			"private": false
+		},
+		{
+			"name": "next",
+			"version": "16.4.6",
 			"license": "MIT",
 			"repository": "vercel/next.js",
 			"copyright": "Copyright (c) 2025 Vercel, Inc.",
@@ -13658,6 +14322,14 @@
 		{
 			"name": "node-forge",
 			"version": "1.4.0",
+			"license": "(BSD-3-Clause OR GPL-2.0)",
+			"repository": "https://github.com/digitalbazaar/forge",
+			"copyright": "use this project in commercial projects as long as the copyright header is",
+			"private": false
+		},
+		{
+			"name": "node-forge",
+			"version": "1.4.1",
 			"license": "(BSD-3-Clause OR GPL-2.0)",
 			"repository": "https://github.com/digitalbazaar/forge",
 			"copyright": "use this project in commercial projects as long as the copyright header is",
@@ -13952,6 +14624,22 @@
 			"private": false
 		},
 		{
+			"name": "oxc-parser",
+			"version": "0.127.0",
+			"license": "MIT",
+			"repository": "https://github.com/oxc-project/oxc",
+			"copyright": "Copyright (c) 2024-present VoidZero Inc. & Contributors",
+			"private": false
+		},
+		{
+			"name": "oxc-resolver",
+			"version": "11.21.2",
+			"license": "MIT",
+			"repository": "https://github.com/oxc-project/oxc-resolver",
+			"copyright": "",
+			"private": false
+		},
+		{
 			"name": "p-finally",
 			"version": "1.0.0",
 			"license": "MIT",
@@ -14176,6 +14864,14 @@
 			"private": false
 		},
 		{
+			"name": "parse5",
+			"version": "8.1.1",
+			"license": "MIT",
+			"repository": "git://github.com/inikulin/parse5",
+			"copyright": "Copyright (c) 2013-2019 Ivan Nikulin (ifaaan@gmail.com, https://github.com/inikulin)",
+			"private": false
+		},
+		{
 			"name": "parse5-htmlparser2-tree-adapter",
 			"version": "7.1.0",
 			"license": "MIT",
@@ -14282,6 +14978,14 @@
 		{
 			"name": "path-scurry",
 			"version": "2.0.2",
+			"license": "BlueOak-1.0.0",
+			"repository": "https://github.com/isaacs/path-scurry",
+			"copyright": "## Copyright",
+			"private": false
+		},
+		{
+			"name": "path-scurry",
+			"version": "3.0.0",
 			"license": "BlueOak-1.0.0",
 			"repository": "https://github.com/isaacs/path-scurry",
 			"copyright": "## Copyright",
@@ -14481,7 +15185,23 @@
 		},
 		{
 			"name": "postcss",
+			"version": "8.5.23",
+			"license": "MIT",
+			"repository": "postcss/postcss",
+			"copyright": "Copyright 2013 Andrey Sitnik <andrey@sitnik.es>",
+			"private": false
+		},
+		{
+			"name": "postcss",
 			"version": "8.5.26",
+			"license": "MIT",
+			"repository": "postcss/postcss",
+			"copyright": "Copyright 2013 Andrey Sitnik <andrey@sitnik.es>",
+			"private": false
+		},
+		{
+			"name": "postcss",
+			"version": "8.5.32",
 			"license": "MIT",
 			"repository": "postcss/postcss",
 			"copyright": "Copyright 2013 Andrey Sitnik <andrey@sitnik.es>",
@@ -14490,6 +15210,22 @@
 		{
 			"name": "postcss-selector-parser",
 			"version": "7.1.5",
+			"license": "MIT",
+			"repository": "https://github.com/postcss/postcss-selector-parser",
+			"copyright": "Copyright (c) Ben Briggs <beneb.info@gmail.com> (http://beneb.info)",
+			"private": false
+		},
+		{
+			"name": "postcss-selector-parser",
+			"version": "7.1.6",
+			"license": "MIT",
+			"repository": "https://github.com/postcss/postcss-selector-parser",
+			"copyright": "Copyright (c) Ben Briggs <beneb.info@gmail.com> (http://beneb.info)",
+			"private": false
+		},
+		{
+			"name": "postcss-selector-parser",
+			"version": "7.2.0",
 			"license": "MIT",
 			"repository": "https://github.com/postcss/postcss-selector-parser",
 			"copyright": "Copyright (c) Ben Briggs <beneb.info@gmail.com> (http://beneb.info)",
@@ -14752,6 +15488,14 @@
 			"private": false
 		},
 		{
+			"name": "puppeteer-chromium-resolver",
+			"version": "25.0.0",
+			"license": "MIT",
+			"repository": "https://github.com/cenfun/puppeteer-chromium-resolver",
+			"copyright": "Copyright (c) 2021 cenfun",
+			"private": false
+		},
+		{
 			"name": "puppeteer-core",
 			"version": "23.11.1",
 			"license": "Apache-2.0",
@@ -14760,8 +15504,32 @@
 			"private": false
 		},
 		{
+			"name": "puppeteer-core",
+			"version": "25.17.0",
+			"license": "Apache-2.0",
+			"repository": "https://github.com/puppeteer/puppeteer/tree/main/packages/puppeteer-core",
+			"copyright": "",
+			"private": false
+		},
+		{
 			"name": "qs",
 			"version": "6.15.3",
+			"license": "BSD-3-Clause",
+			"repository": "https://github.com/ljharb/qs",
+			"copyright": "Copyright (c) 2014, Nathan LaFreniere and other [contributors](https://github.com/ljharb/qs/graphs/contributors)",
+			"private": false
+		},
+		{
+			"name": "qs",
+			"version": "6.16.1",
+			"license": "BSD-3-Clause",
+			"repository": "https://github.com/ljharb/qs",
+			"copyright": "Copyright (c) 2014, Nathan LaFreniere and other [contributors](https://github.com/ljharb/qs/graphs/contributors)",
+			"private": false
+		},
+		{
+			"name": "qs",
+			"version": "6.17.1",
 			"license": "BSD-3-Clause",
 			"repository": "https://github.com/ljharb/qs",
 			"copyright": "Copyright (c) 2014, Nathan LaFreniere and other [contributors](https://github.com/ljharb/qs/graphs/contributors)",
@@ -15481,6 +16249,14 @@
 		},
 		{
 			"name": "rolldown",
+			"version": "1.2.18",
+			"license": "MIT",
+			"repository": "https://github.com/rolldown/rolldown",
+			"copyright": "Copyright (c) 2024-present VoidZero Inc. & Contributors",
+			"private": false
+		},
+		{
+			"name": "rolldown",
 			"version": "1.2.5",
 			"license": "MIT",
 			"repository": "https://github.com/rolldown/rolldown",
@@ -15688,6 +16464,22 @@
 			"private": false
 		},
 		{
+			"name": "serialize-javascript",
+			"version": "7.1.3",
+			"license": "BSD-3-Clause",
+			"repository": "https://github.com/yahoo/serialize-javascript",
+			"copyright": "Copyright 2014 Yahoo! Inc.",
+			"private": false
+		},
+		{
+			"name": "serialize-javascript",
+			"version": "7.1.4",
+			"license": "BSD-3-Clause",
+			"repository": "https://github.com/yahoo/serialize-javascript",
+			"copyright": "Copyright 2014 Yahoo! Inc.",
+			"private": false
+		},
+		{
 			"name": "serve-static",
 			"version": "2.2.1",
 			"license": "MIT",
@@ -15762,6 +16554,14 @@
 		{
 			"name": "shell-quote",
 			"version": "1.10.0",
+			"license": "MIT",
+			"repository": "http://github.com/ljharb/shell-quote",
+			"copyright": "Copyright (c) 2013 James Halliday (mail@substack.net)",
+			"private": false
+		},
+		{
+			"name": "shell-quote",
+			"version": "1.11.0",
 			"license": "MIT",
 			"repository": "http://github.com/ljharb/shell-quote",
 			"copyright": "Copyright (c) 2013 James Halliday (mail@substack.net)",
@@ -16056,6 +16856,14 @@
 			"private": false
 		},
 		{
+			"name": "source-map-js",
+			"version": "1.2.2",
+			"license": "BSD-3-Clause",
+			"repository": "7rulnik/source-map-js",
+			"copyright": "Copyright (c) 2009-2011, Mozilla Foundation and contributors",
+			"private": false
+		},
+		{
 			"name": "space-separated-tokens",
 			"version": "1.1.5",
 			"license": "MIT",
@@ -16209,7 +17017,23 @@
 		},
 		{
 			"name": "storybook",
+			"version": "10.6.7",
+			"license": "MIT",
+			"repository": "https://github.com/storybookjs/storybook",
+			"copyright": "",
+			"private": false
+		},
+		{
+			"name": "storybook",
 			"version": "9.1.20",
+			"license": "MIT",
+			"repository": "https://github.com/storybookjs/storybook",
+			"copyright": "",
+			"private": false
+		},
+		{
+			"name": "storybook",
+			"version": "9.1.21",
 			"license": "MIT",
 			"repository": "https://github.com/storybookjs/storybook",
 			"copyright": "",
@@ -16517,6 +17341,14 @@
 			"license": "MIT",
 			"repository": "https://github.com/jsdom/js-symbol-tree",
 			"copyright": "Copyright (c) 2015 Joris van der Wel",
+			"private": false
+		},
+		{
+			"name": "systeminformation",
+			"version": "5.33.16",
+			"license": "MIT",
+			"repository": "https://github.com/sebhildebrandt/systeminformation",
+			"copyright": "Copyright (c) 2014-2026 Sebastian Hildebrandt",
 			"private": false
 		},
 		{
@@ -17120,6 +17952,14 @@
 			"private": false
 		},
 		{
+			"name": "typed-query-selector",
+			"version": "2.12.3",
+			"license": "MIT",
+			"repository": "g-plane/typed-query-selector",
+			"copyright": "Copyright (c) 2020-present Pig Fang",
+			"private": false
+		},
+		{
 			"name": "typed-rest-client",
 			"version": "1.8.11",
 			"license": "MIT",
@@ -17186,6 +18026,14 @@
 		{
 			"name": "undici",
 			"version": "7.29.0",
+			"license": "MIT",
+			"repository": "https://github.com/nodejs/undici",
+			"copyright": "Copyright (c) Matteo Collina and Undici contributors",
+			"private": false
+		},
+		{
+			"name": "undici",
+			"version": "7.30.1",
 			"license": "MIT",
 			"repository": "https://github.com/nodejs/undici",
 			"copyright": "Copyright (c) Matteo Collina and Undici contributors",
@@ -17424,6 +18272,14 @@
 			"private": false
 		},
 		{
+			"name": "unplugin",
+			"version": "2.3.11",
+			"license": "MIT",
+			"repository": "https://github.com/unjs/unplugin",
+			"copyright": "Copyright (c) 2021-PRESENT Nuxt Contrib",
+			"private": false
+		},
+		{
 			"name": "update-browserslist-db",
 			"version": "1.3.1",
 			"license": "MIT",
@@ -17649,7 +18505,31 @@
 		},
 		{
 			"name": "vite",
+			"version": "7.3.7",
+			"license": "MIT",
+			"repository": "https://github.com/vitejs/vite",
+			"copyright": "Copyright (c) 2019-present, VoidZero Inc. and Vite contributors",
+			"private": false
+		},
+		{
+			"name": "vite",
 			"version": "8.2.2",
+			"license": "MIT",
+			"repository": "https://github.com/vitejs/vite",
+			"copyright": "Copyright (c) 2019-present, VoidZero Inc. and Vite contributors",
+			"private": false
+		},
+		{
+			"name": "vite",
+			"version": "8.2.4",
+			"license": "MIT",
+			"repository": "https://github.com/vitejs/vite",
+			"copyright": "Copyright (c) 2019-present, VoidZero Inc. and Vite contributors",
+			"private": false
+		},
+		{
+			"name": "vite",
+			"version": "8.3.7",
 			"license": "MIT",
 			"repository": "https://github.com/vitejs/vite",
 			"copyright": "Copyright (c) 2019-present, VoidZero Inc. and Vite contributors",
@@ -17674,6 +18554,14 @@
 		{
 			"name": "vitest",
 			"version": "4.1.11",
+			"license": "MIT",
+			"repository": "https://github.com/vitest-dev/vitest",
+			"copyright": "Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors",
+			"private": false
+		},
+		{
+			"name": "vitest",
+			"version": "4.1.12",
 			"license": "MIT",
 			"repository": "https://github.com/vitest-dev/vitest",
 			"copyright": "Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors",
@@ -17764,6 +18652,14 @@
 			"version": "6.0.0",
 			"license": "Apache-2.0",
 			"repository": "https://github.com/GoogleChrome/web-vitals",
+			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
+			"private": false
+		},
+		{
+			"name": "webdriver-bidi-protocol",
+			"version": "1.0.2",
+			"license": "Apache-2.0",
+			"repository": "https://github.com/GoogleChromeLabs/webdriver-bidi-protocol",
 			"copyright": "\"Licensor\" shall mean the copyright owner or entity authorized by",
 			"private": false
 		},
@@ -17960,6 +18856,14 @@
 			"private": false
 		},
 		{
+			"name": "ws",
+			"version": "8.22.2",
+			"license": "MIT",
+			"repository": "https://github.com/websockets/ws",
+			"copyright": "Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>",
+			"private": false
+		},
+		{
 			"name": "wsl-utils",
 			"version": "0.1.0",
 			"license": "MIT",
@@ -18072,8 +18976,24 @@
 			"private": false
 		},
 		{
+			"name": "yargs",
+			"version": "18.2.0",
+			"license": "MIT",
+			"repository": "https://github.com/yargs/yargs",
+			"copyright": "Copyright 2010 James Halliday (mail@substack.net); Modified work Copyright 2014 Contributors (ben@npmjs.com)",
+			"private": false
+		},
+		{
 			"name": "yargs-parser",
 			"version": "21.1.1",
+			"license": "ISC",
+			"repository": "https://github.com/yargs/yargs-parser",
+			"copyright": "Copyright (c) 2016, Contributors",
+			"private": false
+		},
+		{
+			"name": "yargs-parser",
+			"version": "22.0.0",
 			"license": "ISC",
 			"repository": "https://github.com/yargs/yargs-parser",
 			"copyright": "Copyright (c) 2016, Contributors",
@@ -18218,6 +19138,22 @@
 		{
 			"name": "zod",
 			"version": "4.6.5",
+			"license": "MIT",
+			"repository": "https://github.com/colinhacks/zod",
+			"copyright": "Copyright (c) 2025 Colin McDonnell",
+			"private": false
+		},
+		{
+			"name": "zod",
+			"version": "4.6.6",
+			"license": "MIT",
+			"repository": "https://github.com/colinhacks/zod",
+			"copyright": "Copyright (c) 2025 Colin McDonnell",
+			"private": false
+		},
+		{
+			"name": "zod",
+			"version": "4.6.7",
 			"license": "MIT",
 			"repository": "https://github.com/colinhacks/zod",
 			"copyright": "Copyright (c) 2025 Colin McDonnell",

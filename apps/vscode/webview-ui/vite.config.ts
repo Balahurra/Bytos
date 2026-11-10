@@ -103,16 +103,9 @@ export default defineConfig({
 				entryFileNames: `assets/[name].js`,
 				chunkFileNames: `assets/[name].js`,
 				assetFileNames: `assets/[name].[ext]`,
-				// Disable compact output for dev build
-				compact: !isDevBuild,
-				// Add generous formatting for dev build
-				...(isDevBuild && {
-					generatedCode: {
-						constBindings: false,
-						objectShorthand: false,
-						arrowFunctions: false,
-					},
-				}),
+				// Vite 8/rolldown no longer exposes rollup's `compact` and
+				// `generatedCode` output switches. Dev builds rely on the Vite
+				// defaults instead.
 			},
 		},
 		chunkSizeWarningLimit: 100000,

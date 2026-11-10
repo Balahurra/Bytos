@@ -1,4 +1,4 @@
-import { credentials as grpcCredentials } from "@grpc/grpc-js"
+import { credentials as grpcCredentials, Metadata } from "@grpc/grpc-js"
 import { OTLPLogExporter as OTLPLogExporterGRPC } from "@opentelemetry/exporter-logs-otlp-grpc"
 import { OTLPLogExporter as OTLPLogExporterHTTP } from "@opentelemetry/exporter-logs-otlp-http"
 import { OTLPLogExporter as OTLPLogExporterProto } from "@opentelemetry/exporter-logs-otlp-proto"
@@ -26,6 +26,21 @@ function isDebugEnabled(): boolean {
  */
 export function createConsoleLogExporter(): ConsoleLogRecordExporter {
 	return new ConsoleLogRecordExporter()
+}
+
+/**
+ * gRPC exporters take a Metadata instance (the 2.x API removed the HTTP-style
+ * `headers` option). Values are user-configured OTLP headers.
+ */
+function headersToGrpcMetadata(headers?: Record<string, string>): Metadata | undefined {
+	if (!headers || Object.keys(headers).length === 0) {
+		return undefined
+	}
+	const metadata = new Metadata()
+	for (const [key, value] of Object.entries(headers)) {
+		metadata.set(key, value)
+	}
+	return metadata
 }
 
 function ensurePathSuffix(url: URL, suffix: string): void {
@@ -59,7 +74,7 @@ export function createOTLPLogExporter(
 				exporter = new OTLPLogExporterGRPC({
 					url: grpcEndpoint,
 					credentials: credentials,
-					headers,
+					metadata: headersToGrpcMetadata(headers),
 				})
 				break
 			}
@@ -106,7 +121,7 @@ export function createOTLPTraceExporter(
 				return new OTLPTraceExporterGRPC({
 					url: grpcEndpoint,
 					credentials: credentials,
-					headers,
+					metadata: headersToGrpcMetadata(headers),
 				})
 			}
 			case "http/json": {
@@ -162,7 +177,7 @@ export function createOTLPMetricReader(
 				exporter = new OTLPMetricExporterGRPC({
 					url: grpcEndpoint,
 					credentials: credentials,
-					headers,
+					metadata: headersToGrpcMetadata(headers),
 				})
 				break
 			}

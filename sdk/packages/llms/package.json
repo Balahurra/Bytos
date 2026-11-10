@@ -78,7 +78,7 @@
     "dify-ai-provider": "^1.1.0",
     "nanoid": "^5.1.7",
     "ollama-ai-provider-v2": "^4",
-    "zod": "^4.3.6"
+    "zod": "^4.6.7"
   },
   "peerDependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.0.0",

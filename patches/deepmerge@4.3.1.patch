@@ -1,0 +1,14 @@
+diff --git a/dist/cjs.js b/dist/cjs.js
+index 7c36cbdd06cc22c92d590be3f87a08a91ca06b40..4146758e7a4f5d4d456f516e61ed20c8dde190d1 100644
+--- a/dist/cjs.js
++++ b/dist/cjs.js
+@@ -71,6 +71,9 @@ function propertyIsOnObject(object, property) {
+ 
+ // Protects from prototype poisoning and unexpected merging up the prototype chain.
+ function propertyIsUnsafe(target, key) {
++	if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
++		return true
++	}
+ 	return propertyIsOnObject(target, key) // Properties are safe to merge if they don't exist in the target yet,
+ 		&& !(Object.hasOwnProperty.call(target, key) // unsafe if they exist up the prototype chain,
+ 			&& Object.propertyIsEnumerable.call(target, key)) // and also unsafe if they're nonenumerable.

@@ -34,9 +34,10 @@ The optional account flow works as follows:
   usage, remote configuration, and, when the feature is enabled, BytosPass
   subscription links.
 
-Model requests are separate from the account system: prompts and code go from
-your machine to the model provider you configure. Bytos does not proxy model
-prompts or code through a Bytos model backend.
+By default, prompts and code go from your machine to the model provider you
+configure. If you select the BytosPass provider, requests go to the Bytos API at
+`https://api.bytos.dev/api/v1` as part of that subscription; that is the only
+Bytos model path in this build.
 
 ## Data stored on your machine
 
@@ -72,8 +73,10 @@ left in place so credentials are not lost.
 | Supabase Auth | Email, password (hashed by Supabase), session tokens, and profile metadata | Sign-up, sign-in, session refresh, and sign-out |
 | Bytos sign-in exchange worker | One-time authorization code, PKCE verifier, redirect URI, client id, and state | Completing extension sign-in |
 | Bytos API (`api.bytos.dev`) | Account token and account/organization identifiers; profile, credits, usage, remote-config requests | Signed-in account screens and account features |
+| Bytos API (`api.bytos.dev/api/v1`) | Prompts, code, file contents, tool results, and images | Only if you select the BytosPass provider |
 
-Bytos does not proxy model requests through a Bytos backend.
+By default, Bytos does not proxy model requests. The BytosPass provider is the
+exception described above.
 
 ## Telemetry
 

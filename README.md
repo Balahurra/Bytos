@@ -56,10 +56,12 @@ A Bytos account is **optional**. Chat, BYOK, and local models work without one.
 If you choose to sign in, Bytos opens the account flow on `bytos.dev`, uses
 Supabase Auth, and completes the handoff through the Bytos API worker. Account
 screens may request account data such as organizations, credits, remote
-configuration, and, when enabled, BytosPass subscription links. Model requests
-still go directly to the provider you already pay for; Bytos does not proxy model
-prompts or code. Provider API keys are stored in VS Code SecretStorage and are
-never sent to the webview. See [apps/vscode/PRIVACY.md](apps/vscode/PRIVACY.md).
+configuration, and, when enabled, BytosPass subscription links. By default,
+model requests go directly to the provider you already pay for; Bytos does not
+proxy them. If you select the BytosPass provider, requests are sent to the Bytos
+API (`https://api.bytos.dev/api/v1`) as part of that subscription. Provider API
+keys are stored in VS Code SecretStorage and are never sent to the webview. See
+[apps/vscode/PRIVACY.md](apps/vscode/PRIVACY.md).
 
 **Auto Phase Plan** is the differentiator: up to **10 sequential phases**, each
 its own Act-mode task with its own provider, model, API key, MCP allowlist, and
@@ -251,10 +253,12 @@ See [MCP overview](docs/mcp/mcp-overview.mdx) and
   including absolute paths, traversal, Windows drive/UNC paths, and symlinks.
 - **Telemetry off by default.** It is enabled only by an explicit opt-in in
   **Settings → General**.
-- **Provider-direct model traffic.** Model requests go from your machine to the
-  provider you picked; Bytos does not proxy model prompts or code. Local models
-  do not leave your machine. If you sign in, account data is sent to Bytos
-  services as described in [apps/vscode/PRIVACY.md](apps/vscode/PRIVACY.md).
+- **Provider-direct model traffic by default.** Model requests go from your
+  machine to the provider you picked; Bytos does not proxy them. The BytosPass
+  provider is the exception: it sends requests to the Bytos API as part of that
+  subscription. Local models do not leave your machine. If you sign in, account
+  data is sent to Bytos services as described in
+  [apps/vscode/PRIVACY.md](apps/vscode/PRIVACY.md).
 
 Read [SECURITY.md](SECURITY.md) and [apps/vscode/PRIVACY.md](apps/vscode/PRIVACY.md).
 
@@ -303,10 +307,11 @@ organization screens.
 **Does it work on macOS/Linux?** The core extension is tested on Windows, macOS,
 and Linux. Local voice is Windows x64 only.
 
-**Does Bytos send code to a Bytos server?** Not through a model proxy. Model
-requests go directly to your provider or local model. If you choose to sign in,
-account data is sent to Bytos services as described in
-[apps/vscode/PRIVACY.md](apps/vscode/PRIVACY.md).
+**Does Bytos send code to a Bytos server?** Not unless you select the BytosPass
+provider. By default, model requests go directly to your provider or local
+model. If you select BytosPass, requests go to the Bytos API as part of that
+subscription. If you sign in, account data is sent to Bytos services as
+described in [apps/vscode/PRIVACY.md](apps/vscode/PRIVACY.md).
 
 **Where are keys stored?** VS Code SecretStorage.
 

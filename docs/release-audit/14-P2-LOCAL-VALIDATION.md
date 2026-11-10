@@ -142,9 +142,9 @@ Command: `cd apps/vscode && node scripts/package-release.mjs`
 | Field | Value |
 |---|---|
 | File | `bytos-1.0.2.vsix` |
-| Size | 17,478,968 bytes |
+| Size | 17,479,051 bytes |
 | Files | 203 |
-| SHA-256 | `30DAAECC93573E25B223050EE5A6513C2250689E8B0133DE0E9A744A88142C39` |
+| SHA-256 | `AE3FD96DE52A1CB9A1791748F231DC600D32F8BE15847B32C44F685641153BAB` |
 | Version | 1.0.2 |
 | `engines.vscode` | `^1.101.0` |
 | Publisher | `bytos` |

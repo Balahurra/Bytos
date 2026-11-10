@@ -9,9 +9,9 @@
 Bytos reads your workspace, plans before it edits, builds and verifies changes
 through reviewable diffs, terminal commands, tests, browser state, and MCP tools —
 with your approval at every risky step. It is **chat-first and
-bring-your-own-key**: model requests go directly to the provider you choose, not
-through a Bytos model proxy. A Bytos account is **optional**; chat, BYOK, and
-local models work without one.
+bring-your-own-key**: by default, model requests go directly to the provider you
+choose, not through a Bytos model proxy. A Bytos account is **optional**; chat,
+BYOK, and local models work without one.
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=_pUIjs775ig">
@@ -103,9 +103,10 @@ or LM Studio. Token usage and estimated cost are tracked per request and per tas
   browser handoff through the Bytos API worker. Signed-in account screens can
   request account data such as organizations, credits, remote configuration, and,
   when enabled, BytosPass subscription links.
-- **Provider-direct model traffic.** Model requests go from your machine to the
-  provider you picked. Bytos does not proxy model prompts or code, and local
-  models do not leave your machine.
+- **Provider-direct model traffic by default.** Model requests go from your
+  machine to the provider you picked. Bytos does not proxy them unless you select
+  the BytosPass provider, which sends requests to the Bytos API as part of that
+  subscription. Local models do not leave your machine.
 - **Workspace boundaries.** File tools enforce a canonical workspace boundary,
   including absolute paths, traversal, Windows drive/UNC paths, and symlinks.
 

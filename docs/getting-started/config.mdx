@@ -51,7 +51,8 @@ feature-flag requests.
 
 - A Bytos account is optional; chat and BYOK work without one. If you sign in,
   account data is sent to Bytos services as described in `PRIVACY.md`.
-- Model requests go directly from your machine to the provider you choose; Bytos
-  does not proxy model prompts or code.
+- By default, model requests go directly from your machine to the provider you
+  choose; Bytos does not proxy them. The BytosPass provider sends requests to the
+  Bytos API as part of that subscription.
 - Local models do not leave your machine.
 - See `PRIVACY.md` and `SECURITY.md` for details.

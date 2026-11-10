@@ -9,7 +9,7 @@
  * at runtime, so it has zero dependencies beyond Node builtins.
  *
  * CLI usage:
- *   bytos plugin install https://github.com/bytos/bytos/blob/main/sdk/examples/plugins/typescript-lsp/index.ts
+ *   bytos plugin install https://github.com/Balahurra/Bytos/blob/main/sdk/examples/plugins/typescript-lsp/index.ts
  *   bytos -i "Find where createTool is defined"
  *
  * Direct demo usage:

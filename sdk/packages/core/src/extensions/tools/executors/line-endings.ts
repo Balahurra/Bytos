@@ -8,7 +8,7 @@ import * as os from "node:os";
  * CRLF endings). Existing files keep their own detected EOL, but a new file
  * has no EOL to preserve: use CRLF on Windows unless the content already
  * contains a "\r" and thereby chose its own endings
- * (github.com/bytos/bytos/issues/13504). No-op on LF platforms.
+ * (github.com/Balahurra/Bytos/issues/13504). No-op on LF platforms.
  */
 export function normalizeNewFileLineEndings(content: string): string {
 	if (os.EOL === "\r\n" && !content.includes("\r")) {

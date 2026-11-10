@@ -25,7 +25,7 @@ const bytos: CloudRepository = {
 	id: 7,
 	name: "bytos",
 	fullName: "bytos/bytos",
-	url: "https://github.com/bytos/bytos",
+	url: "https://github.com/Balahurra/Bytos",
 	defaultBranch: "main",
 }
 const other: CloudRepository = {
@@ -76,7 +76,7 @@ async function settle() {
 describe("SdkCloudTaskTarget", () => {
 	it("stores only the user's choice and resolves the rest on read", async () => {
 		const { target, globalState } = makeTarget()
-		mocks.workspaceDefaults.mockResolvedValue({ repoUrl: "https://github.com/bytos/bytos", branch: "feature/x" })
+		mocks.workspaceDefaults.mockResolvedValue({ repoUrl: "https://github.com/Balahurra/Bytos", branch: "feature/x" })
 
 		await target.choose({ target: "cloud" })
 		expect(globalState.cloudTaskTarget).toEqual({ target: "cloud" })
@@ -92,9 +92,9 @@ describe("SdkCloudTaskTarget", () => {
 		expect(target.view()).toEqual({
 			target: "cloud",
 			repositoryId: 7,
-			repoUrl: "https://github.com/bytos/bytos",
+			repoUrl: "https://github.com/Balahurra/Bytos",
 			branch: "feature/x",
-			workspaceRepoUrl: "https://github.com/bytos/bytos",
+			workspaceRepoUrl: "https://github.com/Balahurra/Bytos",
 		})
 	})
 
@@ -138,7 +138,7 @@ describe("SdkCloudTaskTarget", () => {
 
 	it("suggests the workspace branch only once GitHub confirms it, and retries a failed check later", async () => {
 		const { target, cloudSessions, advance } = makeTarget()
-		mocks.workspaceDefaults.mockResolvedValue({ repoUrl: "https://github.com/bytos/bytos", branch: "feature/gone" })
+		mocks.workspaceDefaults.mockResolvedValue({ repoUrl: "https://github.com/Balahurra/Bytos", branch: "feature/gone" })
 		cloudSessions.listBranches.mockRejectedValueOnce(new Error("offline"))
 		await target.choose({ target: "cloud" })
 		target.view()
@@ -188,7 +188,7 @@ describe("SdkCloudTaskTarget", () => {
 
 	it("re-reads repositories and the workspace checkout once they age, keeping the old answer meanwhile", async () => {
 		const { target, cloudSessions, advance } = makeTarget()
-		mocks.workspaceDefaults.mockResolvedValue({ repoUrl: "https://github.com/bytos/bytos", branch: "feature/a" })
+		mocks.workspaceDefaults.mockResolvedValue({ repoUrl: "https://github.com/Balahurra/Bytos", branch: "feature/a" })
 		await target.choose({ target: "cloud" })
 		target.view()
 		await settle()
@@ -200,7 +200,7 @@ describe("SdkCloudTaskTarget", () => {
 
 		// The user checks out another branch in the terminal and revokes the
 		// GitHub App's access to the repository in the browser.
-		mocks.workspaceDefaults.mockResolvedValue({ repoUrl: "https://github.com/bytos/bytos", branch: "feature/b" })
+		mocks.workspaceDefaults.mockResolvedValue({ repoUrl: "https://github.com/Balahurra/Bytos", branch: "feature/b" })
 		cloudSessions.getGitHubConnection.mockResolvedValue({ connected: true, connectUrl: "", repositories: [other] })
 
 		advance(WORKSPACE_MAX_AGE_MS)

@@ -223,7 +223,7 @@ mkdir -p ~/.bytos/cron/events
 cp examples/cron/events/local-plugin-event.event.md ~/.bytos/cron/events/
 
 # Load the plugin that emits these events
-bytos plugin install https://github.com/bytos/bytos/blob/main/sdk/examples/plugins/automation-events.ts
+bytos plugin install https://github.com/Balahurra/Bytos/blob/main/sdk/examples/plugins/automation-events.ts
 
 # Run CLI with automation enabled; the plugin emits events
 bytos --enable-automation -i "Test automation events"

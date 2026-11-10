@@ -12,7 +12,7 @@
  * Template files (.env.example, .env.sample, .env.template) stay readable.
  *
  * CLI usage:
- *   bytos plugin install https://github.com/bytos/bytos/blob/main/sdk/examples/plugins/env-blocker.ts
+ *   bytos plugin install https://github.com/Balahurra/Bytos/blob/main/sdk/examples/plugins/env-blocker.ts
  *   bytos -i "Read the .env file and tell me the API keys"
  */
 

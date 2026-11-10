@@ -11,7 +11,7 @@
  *                            telemetry service
  *
  * CLI usage:
- *   bytos plugin install https://github.com/bytos/bytos/blob/main/sdk/examples/plugins/weather-metrics.ts --cwd .
+ *   bytos plugin install https://github.com/Balahurra/Bytos/blob/main/sdk/examples/plugins/weather-metrics.ts --cwd .
  *   bytos -i "What's the weather like in Tokyo and Paris?"
  *
  * Direct demo usage:

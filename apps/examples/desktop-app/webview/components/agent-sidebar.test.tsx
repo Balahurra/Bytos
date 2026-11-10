@@ -859,13 +859,13 @@ describe("AgentSidebar session organization", () => {
 			getSessionOverviewItems({
 				...makeThread("cloud", 1),
 				origin: "cloud",
-				repoUrl: "https://github.com/bytos/bytos",
-				workspacePath: "https://github.com/bytos/bytos",
+				repoUrl: "https://github.com/Balahurra/Bytos",
+				workspacePath: "https://github.com/Balahurra/Bytos",
 			}),
 		).toContainEqual([
 			"Repository",
-			"https://github.com/bytos/bytos",
-			"https://github.com/bytos/bytos",
+			"https://github.com/Balahurra/Bytos",
+			"https://github.com/Balahurra/Bytos",
 		]);
 	});
 

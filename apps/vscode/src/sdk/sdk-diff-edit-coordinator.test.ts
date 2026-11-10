@@ -70,7 +70,7 @@ describe("computeNewEditorContent", () => {
 	// Reads strip "\r", so models emit LF-only old_text even for CRLF files. The SDK
 	// executor normalizes to the file's EOL before matching (#12305); the preview must
 	// too, or every multi-line edit in a CRLF file silently skips its diff view while
-	// the executor still applies it (github.com/bytos/bytos/issues/13296).
+	// the executor still applies it (github.com/Balahurra/Bytos/issues/13296).
 	it("matches LF-only multi-line old_text in a CRLF file and keeps CRLF endings", () => {
 		const input: EditFileInput = { path: filePath, old_text: "b\nc", new_text: "B\nC\nX" }
 		expect(computeNewEditorContent("a\r\nb\r\nc\r\nd", input, filePath, "modify")).toBe("a\r\nB\r\nC\r\nX\r\nd")

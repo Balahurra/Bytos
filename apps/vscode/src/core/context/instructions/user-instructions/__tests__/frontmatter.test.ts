@@ -63,7 +63,7 @@ describe("parseYamlFrontmatter", () => {
 		expect(result.body.trim()).to.equal("Content")
 	})
 
-	// Regression test for https://github.com/bytos/bytos/issues/12151
+	// Regression test for https://github.com/Balahurra/Bytos/issues/12151
 	// A leading UTF-8 BOM (e.g. saved by Windows Notepad's "UTF-8 with BOM" encoding) must not
 	// prevent frontmatter from being recognized.
 	it("parses frontmatter correctly when the content has a leading UTF-8 BOM", () => {

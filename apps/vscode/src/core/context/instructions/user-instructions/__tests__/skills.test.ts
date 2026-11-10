@@ -139,7 +139,7 @@ Instructions here`)
 			expect(skills[0].source).to.equal("global")
 		})
 
-		// Regression test for https://github.com/bytos/bytos/issues/12151:
+		// Regression test for https://github.com/Balahurra/Bytos/issues/12151:
 		// SKILL.md files saved with a UTF-8 BOM (e.g. by Windows Notepad's "UTF-8 with BOM"
 		// encoding) were silently skipped because the frontmatter regex required "---" at the
 		// very start of the file and never accounted for the leading \uFEFF byte sequence.

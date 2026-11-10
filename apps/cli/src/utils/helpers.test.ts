@@ -376,7 +376,7 @@ describe("format helpers", () => {
 		expect(formatToolOutput(null)).toBe("");
 	});
 
-	// Regression tests for https://github.com/bytos/bytos/issues/13036:
+	// Regression tests for https://github.com/Balahurra/Bytos/issues/13036:
 	// malformed tool inputs crossing the model/tool boundary must never
 	// throw from display-only formatters.
 	it("does not crash on run_commands with a null command", () => {

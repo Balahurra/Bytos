@@ -147,7 +147,7 @@ describe("plugin install command", () => {
 	it("parses GitHub plugin file URLs as remote sources", () => {
 		expect(
 			parsePluginSource(
-				"https://github.com/bytos/bytos/blob/main/sdk/examples/plugins/weather-metrics.ts",
+				"https://github.com/Balahurra/Bytos/blob/main/sdk/examples/plugins/weather-metrics.ts",
 			),
 		).toEqual({
 			type: "remote",

@@ -5,7 +5,7 @@
  * BytosCore automation without importing cron internals.
  *
  * Local demo:
- *   bytos plugin install https://github.com/bytos/bytos/blob/main/sdk/examples/plugins/automation-events.ts --cwd .
+ *   bytos plugin install https://github.com/Balahurra/Bytos/blob/main/sdk/examples/plugins/automation-events.ts --cwd .
  *   mkdir -p .bytos/cron/events
  *   cp examples/cron/events/local-plugin-event.event.md .bytos/cron/events/local-plugin-event.event.md
  *   perl -0pi -e "s#/absolute/path/to/repo#$PWD#g" .bytos/cron/events/local-plugin-event.event.md

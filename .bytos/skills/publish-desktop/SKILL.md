@@ -136,8 +136,8 @@ If the workflow fails on missing credentials, see "Publish secrets (one-time set
 9. Verify the update feed after the run succeeds.
 
 ```sh
-curl -sL https://github.com/bytos/bytos/releases/download/desktop-latest/latest.json | head -30   # stable
-curl -sL https://github.com/bytos/bytos/releases/download/desktop-beta/latest.json | head -30    # beta
+curl -sL https://github.com/Balahurra/Bytos/releases/download/desktop-latest/latest.json | head -30   # stable
+curl -sL https://github.com/Balahurra/Bytos/releases/download/desktop-beta/latest.json | head -30    # beta
 ```
 
 The `version` field must be the new release; both `darwin-aarch64` and `darwin-x86_64` entries must point at the same new universal `.app.tar.gz` asset under the release tag (each slice of the fat binary requests its own arch key at runtime, so both keys serve the one artifact), the `windows-x86_64` entry must point at the new `*_x64-setup.exe` asset, and the `linux-x86_64-deb` / `linux-x86_64-rpm` entries at the new `*_amd64.deb` / `*_x86_64.rpm` assets. Installed apps on that channel — including older per-arch installs — pick the update up on next launch or within 2 hours.

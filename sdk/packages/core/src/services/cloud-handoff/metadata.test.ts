@@ -10,7 +10,7 @@ import {
 
 describe("cloud handoff metadata", () => {
 	const fingerprint = createCloudHandoffFingerprint({
-		repoUrl: " https://github.com/bytos/bytos ",
+		repoUrl: " https://github.com/Balahurra/Bytos ",
 		branch: " main ",
 		headSha: "A".repeat(40),
 		modelId: " cloud/model ",
@@ -101,7 +101,7 @@ describe("cloud handoff metadata", () => {
 	it("preserves significant whitespace in workspace paths", () => {
 		expect(
 			createCloudHandoffFingerprint({
-				repoUrl: "https://github.com/bytos/bytos",
+				repoUrl: "https://github.com/Balahurra/Bytos",
 				branch: "main",
 				headSha: "a".repeat(40),
 				modelId: "cloud/model",

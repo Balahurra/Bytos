@@ -34,7 +34,7 @@ describe("cloud repository selection", () => {
 		]);
 	});
 	it("accepts GitHub repository URLs but not arbitrary URLs", () => {
-		expect(isGitHubRepositoryUrl("https://github.com/bytos/bytos")).toBe(true);
+		expect(isGitHubRepositoryUrl("https://github.com/Balahurra/Bytos")).toBe(true);
 		expect(isGitHubRepositoryUrl("git@github.com:bytos/bytos.git")).toBe(false);
 		expect(isGitHubRepositoryUrl("https://github.com/bytos")).toBe(false);
 		expect(isGitHubRepositoryUrl("https://example.com/bytos/bytos")).toBe(
@@ -44,8 +44,8 @@ describe("cloud repository selection", () => {
 
 	it("normalizes repository URLs returned by the integration API", () => {
 		expect(
-			normalizeCloudRepositoryUrl(" https://github.com/bytos/bytos/ "),
-		).toBe("https://github.com/bytos/bytos");
+			normalizeCloudRepositoryUrl(" https://github.com/Balahurra/Bytos/ "),
+		).toBe("https://github.com/Balahurra/Bytos");
 	});
 
 	it("prefers the saved default branch, then common defaults, then the first branch", () => {

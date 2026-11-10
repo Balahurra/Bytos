@@ -5,7 +5,7 @@
 	"license": "Apache-2.0",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/bytos/bytos",
+		"url": "https://github.com/Balahurra/Bytos",
 		"directory": "sdk/packages/core"
 	},
 	"type": "module",

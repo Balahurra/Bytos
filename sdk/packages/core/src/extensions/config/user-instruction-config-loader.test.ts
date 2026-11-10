@@ -145,7 +145,7 @@ Document rollout and rollback steps.`,
 		expect(workflow.disabled).toBe(true);
 	});
 
-	// Regression test for https://github.com/bytos/bytos/issues/12151: a leading UTF-8 BOM
+	// Regression test for https://github.com/Balahurra/Bytos/issues/12151: a leading UTF-8 BOM
 	// (e.g. saved by Windows Notepad's "UTF-8 with BOM" encoding) must not prevent frontmatter
 	// from being recognized.
 	it("parses markdown frontmatter when the content starts with a UTF-8 BOM", () => {

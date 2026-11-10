@@ -15,7 +15,7 @@ const CLOUD_CONFIG: ChatSessionConfig = {
 	apiKey: "",
 	workspaceRoot: "",
 	cwd: "",
-	repoUrl: "https://github.com/bytos/bytos",
+	repoUrl: "https://github.com/Balahurra/Bytos",
 } as ChatSessionConfig;
 
 describe("resolveCredentialError (cloud)", () => {
@@ -28,7 +28,7 @@ describe("resolveCredentialError (cloud)", () => {
 			"https://exa",
 			"git@github.com:bytos/bytos.git",
 			"https://gitlab.com/bytos/bytos",
-			"http://github.com/bytos/bytos",
+			"http://github.com/Balahurra/Bytos",
 		]) {
 			expect(resolveCredentialError({ ...CLOUD_CONFIG, repoUrl })).toMatch(
 				/valid HTTPS GitHub repository URL/,

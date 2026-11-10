@@ -10,7 +10,7 @@ import {
 const pr = {
 	number: 42,
 	title: "Feature",
-	url: "https://github.com/bytos/bytos/pull/42",
+	url: "https://github.com/Balahurra/Bytos/pull/42",
 	state: "OPEN",
 	isDraft: false,
 	mergeable: "MERGEABLE",
@@ -54,7 +54,7 @@ describe("pull request status", () => {
 		expect(result?.pullRequest?.number).toBe(42);
 		expect(result?.pullRequest?.checks[0].state).toBe("success");
 		expect(result?.createUrl).toBe(
-			"https://github.com/bytos/bytos/compare/main...feature%2Fpr-ui?expand=1",
+			"https://github.com/Balahurra/Bytos/compare/main...feature%2Fpr-ui?expand=1",
 		);
 		expect(run.mock.calls.every((call) => call[2] === "/worktree")).toBe(true);
 		expect(run.mock.calls.find((call) => call[1][0] === "pr")?.[1]).toContain(
@@ -195,8 +195,8 @@ describe("pull request status", () => {
 	it("accepts GitHub SSH/HTTPS remotes only", () => {
 		for (const remote of [
 			"git@github.com:bytos/bytos.git",
-			"https://github.com/bytos/bytos.git",
-			"ssh://git@github.com/bytos/bytos",
+			"https://github.com/Balahurra/Bytos.git",
+			"ssh://git@github.com/Balahurra/Bytos",
 		])
 			expect(githubRepository(remote)).toBe("bytos/bytos");
 		expect(

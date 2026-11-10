@@ -4,7 +4,7 @@
 	"description": "Shared Bytos web theme and reusable agent UI components",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/bytos/bytos",
+		"url": "https://github.com/Balahurra/Bytos",
 		"directory": "sdk/packages/ui"
 	},
 	"private": false,

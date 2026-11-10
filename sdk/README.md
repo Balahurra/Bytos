@@ -6,10 +6,10 @@
 <table>
 <tbody>
 <td align="center">
-<a href="https://github.com/bytos/bytos/discussions" target="_blank"><strong>Discussions</strong></a>
+<a href="https://github.com/Balahurra/Bytos/discussions" target="_blank"><strong>Discussions</strong></a>
 </td>
 <td align="center">
-<a href="https://github.com/bytos/bytos/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop" target="_blank"><strong>Feature Requests</strong></a>
+<a href="https://github.com/Balahurra/Bytos/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop" target="_blank"><strong>Feature Requests</strong></a>
 </td>
 <td align="center">
 <a href="https://docs.bytos.dev" target="_blank"><strong>Docs</strong></a>
@@ -305,7 +305,7 @@ Full documentation at [docs.bytos.dev/sdk](https://docs.bytos.dev/sdk/overview):
 
 ## Contributing
 
-To contribute to the project, start with our [Contributing Guide](CONTRIBUTING.md) to learn the basics. You can also join our [Discord](https://github.com/bytos/bytos/discussions) to chat with other contributors in the `#contributors` channel. If you're looking for full-time work, check out our open positions on our [careers page](https://github.com/bytos/bytos/blob/main/CONTRIBUTING.md)!
+To contribute to the project, start with our [Contributing Guide](CONTRIBUTING.md) to learn the basics. You can also join our [Discord](https://github.com/Balahurra/Bytos/discussions) to chat with other contributors in the `#contributors` channel. If you're looking for full-time work, check out our open positions on our [careers page](https://github.com/Balahurra/Bytos/blob/main/CONTRIBUTING.md)!
 
 ## License
 

@@ -638,7 +638,7 @@ current product contracts should be compared before standardizing them.
 - [Optional base styles](./theme/base.css)
 - [Complete theme](./theme/index.css)
 - [Package manifest](./package.json)
-- [Desktop theme integration test (monorepo)](https://github.com/bytos/bytos/blob/main/apps/examples/desktop-app/webview/styles/theme-integration.test.ts)
+- [Desktop theme integration test (monorepo)](https://github.com/Balahurra/Bytos/blob/main/apps/examples/desktop-app/webview/styles/theme-integration.test.ts)
 
 ## Conversation layout and header
 

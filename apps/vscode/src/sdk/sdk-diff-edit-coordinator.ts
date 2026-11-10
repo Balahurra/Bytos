@@ -387,7 +387,7 @@ function normalizeLineEndings(text: string, eol: "\r\n" | "\n"): string {
  * before matching: reads strip "\r", so models emit LF-only text even for CRLF
  * files, and an exact match would fail on every multi-line old_text in a CRLF
  * file — silently skipping the preview while the executor applies the edit
- * (github.com/bytos/bytos/issues/13296).
+ * (github.com/Balahurra/Bytos/issues/13296).
  */
 export function computeNewEditorContent(
 	originalContent: string,

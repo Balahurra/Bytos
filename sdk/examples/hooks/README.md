@@ -423,7 +423,7 @@ echo '{"tool_call": {"name": "read_files", "input": {"filePath": "test.ts"}}}' |
 File hooks observe lifecycle events. For more advanced use cases like message compaction, use a TypeScript **runtime hook** plugin:
 
 ```bash
-bytos plugin install https://github.com/bytos/bytos/blob/main/sdk/examples/hooks/custom-compaction-hook.example.ts --cwd .
+bytos plugin install https://github.com/Balahurra/Bytos/blob/main/sdk/examples/hooks/custom-compaction-hook.example.ts --cwd .
 
 bytos -i "Search the codebase for dispatcher usage, then summarize it"
 ```

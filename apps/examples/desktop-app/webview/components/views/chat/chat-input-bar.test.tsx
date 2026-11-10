@@ -907,7 +907,7 @@ describe("ChatInputBar", () => {
 						promptsInQueue={[]}
 						provider="anthropic"
 						reasoningEffort="low"
-						repoUrl="https://github.com/bytos/bytos"
+						repoUrl="https://github.com/Balahurra/Bytos"
 						status="idle"
 						summary={{ toolCalls: 0, tokensIn: 0, tokensOut: 0 }}
 						thinking
@@ -1095,7 +1095,7 @@ describe("ChatInputBar", () => {
 		});
 		expect(onSend).not.toHaveBeenCalled();
 
-		await render("https://github.com/bytos/bytos");
+		await render("https://github.com/Balahurra/Bytos");
 		expect(sendButton?.disabled).toBe(true);
 		await act(async () =>
 			promptInput?.dispatchEvent(
@@ -1114,7 +1114,7 @@ describe("ChatInputBar", () => {
 		expect(onSend).toHaveBeenCalledWith("Continue in cloud");
 
 		onSend.mockClear();
-		await render("https://github.com/bytos/bytos", "", [
+		await render("https://github.com/Balahurra/Bytos", "", [
 			{ id: "image-1", name: "image.png", isImage: true },
 		]);
 		const imageOnlySendButton = container.querySelector<HTMLButtonElement>(

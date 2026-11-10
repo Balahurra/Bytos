@@ -25,7 +25,7 @@ vi.mock("../session/session", () => ({
 	handleSessionHookEvent: vi.fn(),
 }));
 
-// Exact payload from https://github.com/bytos/bytos/issues/14808: the shared
+// Exact payload from https://github.com/Balahurra/Bytos/issues/14808: the shared
 // schema accepts it (hookName "agent_error"), so the hook command must too.
 const AGENT_ERROR_PAYLOAD = {
 	bytosVersion: "3.0.62",

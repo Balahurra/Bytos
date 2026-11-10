@@ -19,7 +19,7 @@
 	"plugins": {
 		"updater": {
 			"endpoints": [
-				"https://github.com/bytos/bytos/releases/download/desktop-beta/latest.json"
+				"https://github.com/Balahurra/Bytos/releases/download/desktop-beta/latest.json"
 			]
 		}
 	}

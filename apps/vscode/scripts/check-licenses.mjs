@@ -237,6 +237,13 @@ function inspectVsix(filePath) {
 		"extension/dist/plugin-runtime/plugin-sandbox-bootstrap.js",
 		"extension/webview-ui/build/index.html",
 		"extension/assets/icons/icon.png",
+		// Voice capture helper: shipped so an installed build can enumerate the
+		// microphone. It is a Bytos-authored binary, not a third-party package.
+		"extension/assets/voice/bin/win32-x64/bv-os-audio-helper.exe",
+		// Voice recognition engine: whisper.cpp (MIT). The licence text must
+		// travel with the binary.
+		"extension/assets/voice/whisper/b5454/whisper-cli.exe",
+		"extension/assets/voice/whisper/LICENSE.whisper.cpp.txt",
 	]
 	for (const relative of required) {
 		if (!fs.existsSync(path.join(extractDir, relative))) {

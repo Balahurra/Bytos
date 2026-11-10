@@ -10,9 +10,9 @@ import { createTaskProxy, type TaskProxy } from "./task-proxy"
 import { resolveWorkspaceManagerPaths, resolveWorkspaceRootPath } from "./workspace-root"
 
 describe("isBytosManagedProvider", () => {
-	it("treats both Bytos account providers as Bytos providers", () => {
+	it("treats only the Bytos account provider as Bytos-managed", () => {
 		expect(isBytosManagedProvider("bytos")).toBe(true)
-		expect(isBytosManagedProvider("bytos-pass")).toBe(true)
+		expect(isBytosManagedProvider("cline-pass")).toBe(false)
 		expect(isBytosManagedProvider("anthropic")).toBe(false)
 		expect(isBytosManagedProvider(undefined)).toBe(false)
 	})

@@ -1,6 +1,4 @@
 export const FeatureFlag = {
-	/** Enables BytosPass provider/model list exposure in supported clients. */
-	BYTOS_PASS: "ext-bytos-pass",
 	/** Enables Cloud sessions in the Bytos Code desktop app. */
 	CODE_CLOUD_AGENTS: "code-cloud-agents",
 	/** Shows the GitHub integration step in the desktop app */
@@ -71,7 +69,6 @@ export interface IFeatureFlagsProvider {
 export const FeatureFlagDefaultValue: Partial<
 	Record<FeatureFlag, FeatureFlagPayload | undefined>
 > = {
-	[FeatureFlag.BYTOS_PASS]: false,
 	[FeatureFlag.CODE_CLOUD_AGENTS]: false,
 	[FeatureFlag.CODE_ONBOARDING_GITHUB]: false,
 	[FeatureFlag.BYTOS_COMPOSIO_BETA]: false,

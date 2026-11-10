@@ -3,7 +3,7 @@ import {
 	formatCompactionDividerLabel,
 	parseCompactionNoticeMetadata,
 } from "../tui/utils/compaction-status";
-import { formatCliErrorMessage } from "./bytos-pass-errors";
+import { formatCliErrorMessage } from "./cli-errors";
 import { materializeGeneratedMedia } from "./generated-media";
 import { formatToolInput, formatToolOutput, truncate } from "./helpers";
 import {

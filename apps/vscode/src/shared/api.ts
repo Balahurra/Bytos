@@ -23,7 +23,7 @@ export type ApiProvider =
 	| "mistral"
 	| "vscode-lm"
 	| "bytos"
-	| "bytos-pass"
+	| "cline-pass"
 	| "litellm"
 	| "moonshot"
 	| "nebius"
@@ -162,8 +162,8 @@ export const openRouterDefaultModelInfo: ModelInfo = {
 		"Claude Sonnet 5.5 is an Anthropic model for coding, agentic search, and AI agent workflows. It supports planning and implementation tasks across the software development lifecycle.\n\nRead more in the [blog post here](https://www.anthropic.com/claude/sonnet)",
 }
 
-export const bytosPassDefaultModelId = "bytos-pass/glm-5.2"
-export const bytosPassModelInfoSaneDefaults: ModelInfo = {
+export const clinePassDefaultModelId = "cline-pass/glm-5.3"
+export const clinePassModelInfoSaneDefaults: ModelInfo = {
 	maxTokens: 8_192,
 	contextWindow: 128_000,
 	supportsImages: false,
@@ -190,8 +190,8 @@ export function buildModelInfoNameMap(models: Record<string, ModelInfo>): Record
 	return nameMap
 }
 
-export function resolveBytosPassModelInfo(modelId: string, modelInfoByName?: Record<string, ModelInfo>): ModelInfo {
-	return modelInfoByName?.[getModelSlug(modelId)] ?? bytosPassModelInfoSaneDefaults
+export function resolveClinePassModelInfo(modelId: string, modelInfoByName?: Record<string, ModelInfo>): ModelInfo {
+	return modelInfoByName?.[getModelSlug(modelId)] ?? clinePassModelInfoSaneDefaults
 }
 
 export const openAiModelInfoSafeDefaults: OpenAiCompatibleModelInfo = {

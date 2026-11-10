@@ -8,23 +8,10 @@ export * as Llms from "@bytos/llms";
 export {
 	buildBytosClientHeaders,
 	BytosFreeModelLimitError,
-	BytosNotSubscribedError,
-	BytosOrgIndividualInferenceSubscriptionError,
-	BytosPassLimitError,
 	extractBytosFreeModelLimitResetTime,
-	extractBytosPassLimitMessage,
-	getBytosNotSubscribedMessage,
-	getBytosOrgIndividualInferenceSubscriptionMessage,
-	getBytosPassSubscriptionUrl,
 	isBytosFreeModelLimitError,
 	isBytosFreeModelLimitMessage,
 	isBytosModelNotFoundMessage,
-	isBytosNotSubscribedError,
-	isBytosNotSubscribedMessage,
-	isBytosOrgIndividualInferenceSubscriptionError,
-	isBytosOrgIndividualInferenceSubscriptionMessage,
-	isBytosPassLimitError,
-	isBytosPassLimitMessage,
 } from "@bytos/llms";
 // Shared contracts and path helpers re-exported for app consumers.
 export type {

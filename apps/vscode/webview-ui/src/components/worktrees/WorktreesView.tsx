@@ -10,6 +10,7 @@ import {
 import { VSCodeButton, VSCodeCheckbox } from "@vscode/webview-ui-toolkit/react"
 import { AlertCircle, Check, ExternalLink, FolderOpen, GitBranch, GitMerge, Loader2, Plus, Trash2, X } from "lucide-react"
 import { memo, useCallback, useEffect, useState } from "react"
+import DoneButton from "@/components/common/DoneButton"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import { FileServiceClient, TaskServiceClient, WorktreeServiceClient } from "@/services/grpc-client"
@@ -243,7 +244,7 @@ Please help me resolve these merge conflicts, then complete the merge, and delet
 				<h3 className="m-0" style={{ color: getEnvironmentColor(environment) }}>
 					Worktrees
 				</h3>
-				<VSCodeButton onClick={onDone}>Done</VSCodeButton>
+				<DoneButton onClick={onDone}>Done</DoneButton>
 			</div>
 
 			{/* Scrollable Content */}
@@ -254,7 +255,7 @@ Please help me resolve these merge conflicts, then complete the merge, and delet
 					their own windows so Bytos can work on multiple tasks in parallel.{" "}
 					<a
 						className="text-[var(--vscode-textLink-foreground)] hover:text-[var(--vscode-textLink-activeForeground)]"
-						href="https://github.com/bytos/bytos"
+						href="https://github.com/Balahurra/Bytos"
 						rel="noopener noreferrer"
 						style={{ fontSize: "inherit" }}
 						target="_blank">
@@ -276,7 +277,7 @@ Please help me resolve these merge conflicts, then complete the merge, and delet
 								.worktreeinclude detected.{" "}
 								<a
 									className="text-[var(--vscode-textLink-foreground)] hover:text-[var(--vscode-textLink-activeForeground)]"
-									href="https://github.com/bytos/bytos"
+									href="https://github.com/Balahurra/Bytos"
 									rel="noopener noreferrer"
 									style={{ fontSize: "inherit" }}
 									target="_blank">
@@ -297,7 +298,7 @@ Please help me resolve these merge conflicts, then complete the merge, and delet
 									to new worktrees, so you don't have to reinstall dependencies.{" "}
 									<a
 										className="text-[var(--vscode-textLink-foreground)] hover:text-[var(--vscode-textLink-activeForeground)]"
-										href="https://github.com/bytos/bytos"
+										href="https://github.com/Balahurra/Bytos"
 										rel="noopener noreferrer"
 										style={{ fontSize: "inherit" }}
 										target="_blank">
@@ -546,7 +547,7 @@ Please help me resolve these merge conflicts, then complete the merge, and delet
 									<p className="text-sm m-0">{mergeResult.message}</p>
 								</div>
 								<div className="flex justify-end">
-									<VSCodeButton onClick={closeMergeModal}>Done</VSCodeButton>
+									<DoneButton onClick={closeMergeModal}>Done</DoneButton>
 								</div>
 							</div>
 						) : mergeResult?.hasConflicts ? (

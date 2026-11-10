@@ -19,7 +19,7 @@ import { ModelPickerWithManualEntry } from "./ModelPickerWithManualEntry"
  * Cline's pricing and terms apply; this is an interoperability surface, not a
  * Bytos subscription.
  */
-const PROVIDER_ID = "bytos-pass" as const
+const PROVIDER_ID = "cline-pass" as const
 const CLINE_API_BASE_URL = "https://api.cline.bot/api/v1"
 
 interface ClinePassProviderProps {

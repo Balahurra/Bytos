@@ -1,0 +1,49 @@
+---
+title: "Voice and microphone"
+sidebarTitle: "Voice and microphone"
+description: "Enable local dictation on Windows x64, refresh the microphone list, and download a speech model."
+---
+
+Local voice dictation is available on **Windows x64** in the current release. It
+uses the bundled whisper.cpp engine; speech models are downloaded on demand.
+Audio stays in memory and is never uploaded to a Bytos service.
+
+## Enable voice
+
+1. Open **Settings → Voice**.
+2. Turn on **Voice**.
+3. Press **Refresh** in the Microphone section.
+4. Choose an input device.
+5. Download a speech model if none is installed.
+6. Use the microphone button in the chat composer.
+
+## Microphone not found
+
+- Press **Refresh** again. The list is re-enumerated from Windows, not cached.
+- Check **Windows Settings → Privacy & security → Microphone** and allow
+  microphone access for VS Code.
+- Connect or enable the device in Windows Sound settings, then press **Refresh**.
+- If the selected device was unplugged, choose another device or **System default
+  microphone**.
+- If the helper is missing or fails to start, reinstall the extension and press
+  **Refresh**.
+
+## Transcription not working
+
+- Confirm a speech model is installed and verified in **Settings → Voice**.
+- The engine is bundled; a missing model is a separate state from a missing
+  microphone.
+- Keep the recording reasonably short and speak after the recording starts.
+- If the model download fails, check network/proxy access to the model host and
+  retry.
+
+## Platform support
+
+Voice capture is **Windows x64 only** in this release. On macOS, Linux, Windows
+ARM, remote SSH/WSL, and VS Code Web, the UI reports voice as unsupported rather
+than pretending it works.
+
+## Privacy
+
+Audio is held in memory only while recording and transcription run. It is not
+written to a file and is not sent to a Bytos server. See `PRIVACY.md`.

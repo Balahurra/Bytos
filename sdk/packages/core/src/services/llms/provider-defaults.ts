@@ -185,16 +185,6 @@ async function mergeKnownModels(
 			...userKnownModels,
 		});
 	}
-	if (providerId === "bytos-pass" && Object.keys(liveModels).length > 0) {
-		// Keep the catalog's intentional order (pass models first, free models
-		// after) instead of re-sorting by release date: the first live model is
-		// the fallback default when the bundled default id rotates out of the
-		// live list, and it must stay a subscription model, not a free one.
-		return {
-			...liveModels,
-			...userKnownModels,
-		};
-	}
 	const knownModelsWithoutUserOverrides = Llms.sortModelsByReleaseDate({
 		...generated,
 		...defaultKnownModels,

@@ -1,0 +1,50 @@
+---
+title: "Providers and models"
+sidebarTitle: "Overview"
+description: "Connect Bytos to a cloud provider or a local model with your own API key."
+---
+
+Bytos is a **bring-your-own-key (BYOK)** build. A Bytos account is optional, and
+there is no Bytos model proxy by default. Requests go from your machine to the
+provider you configure. The optional ClinePass compatibility provider uses your
+own Cline API key and sends requests to Cline's hosted API. If you sign in, account
+data is sent to Bytos services as described in `PRIVACY.md`.
+
+## Supported paths
+
+- **OpenRouter** — one key for many models.
+- **Anthropic** — Anthropic API key.
+- **OpenAI** — OpenAI API key.
+- **Google Gemini** — Google AI Studio key.
+- **AWS Bedrock** — AWS credentials or an AWS CLI profile.
+- **Azure / GCP Vertex** — provider-specific credentials.
+- **Cerebras / Groq** — API keys.
+- **OpenAI-compatible** — any compatible base URL.
+- **Local models** — Ollama or LM Studio.
+
+Use **Settings → API Configuration** to choose a provider, paste the key or
+endpoint, and select a model.
+
+API keys are stored in VS Code SecretStorage, never in a plaintext settings file
+and never in the webview. See [Configuration](/getting-started/config) and
+`PRIVACY.md`.
+
+## Provider guides
+
+- [OpenRouter](/provider-config/openrouter)
+- [Anthropic](/provider-config/anthropic)
+- [OpenAI](/provider-config/openai)
+- [Google Gemini](/provider-config/google-gemini)
+- [AWS Bedrock](/provider-config/aws-bedrock/api-key)
+- [OpenAI-compatible](/provider-config/openai-compatible)
+- [Other providers](/provider-config/other-30-plus-providers)
+- [Running models locally](/running-models-locally/overview)
+
+## Troubleshooting
+
+If a provider rejects a key, check the provider console for the key, billing, and
+model access. If the model list is empty, verify the key is saved and the base
+URL is correct. For local models, verify the server is running and the model is
+loaded.
+
+See [FAQ](/troubleshooting/faq) and [Networking and proxies](/troubleshooting/networking-and-proxies).

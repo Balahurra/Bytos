@@ -4,6 +4,8 @@
 .worktrees/**
 # Agent tooling, never shipped in the VSIX
 .agents/**
+# Local temporary/debug files, never shipped in the VSIX
+tmp/**
 .claude/**
 .bytos/**
 .codex/**
@@ -67,6 +69,17 @@ evals/
 .codespellrc
 buf.yaml
 .bytosrules/
+
+# Voice F1: the native C++ source and its build inputs stay development-only.
+# The compiled Windows capture helper DOES ship: without it Settings → Voice
+# cannot enumerate (or record from) a microphone on an installed machine.
+native/**
+assets/voice/README.md
+
+# Voice F2: the pinned whisper engine ships from `assets/voice/whisper` (included
+# by default). The downloaded models, the speech corpus and the duplicate engine
+# under `test-assets/` are development/test assets only and must not be packaged.
+test-assets/**
 
 # Build metadata that is not read at runtime. The walkthrough, README, NOTICE,
 # LICENSE, THIRD-PARTY-NOTICES.txt and PRIVACY.md are intentionally packaged;

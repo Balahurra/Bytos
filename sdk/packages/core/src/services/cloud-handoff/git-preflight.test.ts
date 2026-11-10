@@ -32,10 +32,10 @@ function fakeGit(overrides: Record<string, string | Error> = {}): GitCommand {
 
 describe("normalizeGitHubRemoteUrl", () => {
 	it.each([
-		["git@github.com:bytos/bytos.git", "https://github.com/bytos/bytos"],
-		["https://github.com/bytos/bytos.git", "https://github.com/bytos/bytos"],
-		["ssh://git@github.com/bytos/bytos.git", "https://github.com/bytos/bytos"],
-		["git://github.com/bytos/bytos", "https://github.com/bytos/bytos"],
+		["git@github.com:bytos/bytos.git", "https://github.com/Balahurra/Bytos"],
+		["https://github.com/Balahurra/Bytos.git", "https://github.com/Balahurra/Bytos"],
+		["ssh://git@github.com/Balahurra/Bytos.git", "https://github.com/Balahurra/Bytos"],
+		["git://github.com/Balahurra/Bytos", "https://github.com/Balahurra/Bytos"],
 	])("normalizes %s", (remote, expected) => {
 		expect(normalizeGitHubRemoteUrl(remote)).toBe(expected);
 	});
@@ -54,7 +54,7 @@ describe("preflightCloudHandoffGit", () => {
 		await expect(
 			preflightCloudHandoffGit({ cwd: "/repo", git }),
 		).resolves.toEqual({
-			repoUrl: "https://github.com/bytos/bytos",
+			repoUrl: "https://github.com/Balahurra/Bytos",
 			branch: "feature/handoff",
 			headSha: HEAD,
 		});
@@ -238,7 +238,7 @@ describe("preflightCloudHandoffGit", () => {
 	it("does not echo credential-bearing remotes from git stderr", async () => {
 		const secret = "github_pat_secret";
 		const failed = Object.assign(new Error("bad remote"), {
-			stderr: `fatal: No such remote 'https://${secret}@github.com/bytos/bytos.git'`,
+			stderr: `fatal: No such remote 'https://${secret}@github.com/Balahurra/Bytos.git'`,
 		});
 		const error = await preflightCloudHandoffGit({
 			cwd: "/repo",
@@ -268,7 +268,7 @@ describe("preflightCloudHandoffGit", () => {
 	});
 
 	it("supports a GitHub URL configured directly as the branch remote", async () => {
-		const remote = "https://github_pat_secret@github.com/bytos/bytos.git";
+		const remote = "https://github_pat_secret@github.com/Balahurra/Bytos.git";
 		await expect(
 			preflightCloudHandoffGit({
 				cwd: "/repo",
@@ -279,7 +279,7 @@ describe("preflightCloudHandoffGit", () => {
 			}),
 		).resolves.toEqual(
 			expect.objectContaining({
-				repoUrl: "https://github.com/bytos/bytos",
+				repoUrl: "https://github.com/Balahurra/Bytos",
 			}),
 		);
 	});

@@ -128,7 +128,7 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 		// instead of a static hand-maintained list.
 		let providers = catalogProviderListings.map((provider) => ({
 			value: provider.id,
-			label: provider.id === "bytos-pass" ? "ClinePass" : provider.name,
+			label: provider.id === "cline-pass" ? "ClinePass" : provider.name,
 		}))
 		// Filter by platform
 		if (PLATFORM_CONFIG.type !== PlatformType.VSCODE) {
@@ -142,8 +142,8 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 
 		// Keep ClinePass visible even when the host catalog has not loaded the
 		// generated provider entry yet (for example during a cold start).
-		if (!providers.some((option) => option.value === "bytos-pass")) {
-			providers.push({ value: "bytos-pass", label: "ClinePass" })
+		if (!providers.some((option) => option.value === "cline-pass")) {
+			providers.push({ value: "cline-pass", label: "ClinePass" })
 		}
 
 		// Filter by remote config if remoteConfiguredProviders is set
@@ -376,7 +376,7 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 				<ClaudeCodeProvider currentMode={currentMode} isPopup={isPopup} showModelOptions={showModelOptions} />
 			)}
 
-			{apiConfiguration && selectedProvider === "bytos-pass" && (
+			{apiConfiguration && selectedProvider === "cline-pass" && (
 				<ClinePassProvider currentMode={currentMode} isPopup={isPopup} showModelOptions={showModelOptions} />
 			)}
 

@@ -15,7 +15,7 @@ const CLOUD_CONFIG: ChatSessionConfig = {
 	apiKey: "",
 	workspaceRoot: "",
 	cwd: "",
-	repoUrl: "https://github.com/bytos/bytos",
+	repoUrl: "https://github.com/Balahurra/Bytos",
 } as ChatSessionConfig;
 
 describe("resolveCredentialError (cloud)", () => {
@@ -28,7 +28,7 @@ describe("resolveCredentialError (cloud)", () => {
 			"https://exa",
 			"git@github.com:bytos/bytos.git",
 			"https://gitlab.com/bytos/bytos",
-			"http://github.com/bytos/bytos",
+			"http://github.com/Balahurra/Bytos",
 		]) {
 			expect(resolveCredentialError({ ...CLOUD_CONFIG, repoUrl })).toMatch(
 				/valid HTTPS GitHub repository URL/,
@@ -133,12 +133,12 @@ describe("resolveCredentialError", () => {
 
 	it.each([
 		"bytos",
-		"bytos-pass",
+		"cline-pass",
 		"oca",
 		"openai-codex",
 	])("allows OAuth-managed provider %s without a visible API key", (provider) => {
 		// OAuth credentials live in the backend provider settings store
-		// (BytosPass shares the Bytos account login), never in the webview
+		// (ClinePass shares the Bytos account login), never in the webview
 		// config, so the pre-flight gate must not demand an API key.
 		expect(resolveCredentialError(makeConfig({ provider }))).toBeNull();
 	});
@@ -172,7 +172,7 @@ describe("resolveCredentialError", () => {
 
 	it("treats provider ids case-insensitively", () => {
 		expect(
-			resolveCredentialError(makeConfig({ provider: "Bytos-Pass" })),
+			resolveCredentialError(makeConfig({ provider: "ByToS" })),
 		).toBeNull();
 	});
 });

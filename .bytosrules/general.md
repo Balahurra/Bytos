@@ -18,7 +18,7 @@ This file is the secret sauce for working effectively in this codebase. It captu
 - This is a VS Code extension—check `package.json` for available scripts before trying to verify builds (e.g., `bun run compile`, not `bun run build`).
 - When reading a configuration files that users may edit, use `readFileStrippingUtf8Bom`, `readFileSyncStrippingUtf8Bom`, or `stripUtf8Bom` from `@bytos/shared/node`. DON'T strip byte order marks of user files handled by tools/passed to models.
 - When creating PRs, contributors should not create changelog-entry files. Maintainers handle release versioning and changelog curation during the release process.
-- When adding new feature flags, see this PR as a reference https://github.com/bytos/bytos/pull/7566
+- When adding new feature flags, see this PR as a reference https://github.com/Balahurra/Bytos/pull/7566
 - Additional instructions about making requests: @.bytosrules/network.md
 
 ## Searching the Codebase — Avoiding Build Output

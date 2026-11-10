@@ -22,7 +22,7 @@ export enum BUILT_IN_PROVIDER {
 	ANTHROPIC = "anthropic",
 	CLAUDE_CODE = "claude-code",
 	BYTOS = "bytos",
-	BYTOS_PASS = "bytos-pass",
+	CLINE_PASS = "cline-pass",
 	ELEVENLABS = "elevenlabs",
 	// OpenAI variants
 	OPENAI_COMPATIBLE = "openai-compatible",

@@ -15,7 +15,7 @@ export type ChangelogResponse = {
 };
 
 const CHANGELOG_URL = "/api/changelog";
-const REPO_URL = "https://github.com/bytos/bytos";
+const REPO_URL = "https://github.com/Balahurra/Bytos";
 
 /** Desktop releases are tagged `desktop-vX.Y.Z` (see publish-desktop). */
 export function releaseUrl(version: string): string {

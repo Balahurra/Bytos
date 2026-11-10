@@ -4,7 +4,7 @@ import { type ModelInfo, openAiModelInfoSafeDefaults } from "@shared/api"
  * ClinePass model catalog.
  *
  * This provider deliberately talks to Cline's hosted API, which expects
- * `cline-pass/*` model ids rather than the Bytos catalog's `bytos-pass/*`
+ * `cline-pass/*` model ids rather than the Bytos catalog's `cline-pass/*`
  * spelling. Keep this list in one place so the provider page and the Auto
  * Phase Plan phase settings cannot drift apart.
  */

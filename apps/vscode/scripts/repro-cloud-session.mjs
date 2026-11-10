@@ -4,7 +4,7 @@ if (!accessToken) {
 }
 
 const apiBaseUrl = (process.env.BYTOS_API_BASE_URL ?? "https://api.bytos.dev").replace(/\/+$/, "")
-const repositoryUrl = process.env.BYTOS_REPO_URL ?? "https://github.com/bytos/bytos"
+const repositoryUrl = process.env.BYTOS_REPO_URL ?? "https://github.com/Balahurra/Bytos"
 const branch = process.env.BYTOS_BRANCH
 const modelId = process.env.BYTOS_MODEL_ID ?? "openai/gpt-5.6-sol"
 const organizationId = process.env.BYTOS_ORGANIZATION_ID

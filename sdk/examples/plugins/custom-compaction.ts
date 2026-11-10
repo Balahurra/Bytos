@@ -11,7 +11,7 @@
  * so provider-safe normalization and hard truncation remain the final pass.
  *
  * CLI usage:
- *   bytos plugin install https://github.com/bytos/bytos/blob/main/sdk/examples/plugins/custom-compaction.ts --cwd .
+ *   bytos plugin install https://github.com/Balahurra/Bytos/blob/main/sdk/examples/plugins/custom-compaction.ts --cwd .
  *   bytos -i "Search the codebase for dispatcher usage, then summarize it"
  */
 

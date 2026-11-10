@@ -1,0 +1,68 @@
+name = "bytos-api"
+main = "src/index.ts"
+compatibility_date = "2026-01-01"
+workers_dev = true
+
+[vars]
+SUPABASE_URL = "https://qetnpmgyseccwbpsjxcl.supabase.co"
+APP_BASE_URL = "https://bytos.dev"
+STORAGE_DRIVER = "supabase"
+CORS_ORIGINS = "https://bytos.dev,https://staging-app.bytos.dev"
+
+# Secrets (set with `wrangler secret put ... --config wrangler.production.toml`):
+# - SUPABASE_ANON_KEY
+# - SUPABASE_SERVICE_ROLE_KEY
+# - HANDOFF_ENCRYPTION_KEY
+
+# Edge-backed rate limiting (Cloudflare Rate Limiting API bindings).
+# These counters are global at the edge, not per Worker isolate.
+#
+# Optional pre-Worker dashboard rules (create manually; not deployed here):
+# - bytos-api-exchange-ip: POST /api/v1/auth/exchange, 30 req/60s per IP
+# - bytos-api-handoff-ip:  POST /api/v1/auth/handoff/code, 20 req/60s per IP
+# - bytos-api-users-me-ip: GET  /api/v1/users/me, 240 req/60s per IP
+# Dashboard rules block at the edge before the Worker; the bindings below also
+# provide global counters for distributed/IPv6 rotation attacks.
+[[ratelimits]]
+name = "EDGE_LIMIT_EXCHANGE_IP"
+namespace_id = "1001"
+simple = { limit = 30, period = 60 }
+
+[[ratelimits]]
+name = "EDGE_LIMIT_EXCHANGE_GLOBAL"
+namespace_id = "1002"
+simple = { limit = 300, period = 60 }
+
+[[ratelimits]]
+name = "EDGE_LIMIT_HANDOFF_IP"
+namespace_id = "1003"
+simple = { limit = 20, period = 60 }
+
+[[ratelimits]]
+name = "EDGE_LIMIT_HANDOFF_GLOBAL"
+namespace_id = "1004"
+simple = { limit = 300, period = 60 }
+
+[[ratelimits]]
+name = "EDGE_LIMIT_HANDOFF_USER"
+namespace_id = "1005"
+simple = { limit = 10, period = 60 }
+
+[[ratelimits]]
+name = "EDGE_LIMIT_USERS_ME_IP"
+namespace_id = "1006"
+simple = { limit = 240, period = 60 }
+
+[[ratelimits]]
+name = "EDGE_LIMIT_USERS_ME_USER"
+namespace_id = "1007"
+simple = { limit = 120, period = 60 }
+
+# Retention cleanup. Apply supabase/0003_handoff_cleanup.sql before enabling
+# this trigger in production.
+[triggers]
+crons = ["*/15 * * * *"]
+
+[observability]
+enabled = true
+

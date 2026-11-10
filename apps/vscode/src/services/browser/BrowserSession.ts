@@ -8,7 +8,7 @@ import * as chromeLauncher from "chrome-launcher"
 import os from "os"
 import pWaitFor from "p-wait-for"
 import * as path from "path"
-// @ts-ignore
+// @ts-expect-error
 import type { LoggerMessage, ScreenshotOptions } from "puppeteer-core"
 import { Browser, connect, launch, Page, TimeoutError } from "puppeteer-core"
 import { StateManager } from "@/core/storage/StateManager"
@@ -394,8 +394,8 @@ export class BrowserSession {
 			lastLogTs = Date.now()
 		}
 
-		const errorListener = (err: Error) => {
-			logs.push(`[Page Error] ${err.toString()}`)
+		const errorListener = (err: unknown) => {
+			logs.push(`[Page Error] ${err instanceof Error ? err.toString() : String(err)}`)
 			lastLogTs = Date.now()
 		}
 

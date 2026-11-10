@@ -239,7 +239,7 @@ export class BannerService {
 
 			await this.sendBannerEvent(bannerId, "dismiss")
 			// Only refetch when a cached remote banner was dismissed. Dismissing a
-			// hardcoded/webview-local banner id (e.g. the BytosPass promos) should
+			// hardcoded/webview-local banner id (e.g. the ClinePass promos) should
 			// not wipe the cached remote carousel banners.
 			if (this.cachedBanners.some((banner) => banner.id === bannerId)) {
 				this.clearCache()

@@ -44,33 +44,6 @@ describe("loadCloudModels", () => {
 		]);
 	});
 	it.each([
-		false,
-		true,
-	])("filters Pass before deduplicating (organization: %s)", async (isOrganizationSession) => {
-		const fetcher = vi.fn(
-			async (url: string) =>
-				new Response(
-					JSON.stringify(
-						url.endsWith("/models")
-							? [{ id: "model" }]
-							: { bytosPass: [{ id: "model" }, { id: "pass-only" }] },
-					),
-				),
-		);
-		const models = await loadCloudModels("https://api.example.test", {
-			isOrganizationSession,
-			fetchImpl: fetcher as unknown as typeof fetch,
-		});
-		expect(models).toEqual(
-			isOrganizationSession
-				? [{ id: "model", name: "model", catalogId: "bytos" }]
-				: [
-						{ id: "model", name: "model", catalogId: "bytos-pass" },
-						{ id: "pass-only", name: "pass-only", catalogId: "bytos-pass" },
-					],
-		);
-	});
-	it.each([
 		"/models",
 		"/recommended-models",
 	])("fails closed if %s is unavailable, without returning a partial inventory", async (failedPath) => {

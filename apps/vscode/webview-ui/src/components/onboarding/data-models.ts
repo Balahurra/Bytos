@@ -1,34 +1,28 @@
 import type { BytosRecommendedModel, OpenRouterModelInfo } from "@shared/proto/bytos/models"
 import type { OnboardingModel, OnboardingModelGroup } from "@shared/proto/bytos/state"
 
-export const BYTOSPASS_GROUP = "bytos-pass"
-
 export interface RecommendedModelsData {
 	recommended: BytosRecommendedModel[]
 	free: BytosRecommendedModel[]
-	bytosPass: BytosRecommendedModel[]
 }
 
 type RecommendedModelsResponseLike = {
 	recommended?: BytosRecommendedModel[]
 	free?: BytosRecommendedModel[]
-	bytosPass?: BytosRecommendedModel[]
 }
 
 export function getRecommendedModelsData(response: RecommendedModelsResponseLike): RecommendedModelsData | undefined {
 	const recommended = response.recommended ?? []
 	const free = response.free ?? []
-	const bytosPass = response.bytosPass ?? []
 
-	if (recommended.length === 0 && free.length === 0 && bytosPass.length === 0) {
+	if (recommended.length === 0 && free.length === 0) {
 		return undefined
 	}
 
-	return { recommended, free, bytosPass }
+	return { recommended, free }
 }
 
 export interface OnboardingModelsByGroup {
-	bytosPass: ModelGroup[]
 	free: ModelGroup[]
 	power: ModelGroup[]
 }
@@ -38,20 +32,14 @@ interface ModelGroup {
 	models: OnboardingModel[]
 }
 
-function isBytosPassOnboardingModel(model: OnboardingModel): boolean {
-	return model.group === BYTOSPASS_GROUP
-}
-
 export function getBytosUIOnboardingGroups(groupedModels: OnboardingModelGroup): OnboardingModelsByGroup {
 	const { models } = groupedModels
 
-	const bytosPassModels = models.filter(isBytosPassOnboardingModel)
 	const freeModels = models.filter((m) => m.group === "free")
 	const frontierModels = models.filter((m) => m.group === "frontier")
 	const openSourceModels = models.filter((m) => m.group === "open source")
 
 	return {
-		bytosPass: bytosPassModels.length > 0 ? [{ group: BYTOSPASS_GROUP, models: bytosPassModels }] : [],
 		free: freeModels.length > 0 ? [{ group: "free", models: freeModels }] : [],
 		power: [
 			...(frontierModels.length > 0 ? [{ group: "frontier", models: frontierModels }] : []),
@@ -61,9 +49,6 @@ export function getBytosUIOnboardingGroups(groupedModels: OnboardingModelGroup):
 }
 
 export function getOnboardingGroupDisplayName(group: string): string {
-	if (group === BYTOSPASS_GROUP) {
-		return "BytosPass"
-	}
 	return group
 }
 

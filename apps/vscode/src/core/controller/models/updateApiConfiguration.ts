@@ -16,7 +16,6 @@ import { Logger } from "@/shared/services/Logger"
 import { isSecretMaskOnly, stripSecretMask } from "@/shared/storage/secret-mask"
 import { Secrets } from "@/shared/storage/state-keys"
 import type { Controller } from "../index"
-import { clearOrganizationForBytosPassProviderSelection } from "./handleBytosPassProviderSelection"
 import { normalizeProviderSwitchModel } from "./providerSwitchNormalization"
 import { createTaskApiModelShim, resolveActiveModelIdFromApiConfiguration } from "./taskApiModel"
 
@@ -160,7 +159,6 @@ export async function updateApiConfiguration(controller: Controller, request: Up
 					options,
 				),
 			)
-			clearOrganizationForBytosPassProviderSelection(controller, controller.stateManager.getApiConfiguration())
 		}
 
 		// Update the task's API model shim if there's an active task

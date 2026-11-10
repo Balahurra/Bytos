@@ -63,7 +63,7 @@ const checkGitHubAuth = async () => {
 
 const createIssueUrl = (systemInfo, issueTitle) => {
 	return (
-		`https://github.com/bytos/bytos/issues/new?template=bug_report.yml` +
+		`https://github.com/Balahurra/Bytos/issues/new?template=bug_report.yml` +
 		`&title=${issueTitle}` +
 		`&operating-system=${systemInfo.os}` +
 		`&bytos-version=${systemInfo.bytosVersion}` +

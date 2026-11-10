@@ -1,0 +1,57 @@
+---
+title: "Quick start"
+sidebarTitle: "Quick start"
+description: "Install Bytos, connect a provider, and complete your first task in about five minutes."
+---
+
+## 1. Install the extension
+
+Install [Bytos from the VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=Bytos.bytos),
+then open the Bytos view in the activity bar.
+
+## 2. Connect a provider
+
+Open **Settings → API Configuration** and choose one path:
+
+- **Cloud provider:** OpenRouter, Anthropic, OpenAI, Google Gemini, AWS Bedrock,
+  Azure, GCP Vertex, Cerebras, or Groq.
+- **OpenAI-compatible endpoint:** paste the base URL and key.
+- **Local model:** Ollama or LM Studio.
+
+Select a model after the key or endpoint is saved. See
+[Providers and models](/provider-config/overview).
+
+## 3. Open a workspace
+
+Open a project folder in VS Code. Bytos reads the workspace boundary and will not
+silently edit files outside it.
+
+## 4. Describe a task
+
+Example:
+
+> Find why the `/api/health` test is flaky, explain the likely cause, fix it, and
+> run the test three times. Ask before editing files outside `src/`.
+
+Bytos proposes a plan and asks before file reads, edits, terminal commands,
+browser access, or MCP tool calls, unless you have auto-approved that category.
+
+## 5. Review and verify
+
+- Read the diff before accepting an edit.
+- Watch commands run in the VS Code terminal.
+- Use checkpoints to compare or restore an earlier step.
+- If something goes wrong, stop the task and open an issue with the version,
+  VS Code version, provider/model, and logs.
+
+## Optional: try Auto Phase Plan
+
+Open **Settings → Auto Phase Plan**, add two or three phases, then choose
+**Auto** in the composer. Each phase runs as its own Act-mode task in order. See
+[Auto Phase Plan](/features/auto-phase-plan).
+
+## Optional: voice dictation
+
+On **Windows x64**, enable **Settings → Voice**, press **Refresh** in the
+Microphone section, and download a speech model. See
+[Voice and microphone](/troubleshooting/voice-and-microphone).

@@ -22,7 +22,7 @@ Examples include:
 - `background-terminal.ts` - Background shell jobs with setup and job logging
 
 ```bash
-bytos plugin install https://github.com/bytos/bytos/blob/main/sdk/examples/plugins/weather-metrics.ts
+bytos plugin install https://github.com/Balahurra/Bytos/blob/main/sdk/examples/plugins/weather-metrics.ts
 bytos -i "What's the weather like in Tokyo and Paris?"
 ```
 
@@ -64,7 +64,7 @@ TypeScript LSP plugin that gives the agent a `goto_definition` tool powered by t
 - Zero extra dependencies -- resolves `typescript` from the target project
 
 ```bash
-bytos plugin install https://github.com/bytos/bytos/blob/main/sdk/examples/plugins/typescript-lsp/index.ts
+bytos plugin install https://github.com/Balahurra/Bytos/blob/main/sdk/examples/plugins/typescript-lsp/index.ts
 bytos -i "Find where createTool is defined"
 ```
 

@@ -12,7 +12,7 @@ import {
 	getGeneratedModelsForRuntimeProvider,
 	resolveProviderApiLineBaseUrl,
 } from "./builtins";
-import { BYOK_EXCLUDED_PROVIDER_IDS } from "./ids";
+import { BUILT_IN_PROVIDER_IDS, BYOK_EXCLUDED_PROVIDER_IDS } from "./ids";
 import { getModelsForProvider, getProvider } from "./model-registry";
 import { GENERATED_PROVIDER_SPECS } from "./providers.generated";
 import { resolveAnthropicReasoningRequestPolicy } from "./routing/anthropic-compatible";
@@ -256,23 +256,23 @@ describe("vertex builtin models", () => {
 	});
 });
 
-describe("bytos-pass builtin spec", () => {
-	it("registers a distinct Bytos-compatible provider with a custom model list", async () => {
-		const models = await getModelsForProvider("bytos-pass");
-		const provider = await getProvider("bytos-pass");
+describe("cline-pass builtin spec", () => {
+	it("registers a distinct API-key provider on Cline's hosted endpoint", async () => {
+		const models = await getModelsForProvider("cline-pass");
+		const provider = await getProvider("cline-pass");
 
 		expect(provider).toMatchObject({
-			id: "bytos-pass",
-			name: "BytosPass",
-			baseUrl: `${BYTOS_ENVIRONMENTS.production.apiBaseUrl}/api/v1`,
+			id: "cline-pass",
+			name: "ClinePass",
+			baseUrl: "https://api.cline.bot/api/v1",
 			client: "openai-compatible",
 			capabilities: expect.arrayContaining([
-				"oauth",
 				"tools",
 				"reasoning",
 				"prompt-cache",
 			]),
 		});
+		expect(provider?.capabilities).not.toContain("oauth");
 		expect(models).toHaveProperty(provider?.defaultModelId ?? "");
 		expect(Object.keys(models).length).toBeGreaterThan(0);
 		for (const model of Object.values(models)) {
@@ -285,13 +285,32 @@ describe("bytos-pass builtin spec", () => {
 	});
 
 	it("defaults to a subscribed-tier model, not a free one", async () => {
-		const models = await getModelsForProvider("bytos-pass");
-		const provider = await getProvider("bytos-pass");
+		const models = await getModelsForProvider("cline-pass");
+		const provider = await getProvider("cline-pass");
 
-		expect(provider?.defaultModelId).toMatch(/^bytos-pass\//);
+		expect(provider?.defaultModelId).toMatch(/^cline-pass\//);
 		expect(
-			Object.keys(models).some((id) => !id.startsWith("bytos-pass/")),
+			Object.keys(models).some((id) => !id.startsWith("cline-pass/")),
 		).toBe(true);
+	});
+
+	it("keeps ClinePass below first-party providers and out of OAuth", async () => {
+		const clinePass = await getProvider("cline-pass");
+		if (!clinePass) throw new Error("missing cline-pass provider");
+		const clineSpec = BUILTIN_SPECS.find((spec) => spec.id === "cline-pass");
+		const bytosSpec = BUILTIN_SPECS.find((spec) => spec.id === "bytos");
+		const anthropicSpec = BUILTIN_SPECS.find((spec) => spec.id === "anthropic");
+		if (!clineSpec || !bytosSpec || !anthropicSpec) throw new Error("missing specs");
+
+		expect(clinePass.capabilities).not.toContain("oauth");
+		expect(clineSpec.apiKeyEnv).toEqual(["CLINE_API_KEY"]);
+		expect(clineSpec.popular ?? 0).toBeGreaterThan(bytosSpec.popular ?? 0);
+		expect(clineSpec.popular ?? 0).toBeGreaterThan(anthropicSpec.popular ?? 0);
+	});
+
+	it("does not expose a BytosPass provider id", () => {
+		expect(BUILTIN_SPECS.map((spec) => spec.id)).not.toContain("bytos-pass");
+		expect(BUILT_IN_PROVIDER_IDS).not.toContain("bytos-pass");
 	});
 });
 
@@ -303,7 +322,7 @@ describe("built-in provider metadata", () => {
 				responseEnvelope: "success-data",
 			},
 		});
-		await expect(getProvider("bytos-pass")).resolves.toMatchObject({
+		await expect(getProvider("cline-pass")).resolves.toMatchObject({
 			metadata: {
 				imageTransport: "openrouter",
 				responseEnvelope: "success-data",

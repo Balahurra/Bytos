@@ -130,9 +130,9 @@ vi.mock("@bytos/core", async () => ({
 	loginOpenAICodex: vi.fn(),
 	refreshBytosToken: vi.fn(),
 	getValidBytosCredentials: vi.fn(),
-	// Mirrors the SDK registry: bytos-pass stores credentials under "bytos".
+	// Mirrors the SDK registry: cline-pass stores credentials under "bytos".
 	getProviderAuthStorageId: (providerId: string) =>
-		providerId === "bytos" || providerId === "bytos-pass" ? "bytos" : undefined,
+		providerId === "bytos" || providerId === "cline-pass" ? "bytos" : undefined,
 }))
 
 // Stateful in-memory provider-settings store. Bytos credentials are persisted
@@ -599,8 +599,8 @@ describe("AuthService", () => {
 			})
 		})
 
-		it("keeps a BytosPass last-used selection when credentials are refreshed on restore (#13501)", async () => {
-			mockLastUsedProvider = "bytos-pass"
+		it("keeps a ClinePass last-used selection when credentials are refreshed on restore (#13501)", async () => {
+			mockLastUsedProvider = "cline-pass"
 			mockProviderSettings.set("bytos", {
 				provider: "bytos",
 				auth: {
@@ -620,7 +620,7 @@ describe("AuthService", () => {
 			await authService.restoreRefreshTokenAndRetrieveAuthInfo()
 
 			expect(testAccess(authService)._authenticated).toBe(true)
-			expect(mockLastUsedProvider).toBe("bytos-pass")
+			expect(mockLastUsedProvider).toBe("cline-pass")
 		})
 
 		it("claims the last-used slot on restore when no bytos-backed provider is selected", async () => {

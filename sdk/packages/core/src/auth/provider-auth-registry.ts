@@ -242,10 +242,6 @@ function createBytosAuthHandler(input: {
 
 const providerAuthHandlers = [
 	createBytosAuthHandler({ providerId: "bytos" }),
-	createBytosAuthHandler({
-		providerId: "bytos-pass",
-		storageProviderId: "bytos",
-	}),
 	createOAuthHandler({
 		providerId: "oca",
 		login: ({ settings, callbacks, telemetry }) =>

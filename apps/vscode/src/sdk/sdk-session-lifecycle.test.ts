@@ -512,12 +512,16 @@ describe("SdkSessionLifecycle", () => {
 		const result = await replacePromise
 
 		expect(result?.startResult.sessionId).toBe("task-session")
-		expect(start).toHaveBeenLastCalledWith({
-			config: { sessionId: "task-session" },
-			prompt: undefined,
-			interactive: true,
-			initialMessages,
-		})
+		expect(start).toHaveBeenLastCalledWith(
+			expect.objectContaining({
+				config: { sessionId: "task-session" },
+				prompt: undefined,
+				interactive: true,
+				initialMessages,
+				// Local sessions always install the fail-closed policy baseline.
+				toolPolicies: expect.objectContaining({ "*": { autoApprove: false } }),
+			}),
+		)
 		expect(lifecycle.getActiveSession()?.isRunning).toBe(false)
 	})
 
@@ -600,10 +604,13 @@ describe("SdkSessionLifecycle", () => {
 		expect(sdkHost.dispose).not.toHaveBeenCalled()
 		expect(mockCreateSessionHost).toHaveBeenCalledOnce()
 		expect(sdkHost.subscribe).toHaveBeenCalledOnce()
-		expect(sdkHost.start).toHaveBeenLastCalledWith({
-			config: {},
-			initialMessages: [{ role: "user", content: "hello" }],
-		})
+		expect(sdkHost.start).toHaveBeenLastCalledWith(
+			expect.objectContaining({
+				config: {},
+				initialMessages: [{ role: "user", content: "hello" }],
+				toolPolicies: expect.objectContaining({ "*": { autoApprove: false } }),
+			}),
+		)
 		expect(lifecycle.getActiveSession()?.sessionId).toBe("new-session")
 		expect(lifecycle.getActiveSession()?.isRunning).toBe(false)
 	})

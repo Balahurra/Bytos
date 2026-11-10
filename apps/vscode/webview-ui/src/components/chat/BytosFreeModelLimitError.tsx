@@ -57,11 +57,11 @@ const BytosFreeModelLimitError = ({ message }: BytosFreeModelLimitErrorProps) =>
 	const resetTime = extractFreeModelLimitResetTime(message)
 	const currentMode: Mode = mode ?? "act"
 	const modeFields = getModeSpecificFields(apiConfiguration, currentMode)
-	// Free models are selectable on both the bytos and bytos-pass providers, so
+	// Free models are selectable on both the bytos and cline-pass providers, so
 	// read the model id from whichever provider is currently selected.
 	const selectedFreeModelId =
-		modeFields.apiProvider === "bytos-pass"
-			? modeFields.bytosPassModelId
+		modeFields.apiProvider === "cline-pass"
+			? modeFields.clinePassModelId
 			: modeFields.apiProvider === BYTOS_PROVIDER_ID
 				? modeFields.bytosModelId
 				: undefined

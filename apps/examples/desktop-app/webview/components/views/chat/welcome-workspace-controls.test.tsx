@@ -86,7 +86,7 @@ function renderControls(
 					id: 42,
 					name: "bytos",
 					fullName: "bytos/bytos",
-					url: "https://github.com/bytos/bytos",
+					url: "https://github.com/Balahurra/Bytos",
 					defaultBranch: "main",
 				},
 			],
@@ -160,7 +160,7 @@ describe("WelcomeWorkspaceControls cloud mode", () => {
 		expect(props.onListCloudRepositories).toHaveBeenCalledOnce();
 		await click(button("bytos/bytos"));
 		expect(onRepoUrlChange).toHaveBeenLastCalledWith(
-			"https://github.com/bytos/bytos",
+			"https://github.com/Balahurra/Bytos",
 		);
 		expect(onCloudBranchChange).toHaveBeenLastCalledWith("main");
 	});
@@ -179,7 +179,7 @@ describe("WelcomeWorkspaceControls cloud mode", () => {
 		await click(button("bytos/bytos"));
 		renderControls({
 			executionTarget: "cloud",
-			repoUrl: "https://github.com/bytos/bytos",
+			repoUrl: "https://github.com/Balahurra/Bytos",
 			cloudBranch: "main",
 			onCloudBranchChange,
 			onListCloudRepositories: props.onListCloudRepositories,
@@ -198,7 +198,7 @@ describe("WelcomeWorkspaceControls cloud mode", () => {
 	it("enables branches for a restored cloud repository", async () => {
 		const props = renderControls({
 			executionTarget: "cloud",
-			repoUrl: "https://github.com/bytos/bytos",
+			repoUrl: "https://github.com/Balahurra/Bytos",
 			cloudBranch: "main",
 		});
 
@@ -219,7 +219,7 @@ describe("WelcomeWorkspaceControls cloud mode", () => {
 		}));
 		renderControls({
 			executionTarget: "cloud",
-			repoUrl: "https://github.com/bytos/bytos",
+			repoUrl: "https://github.com/Balahurra/Bytos",
 			cloudBranch: "main",
 			onCloudBranchChange,
 			onListCloudBranches,
@@ -248,7 +248,7 @@ describe("WelcomeWorkspaceControls cloud mode", () => {
 		);
 		renderControls({
 			executionTarget: "cloud",
-			repoUrl: "https://github.com/bytos/bytos",
+			repoUrl: "https://github.com/Balahurra/Bytos",
 			cloudBranch: selectedBranch,
 			onCloudBranchChange,
 			onListCloudBranches,
@@ -294,7 +294,7 @@ describe("WelcomeWorkspaceControls cloud mode", () => {
 		const onCloudBranchChange = vi.fn();
 		const props = renderControls({
 			executionTarget: "cloud",
-			repoUrl: "https://github.com/bytos/bytos",
+			repoUrl: "https://github.com/Balahurra/Bytos",
 			cloudBranch: "deleted",
 			onCloudBranchChange,
 			onListCloudRepositories: vi.fn(async () => ({
@@ -305,7 +305,7 @@ describe("WelcomeWorkspaceControls cloud mode", () => {
 						id: 42,
 						name: "bytos",
 						fullName: "bytos/bytos",
-						url: "https://github.com/bytos/bytos",
+						url: "https://github.com/Balahurra/Bytos",
 						defaultBranch: "main",
 					},
 					{
@@ -369,7 +369,7 @@ describe("WelcomeWorkspaceControls cloud mode", () => {
 		);
 		renderControls({
 			executionTarget: "cloud",
-			repoUrl: "https://github.com/bytos/bytos",
+			repoUrl: "https://github.com/Balahurra/Bytos",
 			cloudBranch: "main",
 			onCloudBranchChange,
 			onListCloudBranches,
@@ -418,7 +418,7 @@ describe("WelcomeWorkspaceControls cloud mode", () => {
 		);
 		renderControls({
 			executionTarget: "cloud",
-			repoUrl: "https://github.com/bytos/bytos",
+			repoUrl: "https://github.com/Balahurra/Bytos",
 			cloudBranch: "old/first",
 			onListCloudBranches,
 		});
@@ -441,7 +441,7 @@ describe("WelcomeWorkspaceControls cloud mode", () => {
 		}));
 		renderControls({
 			executionTarget: "cloud",
-			repoUrl: "https://github.com/bytos/bytos",
+			repoUrl: "https://github.com/Balahurra/Bytos",
 			cloudBranch: "old/first",
 			onListCloudBranches: refreshedList,
 		});
@@ -507,7 +507,7 @@ describe("WelcomeWorkspaceControls cloud mode", () => {
 		await click(button("bytos/bytos"));
 		renderControls({
 			executionTarget: "cloud",
-			repoUrl: "https://github.com/bytos/bytos",
+			repoUrl: "https://github.com/Balahurra/Bytos",
 			cloudBranch: "main",
 			onListCloudRepositories: props.onListCloudRepositories,
 			onListCloudBranches,
@@ -591,7 +591,7 @@ describe("WelcomeWorkspaceControls cloud mode", () => {
 		await click(button("bytos/bytos"));
 		renderControls({
 			executionTarget: "cloud",
-			repoUrl: "https://github.com/bytos/bytos",
+			repoUrl: "https://github.com/Balahurra/Bytos",
 			cloudBranch: "main",
 			onCloudBranchChange,
 			onListCloudRepositories: props.onListCloudRepositories,

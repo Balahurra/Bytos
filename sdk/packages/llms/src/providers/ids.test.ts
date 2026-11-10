@@ -103,19 +103,19 @@ describe("provider-ids", () => {
 		);
 	});
 
-	it("registers BytosPass as a distinct Bytos-compatible built-in provider", async () => {
-		expect(BUILT_IN_PROVIDER_IDS).toContain("bytos-pass");
-		const models = await getModelsForProvider("bytos-pass");
-		const provider = await getProvider("bytos-pass");
+	it("registers ClinePass as a distinct Bytos-compatible built-in provider", async () => {
+		expect(BUILT_IN_PROVIDER_IDS).toContain("cline-pass");
+		const models = await getModelsForProvider("cline-pass");
+		const provider = await getProvider("cline-pass");
 
 		expect(provider).toMatchObject({
-			id: "bytos-pass",
-			name: "BytosPass",
+			id: "cline-pass",
+			name: "ClinePass",
 			client: "openai-compatible",
 		});
 		expect(models).toHaveProperty(provider?.defaultModelId ?? "");
 
-		for (const providerId of ["bytos", "bytos-pass"]) {
+		for (const providerId of ["bytos", "cline-pass"]) {
 			const registration = BUILTIN_PROVIDER_REGISTRATIONS.find(
 				(item) => item.manifest.id === providerId,
 			);

@@ -55,6 +55,7 @@ import { workspaceResolver } from "./core/workspace"
 import { findMatchingNotebookCell, getContextForCommand, showWebview } from "./hosts/vscode/commandUtils"
 import { abortCommitGeneration, generateCommitMsg } from "./hosts/vscode/commit-message-generator"
 import { registerBytosOutputChannel } from "./hosts/vscode/hostbridge/env/debugLog"
+import { showBytosNotifications } from "./hosts/vscode/notifications"
 import {
 	disposeVscodeCommentReviewController,
 	getVscodeCommentReviewController,
@@ -68,6 +69,7 @@ import { exportVSCodeStorageToSharedFiles } from "./hosts/vscode/vscode-to-file-
 import { ExtensionRegistryInfo } from "./registry"
 import { AuthService, LogoutReason } from "./sdk/auth-service"
 import { migrateProviders } from "./sdk/provider-migration"
+import { SupabaseAccountService, setActiveCallbackScheme } from "./services/auth/supabaseAccountService"
 import { telemetryService } from "./services/telemetry"
 import type { RolloutBundleActivation } from "./services/telemetry/rollout-metadata"
 import { LG_TASK_URI_PATH, SharedUriHandler, TASK_URI_PATH } from "./services/uri/SharedUriHandler"
@@ -96,6 +98,10 @@ export async function activate(context: vscode.ExtensionContext) {
 	const workspacePath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath
 	secretStorageForShutdown = await VscodeSecretStorage.create(context.secrets, SecretKeys)
 	providerCredentialsForShutdown = await VscodeProviderCredentialStore.create(context.secrets, resolveProviderSettingsPath())
+	SupabaseAccountService.initialize(context.secrets)
+	// The account handoff callback must use the URI scheme this VS Code build
+	// actually registers: `vscode://` on stable, `vscode-insiders://` on Insiders.
+	setActiveCallbackScheme(vscode.env.uriScheme)
 	setProviderCredentialStore(providerCredentialsForShutdown)
 
 	// 2. Set up HostProvider for VSCode
@@ -176,7 +182,27 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand(commands.SettingsButton, () => sendSettingsButtonClickedEvent()))
 	context.subscriptions.push(vscode.commands.registerCommand(commands.HistoryButton, () => sendHistoryButtonClickedEvent()))
 	context.subscriptions.push(vscode.commands.registerCommand(commands.AccountButton, () => sendAccountButtonClickedEvent()))
+	context.subscriptions.push(vscode.commands.registerCommand(commands.OpenAccount, () => sendAccountButtonClickedEvent()))
+	context.subscriptions.push(vscode.commands.registerCommand(commands.NotificationsButton, () => showBytosNotifications()))
 	context.subscriptions.push(vscode.commands.registerCommand(commands.WorktreesButton, () => sendWorktreesButtonClickedEvent()))
+
+	// Voice F1 smoke entry point. Registered only outside Production and loaded
+	// lazily, so nothing voice-related is imported at activation time (TD-15).
+	if (context.extensionMode !== vscode.ExtensionMode.Production) {
+		context.subscriptions.push(
+			vscode.commands.registerCommand("bytos.voice.f1.smoke", async () => {
+				const { runVoiceSmoke } = await import("./core/voice/smokeCommand")
+				return await runVoiceSmoke(context)
+			}),
+		)
+		// Evidence run for the F1 report: `BYTOS_VOICE_F1_SMOKE_AUTORUN=1` starts
+		// the smoke cycle on activation so a headless runner can collect counters.
+		if (process.env.BYTOS_VOICE_F1_SMOKE_AUTORUN === "1") {
+			void import("./core/voice/smokeCommand")
+				.then(({ runVoiceSmoke }) => runVoiceSmoke(context))
+				.catch((error) => Logger.error("[Bytos] Voice F1 smoke run failed:", error))
+		}
+	}
 
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(DIFF_VIEW_URI_SCHEME, diffContentProvider))
 
@@ -189,19 +215,33 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	const handleUri = async (uri: vscode.Uri) => {
 		const url = decodeURIComponent(uri.toString())
+		try {
+			const parsedUri = new URL(url)
+			Logger.info("Extension URI handler: received", {
+				scheme: parsedUri.protocol.replace(/:$/, "").toLowerCase(),
+				authority: parsedUri.host.toLowerCase(),
+				path: parsedUri.pathname,
+			})
+		} catch {
+			// Malformed URIs are reported by SharedUriHandler below.
+		}
 		const uriPath = getUriPath(url)
 		const isTaskUri = uriPath === TASK_URI_PATH || uriPath === LG_TASK_URI_PATH
+		const webAuth = {
+			expectedScheme: vscode.env.uriScheme,
+			expectedAuthority: context.extension.id,
+		}
 
 		if (isTaskUri) {
 			await openBytosSidebarForTaskUri()
 		}
 
-		let success = await SharedUriHandler.handleUri(url)
+		let success = await SharedUriHandler.handleUri(url, { webAuth })
 
 		// Task deeplinks can race with first-time sidebar initialization.
 		if (!success && isTaskUri) {
 			await openBytosSidebarForTaskUri()
-			success = await SharedUriHandler.handleUri(url)
+			success = await SharedUriHandler.handleUri(url, { webAuth })
 		}
 
 		if (!success) {

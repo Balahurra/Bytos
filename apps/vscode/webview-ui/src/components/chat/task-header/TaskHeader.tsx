@@ -116,7 +116,7 @@ const TaskHeader: React.FC<TaskHeaderProps> = ({
 	// report cost only when the user has supplied both prices. For every
 	// other provider, the SDK is the source of truth for whether to render
 	// per-task cost: any `metadata.usageCostDisplay` other than "show" —
-	// "hide", or "subscription" for flat-rate providers like BytosPass and
+	// "hide", or "subscription" for flat-rate providers like ClinePass and
 	// ChatGPT Plus/Pro where the computed figure would be an API-rate
 	// estimate rather than a real charge — suppresses the cost here. This
 	// mirrors the CLI's `shouldShowCliUsageCost` consumer and removes the

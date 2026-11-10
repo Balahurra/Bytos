@@ -125,7 +125,7 @@ export const WithLinks: Story = {
 	args: {
 		markdown: `Check out these resources:
 
-- Official documentation: https://github.com/bytos/bytos
+- Official documentation: https://github.com/Balahurra/Bytos
 - API reference: https://api.bytos.dev/docs
 - Support forum: https://community.bytos.dev
 

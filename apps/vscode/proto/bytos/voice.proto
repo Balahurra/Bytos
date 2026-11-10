@@ -1,0 +1,230 @@
+syntax = "proto3";
+package bytos;
+
+import "bytos/common.proto";
+
+option go_package = "github.com/bytos/grpc-go/bytos";
+option java_multiple_files = true;
+option java_package = "bot.bytos.proto";
+
+// Voice control surface (F1 — audio capture foundation, F3 — settings).
+//
+// HARD RULE: no message in this file may carry audio. There is no `bytes`,
+// no `repeated float`, no path to an audio file. Audio never crosses ProtoBus;
+// it stays in the extension host (between the native helper's stdout and the
+// in-memory utterance buffer). Only control, device metadata, status and error
+// information is carried here. `voiceProtoGuard.test.ts` enforces this.
+service VoiceService {
+  rpc getVoiceStatus(EmptyRequest) returns (VoiceStatus);
+  rpc listCaptureDevices(EmptyRequest) returns (ListCaptureDevicesResponse);
+  rpc startCapture(StartCaptureRequest) returns (StartCaptureResponse);
+  rpc stopCapture(StopCaptureRequest) returns (EmptyResponse);
+  rpc cancelCapture(CancelCaptureRequest) returns (EmptyResponse);
+  rpc subscribeToVoiceEvents(EmptyRequest) returns (stream VoiceEvent);
+
+  // F3 — Settings surface. Metadata, progress counters and decisions only.
+  rpc getVoiceServiceStatus(EmptyRequest) returns (VoiceServiceStatus);
+  rpc downloadVoiceModel(DownloadVoiceModelRequest) returns (EmptyResponse);
+  rpc cancelVoiceModelDownload(CancelVoiceModelDownloadRequest) returns (EmptyResponse);
+  rpc removeVoiceModel(RemoveVoiceModelRequest) returns (EmptyResponse);
+  rpc verifyVoiceModel(VerifyVoiceModelRequest) returns (VoiceModelInfo);
+
+  // F4 — Composer dictation. Stops the capture, transcribes the host-held
+  // utterance with the selected language/model and returns TEXT ONLY. The audio
+  // never appears in this exchange, and the response is a draft for the user to
+  // edit: it is not a message and it is never sent.
+  rpc transcribeUtterance(TranscribeUtteranceRequest) returns (TranscribeUtteranceResponse);
+}
+
+// Capture control. Identifiers and small numbers only — never audio.
+message StartCaptureRequest {
+  // Stable OS endpoint id, or "" for the system default.
+  string microphone_id = 1;
+  // "auto" | "wasapi". F1 has exactly one backend; the field exists so a manual
+  // pin can be recorded and refused rather than silently overridden.
+  string capture_method = 2;
+  // 0 = use the persisted voiceSilenceTimeoutMs setting.
+  int32 silence_timeout_ms = 3;
+  // 0 = use the persisted voiceMaxDurationMs setting.
+  int32 max_duration_ms = 4;
+}
+
+message StartCaptureResponse {
+  string session_id = 1;
+  // Always 16000 in F1.
+  int32 sample_rate = 2;
+  // Always 1 (mono) in F1.
+  int32 channels = 3;
+  // "wasapi"
+  string backend = 4;
+}
+
+message StopCaptureRequest {
+  string session_id = 1;
+}
+
+message CancelCaptureRequest {
+  string session_id = 1;
+}
+
+message EmptyResponse {}
+
+message CaptureDeviceInfo {
+  string id = 1;
+  string name = 2;
+  // "active" | "disabled" | "unplugged" | "notpresent" | "unknown"
+  string state = 3;
+  bool is_default = 4;
+}
+
+message ListCaptureDevicesResponse {
+  repeated CaptureDeviceInfo devices = 1;
+  // Populated when enumeration itself failed (e.g. CAPTURE_ENUMERATION_FAILED).
+  string error_code = 2;
+}
+
+// One host-owned capability/status object. Consumers read this and nothing else.
+message VoiceStatus {
+  bool enabled = 1;
+  bool can_capture = 2;
+  // "wasapi" | "none"
+  string backend = 3;
+  // Stable code explaining why can_capture is false, e.g.
+  // PLATFORM_NOT_SUPPORTED_IN_F1 | REMOTE_HOST_UNSUPPORTED |
+  // WEB_UI_UNSUPPORTED | CAPTURE_HELPER_MISSING | NO_CAPTURE_DEVICE |
+  // RECORDER_ISOLATION_UNVERIFIED. Empty when capture is possible.
+  string unavailable_reason = 4;
+  bool permission_granted = 5;
+  int32 device_count = 6;
+  string selected_microphone_id = 7;
+  // idle | starting | capturing | stopping | closed | failed
+  string capture_state = 8;
+  // Counters only — never payload.
+  int32 frames_received = 9;
+  int32 bytes_received = 10;
+  string last_error_code = 11;
+  // Human-readable detail for the UI. Never contains audio or a transcript.
+  string last_error_message = 12;
+  int32 active_session_duration_ms = 13;
+  string os_label = 14;
+}
+
+// Status and error events only.
+message VoiceEvent {
+  // captureStatus | deviceListChanged | error | captureStopped |
+  // modelDownloadProgress | modelStatusChanged
+  string kind = 1;
+  string session_id = 2;
+  string capture_state = 3;
+  int32 duration_ms = 4;
+  int32 bytes_received = 5;
+  string code = 6;
+  string message = 7;
+  // F3: model download progress (kind == "modelDownloadProgress").
+  string model_id = 8;
+  // 0…100, truncated. Counters only — never audio.
+  int32 progress_percent = 9;
+  // "tiny" | "base" model state for kind == "modelStatusChanged":
+  // not-installed | downloading | verifying | ready | failed
+  string model_state = 10;
+}
+
+// ── F3: model management (Settings) ──────────────────────────────────────────
+//
+// Every message below is metadata only: model ids, byte counts, percentages,
+// states and decision flags. None of them can express audio, and none of them
+// carries a filesystem path.
+
+message VoiceModelInfo {
+  // "tiny" | "base"
+  string id = 1;
+  string display_name = 2;
+  // Exact pinned artifact size. A mismatch is a hard failure, not a warning.
+  int64 size_bytes = 3;
+  string file_name = 4;
+  bool multilingual = 5;
+  // 0…100 while downloading.
+  int32 progress_percent = 6;
+  bool installed = 7;
+  bool verified = 8;
+  // not-installed | downloading | verifying | ready | failed
+  string state = 9;
+  // Stable code when state == "failed" (e.g. MODEL_INTEGRITY_FAILED).
+  string error_code = 10;
+  bool is_default = 11;
+  // Measured working-set peak for this model on the reference host (MB).
+  int32 approx_memory_mb = 12;
+}
+
+// One host-owned view of the voice engine, models and capture capability.
+message VoiceServiceStatus {
+  VoiceStatus capability = 1;
+  string language = 2;
+  string model_id = 3;
+  repeated VoiceModelInfo models = 4;
+  // whisper binary resolution: "ready" | "missing" | "integrity-failed" |
+  // "unsupported-platform"
+  string engine_state = 5;
+  // Stable code when the engine cannot run.
+  string engine_error_code = 6;
+  // True only when the engine is verified AND the selected model is ready.
+  bool transcribe_ready = 7;
+  // Microphone enumeration result from the last listing. "unknown" until a
+  // listing has run: the Settings panel never assumes a device exists.
+  bool microphone_available = 8;
+  string microphone_error_code = 9;
+  // The devices the last enumeration returned: identifiers, names and states.
+  // Metadata only — a device name is the OS endpoint label, never audio.
+  repeated CaptureDeviceInfo devices = 10;
+}
+
+message DownloadVoiceModelRequest {
+  // "tiny" | "base"
+  string model_id = 1;
+  // Explicit user consent. The download is refused when this is false.
+  bool consent = 2;
+}
+
+message CancelVoiceModelDownloadRequest {
+  string model_id = 1;
+}
+
+message RemoveVoiceModelRequest {
+  string model_id = 1;
+}
+
+message VerifyVoiceModelRequest {
+  string model_id = 1;
+}
+
+// ── F4: composer dictation ───────────────────────────────────────────────────
+//
+// The request names a session and the settings to apply. It cannot express
+// audio: the utterance is already in host memory, held by the runtime that
+// captured it. The response is text plus counters — the transcript for the
+// composer draft, never a message for the agent runtime.
+
+message TranscribeUtteranceRequest {
+  // The session returned by startCapture. Empty means "the current session".
+  string session_id = 1;
+  // "auto" | "tr" | "en" | "de". Empty means "use the persisted setting".
+  string language = 2;
+  // "tiny" | "base". Empty means "use the persisted setting".
+  string model_id = 3;
+}
+
+message TranscribeUtteranceResponse {
+  // Normalised transcript. Empty when the utterance held no speech.
+  string text = 1;
+  // True when the captured session produced no usable samples at all.
+  bool empty_audio = 2;
+  // Language used (the detected one when the request asked for "auto").
+  string language = 3;
+  string model_id = 4;
+  // Audio length that was transcribed, in milliseconds.
+  int32 audio_duration_ms = 5;
+  // Wall-clock cost of the recognition run.
+  int32 duration_ms = 6;
+  // Non-fatal notes (e.g. a suspected language mismatch). Never audio.
+  repeated string warnings = 7;
+}

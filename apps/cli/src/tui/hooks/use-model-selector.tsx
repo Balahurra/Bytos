@@ -19,7 +19,6 @@ import {
 import type { Config } from "../../utils/types";
 import { withLoadingDialog } from "../components/dialogs/loading-dialog";
 import {
-	BytosPassSubscriptionContent,
 	type ExistingProviderOption,
 	LocalCliStatusContent,
 	OAuthApiKeyInputContent,
@@ -128,36 +127,6 @@ async function fetchOpenAiCompatibleModelIds(
 	}
 }
 
-function providerToExistingProviderOptions(input: {
-	providerId: string;
-	providerName: string;
-	dialog: DialogActions;
-	termHeight: number;
-}): ExistingProviderOption[] {
-	if (input.providerId !== "bytos-pass") {
-		return [];
-	}
-
-	return [
-		{
-			value: "open_subscription_page",
-			label: "Manage subscription & see usage",
-			onSelect: async () => {
-				await input.dialog.choice<boolean>({
-					style: { maxHeight: input.termHeight - 2 },
-					closeOnEscape: false,
-					content: (ctx: ChoiceContext<boolean>) => (
-						<BytosPassSubscriptionContent
-							{...ctx}
-							providerName={input.providerName}
-						/>
-					),
-				});
-			},
-		},
-	];
-}
-
 async function runProviderChange(
 	dialog: DialogActions,
 	config: Config,
@@ -203,12 +172,7 @@ async function runProviderChange(
 	let needsAuth = true;
 	if (isProviderConfigured(newProviderId, existingSettings)) {
 		let option: ExistingProviderOption | undefined;
-		const extraOptions = providerToExistingProviderOptions({
-			providerId: newProviderId,
-			providerName: displayName,
-			dialog,
-			termHeight,
-		});
+		const extraOptions: ExistingProviderOption[] = [];
 		while (true) {
 			option = await dialog.choice<ExistingProviderOption>({
 				style: { maxHeight: termHeight - 2 },
@@ -438,12 +402,7 @@ export function useModelSelector(opts: {
 					continue;
 				}
 
-				if (
-					config.providerId === "bytos" ||
-					config.providerId === "bytos-pass"
-				) {
-					// BytosPass gets the same sectioned picker with Subscribed/Free
-					// sections — free models are selectable while staying on BytosPass
+				if (config.providerId === "bytos") {
 					const featuredProviderId = config.providerId;
 					const bytosResult = await dialog.choice<string>({
 						style: { maxHeight: termHeight - 2 },
@@ -478,7 +437,7 @@ export function useModelSelector(opts: {
 									currentModel={config.modelId}
 									currentProviderName={providerDisplayName}
 									models={modelOptions}
-									showCustomModelId={config.providerId !== "bytos-pass"}
+									showCustomModelId={true}
 								/>
 							),
 						});
@@ -569,7 +528,7 @@ export function useModelSelector(opts: {
 							currentModel={config.modelId}
 							currentProviderName={providerDisplayName}
 							models={modelOptions}
-							showCustomModelId={config.providerId !== "bytos-pass"}
+							showCustomModelId={true}
 						/>
 					),
 				});

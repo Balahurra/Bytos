@@ -11,7 +11,6 @@ import { writeDiagnostic } from "../utils/output";
  */
 export const ACP_AUTH_METHODS = [
 	{ id: "bytos", name: "Sign in with Bytos" },
-	{ id: "bytos-pass", name: "Sign in with BytosPass" },
 	{ id: "openai-codex", name: "Sign in with ChatGPT Subscription" },
 ] as const;
 

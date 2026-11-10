@@ -116,6 +116,12 @@ export interface ExtensionStateContextType extends ExtensionState {
 	refreshHicapModels: () => void
 	refreshLiteLlmModels: () => Promise<void>
 	setUserInfo: (userInfo?: UserInfo) => void
+	/**
+	 * Non-secret Bytos (Supabase) account identity pushed by the extension host
+	 * after a browser handoff or a session restore. Never contains tokens.
+	 */
+	supabaseUser?: ExtensionState["supabaseUser"]
+	setSupabaseUser: (supabaseUser?: ExtensionState["supabaseUser"]) => void
 
 	// Navigation state setters
 	setShowMarketplace: (value: boolean) => void
@@ -327,6 +333,12 @@ export const ExtensionStateContextProvider: React.FC<{
 		lastDismissedCliBannerVersion: 0,
 		backgroundEditEnabled: false,
 		showFeatureTips: false,
+		// F3: voice defaults mirror the host's persisted defaults. The live
+		// capability/model state is read from VoiceService, never assumed here.
+		voiceEnabled: false,
+		voiceMicrophoneId: undefined,
+		voiceLanguage: "auto",
+		voiceModelId: "base",
 		globalSkillsToggles: {},
 		localSkillsToggles: {},
 
@@ -872,6 +884,7 @@ export const ExtensionStateContextProvider: React.FC<{
 		showMcp,
 		mcpTab,
 		autoPhaseMcpTarget,
+		supabaseUser: state.supabaseUser,
 		showSettings,
 		settingsNavigationRequest,
 		settingsInitialModelTab,
@@ -988,6 +1001,8 @@ export const ExtensionStateContextProvider: React.FC<{
 		refreshHicapModels,
 		refreshLiteLlmModels,
 		setUserInfo: (userInfo?: UserInfo) => setState((prevState) => ({ ...prevState, userInfo })),
+		setSupabaseUser: (supabaseUser?: ExtensionState["supabaseUser"]) =>
+			setState((prevState) => ({ ...prevState, supabaseUser })),
 		expandTaskHeader,
 		setExpandTaskHeader,
 	}

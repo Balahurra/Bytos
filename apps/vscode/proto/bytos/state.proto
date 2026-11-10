@@ -285,12 +285,20 @@ message Settings {
   optional string act_mode_bytos_model_id = 180;
   optional OpenRouterModelInfo act_mode_bytos_model_info = 181;
   optional bool show_feature_tips = 182;
-  optional string plan_mode_bytos_pass_model_id = 183;
-  optional OpenRouterModelInfo plan_mode_bytos_pass_model_info = 184;
-  optional string act_mode_bytos_pass_model_id = 185;
-  optional OpenRouterModelInfo act_mode_bytos_pass_model_info = 186;
+  optional string plan_mode_cline_pass_model_id = 183;
+  optional OpenRouterModelInfo plan_mode_cline_pass_model_info = 184;
+  optional string act_mode_cline_pass_model_id = 185;
+  optional OpenRouterModelInfo act_mode_cline_pass_model_info = 186;
   optional bool cloud_sessions_enabled = 188;
   optional string open_telemetry_traces_exporter = 189;
+  optional bool voice_enabled = 190;
+  optional string voice_capture_method = 191;
+  optional string voice_microphone_id = 192;
+  optional bool voice_silence_detection_enabled = 193;
+  optional int32 voice_silence_timeout_ms = 194;
+  optional int32 voice_max_duration_ms = 195;
+  optional string voice_language = 196;
+  optional string voice_model_id = 197;
 }
 
 message State {
@@ -436,6 +444,20 @@ message UpdateSettingsRequest {
   optional string compaction_strategy = 44;
   optional bool web_search_enabled = 45;
   optional bool cloud_sessions_enabled = 46;
+
+  // Voice capture preferences (F1). Identifiers and small numbers only — this
+  // message can express no audio, by construction.
+  optional bool voice_enabled = 190;
+  optional string voice_capture_method = 191;
+  optional string voice_microphone_id = 192;
+  optional bool voice_silence_detection_enabled = 193;
+  optional int32 voice_silence_timeout_ms = 194;
+  optional int32 voice_max_duration_ms = 195;
+  // F3: recognition preferences written by the Settings → Voice section.
+  // "auto" | "tr" | "en" | "de".
+  optional string voice_language = 196;
+  // "tiny" | "base".
+  optional string voice_model_id = 197;
 }
 
 message UpdateTerminalConnectionTimeoutRequest {

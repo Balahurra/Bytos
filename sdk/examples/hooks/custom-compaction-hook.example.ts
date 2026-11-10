@@ -7,7 +7,7 @@
  * summary message before the provider request.
  *
  * Installation:
- *   bytos plugin install https://github.com/bytos/bytos/blob/main/sdk/examples/hooks/custom-compaction-hook.example.ts --cwd .
+ *   bytos plugin install https://github.com/Balahurra/Bytos/blob/main/sdk/examples/hooks/custom-compaction-hook.example.ts --cwd .
  *
  * Usage:
  *   bytos -i "Search the codebase for dispatcher usage, then summarize it"

@@ -1,14 +1,9 @@
 ---
-title: "Anthropic / Claude Code"
-description: "Configure Anthropic API keys or Claude Code subscription with Bytos."
+title: "Anthropic"
+description: "Configure an Anthropic API key in Bytos."
 ---
 
 **Website:** [https://www.anthropic.com/](https://www.anthropic.com/)
-
-## Choose an Anthropic Path
-
-- **[Anthropic API (key-based)](#getting-an-api-key):** Use an Anthropic API key.
-- **[Claude Code (subscription-based)](#claude-code-subscription):** Use your Claude Max/Pro subscription through the Claude CLI.
 
 ## Anthropic API (key-based)
 
@@ -21,7 +16,7 @@ description: "Configure Anthropic API keys or Claude Code subscription with Byto
 
 ### Configuration in Bytos
 
-> See [Authorization & Model Selection](/getting-started/authorizing-with-bytos#menu).
+> See [Authorization & Model Selection](/provider-config/overview).
 
 1.  **Open Bytos Settings:** Click the settings icon (⚙️) in the Bytos panel.
 2.  **Select Provider:** Choose "Anthropic" from the "API Provider" dropdown.
@@ -29,24 +24,7 @@ description: "Configure Anthropic API keys or Claude Code subscription with Byto
 4.  **Select Model:** Choose your desired Claude model from the "Model" dropdown.
 5.  **(Optional) Custom Base URL:** If you need to use a custom base URL for the Anthropic API, check "Use custom base URL" and enter the URL. Most users won't need to adjust this setting.
 
-## Claude Code (Subscription)
-
-Use this path if you already have Claude Max/Pro and want to use subscription-based access in Bytos.
-
-1. Install and authenticate Claude CLI via Anthropic docs: [Claude Code setup](https://docs.anthropic.com/en/docs/claude-code/setup).
-2. In Bytos settings, select **Claude Code** as provider.
-3. Set the Claude CLI path (usually `claude` if available in PATH).
-
-Find Claude path:
-- macOS / Linux / WSL / Git Bash: `which claude`
-- Windows Command Prompt: `where claude`
-
-Notes:
-- Uses your Claude subscription limits instead of API token billing.
-- Responses may not stream token-by-token.
-- Image uploads and prompt caching are limited in this mode.
-
-### Extended Thinking
+## Extended Thinking
 
 Anthropic models offer an "Extended Thinking" feature, designed to give them enhanced reasoning capabilities for complex tasks. This feature allows the model to output its step-by-step thought process before delivering a final answer, providing transparency and enabling more thorough analysis for challenging prompts.
 

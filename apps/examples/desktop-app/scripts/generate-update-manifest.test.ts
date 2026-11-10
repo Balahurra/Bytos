@@ -46,7 +46,7 @@ describe("buildUpdateManifest", () => {
 		expect(manifest.version).toBe("0.1.0");
 		const universalEntry = {
 			signature: "sig-universal",
-			url: "https://github.com/bytos/bytos/releases/download/desktop-v0.1.0/Bytos-Code_0.1.0_universal.app.tar.gz",
+			url: "https://github.com/Balahurra/Bytos/releases/download/desktop-v0.1.0/Bytos-Code_0.1.0_universal.app.tar.gz",
 		};
 		expect(manifest.platforms["darwin-aarch64"]).toEqual(universalEntry);
 		expect(manifest.platforms["darwin-x86_64"]).toEqual(universalEntry);
@@ -68,11 +68,11 @@ describe("buildUpdateManifest", () => {
 		expect(manifest.version).toBe("0.1.0");
 		expect(manifest.platforms["darwin-aarch64"]).toEqual({
 			signature: "sig-aarch64",
-			url: "https://github.com/bytos/bytos/releases/download/desktop-v0.1.0/Bytos-Code_0.1.0_aarch64.app.tar.gz",
+			url: "https://github.com/Balahurra/Bytos/releases/download/desktop-v0.1.0/Bytos-Code_0.1.0_aarch64.app.tar.gz",
 		});
 		expect(manifest.platforms["darwin-x86_64"]).toEqual({
 			signature: "sig-x86_64",
-			url: "https://github.com/bytos/bytos/releases/download/desktop-v0.1.0/Bytos-Code_0.1.0_x86_64.app.tar.gz",
+			url: "https://github.com/Balahurra/Bytos/releases/download/desktop-v0.1.0/Bytos-Code_0.1.0_x86_64.app.tar.gz",
 		});
 		expect(Object.keys(manifest.platforms)).toHaveLength(2);
 	});
@@ -95,7 +95,7 @@ describe("buildUpdateManifest", () => {
 
 		expect(manifest.platforms["windows-x86_64"]).toEqual({
 			signature: "sig-windows-x64",
-			url: "https://github.com/bytos/bytos/releases/download/desktop-v0.1.0/Bytos-Code_0.1.0_x64-setup.exe",
+			url: "https://github.com/Balahurra/Bytos/releases/download/desktop-v0.1.0/Bytos-Code_0.1.0_x64-setup.exe",
 		});
 		// darwin entries from the universal artifact are unaffected.
 		expect(Object.keys(manifest.platforms).sort()).toEqual([
@@ -138,19 +138,19 @@ describe("buildUpdateManifest", () => {
 
 		expect(manifest.platforms["linux-x86_64-deb"]).toEqual({
 			signature: "sig-deb",
-			url: "https://github.com/bytos/bytos/releases/download/desktop-v0.1.0/Bytos-Code_0.1.0_amd64.deb",
+			url: "https://github.com/Balahurra/Bytos/releases/download/desktop-v0.1.0/Bytos-Code_0.1.0_amd64.deb",
 		});
 		expect(manifest.platforms["linux-x86_64-rpm"]).toEqual({
 			signature: "sig-rpm",
-			url: "https://github.com/bytos/bytos/releases/download/desktop-v0.1.0/Bytos-Code_0.1.0_x86_64.rpm",
+			url: "https://github.com/Balahurra/Bytos/releases/download/desktop-v0.1.0/Bytos-Code_0.1.0_x86_64.rpm",
 		});
 		expect(manifest.platforms["linux-aarch64-deb"]).toEqual({
 			signature: "sig-deb-arm64",
-			url: "https://github.com/bytos/bytos/releases/download/desktop-v0.1.0/Bytos-Code_0.1.0_arm64.deb",
+			url: "https://github.com/Balahurra/Bytos/releases/download/desktop-v0.1.0/Bytos-Code_0.1.0_arm64.deb",
 		});
 		expect(manifest.platforms["linux-aarch64-rpm"]).toEqual({
 			signature: "sig-rpm-arm64",
-			url: "https://github.com/bytos/bytos/releases/download/desktop-v0.1.0/Bytos-Code_0.1.0_aarch64.rpm",
+			url: "https://github.com/Balahurra/Bytos/releases/download/desktop-v0.1.0/Bytos-Code_0.1.0_aarch64.rpm",
 		});
 		// No bare linux-<arch> keys: the updater would fall back to them for an
 		// install whose package format has no entry of its own.

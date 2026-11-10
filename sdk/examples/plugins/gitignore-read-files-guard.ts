@@ -5,7 +5,7 @@
  * workspace .gitignore file.
  *
  * CLI usage:
- *   bytos plugin install https://github.com/bytos/bytos/blob/main/sdk/examples/plugins/gitignore-read-files-guard.ts --cwd .
+ *   bytos plugin install https://github.com/Balahurra/Bytos/blob/main/sdk/examples/plugins/gitignore-read-files-guard.ts --cwd .
  *   bytos -i "Read the ignored .env file"
  */
 

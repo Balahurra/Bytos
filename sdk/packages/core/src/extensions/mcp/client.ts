@@ -1,23 +1,23 @@
-import { type ChildProcessWithoutNullStreams, spawn } from "node:child_process";
-import { mkdir } from "node:fs/promises";
-import { StringDecoder } from "node:string_decoder";
+import { type ChildProcessWithoutNullStreams, spawn } from "node:child_process"
+import { mkdir } from "node:fs/promises"
+import { StringDecoder } from "node:string_decoder"
 import {
 	type AgentToolContext,
 	formatMcpTimeoutErrorMessage,
 	isMcpTimeoutConfigured,
-} from "@bytos/shared";
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import type { FetchLike } from "@modelcontextprotocol/sdk/shared/transport.js";
-import { ReadResourceResultSchema } from "@modelcontextprotocol/sdk/types.js";
-import { createMcpAppsClientCapabilities } from "./apps";
+} from "@bytos/shared"
+import { Client } from "@modelcontextprotocol/sdk/client/index.js"
+import type { FetchLike } from "@modelcontextprotocol/sdk/shared/transport.js"
+import { ReadResourceResultSchema } from "@modelcontextprotocol/sdk/types.js"
+import { createMcpAppsClientCapabilities } from "./apps"
 import {
 	createMcpOAuthClientInformation,
 	createMcpOAuthProviderContext,
 	createMcpSdkTransport,
 	isMcpUnauthorizedError,
 	type McpOAuthProviderContext,
-} from "./oauth";
-import { augmentMcpTimeoutError, resolveMcpRequestTimeoutMs } from "./timeout";
+} from "./oauth"
+import { augmentMcpTimeoutError, resolveMcpRequestTimeoutMs } from "./timeout"
 import type {
 	McpResourceReadResult,
 	McpServerClient,
@@ -25,28 +25,28 @@ import type {
 	McpServerRegistration,
 	McpToolCallResult,
 	McpToolDescriptor,
-} from "./types";
+} from "./types"
 
 type JsonRpcRequest = {
-	jsonrpc: "2.0";
-	id: number;
-	method: string;
-	params?: Record<string, unknown>;
-};
+	jsonrpc: "2.0"
+	id: number
+	method: string
+	params?: Record<string, unknown>
+}
 
 type JsonRpcMessage = {
-	jsonrpc?: "2.0";
-	id?: number;
-	method?: string;
-	result?: unknown;
+	jsonrpc?: "2.0"
+	id?: number
+	method?: string
+	result?: unknown
 	error?: {
-		code?: number;
-		message?: string;
-		data?: unknown;
-	};
-};
+		code?: number
+		message?: string
+		data?: unknown
+	}
+}
 
-const MCP_PROTOCOL_VERSION = "2024-11-05";
+const MCP_PROTOCOL_VERSION = "2024-11-05"
 // Initialize budget when no timeout is configured. This wait sits on the
 // session-create critical path, which the hub caps at 30s
 // (HUB_DEFAULT_COMMAND_TIMEOUT_MS), and connect() may spend it twice (newline
@@ -61,7 +61,7 @@ const MCP_PROTOCOL_VERSION = "2024-11-05";
 // overrides this in either direction. Dead commands still fail fast through
 // the spawn error/exit path; only an alive-but-silent server waits out this
 // budget.
-export const DEFAULT_MCP_CONNECT_TIMEOUT_MS = 10_000;
+export const DEFAULT_MCP_CONNECT_TIMEOUT_MS = 10_000
 // Connect budget for remote (SSE/streamable HTTP) servers when no timeout is
 // configured. Like the stdio initialize budget above, connect runs on the
 // session-create critical path capped by the hub at 30s
@@ -72,14 +72,13 @@ export const DEFAULT_MCP_CONNECT_TIMEOUT_MS = 10_000;
 // remote handshake (DNS, TLS, OAuth discovery) while staying far from the hub
 // cap; servers connect in parallel. An explicit `timeout` overrides this in
 // either direction.
-export const DEFAULT_HTTP_MCP_CONNECT_TIMEOUT_MS = 10_000;
-const DEFAULT_HTTP_MCP_REDIRECT_URL =
-	"http://127.0.0.1:1456/mcp/oauth/callback";
-const STDIO_MCP_GRACEFUL_SHUTDOWN_TIMEOUT_MS = 250;
-const STDIO_MCP_FORCED_SHUTDOWN_TIMEOUT_MS = 2_000;
+export const DEFAULT_HTTP_MCP_CONNECT_TIMEOUT_MS = 10_000
+const DEFAULT_HTTP_MCP_REDIRECT_URL = "http://127.0.0.1:1456/mcp/oauth/callback"
+const STDIO_MCP_GRACEFUL_SHUTDOWN_TIMEOUT_MS = 250
+const STDIO_MCP_FORCED_SHUTDOWN_TIMEOUT_MS = 2_000
 
 function toErrorMessage(error: unknown): string {
-	return error instanceof Error ? error.message : String(error);
+	return error instanceof Error ? error.message : String(error)
 }
 
 async function settlesWithin(
@@ -87,22 +86,22 @@ async function settlesWithin(
 	timeoutMs: number,
 ): Promise<boolean> {
 	return new Promise((resolve) => {
-		let settled = false;
+		let settled = false
 		const finish = (result: boolean) => {
 			if (settled) {
-				return;
+				return
 			}
-			settled = true;
-			clearTimeout(timeout);
-			resolve(result);
-		};
-		const timeout = setTimeout(() => finish(false), timeoutMs);
-		timeout.unref();
+			settled = true
+			clearTimeout(timeout)
+			resolve(result)
+		}
+		const timeout = setTimeout(() => finish(false), timeoutMs)
+		timeout.unref()
 		promise.then(
 			() => finish(true),
 			() => finish(true),
-		);
-	});
+		)
+	})
 }
 
 /**
@@ -116,125 +115,154 @@ function combineInitializeErrors(
 	newlineError: unknown,
 	framedError: unknown,
 ): Error {
-	const newlineMessage = toErrorMessage(newlineError);
-	const framedMessage = toErrorMessage(framedError);
+	const newlineMessage = toErrorMessage(newlineError)
+	const framedMessage = toErrorMessage(framedError)
 	if (newlineMessage === framedMessage) {
 		return newlineError instanceof Error
 			? newlineError
-			: new Error(newlineMessage);
+			: new Error(newlineMessage)
 	}
 	return new Error(
 		`MCP server "${serverName}" failed to initialize. ` +
 			`Newline-delimited attempt: ${newlineMessage} ` +
 			`Content-Length framed attempt: ${framedMessage}`,
-	);
+	)
 }
 
 function encodeNewlineMessage(message: Record<string, unknown>): Buffer {
-	return Buffer.from(`${JSON.stringify(message)}\n`, "utf8");
+	return Buffer.from(`${JSON.stringify(message)}\n`, "utf8")
+}
+
+/**
+ * `shell: true` is required on Windows to launch `.cmd`/`.bat` wrappers such
+ * as `npx`, but Node joins the command and args into one cmd.exe command line
+ * without quoting them. A runtime or server path containing spaces would then
+ * be split into separate tokens (and shell metacharacters would be
+ * interpreted). Quote each literal token before handing it to cmd.exe.
+ */
+function quoteWindowsShellToken(value: string): string {
+	if (value.length === 0) {
+		return '""'
+	}
+	if (!/[\s"&|<>^()%!]/.test(value)) {
+		return value
+	}
+	return `"${value.replace(/"/g, '""')}"`
+}
+
+function buildWindowsShellCommandLine(
+	command: string,
+	args: readonly string[],
+): { command: string; args: string[] } {
+	const alreadyQuoted =
+		command.length >= 2 && command.startsWith('"') && command.endsWith('"')
+	return {
+		command: alreadyQuoted ? command : quoteWindowsShellToken(command),
+		args: args.map(quoteWindowsShellToken),
+	}
 }
 
 function encodeFramedMessage(message: Record<string, unknown>): Buffer {
-	const body = Buffer.from(JSON.stringify(message), "utf8");
+	const body = Buffer.from(JSON.stringify(message), "utf8")
 	return Buffer.concat([
 		Buffer.from(`Content-Length: ${body.byteLength}\r\n\r\n`, "utf8"),
 		body,
-	]);
+	])
 }
 
-type StdioProtocolMode = "newline" | "framed";
+type StdioProtocolMode = "newline" | "framed"
 
 class FramedMessageParser {
-	private buffer = "";
-	private readonly decoder = new StringDecoder("utf8");
+	private buffer = ""
+	private readonly decoder = new StringDecoder("utf8")
 
 	push(chunk: Buffer): string[] {
-		this.buffer += this.decoder.write(chunk);
-		const messages: string[] = [];
+		this.buffer += this.decoder.write(chunk)
+		const messages: string[] = []
 		while (true) {
-			const separatorIndex = this.buffer.indexOf("\r\n\r\n");
+			const separatorIndex = this.buffer.indexOf("\r\n\r\n")
 			if (separatorIndex < 0) {
-				break;
+				break
 			}
-			const headerText = this.buffer.slice(0, separatorIndex);
+			const headerText = this.buffer.slice(0, separatorIndex)
 			const contentLengthMatch = headerText.match(
 				/(?:^|\r\n)Content-Length:\s*(\d+)(?:\r\n|$)/i,
-			);
+			)
 			if (!contentLengthMatch) {
 				throw new Error(
 					"Invalid MCP stdio frame: missing Content-Length header.",
-				);
+				)
 			}
-			const contentLength = Number.parseInt(contentLengthMatch[1], 10);
-			const bodyStart = separatorIndex + 4;
-			const bodyEnd = bodyStart + contentLength;
+			const contentLength = Number.parseInt(contentLengthMatch[1], 10)
+			const bodyStart = separatorIndex + 4
+			const bodyEnd = bodyStart + contentLength
 			if (this.buffer.length < bodyEnd) {
-				break;
+				break
 			}
-			messages.push(this.buffer.slice(bodyStart, bodyEnd));
-			this.buffer = this.buffer.slice(bodyEnd);
+			messages.push(this.buffer.slice(bodyStart, bodyEnd))
+			this.buffer = this.buffer.slice(bodyEnd)
 		}
-		return messages;
+		return messages
 	}
 }
 
 class NewlineMessageParser {
-	private buffer = "";
-	private readonly decoder = new StringDecoder("utf8");
+	private buffer = ""
+	private readonly decoder = new StringDecoder("utf8")
 
 	push(chunk: Buffer): string[] {
-		this.buffer += this.decoder.write(chunk);
-		const messages: string[] = [];
+		this.buffer += this.decoder.write(chunk)
+		const messages: string[] = []
 
 		while (true) {
-			const newlineIndex = this.buffer.indexOf("\n");
+			const newlineIndex = this.buffer.indexOf("\n")
 			if (newlineIndex < 0) {
-				break;
+				break
 			}
-			const line = this.buffer.slice(0, newlineIndex).trim();
-			this.buffer = this.buffer.slice(newlineIndex + 1);
+			const line = this.buffer.slice(0, newlineIndex).trim()
+			this.buffer = this.buffer.slice(newlineIndex + 1)
 			if (line.length > 0) {
-				messages.push(line);
+				messages.push(line)
 			}
 		}
 
-		return messages;
+		return messages
 	}
 }
 
 class StdioMcpClient implements McpServerClient {
-	private readonly registration: McpServerRegistration;
-	private process?: ChildProcessWithoutNullStreams;
-	private processClose?: Promise<void>;
-	private nextRequestId = 1;
+	private readonly registration: McpServerRegistration
+	private process?: ChildProcessWithoutNullStreams
+	private processClose?: Promise<void>
+	private nextRequestId = 1
 	private readonly pending = new Map<
 		number,
 		{
-			resolve: (value: unknown) => void;
-			reject: (error: Error) => void;
-			timeout: ReturnType<typeof setTimeout>;
-			signal?: AbortSignal;
-			onAbort?: () => void;
+			resolve: (value: unknown) => void
+			reject: (error: Error) => void
+			timeout: ReturnType<typeof setTimeout>
+			signal?: AbortSignal
+			onAbort?: () => void
 		}
-	>();
-	private framedParser = new FramedMessageParser();
-	private newlineParser = new NewlineMessageParser();
-	private stderrBuffer = "";
+	>()
+	private framedParser = new FramedMessageParser()
+	private newlineParser = new NewlineMessageParser()
+	private stderrBuffer = ""
 	// Set when a write to the current child's stdin failed; see spawnProcess.
-	private stdinFailure: string | undefined;
-	private stdinFailureTimer: ReturnType<typeof setTimeout> | undefined;
-	private connected = false;
-	private protocolMode: StdioProtocolMode = "newline";
-	private readonly requestTimeoutMs: number;
-	private readonly connectAttemptTimeoutMs: number;
-	private readonly mcpApps: boolean;
+	private stdinFailure: string | undefined
+	private stdinFailureTimer: ReturnType<typeof setTimeout> | undefined
+	private connected = false
+	private protocolMode: StdioProtocolMode = "newline"
+	private readonly requestTimeoutMs: number
+	private readonly connectAttemptTimeoutMs: number
+	private readonly mcpApps: boolean
 
 	constructor(registration: McpServerRegistration, mcpApps = false) {
-		this.registration = registration;
-		this.mcpApps = mcpApps;
+		this.registration = registration
+		this.mcpApps = mcpApps
 		this.requestTimeoutMs = resolveMcpRequestTimeoutMs(
 			registration.timeoutSeconds,
-		);
+		)
 		// Initialize gets its own default budget so slow-starting servers
 		// connect out of the box; an explicit `timeout` overrides it in
 		// either direction.
@@ -242,52 +270,52 @@ class StdioMcpClient implements McpServerClient {
 			registration.timeoutSeconds,
 		)
 			? this.requestTimeoutMs
-			: DEFAULT_MCP_CONNECT_TIMEOUT_MS;
+			: DEFAULT_MCP_CONNECT_TIMEOUT_MS
 	}
 
 	async connect(): Promise<void> {
 		if (this.connected) {
-			return;
+			return
 		}
 		if (this.registration.transport.type !== "stdio") {
 			throw new Error(
 				`Unsupported MCP transport for "${this.registration.name}": ${this.registration.transport.type}`,
-			);
+			)
 		}
 
 		const initializeParams = {
 			protocolVersion: MCP_PROTOCOL_VERSION,
 			capabilities: this.mcpApps ? createMcpAppsClientCapabilities() : {},
 			clientInfo: { name: "@bytos/core", version: "0.0.0" },
-		};
-		await this.ensureAgentPluginDataDirectory();
-		this.spawnProcess("newline");
+		}
+		await this.ensureAgentPluginDataDirectory()
+		this.spawnProcess("newline")
 		try {
 			await this.request(
 				"initialize",
 				initializeParams,
 				this.connectAttemptTimeoutMs,
-			);
+			)
 		} catch (newlineError) {
-			await this.disconnect().catch(() => {});
-			this.spawnProcess("framed");
+			await this.disconnect().catch(() => {})
+			this.spawnProcess("framed")
 			try {
 				await this.request(
 					"initialize",
 					initializeParams,
 					this.connectAttemptTimeoutMs,
-				);
+				)
 			} catch (framedError) {
-				await this.disconnect().catch(() => {});
+				await this.disconnect().catch(() => {})
 				throw combineInitializeErrors(
 					this.registration.name,
 					newlineError,
 					framedError,
-				);
+				)
 			}
 		}
-		this.notify("notifications/initialized");
-		this.connected = true;
+		this.notify("notifications/initialized")
+		this.connected = true
 	}
 
 	/**
@@ -297,27 +325,27 @@ class StdioMcpClient implements McpServerClient {
 	 */
 	private async ensureAgentPluginDataDirectory(): Promise<void> {
 		if (this.registration.metadata?.source !== "agent-plugin") {
-			return;
+			return
 		}
-		const pluginDataPath = this.registration.metadata.pluginDataPath;
+		const pluginDataPath = this.registration.metadata.pluginDataPath
 		if (typeof pluginDataPath !== "string" || pluginDataPath.length === 0) {
-			return;
+			return
 		}
-		await mkdir(pluginDataPath, { recursive: true });
+		await mkdir(pluginDataPath, { recursive: true })
 	}
 
 	async disconnect(): Promise<void> {
-		const child = this.process;
-		const processClose = this.processClose;
-		this.connected = false;
-		this.process = undefined;
-		this.processClose = undefined;
-		this.clearStdinFailureTimer();
+		const child = this.process
+		const processClose = this.processClose
+		this.connected = false
+		this.process = undefined
+		this.processClose = undefined
+		this.clearStdinFailureTimer()
 		this.failAllPending(
 			new Error(`Disconnected from MCP server "${this.registration.name}".`),
-		);
+		)
 		if (!processClose) {
-			return;
+			return
 		}
 		if (!child) {
 			if (
@@ -328,57 +356,57 @@ class StdioMcpClient implements McpServerClient {
 			) {
 				throw new Error(
 					`MCP process for "${this.registration.name}" did not close during disconnect.`,
-				);
+				)
 			}
-			return;
+			return
 		}
 
 		// Closing stdin first lets well-behaved MCP servers shut down cleanly. This
 		// matters on Windows, where a live child process keeps its cwd locked.
 		if (!child.stdin.destroyed) {
-			child.stdin.end();
+			child.stdin.end()
 		}
 		if (
 			await settlesWithin(processClose, STDIO_MCP_GRACEFUL_SHUTDOWN_TIMEOUT_MS)
 		) {
-			return;
+			return
 		}
 
-		child.kill();
+		child.kill()
 		if (
 			await settlesWithin(processClose, STDIO_MCP_FORCED_SHUTDOWN_TIMEOUT_MS)
 		) {
-			return;
+			return
 		}
 
-		child.kill("SIGKILL");
+		child.kill("SIGKILL")
 		if (
 			!(await settlesWithin(processClose, STDIO_MCP_FORCED_SHUTDOWN_TIMEOUT_MS))
 		) {
 			throw new Error(
 				`MCP process for "${this.registration.name}" did not exit during disconnect.`,
-			);
+			)
 		}
 	}
 
 	async listTools(): Promise<readonly McpToolDescriptor[]> {
 		const result = (await this.request("tools/list")) as {
 			tools?: Array<{
-				name?: string;
-				description?: string;
-				inputSchema?: Record<string, unknown>;
-				_meta?: Record<string, unknown>;
-			}>;
-		};
+				name?: string
+				description?: string
+				inputSchema?: Record<string, unknown>
+				_meta?: Record<string, unknown>
+			}>
+		}
 		return (result.tools ?? [])
 			.filter(
 				(
 					tool,
 				): tool is {
-					name: string;
-					description?: string;
-					inputSchema: Record<string, unknown>;
-					_meta?: Record<string, unknown>;
+					name: string
+					description?: string
+					inputSchema: Record<string, unknown>
+					_meta?: Record<string, unknown>
 				} =>
 					typeof tool?.name === "string" &&
 					typeof tool.inputSchema === "object" &&
@@ -393,13 +421,13 @@ class StdioMcpClient implements McpServerClient {
 				!Array.isArray(tool._meta)
 					? { _meta: tool._meta }
 					: {}),
-			}));
+			}))
 	}
 
 	async callTool(request: {
-		name: string;
-		arguments?: Record<string, unknown>;
-		context?: AgentToolContext;
+		name: string
+		arguments?: Record<string, unknown>
+		context?: AgentToolContext
 	}): Promise<McpToolCallResult> {
 		return this.request(
 			"tools/call",
@@ -409,12 +437,12 @@ class StdioMcpClient implements McpServerClient {
 			},
 			undefined,
 			request.context?.signal,
-		);
+		)
 	}
 
 	async readResource(request: {
-		uri: string;
-		context?: AgentToolContext;
+		uri: string
+		context?: AgentToolContext
 	}): Promise<McpResourceReadResult> {
 		const result = ReadResourceResultSchema.safeParse(
 			await this.request(
@@ -423,38 +451,64 @@ class StdioMcpClient implements McpServerClient {
 				undefined,
 				request.context?.signal,
 			),
-		);
+		)
 		if (!result.success) {
 			throw new Error(
 				`MCP server "${this.registration.name}" returned an invalid resources/read result: ${result.error.message}`,
-			);
+			)
 		}
-		return result.data;
+		return result.data
 	}
 
 	private spawnProcess(protocolMode: StdioProtocolMode): void {
-		const transport = this.registration.transport;
+		const transport = this.registration.transport
 		if (transport.type !== "stdio") {
 			throw new Error(
 				`Unsupported MCP transport for "${this.registration.name}": ${transport.type}`,
-			);
+			)
 		}
 
-		this.framedParser = new FramedMessageParser();
-		this.newlineParser = new NewlineMessageParser();
-		this.stderrBuffer = "";
-		this.stdinFailure = undefined;
-		this.clearStdinFailureTimer();
-		this.protocolMode = protocolMode;
+		this.framedParser = new FramedMessageParser()
+		this.newlineParser = new NewlineMessageParser()
+		this.stderrBuffer = ""
+		this.stdinFailure = undefined
+		this.clearStdinFailureTimer()
+		this.protocolMode = protocolMode
 
-		const platformOptions =
-			process.platform === "win32"
-				? {
-						windowsHide: true,
-						shell: true,
-					}
-				: {};
-		const child = spawn(transport.command, transport.args ?? [], {
+		const isWindows = process.platform === "win32"
+		// Callers historically pre-quoted Windows executable paths (see the MCP
+		// client tests). Normalize that form before inspecting/spawning.
+		const unquotedCommand =
+			transport.command.length >= 2 &&
+			transport.command.startsWith('"') &&
+			transport.command.endsWith('"')
+				? transport.command.slice(1, -1)
+				: transport.command
+		// Absolute .exe paths do not need cmd.exe, and spawning them directly
+		// avoids the shell-injection surface entirely. Bare commands (`npx`,
+		// `uvx`) and `.cmd`/`.bat` wrappers still need the Windows shell so
+		// PATHEXT resolution works.
+		const lowerCommand = unquotedCommand.toLowerCase()
+		const needsWindowsShell =
+			isWindows &&
+			(lowerCommand.endsWith(".cmd") ||
+				lowerCommand.endsWith(".bat") ||
+				(!unquotedCommand.includes("\\") &&
+					!unquotedCommand.includes("/") &&
+					!lowerCommand.endsWith(".exe")))
+		const platformOptions = isWindows
+			? {
+					windowsHide: true,
+					shell: needsWindowsShell,
+				}
+			: {}
+		const spawnCommand = needsWindowsShell
+			? buildWindowsShellCommandLine(unquotedCommand, transport.args ?? [])
+			: {
+					command: unquotedCommand,
+					args: [...(transport.args ?? [])],
+				}
+		const child = spawn(spawnCommand.command, spawnCommand.args, {
 			cwd: transport.cwd,
 			env: {
 				...process.env,
@@ -462,30 +516,30 @@ class StdioMcpClient implements McpServerClient {
 			},
 			stdio: ["pipe", "pipe", "pipe"],
 			...platformOptions,
-		});
+		})
 
-		this.process = child;
+		this.process = child
 		this.processClose = new Promise((resolve) => {
-			child.once("close", () => resolve());
-		});
-		child.stdout.on("data", (chunk: Buffer) => this.handleStdout(chunk));
+			child.once("close", () => resolve())
+		})
+		child.stdout.on("data", (chunk: Buffer) => this.handleStdout(chunk))
 		child.stderr.on("data", (chunk: Buffer) => {
 			if (this.process !== child) {
-				return;
+				return
 			}
-			this.stderrBuffer += chunk.toString("utf8");
+			this.stderrBuffer += chunk.toString("utf8")
 			if (this.stderrBuffer.length > 16_384) {
-				this.stderrBuffer = this.stderrBuffer.slice(-16_384);
+				this.stderrBuffer = this.stderrBuffer.slice(-16_384)
 			}
-		});
+		})
 		child.once("error", (error) => {
 			if (this.process !== child) {
-				return;
+				return
 			}
 			this.failAllPending(
 				new Error(`MCP process error: ${toErrorMessage(error)}`),
-			);
-		});
+			)
+		})
 		// A server that dies or closes stdin while a request is still being
 		// written fails that write asynchronously on the stdin stream. Without
 		// a listener Node raises it as an uncaught exception on the host
@@ -497,42 +551,42 @@ class StdioMcpClient implements McpServerClient {
 		// same SIGTERM -> SIGKILL escalation as disconnect().
 		child.stdin.on("error", (error) => {
 			if (this.process !== child) {
-				return;
+				return
 			}
-			this.stdinFailure ??= toErrorMessage(error);
+			this.stdinFailure ??= toErrorMessage(error)
 			if (this.stdinFailureTimer !== undefined) {
-				return;
+				return
 			}
 			this.stdinFailureTimer = setTimeout(() => {
-				this.stdinFailureTimer = undefined;
+				this.stdinFailureTimer = undefined
 				if (this.process !== child) {
-					return;
+					return
 				}
 				this.failAllPending(
 					new Error(
 						`MCP server "${this.registration.name}" stopped reading its input before the request was fully delivered (${this.stdinFailure}) and did not exit.`,
 					),
-				);
-				void this.disconnect().catch(() => {});
-			}, STDIO_MCP_GRACEFUL_SHUTDOWN_TIMEOUT_MS);
-			this.stdinFailureTimer.unref();
-		});
+				)
+				void this.disconnect().catch(() => {})
+			}, STDIO_MCP_GRACEFUL_SHUTDOWN_TIMEOUT_MS)
+			this.stdinFailureTimer.unref()
+		})
 		child.once("exit", (code, signal) => {
 			if (this.process !== child) {
-				return;
+				return
 			}
-			this.connected = false;
-			this.process = undefined;
-			this.clearStdinFailureTimer();
+			this.connected = false
+			this.process = undefined
+			this.clearStdinFailureTimer()
 			const suffix = this.stderrBuffer.trim()
 				? ` stderr: ${this.stderrBuffer.trim()}`
-				: "";
+				: ""
 			this.failAllPending(
 				new Error(
 					`MCP process exited for "${this.registration.name}" (code=${code ?? "null"}, signal=${signal ?? "null"}).${suffix}${this.describeStdinFailure()}`,
 				),
-			);
-		});
+			)
+		})
 	}
 
 	private handleStdout(chunk: Buffer): void {
@@ -540,48 +594,48 @@ class StdioMcpClient implements McpServerClient {
 			const messages =
 				this.protocolMode === "framed"
 					? this.framedParser.push(chunk)
-					: this.newlineParser.push(chunk);
+					: this.newlineParser.push(chunk)
 
 			for (const messageText of messages) {
-				const message = JSON.parse(messageText) as JsonRpcMessage;
+				const message = JSON.parse(messageText) as JsonRpcMessage
 				if (typeof message.id !== "number") {
-					continue;
+					continue
 				}
-				const pending = this.takePending(message.id);
+				const pending = this.takePending(message.id)
 				if (!pending) {
-					continue;
+					continue
 				}
 				if (message.error) {
 					const errorMessage =
 						message.error.message ||
-						`MCP request failed with code ${message.error.code ?? "unknown"}`;
-					pending.reject(new Error(errorMessage));
-					continue;
+						`MCP request failed with code ${message.error.code ?? "unknown"}`
+					pending.reject(new Error(errorMessage))
+					continue
 				}
-				pending.resolve(message.result);
+				pending.resolve(message.result)
 			}
 		} catch (error) {
-			this.handleProtocolFailure(error);
+			this.handleProtocolFailure(error)
 		}
 	}
 
 	private handleProtocolFailure(error: unknown): void {
-		const child = this.process;
+		const child = this.process
 		if (!child) {
-			return;
+			return
 		}
 
-		this.connected = false;
-		this.process = undefined;
+		this.connected = false
+		this.process = undefined
 		const stderrSuffix = this.stderrBuffer.trim()
 			? ` stderr: ${this.stderrBuffer.trim()}`
-			: "";
+			: ""
 		this.failAllPending(
 			new Error(
 				`Invalid MCP response from "${this.registration.name}": ${toErrorMessage(error)}.${stderrSuffix}`,
 			),
-		);
-		child.kill();
+		)
+		child.kill()
 	}
 
 	private async request(
@@ -590,31 +644,31 @@ class StdioMcpClient implements McpServerClient {
 		timeoutMs = this.requestTimeoutMs,
 		signal?: AbortSignal,
 	): Promise<unknown> {
-		const child = this.process;
+		const child = this.process
 		if (!child?.stdin.writable) {
 			throw new Error(
 				`MCP server "${this.registration.name}" is not connected.`,
-			);
+			)
 		}
 
-		const id = this.nextRequestId++;
+		const id = this.nextRequestId++
 		const payload: JsonRpcRequest = {
 			jsonrpc: "2.0",
 			id,
 			method,
 			...(params ? { params } : {}),
-		};
+		}
 
 		const resultPromise = new Promise<unknown>((resolve, reject) => {
 			const timeout = setTimeout(() => {
-				this.takePending(id);
-				reject(this.createTimeoutError(method, timeoutMs));
-			}, timeoutMs);
+				this.takePending(id)
+				reject(this.createTimeoutError(method, timeoutMs))
+			}, timeoutMs)
 			const onAbort = signal
 				? () => {
-						const pending = this.takePending(id);
+						const pending = this.takePending(id)
 						if (!pending) {
-							return;
+							return
 						}
 						const error =
 							signal.reason instanceof Error
@@ -624,20 +678,20 @@ class StdioMcpClient implements McpServerClient {
 											`MCP request aborted for "${this.registration.name}" (${method}).`,
 										),
 										{ name: "AbortError" },
-									);
-						pending.reject(error);
+									)
+						pending.reject(error)
 					}
-				: undefined;
-			this.pending.set(id, { resolve, reject, timeout, signal, onAbort });
+				: undefined
+			this.pending.set(id, { resolve, reject, timeout, signal, onAbort })
 			if (signal && onAbort) {
-				signal.addEventListener("abort", onAbort, { once: true });
+				signal.addEventListener("abort", onAbort, { once: true })
 				if (signal.aborted) {
-					onAbort();
+					onAbort()
 				}
 			}
-		});
+		})
 		if (!this.pending.has(id)) {
-			return resultPromise;
+			return resultPromise
 		}
 
 		try {
@@ -645,116 +699,116 @@ class StdioMcpClient implements McpServerClient {
 				this.protocolMode === "framed"
 					? encodeFramedMessage(payload)
 					: encodeNewlineMessage(payload),
-			);
+			)
 		} catch (error) {
-			const pending = this.takePending(id);
+			const pending = this.takePending(id)
 			if (pending) {
 				pending.reject(
 					error instanceof Error ? error : new Error(String(error)),
-				);
+				)
 			}
 		}
 
-		return resultPromise;
+		return resultPromise
 	}
 
 	private createTimeoutError(method: string, timeoutMs: number): Error {
 		return new Error(
 			formatMcpTimeoutErrorMessage(this.registration.name, timeoutMs, method) +
 				this.describeStdinFailure(),
-		);
+		)
 	}
 
 	private clearStdinFailureTimer(): void {
 		if (this.stdinFailureTimer !== undefined) {
-			clearTimeout(this.stdinFailureTimer);
-			this.stdinFailureTimer = undefined;
+			clearTimeout(this.stdinFailureTimer)
+			this.stdinFailureTimer = undefined
 		}
 	}
 
 	private describeStdinFailure(): string {
 		return this.stdinFailure === undefined
 			? ""
-			: ` The server stopped reading its input before the request was fully delivered (${this.stdinFailure}).`;
+			: ` The server stopped reading its input before the request was fully delivered (${this.stdinFailure}).`
 	}
 
 	private notify(method: string, params?: Record<string, unknown>): void {
-		const child = this.process;
+		const child = this.process
 		if (!child?.stdin.writable) {
-			return;
+			return
 		}
 		const payload = {
 			jsonrpc: "2.0" as const,
 			method,
 			...(params ? { params } : {}),
-		};
+		}
 		child.stdin.write(
 			this.protocolMode === "framed"
 				? encodeFramedMessage(payload)
 				: encodeNewlineMessage(payload),
-		);
+		)
 	}
 
 	private failAllPending(error: Error): void {
 		for (const id of [...this.pending.keys()]) {
-			const pending = this.takePending(id);
+			const pending = this.takePending(id)
 			if (!pending) {
-				continue;
+				continue
 			}
-			pending.reject(error);
+			pending.reject(error)
 		}
 	}
 
 	private takePending(id: number):
 		| {
-				resolve: (value: unknown) => void;
-				reject: (error: Error) => void;
-				timeout: ReturnType<typeof setTimeout>;
-				signal?: AbortSignal;
-				onAbort?: () => void;
+				resolve: (value: unknown) => void
+				reject: (error: Error) => void
+				timeout: ReturnType<typeof setTimeout>
+				signal?: AbortSignal
+				onAbort?: () => void
 		  }
 		| undefined {
-		const pending = this.pending.get(id);
+		const pending = this.pending.get(id)
 		if (!pending) {
-			return undefined;
+			return undefined
 		}
-		this.pending.delete(id);
-		clearTimeout(pending.timeout);
+		this.pending.delete(id)
+		clearTimeout(pending.timeout)
 		if (pending.signal && pending.onAbort) {
-			pending.signal.removeEventListener("abort", pending.onAbort);
+			pending.signal.removeEventListener("abort", pending.onAbort)
 		}
-		return pending;
+		return pending
 	}
 }
 
 export interface DefaultMcpServerClientFactoryOptions {
-	settingsPath?: string;
-	clientName?: string;
-	clientVersion?: string;
-	fetch?: FetchLike;
+	settingsPath?: string
+	clientName?: string
+	clientVersion?: string
+	fetch?: FetchLike
 	/** Keep literal configured headers on the declared MCP origin only. */
-	restrictConfiguredHeadersToOrigin?: boolean;
-	mcpApps?: boolean;
+	restrictConfiguredHeadersToOrigin?: boolean
+	mcpApps?: boolean
 }
 
 export interface ProbeMcpServerConnectionOptions
 	extends Omit<DefaultMcpServerClientFactoryOptions, "settingsPath"> {
-	serverName: string;
-	filePath?: string;
+	serverName: string
+	filePath?: string
 }
 
 export interface ProbeMcpServerConnectionResult {
-	serverName: string;
-	connected: boolean;
-	authorizationRequired: boolean;
-	error?: string;
+	serverName: string
+	connected: boolean
+	authorizationRequired: boolean
+	error?: string
 }
 
 class SdkUrlMcpClient implements McpServerClient {
-	private client?: Client;
-	private authContext?: McpOAuthProviderContext;
-	private readonly requestTimeoutMs: number;
-	private readonly connectAttemptTimeoutMs: number;
+	private client?: Client
+	private authContext?: McpOAuthProviderContext
+	private readonly requestTimeoutMs: number
+	private readonly connectAttemptTimeoutMs: number
 
 	constructor(
 		private readonly registration: McpServerRegistration,
@@ -762,7 +816,7 @@ class SdkUrlMcpClient implements McpServerClient {
 	) {
 		this.requestTimeoutMs = resolveMcpRequestTimeoutMs(
 			registration.timeoutSeconds,
-		);
+		)
 		// Connect gets its own default budget so an offline server fails fast
 		// instead of stalling session.create; an explicit `timeout` overrides
 		// it in either direction.
@@ -770,17 +824,17 @@ class SdkUrlMcpClient implements McpServerClient {
 			registration.timeoutSeconds,
 		)
 			? this.requestTimeoutMs
-			: DEFAULT_HTTP_MCP_CONNECT_TIMEOUT_MS;
+			: DEFAULT_HTTP_MCP_CONNECT_TIMEOUT_MS
 	}
 
 	async connect(): Promise<void> {
 		if (this.client) {
-			return;
+			return
 		}
 		if (this.registration.transport.type === "stdio") {
 			throw new Error(
 				`Unsupported MCP transport for "${this.registration.name}": ${this.registration.transport.type}`,
-			);
+			)
 		}
 
 		const authContext = createMcpOAuthProviderContext({
@@ -791,16 +845,16 @@ class SdkUrlMcpClient implements McpServerClient {
 			clientInformation: createMcpOAuthClientInformation(
 				this.registration.oauthClient,
 			),
-		});
-		this.authContext = authContext;
+		})
+		this.authContext = authContext
 		// A normal connection may consume/refresh existing credentials, but it
 		// must not initiate a new interactive OAuth flow. Without stored tokens,
 		// omit the provider so the MCP SDK reports UnauthorizedError immediately;
 		// the host can then render an explicit authorization action.
 		const oauthProvider = (await authContext.provider.tokens())
 			? authContext.provider
-			: undefined;
-		let client: Client | undefined;
+			: undefined
+		let client: Client | undefined
 		try {
 			client = new Client(
 				{
@@ -810,51 +864,51 @@ class SdkUrlMcpClient implements McpServerClient {
 				this.options.mcpApps
 					? { capabilities: createMcpAppsClientCapabilities() }
 					: undefined,
-			);
+			)
 			const transport = createMcpSdkTransport({
 				registration: this.registration,
 				oauthProvider,
 				fetch: this.options.fetch,
 				restrictConfiguredHeadersToOrigin:
 					this.options.restrictConfiguredHeadersToOrigin,
-			});
+			})
 			await client.connect(transport, {
 				timeout: this.connectAttemptTimeoutMs,
-			});
-			await authContext.clearError();
-			this.client = client;
+			})
+			await authContext.clearError()
+			this.client = client
 		} catch (error) {
-			await client?.close().catch(() => {});
+			await client?.close().catch(() => {})
 			const effectiveError = augmentMcpTimeoutError(
 				error,
 				this.registration.name,
 				this.connectAttemptTimeoutMs,
-			);
-			const unauthorized = isMcpUnauthorizedError(error);
+			)
+			const unauthorized = isMcpUnauthorizedError(error)
 			const message = unauthorized
 				? this.formatUnauthorizedMessage(authContext.getLastAuthorizationUrl())
-				: toErrorMessage(effectiveError);
+				: toErrorMessage(effectiveError)
 			if (unauthorized && !this.hasStaticAuthorizationHeader()) {
-				await authContext.markAuthorizationRequired(message);
+				await authContext.markAuthorizationRequired(message)
 			} else {
-				await authContext.markConnectionError(message);
+				await authContext.markConnectionError(message)
 			}
-			throw new Error(message);
+			throw new Error(message)
 		}
 	}
 
 	async disconnect(): Promise<void> {
-		const activeClient = this.client;
-		this.client = undefined;
-		await activeClient?.close();
+		const activeClient = this.client
+		this.client = undefined
+		await activeClient?.close()
 	}
 
 	async listTools(): Promise<readonly McpToolDescriptor[]> {
-		const client = await this.ensureConnectedClient();
+		const client = await this.ensureConnectedClient()
 		try {
 			const result = await client.listTools(undefined, {
 				timeout: this.requestTimeoutMs,
-			});
+			})
 			return result.tools.map((tool) => ({
 				name: tool.name,
 				description: tool.description,
@@ -865,18 +919,18 @@ class SdkUrlMcpClient implements McpServerClient {
 						? tool.inputSchema
 						: {},
 				...(tool._meta ? { _meta: tool._meta } : {}),
-			}));
+			}))
 		} catch (error) {
-			return await this.handleOperationError(error);
+			return await this.handleOperationError(error)
 		}
 	}
 
 	async callTool(request: {
-		name: string;
-		arguments?: Record<string, unknown>;
-		context?: AgentToolContext;
+		name: string
+		arguments?: Record<string, unknown>
+		context?: AgentToolContext
 	}): Promise<McpToolCallResult> {
-		const client = await this.ensureConnectedClient();
+		const client = await this.ensureConnectedClient()
 		try {
 			return await client.callTool(
 				{
@@ -888,17 +942,17 @@ class SdkUrlMcpClient implements McpServerClient {
 					timeout: this.requestTimeoutMs,
 					signal: request.context?.signal,
 				},
-			);
+			)
 		} catch (error) {
-			return await this.handleOperationError(error);
+			return await this.handleOperationError(error)
 		}
 	}
 
 	async readResource(request: {
-		uri: string;
-		context?: AgentToolContext;
+		uri: string
+		context?: AgentToolContext
 	}): Promise<McpResourceReadResult> {
-		const client = await this.ensureConnectedClient();
+		const client = await this.ensureConnectedClient()
 		try {
 			return await client.readResource(
 				{ uri: request.uri },
@@ -906,43 +960,43 @@ class SdkUrlMcpClient implements McpServerClient {
 					timeout: this.requestTimeoutMs,
 					signal: request.context?.signal,
 				},
-			);
+			)
 		} catch (error) {
-			return await this.handleOperationError(error);
+			return await this.handleOperationError(error)
 		}
 	}
 
 	private async ensureConnectedClient(): Promise<Client> {
 		if (!this.client) {
-			await this.connect();
+			await this.connect()
 		}
 		if (!this.client) {
 			throw new Error(
 				`MCP server "${this.registration.name}" is not connected.`,
-			);
+			)
 		}
-		return this.client;
+		return this.client
 	}
 
 	private formatUnauthorizedMessage(authUrl: string | undefined): string {
 		if (this.hasStaticAuthorizationHeader()) {
-			return `MCP server "${this.registration.name}" rejected its configured Authorization header. Update or remove that header before connecting with OAuth.`;
+			return `MCP server "${this.registration.name}" rejected its configured Authorization header. Update or remove that header before connecting with OAuth.`
 		}
-		const base = `MCP server "${this.registration.name}" requires OAuth authorization.`;
+		const base = `MCP server "${this.registration.name}" requires OAuth authorization.`
 		if (!authUrl) {
-			return `${base} Run authorizeMcpServerOAuth for this server.`;
+			return `${base} Run authorizeMcpServerOAuth for this server.`
 		}
-		return `${base} Run authorizeMcpServerOAuth for this server and complete this URL: ${authUrl}`;
+		return `${base} Run authorizeMcpServerOAuth for this server and complete this URL: ${authUrl}`
 	}
 
 	private hasStaticAuthorizationHeader(): boolean {
-		const transport = this.registration.transport;
+		const transport = this.registration.transport
 		if (transport.type === "stdio") {
-			return false;
+			return false
 		}
 		return Object.keys(transport.headers ?? {}).some(
 			(name) => name.toLowerCase() === "authorization",
-		);
+		)
 	}
 
 	private async handleOperationError(error: unknown): Promise<never> {
@@ -956,22 +1010,22 @@ class SdkUrlMcpClient implements McpServerClient {
 				clientInformation: createMcpOAuthClientInformation(
 					this.registration.oauthClient,
 				),
-			});
+			})
 		const effectiveError = augmentMcpTimeoutError(
 			error,
 			this.registration.name,
 			this.requestTimeoutMs,
-		);
-		const unauthorized = isMcpUnauthorizedError(error);
+		)
+		const unauthorized = isMcpUnauthorizedError(error)
 		const message = unauthorized
 			? this.formatUnauthorizedMessage(authContext.getLastAuthorizationUrl())
-			: toErrorMessage(effectiveError);
+			: toErrorMessage(effectiveError)
 		if (unauthorized && !this.hasStaticAuthorizationHeader()) {
-			await authContext.markAuthorizationRequired(message);
+			await authContext.markAuthorizationRequired(message)
 		} else {
-			await authContext.markConnectionError(message);
+			await authContext.markConnectionError(message)
 		}
-		throw new Error(message);
+		throw new Error(message)
 	}
 }
 
@@ -981,7 +1035,7 @@ export function createDefaultMcpServerClientFactory(
 	return (registration) =>
 		registration.transport.type === "stdio"
 			? new StdioMcpClient(registration, options.mcpApps)
-			: new SdkUrlMcpClient(registration, options);
+			: new SdkUrlMcpClient(registration, options)
 }
 
 /**
@@ -991,22 +1045,22 @@ export function createDefaultMcpServerClientFactory(
 export async function probeMcpServerConnection(
 	options: ProbeMcpServerConnectionOptions,
 ): Promise<ProbeMcpServerConnectionResult> {
-	const serverName = options.serverName.trim();
+	const serverName = options.serverName.trim()
 	if (!serverName) {
-		throw new Error("MCP server name cannot be empty.");
+		throw new Error("MCP server name cannot be empty.")
 	}
 	const { getMcpServerOAuthStatus, resolveMcpServerRegistration } =
-		await import("./config-loader");
+		await import("./config-loader")
 	const registration = resolveMcpServerRegistration(serverName, {
 		filePath: options.filePath,
-	});
+	})
 	if (!registration) {
-		throw new Error(`MCP server "${serverName}" is not configured.`);
+		throw new Error(`MCP server "${serverName}" is not configured.`)
 	}
 	if (registration.transport.type === "stdio") {
 		throw new Error(
 			`MCP server "${serverName}" uses stdio and cannot be passively probed.`,
-		);
+		)
 	}
 
 	const client = await createDefaultMcpServerClientFactory({
@@ -1014,22 +1068,22 @@ export async function probeMcpServerConnection(
 		clientName: options.clientName,
 		clientVersion: options.clientVersion,
 		fetch: options.fetch,
-	})(registration);
-	let connectionError: string | undefined;
+	})(registration)
+	let connectionError: string | undefined
 	try {
-		await client.connect();
+		await client.connect()
 	} catch (error) {
-		connectionError = toErrorMessage(error);
+		connectionError = toErrorMessage(error)
 	} finally {
-		await client.disconnect().catch(() => undefined);
+		await client.disconnect().catch(() => undefined)
 	}
 
 	const updatedRegistration = resolveMcpServerRegistration(serverName, {
 		filePath: options.filePath,
-	});
+	})
 	const oauthStatus = updatedRegistration
 		? getMcpServerOAuthStatus(updatedRegistration)
-		: undefined;
+		: undefined
 	return {
 		serverName,
 		connected: connectionError === undefined,
@@ -1037,5 +1091,5 @@ export async function probeMcpServerConnection(
 		...(connectionError
 			? { error: oauthStatus?.lastError ?? connectionError }
 			: {}),
-	};
+	}
 }

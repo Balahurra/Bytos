@@ -1,12 +1,12 @@
 {
     "name": "@bytos/packages",
     "private": true,
-    "description": "Bytos - the open-source coding agent for your IDE, terminal, and desktop.",
+    "description": "Bytos - the open-source autonomous AI coding agent for Visual Studio Code.",
     "license": "Apache-2.0",
-    "homepage": "https://bytos.dev",
+    "homepage": "https://bytos.dev/",
     "repository": {
         "type": "git",
-        "url": "https://github.com/bytos/bytos"
+        "url": "https://github.com/Balahurra/Bytos"
     },
     "workspaces": [
         "sdk/packages/*",
@@ -42,7 +42,10 @@
         "fix": "bun biome check --write --unsafe --diagnostic-level=error sdk/ apps/cli/ apps/bytos-hub/ apps/examples/",
         "check": "bun biome check --diagnostic-level=error sdk/ apps/cli/ apps/bytos-hub/ apps/examples/ && bun run build:sdk && bun run -F @bytos/cli build && bun -F @bytos/bytos-hub build:webview && bun --parallel -F './sdk/packages/**' -F @bytos/cli -F @bytos/bytos-hub typecheck && bun sdk/scripts/check-publish.ts",
         "version": "bun run types && bun sdk/scripts/version.ts",
-        "release": "bun sdk/scripts/release.ts"
+        "release": "bun sdk/scripts/release.ts",
+        "security:audit": "bun audit --audit-level=high && npm audit --prefix docs && npm audit --prefix evals/analysis && npm audit --prefix evals && npm audit --prefix apps/vscode/standalone/runtime-files",
+        "security:vsix": "node scripts/security/check-vsix.mjs",
+        "security:gate": "node scripts/security/release-gate.mjs"
     },
     "lint-staged": {
         "sdk/**": [
@@ -66,7 +69,7 @@
         "@types/node": "^25.3.5",
         "husky": "^9.1.7",
         "lint-staged": "^16.3.2",
-        "vitest": "^4.0.18"
+        "vitest": "^4.1.12"
     },
     "peerDependencies": {
         "nanoid": "^5.1.7",
@@ -75,22 +78,37 @@
     "overrides": {
         "axios": "1.20.0",
         "proxy-addr": ">=2.0.8",
-        "fast-uri": ">=3.1.4",
-        "undici": ">=7.29.0 <8",
+        "fast-uri": ">=4.2.3 <5",
+        "undici": "^7.30.1",
         "@opentui/core": "0.4.3",
         "@opentui/react": "0.4.3",
         "tar-fs": ">=3.1.1",
         "tar": "^7.5.2",
         "js-yaml": ">=4.3.2 <5",
-        "serialize-javascript": ">=7.0.3",
+        "serialize-javascript": ">=7.1.4",
         "protobufjs": "7.6.5",
         "mermaid": "11.16.1",
         "diff": "8.0.4",
+        "@jridgewell/trace-mapping": ">=0.3.31",
         "@sap-cloud-sdk/connectivity": "4.9.1",
         "@sap-cloud-sdk/http-client": "4.9.1",
         "@sap-cloud-sdk/openapi": "4.9.1",
         "@sap-cloud-sdk/resilience": "4.9.1",
-        "@sap-cloud-sdk/util": "4.9.1"
+        "@sap-cloud-sdk/util": "4.9.1",
+        "zod": "^4.6.7",
+        "follow-redirects": ">=1.16.3 <2",
+        "postcss": ">=8.5.32 <9",
+        "postcss-selector-parser": ">=7.2.0 <8",
+        "source-map-js": ">=1.2.2 <2",
+        "qs": ">=6.17.1 <7",
+        "linkify-it": ">=5.0.2 <6",
+        "katex": ">=0.18.2 <0.19",
+        "@hono/node-server": ">=2.1.6 <3",
+        "@azure/identity": ">=4.14.1 <5",
+        "@azure/msal-node": ">=7.1.0 <8",
+        "tinypool": ">=2.1.2 <3",
+        "@vitest/mocker": ">=4.1.12 <5",
+        "@puppeteer/browsers": ">=3.2.7 <4"
     },
     "trustedDependencies": [
         "better-sqlite3",
@@ -100,6 +118,7 @@
     "patchedDependencies": {
         "@opentui-ui/dialog@0.1.2": "patches/@opentui-ui%2Fdialog@0.1.2.patch",
         "ollama-ai-provider-v2@4.0.1": "patches/ollama-ai-provider-v2@4.0.1.patch",
-        "@shadcn/react@0.3.1": "patches/@shadcn%2Freact@0.3.1.patch"
+        "@shadcn/react@0.3.1": "patches/@shadcn%2Freact@0.3.1.patch",
+        "deepmerge@4.3.1": "patches/deepmerge@4.3.1.patch"
     }
 }

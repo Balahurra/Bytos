@@ -28,9 +28,9 @@ describe("packaged README", () => {
 		expect(text).toContain(`\`engines.vscode\` is \`${engines}\``)
 	})
 
-	it("explains that the build is bring-your-own-key with no Bytos backend", () => {
+	it("explains that the build is bring-your-own-key with an optional Bytos account", () => {
 		expect(text).toMatch(/bring-your-own-key/i)
-		expect(text).toMatch(/no Bytos backend/i)
+		expect(text).toMatch(/Bytos account is \*\*optional\*\*/i)
 	})
 
 	it("documents where API keys are stored and that telemetry is opt-in", () => {
@@ -53,8 +53,11 @@ describe("packaged README", () => {
 		expect(text).toContain("security/advisories/new")
 	})
 
-	it("does not link to a Marketplace listing that may not exist yet", () => {
-		expect(text).not.toContain("marketplace.visualstudio.com/items?itemName=bytos.bytos")
+	it("links to the published Marketplace listing and the official community channels", () => {
+		expect(text).toContain("marketplace.visualstudio.com/items?itemName=Bytos.bytos")
+		expect(text).toContain("https://bytos.dev/")
+		expect(text).toContain("https://github.com/Balahurra/Bytos")
+		expect(text).toContain("https://discord.gg/2hSFZY9Bs")
 	})
 
 	it("does not claim a provider integration or compliance status that is not implemented", () => {

@@ -551,7 +551,7 @@ describe("ProviderCatalog Phase 3.5 listProviders", () => {
 		})
 		expect(listings[0]).not.toHaveProperty("models")
 		expect(mocks.listLocalProviders).toHaveBeenCalledTimes(1)
-		expect(mocks.listLocalProviders).toHaveBeenCalledWith(expect.anything(), { isBytosPassEnabled: true })
+		expect(mocks.listLocalProviders).toHaveBeenCalledWith(expect.anything())
 	})
 
 	it("passes the SDK's subscription usage-cost display through to listings", async () => {
@@ -619,7 +619,7 @@ describe("ProviderCatalog Phase 3.5 listProviders", () => {
 			})
 			.mockResolvedValueOnce({
 				providers: [
-					{ id: "bytos-pass", name: "BytosPass", protocol: "anthropic", client: "anthropic", source: "system" },
+					{ id: "cline-pass", name: "ClinePass", protocol: "anthropic", client: "anthropic", source: "system" },
 				],
 			})
 		const catalog = createProviderCatalog(makeReader({ providerId: parseProviderId("bytos") }))
@@ -629,7 +629,7 @@ describe("ProviderCatalog Phase 3.5 listProviders", () => {
 		const second = await catalog.listProviders()
 
 		expect(first[0]?.id).toBe("bytos")
-		expect(second[0]?.id).toBe("bytos-pass")
+		expect(second[0]?.id).toBe("cline-pass")
 		expect(mocks.listLocalProviders).toHaveBeenCalledTimes(2)
 	})
 

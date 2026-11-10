@@ -701,7 +701,6 @@ describe("SdkCloudSessionCoordinator ownership", () => {
 		fetched.resolve({
 			recommended: [{ id: "fresh/model", name: "Fresh", description: "", tags: [] }],
 			free: [],
-			bytosPass: [],
 		})
 		expect(await start).toBe(record.id)
 
@@ -731,7 +730,6 @@ describe("SdkCloudSessionCoordinator ownership", () => {
 			.mockResolvedValueOnce({
 				recommended: [{ id: "fresh/model", name: "Fresh", description: "", tags: [] }],
 				free: [],
-				bytosPass: [],
 			})
 		const { coordinator, options } = makeCoordinator({
 			stateManager: {

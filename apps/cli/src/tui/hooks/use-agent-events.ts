@@ -5,7 +5,7 @@ import type {
 	PendingPromptSnapshot,
 	PendingPromptSubmittedEvent,
 } from "../../runtime/session-events";
-import { formatCliErrorMessage } from "../../utils/bytos-pass-errors";
+import { formatCliErrorMessage } from "../../utils/cli-errors";
 import { resolveNonCompactionStatusLabel } from "../../utils/events";
 import { materializeGeneratedMedia } from "../../utils/generated-media";
 import {

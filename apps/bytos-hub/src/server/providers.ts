@@ -124,7 +124,7 @@ export async function sendProviderCatalog(
 ): Promise<void> {
 	await ensureCustomProvidersLoaded(providerSettingsManager);
 	const payload = await listLocalProviders(providerSettingsManager, {
-		isBytosPassEnabled: true,
+		isClinePassEnabled: true,
 	});
 	ctx.send(peer, {
 		type: "provider_catalog",

@@ -1,78 +1,100 @@
 ---
 title: "Bytos Overview"
-sidebarTitle: "Bytos Overview"
-description: "Your AI-powered agent for complex work. Read files, write code, run commands, all with your approval."
+sidebarTitle: "Overview"
+description: "Bytos is an open-source, BYOK autonomous AI coding agent for Visual Studio Code with sequential Auto Phase Plan."
 ---
 
 ## What is Bytos?
 
-Bytos is an AI coding agent that lives in your editor and your terminal. It can read and write files, run terminal commands, use a browser, and help you build features through natural conversation. Every action requires your explicit approval. You're always in control.
+Bytos is an open-source, **bring-your-own-key (BYOK)** autonomous AI coding agent
+for **Visual Studio Code**. It reads your workspace, plans before it edits,
+implements changes through reviewable diffs, runs commands in the editor
+terminal, uses the browser and MCP tools with your approval, and records
+checkpoints you can restore.
 
-## Applications
+A Bytos account is optional: chat, BYOK, and local models work without one.
+By default, model requests go directly to the provider you already pay for;
+Bytos does not proxy them. The optional ClinePass compatibility provider uses
+your own Cline API key and sends requests to Cline's hosted API. API keys are stored in VS
+Code SecretStorage and are never sent to the webview. If you sign in, account
+data is sent to Bytos services as described in `PRIVACY.md`.
 
-Everything below runs on Bytos's agent core. Install an application to use it, or build your own on the [SDK](/sdk/overview):
+## Auto Phase Plan
 
-<CardGroup cols={2}>
-  <Card title="Bytos Desktop App" icon="desktop" href="https://bytos.dev/desktop">
-    An open source app for open weight models, with parallel sessions, scheduled tasks, and flexible model choice.
-  </Card>
-  <Card title="CLI" icon="terminal" href="/usage/cli-overview">
-    Run Bytos in your terminal with interactive chat or fully headless automation for CI/CD and scripting.
+**Auto Phase Plan** is Bytos's sequential multi-phase orchestration mode:
 
-    `npm i -g bytos`
-  </Card>
-  <Card title="VS Code Extension" icon="code" href="https://marketplace.visualstudio.com/items?itemName=bytos.bytos">
-    AI coding assistant in your editor. Create files, run commands, browse the web, and use tools with human-in-the-loop approval.
-  </Card>
-  <Card title="JetBrains Plugin" icon="brain" href="https://plugins.jetbrains.com/plugin/27189-bytos">
-    The same Bytos experience in IntelliJ IDEA, PyCharm, WebStorm, GoLand, and the rest of the JetBrains family.
-  </Card>
-  <Card title="SDK" icon="cube" href="/sdk/overview">
-    Bytos's agent core. Build your own agents, automations, and integrations on the same engine that powers every app above.
+- up to **10 ordered phases** run automatically from phase 1 to the last phase
+  you configured;
+- each phase is its own **Act-mode task**, with its own prompt, provider, model,
+  API key, attachments, and MCP server allowlist;
+- a phase's settings do not leak into the next phase unless you explicitly copy
+  them;
+- when a phase fails or reports `BLOCKED` / `FAILED`, you can stop the plan,
+  continue automatically, or be asked each time;
+- every run writes a detailed Markdown report to
+  `.bytos/auto-phase-reports/<run-id>/report.md`, with an overall summary of the
+  phases;
+- an optional AI-generated final summary is available and off by default;
+- starting a plan shows a confirmation warning, and the run can be stopped at
+  any time.
 
-    `npm install @bytos/sdk`
-  </Card>
-  <Card title="Kanban" icon="table-columns" href="https://github.com/bytos/kanban">
-    Run many agents in parallel from a web-based task board with per-card worktrees, auto-commit, and dependency chains.
+Auto Phase is **sequential**, not a parallel multi-agent fan-out.
 
-    `npx kanban`
-  </Card>
-</CardGroup>
+![Auto Phase Plan settings showing three configured phases](/assets/auto-phase/ss1.png)
 
-## Model access
+![Auto Phase failure handling options](/assets/auto-phase/ss2.png)
 
-Choose the model access path that fits your workflow:
+![A phase with its own prompt, provider, API key, and model](/assets/auto-phase/ss3.png)
 
-<CardGroup cols={3}>
-  <Card title="Bytos (usage-billing)" icon="bolt" href="/getting-started/bytos-provider">
-    Fastest setup path with one sign-in, built-in billing, and free model options.
-  </Card>
-  <Card title="BytosPass" icon="credit-card" href="/getting-started/bytospass">
-    Flat $9.99/month subscription that offers 2-5x the usage on popular open coding models compared to standard API rate.
-  </Card>
-  <Card title="Bring Your Own Key" icon="key" href="/getting-started/authorizing-with-bytos#byok-cloud--local">
-    Use your own provider credentials for cloud providers or local runtimes.
-  </Card>
-</CardGroup>
+## What ships in the VS Code extension
 
-## Other IDE Supports
+- chat-first agent with Plan / Act modes and approval-first tools;
+- multi-provider BYOK configuration, including local models;
+- file editing with diffs, terminal execution, browser automation, and MCP tools;
+- hooks, skills, worktrees, checkpoints, and task history;
+- sequential Auto Phase Plan with per-phase settings and Markdown reports;
+- local voice dictation on **Windows x64** (microphone discovery, per-device
+  selection, bundled whisper.cpp engine; speech models download on demand);
+- opt-in telemetry, disabled by default.
 
-Bytos works across all major editors: **VS Code**, **Cursor**, **Windsurf**, **JetBrains** (IntelliJ, PyCharm, WebStorm), **Antigravity**, and **Zed**, **Neovim** via [ACP mode](/usage/acp).
+## Install
 
+1. Install [Bytos from the VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=Bytos.bytos).
+2. Open the Bytos view in the activity bar.
+3. Open **Settings → API Configuration**, choose a provider, paste your API key,
+   and select a model.
+4. Describe a task in the chat box.
 
-## Enterprise Solutions
+See [Installing Bytos](/getting-started/installing-bytos) and
+[Quick start](/getting-started/quick-start) for the full first-run path.
 
-<CardGroup cols={2}>
-  <Card title="Security & Governance" icon="shield-halved" href="/enterprise-solutions/overview">
-    SSO, role-based access control, model and tool controls per team, and remote configuration.
-  </Card>
-  <Card title="Observability" icon="chart-line" href="/enterprise-solutions/monitoring/overview">
-    OpenTelemetry, Datadog, Grafana, Splunk integrations with real-time analytics.
-  </Card>
-  <Card title="Team Management" icon="users-gear" href="/enterprise-solutions/team-management/managing-members">
-    Manage members, roles, and permissions across your organization.
-  </Card>
-  <Card title="API Reference" icon="code" href="/enterprise-solutions/api-reference">
-    Programmatic access to Bytos's enterprise features.
-  </Card>
-</CardGroup>
+## What is not part of this release
+
+The following surfaces exist in the repository or in historical documentation
+but are **not distributed in the current VS Code extension release**:
+
+- Desktop app
+- CLI, TUI, ACP, and cloud agents
+- JetBrains plugin
+- SDK and plugin marketplace
+- Kanban
+- ClinePass compatibility provider (your own Cline API key)
+- Enterprise SSO, remote configuration, and monitoring
+- Public Bytos API
+
+See [Status and roadmap](/status-and-roadmap) for the shipped-versus-planned
+matrix.
+
+## Community and support
+
+- [Discord](https://discord.gg/2hSFZY9Bs)
+- [GitHub](https://github.com/Balahurra/Bytos)
+- [YouTube](https://www.youtube.com/@BytosAgent)
+- [X](https://x.com/balahurra_bytos)
+- [Website](https://bytos.dev/)
+
+## License
+
+Bytos is licensed under the Apache License 2.0. It includes software derived
+from the Cline project, Copyright 2026 Cline Bot Inc., licensed under the
+Apache License 2.0. See `LICENSE`, `NOTICE`, and `TRADEMARKS.md`.

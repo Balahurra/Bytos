@@ -20,7 +20,7 @@ describe("processWorkspaceInfo", () => {
 			processWorkspaceInfo({
 				rootPath: "/workspace/project",
 				associatedRemoteUrls: [
-					"origin: https://user:token@github.com/bytos/bytos.git",
+					"origin: https://user:token@github.com/Balahurra/Bytos.git",
 					"backup: ssh://git:secret@example.com/bytos/bytos.git",
 					"mirror: git@github.com:bytos/bytos.git",
 				],
@@ -30,7 +30,7 @@ describe("processWorkspaceInfo", () => {
 		expect(
 			metadata.workspaces["/workspace/project"].associatedRemoteUrls,
 		).toEqual([
-			"origin: https://github.com/bytos/bytos.git",
+			"origin: https://github.com/Balahurra/Bytos.git",
 			"backup: ssh://example.com/bytos/bytos.git",
 			"mirror: git@github.com:bytos/bytos.git",
 		]);
@@ -117,7 +117,7 @@ describe("buildBytosSystemPrompt mode instructions", () => {
 			workspaces: {
 				"/workspace/project": {
 					hint: "project",
-					associatedRemoteUrls: ["origin: https://github.com/bytos/bytos.git"],
+					associatedRemoteUrls: ["origin: https://github.com/Balahurra/Bytos.git"],
 					latestGitCommitHash: "abc123",
 				},
 			},

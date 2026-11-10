@@ -22,8 +22,8 @@ const thread: SessionThread = {
 	codebase: "ai-data-suite",
 	workspacePath: "/Users/dev/ai-data-suite",
 	time: "1d",
-	provider: "bytos-pass",
-	model: "bytos-pass/glm-5.2-with-a-very-long-identifier",
+	provider: "cline-pass",
+	model: "cline-pass/glm-5.2-with-a-very-long-identifier",
 	inputTokens: 13_837_938,
 	outputTokens: 132_579,
 	status: "completed",
@@ -178,7 +178,7 @@ describe("SessionsView table", () => {
 		const cloudThread: SessionThread = {
 			...thread,
 			origin: "cloud",
-			repoUrl: "https://github.com/bytos/bytos",
+			repoUrl: "https://github.com/Balahurra/Bytos",
 		};
 		const view = renderView({ threads: [cloudThread] });
 		await view.render();
@@ -186,7 +186,7 @@ describe("SessionsView table", () => {
 		expect(
 			container.querySelector('[aria-label="Cloud session"]'),
 		).not.toBeNull();
-		expect(container.textContent).toContain("https://github.com/bytos/bytos");
+		expect(container.textContent).toContain("https://github.com/Balahurra/Bytos");
 	});
 
 	it("opens a session on click but not while text is selected", async () => {

@@ -47,7 +47,7 @@ async function loginProviderForDesktop(
 	onUserCode?: (userCode: string) => void,
 	signal?: AbortSignal,
 ): ReturnType<typeof loginLocalProvider> {
-	if (providerId !== "bytos" && providerId !== "bytos-pass") {
+	if (providerId !== "bytos") {
 		return loginLocalProvider(providerId, existing, openUrl);
 	}
 	const device = await startBytosDeviceAuth({ signal });

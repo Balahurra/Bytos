@@ -85,24 +85,22 @@ The estimated cost shown in the task header updates after each API request. This
 
 ### When You Pay
 
-You pay for AI usage when using cloud providers like Anthropic, OpenAI, OpenRouter, or Google. Costs vary significantly:
+Bytos is a **bring-your-own-key (BYOK)** build. A Bytos account is optional.
+There is no hosted subscription, credit system, or payment flow in this build.
 
 | Provider Type | Billing Model |
 |--------------|---------------|
-| **Bytos Provider** | Pay-per-use with credits you purchase |
-| **BytosPass** | Flat monthly subscription for selected open coding models, with usage measured against your BytosPass quota |
-| **Direct API keys** | Billed by your provider (Anthropic, OpenAI, etc.) |
-| **OpenRouter/Requesty** | Aggregated billing across multiple models |
+| **Direct API keys** | Billed by your provider (Anthropic, OpenAI, Google, etc.) |
+| **OpenRouter / aggregators** | Billed by the aggregator across multiple models |
 | **Local models** | Free (you provide the hardware) |
 
-If you want predictable monthly spend instead of per-request charges, [BytosPass](/getting-started/bytospass) provides selected open coding models for $9.99/month. If you're using your own API keys, check your provider's pricing page for current rates. Prices change frequently and vary by model.
+Check your provider's pricing page for current rates. Prices change frequently
+and vary by model.
 
 ### Free Options
 
-Not ready to pay? Bytos offers several free paths:
-
-- **Free models**: Search "free" in the model selector when using the Bytos Provider. These models display a **FREE** tag and work well for learning and experimentation.
-- **Free tiers**: Some providers offer limited free usage when you use your own API key.
+- **Provider free tiers**: Some providers offer limited free usage with your own
+  key.
 - **Local models**: Run models on your own hardware with zero per-request costs.
 
 ### Self-Hosted Models
@@ -121,7 +119,7 @@ The trade-off is speed. Local models run at 5-20 tokens per second on typical ha
 If you have the hardware, local models offer unlimited experimentation with complete privacy. See [Running Models Locally](/running-models-locally/overview) to get started.
 </Tip>
 
-For most users, starting with free cloud models and moving to paid options as needed provides the best balance of cost, speed, and capability. Check [Selecting Your Model](/getting-started/authorizing-with-bytos) for guidance on choosing the right option for your workflow.
+For most users, starting with free cloud models and moving to paid options as needed provides the best balance of cost, speed, and capability. Check [Selecting Your Model](/provider-config/overview) for guidance on choosing the right option for your workflow.
 
 
 ## Task History

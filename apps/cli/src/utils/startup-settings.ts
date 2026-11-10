@@ -5,7 +5,7 @@ import type { CliAgentMode, CliCompactionMode, ParsedArgs } from "./types";
  * Resolves general settings at CLI startup with the precedence
  * explicit CLI flag -> persisted global setting -> built-in default,
  * so choices made in the TUI /settings panel survive restarts (see
- * https://github.com/bytos/bytos/issues/12158).
+ * https://github.com/Balahurra/Bytos/issues/12158).
  */
 
 export function resolveStartupMode(
@@ -17,6 +17,12 @@ export function resolveStartupMode(
 	}
 	return settings.planActMode ?? args.mode;
 }
+
+/**
+ * Built-in CLI approval default. Privileged tools must be opted into
+ * explicitly (flag or persisted setting); an unset install is not trusted.
+ */
+export const CLI_DEFAULT_TOOL_AUTO_APPROVE = false;
 
 export function resolveStartupToolAutoApprove(
 	args: Pick<ParsedArgs, "autoApproveOverride">,

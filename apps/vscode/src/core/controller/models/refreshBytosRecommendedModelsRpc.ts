@@ -25,13 +25,5 @@ export async function refreshBytosRecommendedModelsRpc(
 				tags: model.tags,
 			}),
 		),
-		bytosPass: (models.bytosPass ?? []).map((model) =>
-			BytosRecommendedModel.create({
-				id: model.id,
-				name: model.name,
-				description: model.description,
-				tags: model.tags,
-			}),
-		),
 	})
 }

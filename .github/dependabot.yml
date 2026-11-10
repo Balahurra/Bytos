@@ -5,13 +5,20 @@ updates:
       directory: "/apps/vscode"
       schedule:
           interval: "weekly"
-      # Group all updates into a single PR
       groups:
+          # Security fixes get their own focused PRs instead of being buried
+          # inside the large routine dependency batch.
+          security-updates:
+              applies-to: security-updates
+              patterns:
+                  - "*"
           all-dependencies:
+              applies-to: version-updates
               patterns:
                   - "*"
       ignore:
-          # Ignore all non-security updates (security vulnerabilities bypass these ignore rules)
+          # Ignore all non-security version updates (security updates bypass
+          # ignore rules by design).
           - dependency-name: "*"
             update-types:
                 - "version-update:semver-major"
@@ -24,7 +31,12 @@ updates:
       schedule:
           interval: "weekly"
       groups:
+          security-updates:
+              applies-to: security-updates
+              patterns:
+                  - "*"
           all-dependencies:
+              applies-to: version-updates
               patterns:
                   - "*"
       ignore:
@@ -34,6 +46,54 @@ updates:
                 - "version-update:semver-major"
                 - "version-update:semver-minor"
                 - "version-update:semver-patch"
+
+    # Documentation site has its own npm lockfile and is deployed
+    # independently of the extension.
+    - package-ecosystem: "npm"
+      directory: "/docs"
+      schedule:
+          interval: "weekly"
+      groups:
+          security-updates:
+              applies-to: security-updates
+              patterns:
+                  - "*"
+          all-dependencies:
+              applies-to: version-updates
+              patterns:
+                  - "*"
+
+    # Evaluation tooling has independent npm lockfiles.
+    - package-ecosystem: "npm"
+      directory: "/evals/analysis"
+      schedule:
+          interval: "weekly"
+      groups:
+          security-updates:
+              applies-to: security-updates
+              patterns:
+                  - "*"
+
+    - package-ecosystem: "npm"
+      directory: "/evals"
+      schedule:
+          interval: "weekly"
+      groups:
+          security-updates:
+              applies-to: security-updates
+              patterns:
+                  - "*"
+
+    # Desktop example (Tauri) is built and published by desktop-publish.yml.
+    - package-ecosystem: "cargo"
+      directory: "/apps/examples/desktop-app/src-tauri"
+      schedule:
+          interval: "weekly"
+      groups:
+          security-updates:
+              applies-to: security-updates
+              patterns:
+                  - "*"
 
     # Pinned skills CLI release (devDependency of @bytos/core). `bytos skill`
     # and the marketplace skill fallback run this exact version through npx,
@@ -45,3 +105,23 @@ updates:
           interval: "weekly"
       allow:
           - dependency-name: "skills"
+      groups:
+          security-updates:
+              applies-to: security-updates
+              patterns:
+                  - "*"
+
+    # Keep workflow actions current; security fixes are grouped separately.
+    - package-ecosystem: "github-actions"
+      directory: "/"
+      schedule:
+          interval: "weekly"
+      groups:
+          security-updates:
+              applies-to: security-updates
+              patterns:
+                  - "*"
+          all-actions:
+              applies-to: version-updates
+              patterns:
+                  - "*"

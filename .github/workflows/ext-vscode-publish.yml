@@ -129,7 +129,7 @@ jobs:
             # Pin the checkout to the exact revision the test gate ran against:
             # a moving branch name could otherwise drift past the tested commit
             # during the test phase.
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
               with:
                   ref: ${{ github.sha }}
                   lfs: true
@@ -164,7 +164,7 @@ jobs:
                   fi
                   echo "Found changelog entry for ${{ github.event.inputs.version }}"
 
-            - uses: oven-sh/setup-bun@v2
+            - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
               with:
                   bun-version: "1.4.2"
 
@@ -174,7 +174,7 @@ jobs:
             # vsce's `npm list` detection fail with ELSPROBLEMS during
             # packaging.
             - name: Setup Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
               with:
                   node-version: 22
 
@@ -281,8 +281,17 @@ jobs:
                   fi
                   echo "env inlining ok: no build-time process.env literals left in dist/extension.js"
 
+            # Independent artifact gate: high/critical advisories across every
+            # dependency graph, then inspect the actual VSIX bytes for
+            # development payloads, missing notices, and credential shapes.
+            - name: Release security gate
+              working-directory: ${{ github.workspace }}
+              env:
+                  VSIX: apps/vscode/bytos-${{ github.event.inputs.version }}.vsix
+              run: node scripts/security/release-gate.mjs "$VSIX"
+
             - name: Upload VSIX artifact
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
               with:
                   name: bytos-${{ github.event.inputs.version }}
                   path: apps/vscode/bytos-${{ github.event.inputs.version }}.vsix
@@ -303,17 +312,17 @@ jobs:
             # the build job pinned its checkout to the dispatch SHA — so
             # github.sha IS the published commit. Used for the changelog, the
             # release tag, and the previous-tag lookup.
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
               with:
                   ref: ${{ github.sha }}
 
             - name: Setup Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
               with:
                   node-version: 22
 
             - name: Download VSIX artifact
-              uses: actions/download-artifact@v4
+              uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
               with:
                   name: bytos-${{ github.event.inputs.version }}
                   path: staging

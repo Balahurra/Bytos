@@ -149,7 +149,7 @@ describe("hydrateSessionMessages", () => {
 		]);
 	});
 
-	// Regression test for https://github.com/bytos/bytos/issues/13036:
+	// Regression test for https://github.com/Balahurra/Bytos/issues/13036:
 	// persisted sessions with malformed tool inputs must stay resumable.
 	it("hydrates tool calls with malformed inputs without throwing", () => {
 		const messages = [

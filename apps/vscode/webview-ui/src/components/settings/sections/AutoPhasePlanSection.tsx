@@ -6,6 +6,7 @@ import { VSCodeButton, VSCodeCheckbox, VSCodeDropdown, VSCodeOption } from "@vsc
 import { Check, ChevronDown, ChevronRight, Copy, Eraser, Plus, Trash2 } from "lucide-react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { getDataUrlBase64Length, normalizeImagesForAttachment } from "@/components/chat/attachment-image-normalization"
+import DoneButton from "@/components/common/DoneButton"
 import Thumbnails from "@/components/common/Thumbnails"
 import { type ProviderId, useExtensionState } from "@/context/ExtensionStateContext"
 import { useProviderListings } from "@/hooks/useProviderListings"
@@ -19,7 +20,7 @@ import { getSavedApiKeyMask, sanitizeMaskedApiKeyInput } from "../utils/apiKeyMa
 
 const MAX_PHASES = 10
 const MAX_PHASE_ATTACHMENTS = 20
-const CLINE_PASS_PROVIDER_ID = "bytos-pass"
+const CLINE_PASS_PROVIDER_ID = "cline-pass"
 
 interface AutoPhasePlanSectionProps {
 	renderSectionHeader: (tabId: string) => JSX.Element | null
@@ -655,9 +656,9 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 									Delete all phases
 								</VSCodeButton>
 							)}
-							<VSCodeButton appearance="primary" disabled={saving || loading} onClick={() => persistPlan()}>
+							<DoneButton appearance="primary" disabled={saving || loading} onClick={() => persistPlan()}>
 								{saving ? "Savingâ€¦" : "Done"}
-							</VSCodeButton>
+							</DoneButton>
 						</div>
 					</div>
 				)}

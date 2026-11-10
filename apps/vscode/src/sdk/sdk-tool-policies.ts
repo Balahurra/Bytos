@@ -53,7 +53,8 @@ export function buildToolPolicies(
 
 	if (mcpHub) {
 		const allowed = mcpServerNames === undefined ? undefined : new Set(mcpServerNames)
-		for (const server of mcpHub.getServers()) {
+		const servers = typeof mcpHub.getServers === "function" ? (mcpHub.getServers() ?? []) : []
+		for (const server of servers) {
 			if (allowed !== undefined && !allowed.has(server.name)) {
 				continue
 			}

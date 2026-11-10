@@ -115,7 +115,7 @@ Module.prototype.require = function (id) {
 			const normalized = String(providerId || "")
 				.trim()
 				.toLowerCase()
-			if (normalized === "bytos" || normalized === "bytos-pass") return "bytos"
+			if (normalized === "bytos") return "bytos"
 			if (normalized === "oca" || normalized === "openai-codex") return normalized
 			return undefined
 		}

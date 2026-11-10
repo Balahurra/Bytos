@@ -168,13 +168,13 @@ describe("langfuse telemetry", () => {
 		expect(spanProcessorConfigSpy).toHaveBeenCalledOnce();
 	});
 
-	it("shares one isolated exporter between concurrent Bytos backend requests", async () => {
+	it("does not route ClinePass telemetry through the Bytos exporter", async () => {
 		const [first, second] = await Promise.all([
 			resolveAiSdkTelemetry("bytos"),
-			resolveAiSdkTelemetry("bytos-pass"),
+			resolveAiSdkTelemetry("cline-pass"),
 		]);
 		expect(first.integrations).toBeDefined();
-		expect(first.integrations).toBe(second.integrations);
+		expect(second.integrations).toBeUndefined();
 		expect(tracerProviderInstances).toHaveLength(1);
 		expect(spanProcessorConfigSpy).toHaveBeenCalledWith(genericConfig);
 		expect(registerDisposableSpy).toHaveBeenCalledOnce();

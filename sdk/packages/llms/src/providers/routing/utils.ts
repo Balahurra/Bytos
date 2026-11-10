@@ -46,7 +46,7 @@ export function toProviderOptionsBucket(providerId: string): string {
  * openai-compatible model only applies request-body passthrough from
  * `providerOptions[<name>]` (and its camelCase alias). For almost every
  * provider the name is the gateway provider id, but both Bytos gateway ids
- * (`bytos` and `bytos-pass`) are served by the shared "bytos" AI SDK provider
+ * (`bytos` and `cline-pass`) are served by the shared "bytos" AI SDK provider
  * (see `createBytosProviderModule`) and hit the same Bytos API, so their
  * options key to the shared `bytos` bucket.
  */

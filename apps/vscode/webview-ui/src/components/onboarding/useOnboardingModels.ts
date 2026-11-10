@@ -1,4 +1,4 @@
-import { buildModelInfoNameMap, type ModelInfo, resolveBytosPassModelInfo } from "@shared/api"
+import type { ModelInfo } from "@shared/api"
 import { BYTOS_ONBOARDING_MODELS } from "@shared/bytos/onboarding"
 import { EmptyRequest } from "@shared/proto/bytos/common"
 import type { BytosRecommendedModel } from "@shared/proto/bytos/models"
@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from "react"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import { useProviderModels } from "@/hooks/useProviderModels"
 import { ModelsServiceClient } from "@/services/grpc-client"
-import { BYTOSPASS_GROUP, getRecommendedModelsData, type RecommendedModelsData } from "./data-models"
+import { getRecommendedModelsData, type RecommendedModelsData } from "./data-models"
 
 type OnboardingModelsStatus = "loading" | "success" | "empty"
 
@@ -87,11 +87,6 @@ export function useOnboardingModels(): UseOnboardingModelsResult {
 		return { ...openRouterModels, ...(bytosModels ?? {}) }
 	}, [openRouterModels, bytosModels])
 
-	// BytosPass model IDs omit the upstream lab (e.g. "bytos-pass/glm-5.2"), so look up
-	// capabilities via the model slug against the OpenRouter catalog, falling back to
-	// conservative BytosPass defaults. Mirrors BytosPassProvider's resolution.
-	const openRouterModelsByName = useMemo(() => buildModelInfoNameMap(openRouterModels), [openRouterModels])
-
 	return useMemo<UseOnboardingModelsResult>(() => {
 		if (fetchState.status !== "success") {
 			return { status: fetchState.status, models: { models: BYTOS_ONBOARDING_MODELS } }
@@ -100,11 +95,7 @@ export function useOnboardingModels(): UseOnboardingModelsResult {
 		const { data } = fetchState
 		const freeModels = data.free.map((rec) => toOnboardingModel(rec, "free", "Free", modelCatalog))
 		const frontierModels = data.recommended.map((rec) => toOnboardingModel(rec, "frontier", "", modelCatalog))
-		const bytosPassCatalog = Object.fromEntries(
-			data.bytosPass.map((rec) => [rec.id, resolveBytosPassModelInfo(rec.id, openRouterModelsByName)]),
-		)
-		const bytosPassModels = data.bytosPass.map((rec) => toOnboardingModel(rec, BYTOSPASS_GROUP, "", bytosPassCatalog))
 
-		return { status: "success", models: { models: [...bytosPassModels, ...freeModels, ...frontierModels] } }
-	}, [fetchState, modelCatalog, openRouterModelsByName])
+		return { status: "success", models: { models: [...freeModels, ...frontierModels] } }
+	}, [fetchState, modelCatalog])
 }

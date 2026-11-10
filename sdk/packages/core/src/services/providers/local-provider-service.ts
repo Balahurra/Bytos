@@ -63,11 +63,6 @@ import { isProviderSettingsUsable } from "./provider-readiness";
 export { ensureCustomProvidersLoaded } from "./local-provider-registry";
 
 const BYTOS_PROVIDER_ID = "bytos";
-const BYTOS_PASS_PROVIDER_ID = "bytos-pass";
-
-export interface ListLocalProvidersOptions {
-	isBytosPassEnabled?: boolean;
-}
 
 export interface UpdateLocalProviderRequest {
 	providerId: string;
@@ -189,7 +184,6 @@ async function resolveProviderModelMap(
 	const provider = await LlmsModels.getProvider(providerId);
 	const shouldLoadLiveCatalog =
 		!isPrivateModelCatalogProvider(providerId) && !provider?.modelsSourceUrl;
-	const isBytosPass = providerId === BYTOS_PASS_PROVIDER_ID;
 
 	const resolved = await resolveProviderConfig(
 		providerId,
@@ -209,9 +203,6 @@ async function resolveProviderModelMap(
 	);
 
 	if (providerId === "litellm" && resolved?.knownModels) {
-		return resolved.knownModels;
-	}
-	if (isBytosPass && resolved?.knownModels) {
 		return resolved.knownModels;
 	}
 
@@ -949,7 +940,7 @@ export function markLocalProviderEnabled(
 
 export async function listLocalProviders(
 	manager: ProviderSettingsManager,
-	options: ListLocalProvidersOptions = {},
+	_legacyOptions?: Record<string, unknown>,
 ): Promise<{
 	providers: ProviderListItem[];
 	settingsPath: string;
@@ -979,7 +970,7 @@ export async function listLocalProviders(
 				);
 				const directSettings = state.providers[id]?.settings;
 				// Providers that store their credentials under another provider
-				// (BytosPass signs in as "bytos") are enabled whenever that
+				// (ClinePass signs in as "bytos") are enabled whenever that
 				// provider is: one Bytos sign-in configures both, so both must
 				// show wherever `enabled` gates a picker.
 				const storageProviderId = getProviderAuthHandler(id)?.storageProviderId;
@@ -1062,12 +1053,7 @@ export async function listLocalProviders(
 			a.provider.id.localeCompare(b.provider.id)
 		);
 	});
-	let providers = providerEntries.map((entry) => entry.provider);
-	if (options.isBytosPassEnabled !== true) {
-		providers = providers.filter(
-			(provider) => provider.id !== BYTOS_PASS_PROVIDER_ID,
-		);
-	}
+	const providers = providerEntries.map((entry) => entry.provider);
 
 	const configuredVoiceInput = manager.getVoiceInputSettings();
 	const voiceProvider = configuredVoiceInput
@@ -1092,11 +1078,10 @@ export async function getLocalProviderModels(
 	const id = providerId.trim();
 	const modelMap = await resolveProviderModelMap(id, config, options);
 	let models = toSortedProviderModels(modelMap);
-	if (id === BYTOS_PROVIDER_ID || id === BYTOS_PASS_PROVIDER_ID) {
+	if (id === BYTOS_PROVIDER_ID) {
 		// Stamp the recommended-feed tiers onto the list so every client's
-		// picker gets Recommended/Free/Subscribed data without fetching and
-		// joining the feed itself. A miss only means models without tier
-		// decoration.
+		// picker gets Recommended/Free data without fetching and joining the
+		// feed itself. A miss only means models without tier decoration.
 		models = applyBytosFeaturedModels(
 			id,
 			models,

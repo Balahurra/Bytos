@@ -1,30 +1,9 @@
 {
 	"allowedUnknown": {
-		"buffers@0.1.1": "Legacy substack package with no license field and no LICENSE file. It is a transitive development dependency and is not imported by the production extension, webview, or plugin runtime. Legal review is required before distributing any artifact that actually contains it.",
-		"beep-boop@1.2.3": "Test fixture package used by a dependency's test suite. It is not imported by the production extension or plugin runtime and is excluded from the distributed artifact.",
-		"nw-pre-gyp-module-test@0.0.1": "Test fixture package used by a dependency's build/test tooling. It is not imported by the production extension or plugin runtime and is excluded from the distributed artifact.",
-		"transport@0.0.1": "Test fixture inside pino's test directory, not a distributable package.",
-		"@anthropic-ai/claude-agent-sdk@0.3.232": "Proprietary Anthropic SDK. The Claude Code subscription provider was removed from the free BYOK build; this package is not in the production input graph and must not be distributed without a compatible license.",
-		"@anthropic-ai/claude-agent-sdk-win32-x64@0.3.232": "Proprietary Anthropic platform binary. Removed from the free BYOK build and not in the production input graph.",
-		"@jerome-benoit/sap-ai-provider@5.0.3": "SAP AI Core provider SDK. The SAP AI Core provider was removed from the free BYOK build; this package is not in the production input graph.",
-		"@sap-ai-sdk/ai-api@2.16.0": "SAP AI SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-		"@sap-ai-sdk/core@2.16.0": "SAP AI SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-		"@sap-ai-sdk/foundation-models@2.16.0": "SAP AI SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-		"@sap-ai-sdk/orchestration@2.16.0": "SAP AI SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-		"@sap-ai-sdk/prompt-registry@2.16.0": "SAP AI SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-		"@sap-cloud-sdk/connectivity@4.9.1": "SAP Cloud SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-		"@sap-cloud-sdk/http-client@4.9.1": "SAP Cloud SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-		"@sap-cloud-sdk/openapi@4.9.1": "SAP Cloud SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-		"@sap-cloud-sdk/resilience@4.9.1": "SAP Cloud SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-		"@sap-cloud-sdk/util@4.9.1": "SAP Cloud SDK. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-		"@sap/xsenv@6.2.2": "SAP Developer License Agreement. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-		"@sap/xssec@4.15.0": "SAP Developer License Agreement. The SAP AI Core provider was removed from the free BYOK build; not in the production input graph.",
-		"@vscode/vsce-sign@2.1.0": "Microsoft VS Code signing tool license. Development/packaging tool only; not distributed in the extension.",
-		"@vscode/vsce-sign-win32-x64@2.0.6": "Microsoft VS Code signing tool platform binary. Development/packaging tool only; not distributed in the extension.",
-		"posthog-js-customizations@1.0.0": "Private PostHog workspace package used to build posthog-js; not separately distributed. Legal review of PostHog's terms is required if the webview analytics bundle is shipped.",
-		"posthog-js-react@1.0.0": "Private PostHog workspace package used to build posthog-js; not separately distributed.",
-		"posthog-js-rrweb@1.0.0": "Private PostHog workspace package used to build posthog-js; not separately distributed.",
-		"posthog-js-rrweb-plugin-console-record@1.0.0": "Private PostHog workspace package used to build posthog-js; not separately distributed.",
-		"posthog-js-rrweb-types@1.0.0": "Private PostHog workspace package used to build posthog-js; not separately distributed."
+		"@anthropic-ai/claude-agent-sdk@0.3.232": "Proprietary Anthropic SDK. Its LICENSE.md states 'Anthropic PBC. All rights reserved' and points to Anthropic's legal agreements. It enters the install graph only through the optional ai-sdk-provider-claude-code integration and is not present in dist/extension.js, the webview bundle, or the VSIX. It must not be distributed without a compatible Anthropic license.",
+		"@anthropic-ai/claude-agent-sdk-win32-x64@0.3.232": "Proprietary Anthropic platform binary for the Claude Agent SDK. Optional dependency of @anthropic-ai/claude-agent-sdk; not present in dist/extension.js, the webview bundle, or the VSIX. It must not be distributed without a compatible Anthropic license.",
+		"@sap/xsenv@6.2.2": "SAP Developer License Agreement 3.1 (the package ships that licence in its LICENSE file). Transitive build/runtime support for the optional SAP AI Core provider. The SAP AI SDK and Cloud SDK packages themselves declare Apache-2.0; @sap/xsenv is not present in dist/extension.js, the webview bundle, or the VSIX. Do not distribute it without confirming the SAP terms.",
+		"@vscode/vsce-sign@2.1.0": "Microsoft Software License Terms for Microsoft VSCE-SIGN. Development/packaging tool used by @vscode/vsce; not present in the extension bundle or the VSIX.",
+		"@vscode/vsce-sign-win32-x64@2.0.6": "Microsoft Software License Terms for the VSCE-SIGN platform binary. Optional Windows x64 dependency of @vscode/vsce-sign; development/packaging only and not present in the extension bundle or the VSIX."
 	}
 }

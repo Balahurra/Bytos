@@ -146,8 +146,8 @@ Batch models continue to use `transcribeAudio`.
 
 ## More Examples
 
-- Workspace overview: [README.md](https://github.com/bytos/bytos/blob/main/README.md)
-- API and architecture references: [DOC.md](https://github.com/bytos/bytos/blob/main/DOC.md), [ARCHITECTURE.md](https://github.com/bytos/bytos/blob/main/ARCHITECTURE.md)
+- Workspace overview: [README.md](https://github.com/Balahurra/Bytos/blob/main/README.md)
+- API and architecture references: [DOC.md](https://github.com/Balahurra/Bytos/blob/main/DOC.md), [ARCHITECTURE.md](https://github.com/Balahurra/Bytos/blob/main/ARCHITECTURE.md)
 
 ## Live Provider Smoke Test
 

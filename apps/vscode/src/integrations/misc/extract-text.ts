@@ -8,7 +8,6 @@
  * See NOTICE and apps/vscode/THIRD-PARTY-NOTICES.txt.
  */
 
-import type ExcelJS from "exceljs"
 import fs from "fs/promises"
 import * as iconv from "iconv-lite"
 import { isBinaryFile } from "isbinaryfile"
@@ -141,92 +140,171 @@ async function extractTextFromIPYNB(filePath: string): Promise<string> {
 }
 
 /**
- * Format the data inside Excel cells
- */
-function formatCellValue(cell: ExcelJS.Cell): string {
-	const value = cell.value
-	if (value === null || value === undefined) {
-		return ""
-	}
-
-	// Handle error values (#DIV/0!, #N/A, etc.)
-	if (typeof value === "object" && "error" in value) {
-		return `[Error: ${value.error}]`
-	}
-
-	// Handle dates - ExcelJS can parse them as Date objects
-	if (value instanceof Date) {
-		return value.toISOString().split("T")[0] // Just the date part
-	}
-
-	// Handle rich text
-	if (typeof value === "object" && "richText" in value) {
-		return value.richText.map((rt) => rt.text).join("")
-	}
-
-	// Handle hyperlinks
-	if (typeof value === "object" && "text" in value && "hyperlink" in value) {
-		return `${value.text} (${value.hyperlink})`
-	}
-
-	// Handle formulas - get the calculated result
-	if (typeof value === "object" && "formula" in value) {
-		if ("result" in value && value.result !== undefined && value.result !== null) {
-			return value.result.toString()
-		}
-		return `[Formula: ${value.formula}]`
-	}
-
-	return value.toString()
-}
-
-/**
- * Extract and format text from xlsx files
+ * Extract and format text from xlsx files.
+ *
+ * This deliberately uses JSZip + a DOM parser instead of ExcelJS. ExcelJS pulls
+ * in `unzipper -> binary -> buffers`, and `buffers@0.1.1` has no verified
+ * license. The reader below preserves the text-extraction behavior (sheet names,
+ * hidden-sheet skipping, shared strings, inline strings, formulas, booleans,
+ * errors, and date-formatted cells) without that dependency path.
  */
 async function extractTextFromExcel(filePath: string): Promise<string> {
-	const { default: ExcelJS } = await import("exceljs")
-	const workbook = new ExcelJS.Workbook()
-	let excelText = ""
+	const [{ default: JSZip }, { DOMParser }] = await Promise.all([import("jszip"), import("@xmldom/xmldom")])
+	const parser = new DOMParser()
+	const parseXml = (xml: string) => parser.parseFromString(xml, "text/xml")
+
+	const textContent = (node: Node, tag: string): string => {
+		const elements = (node as Element).getElementsByTagName(tag)
+		let text = ""
+		for (let i = 0; i < elements.length; i++) {
+			text += elements[i].textContent ?? ""
+		}
+		return text
+	}
+
+	const columnIndex = (reference: string): number => {
+		const letters = reference.replace(/[^A-Z]/gi, "").toUpperCase()
+		let index = 0
+		for (const letter of letters) {
+			index = index * 26 + (letter.charCodeAt(0) - 64)
+		}
+		return Math.max(index - 1, 0)
+	}
+
+	const excelSerialToIsoDate = (serial: number, date1904: boolean): string => {
+		const epoch = date1904 ? Date.UTC(1904, 0, 1) : Date.UTC(1899, 11, 30)
+		return new Date(epoch + serial * 86_400_000).toISOString().slice(0, 10)
+	}
 
 	try {
-		await workbook.xlsx.readFile(filePath)
+		const archive = await JSZip.loadAsync(await fs.readFile(filePath))
 
-		workbook.eachSheet((worksheet, _sheetId) => {
-			// Skip hidden sheets
-			if (worksheet.state === "hidden" || worksheet.state === "veryHidden") {
-				return
+		const workbookFile = archive.file("xl/workbook.xml")
+		const workbookRelsFile = archive.file("xl/_rels/workbook.xml.rels")
+		if (!workbookFile) {
+			throw new Error("The workbook is missing xl/workbook.xml.")
+		}
+
+		const workbook = parseXml(await workbookFile.async("text"))
+		const date1904 = workbook.documentElement.getAttribute("date1904") === "1"
+		const relTargets = new Map<string, string>()
+		if (workbookRelsFile) {
+			const rels = parseXml(await workbookRelsFile.async("text"))
+			const relationships = rels.getElementsByTagName("Relationship")
+			for (let i = 0; i < relationships.length; i++) {
+				const relationship = relationships[i]
+				const id = relationship.getAttribute("Id")
+				const target = relationship.getAttribute("Target")
+				if (id && target) {
+					relTargets.set(id, target.replace(/^\/+/, ""))
+				}
 			}
+		}
 
-			excelText += `--- Sheet: ${worksheet.name} ---\n`
+		const sharedStrings: string[] = []
+		const sharedStringsFile = archive.file("xl/sharedStrings.xml")
+		if (sharedStringsFile) {
+			const shared = parseXml(await sharedStringsFile.async("text"))
+			const items = shared.getElementsByTagName("si")
+			for (let i = 0; i < items.length; i++) {
+				sharedStrings.push(textContent(items[i], "t"))
+			}
+		}
 
-			worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
-				// Optional: limit processing for very large sheets
+		// Map cell-style indexes to date formats so serial numbers can be rendered
+		// like ExcelJS rendered Date cells.
+		const dateStyles = new Set<number>()
+		const stylesFile = archive.file("xl/styles.xml")
+		if (stylesFile) {
+			const styles = parseXml(await stylesFile.async("text"))
+			const customFormats = new Map<number, string>()
+			const numFmts = styles.getElementsByTagName("numFmt")
+			for (let i = 0; i < numFmts.length; i++) {
+				const id = Number(numFmts[i].getAttribute("numFmtId"))
+				const code = numFmts[i].getAttribute("formatCode") ?? ""
+				if (!Number.isNaN(id)) customFormats.set(id, code)
+			}
+			const builtInDateFormats = new Set([14, 15, 16, 17, 18, 19, 20, 21, 22, 45, 46, 47])
+			const cellXfs = styles.getElementsByTagName("cellXfs")[0]?.getElementsByTagName("xf") ?? []
+			for (let i = 0; i < cellXfs.length; i++) {
+				const numFmtId = Number(cellXfs[i].getAttribute("numFmtId") ?? "0")
+				const code = customFormats.get(numFmtId) ?? ""
+				if (builtInDateFormats.has(numFmtId) || /[ymdhis]/i.test(code)) {
+					dateStyles.add(i)
+				}
+			}
+		}
+
+		let excelText = ""
+		const sheets = workbook.getElementsByTagName("sheet")
+		for (let sheetIndex = 0; sheetIndex < sheets.length; sheetIndex++) {
+			const sheet = sheets[sheetIndex]
+			const state = sheet.getAttribute("state")
+			if (state === "hidden" || state === "veryHidden") continue
+
+			const name = sheet.getAttribute("name") ?? `Sheet${sheetIndex + 1}`
+			const relationshipId = sheet.getAttribute("r:id")
+			const target = (relationshipId && relTargets.get(relationshipId)) || `worksheets/sheet${sheetIndex + 1}.xml`
+			const sheetFile = archive.file(`xl/${target.replace(/^xl\//, "")}`)
+			if (!sheetFile) continue
+
+			excelText += `--- Sheet: ${name} ---\n`
+			const worksheet = parseXml(await sheetFile.async("text"))
+			const rows = worksheet.getElementsByTagName("row")
+			for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+				const row = rows[rowIndex]
+				const rowNumber = Number(row.getAttribute("r") ?? rowIndex + 1)
 				if (rowNumber > 50000) {
 					excelText += `[... truncated at row ${rowNumber} ...]\n`
-					return false
+					break
 				}
 
-				const rowTexts: string[] = []
-				let hasContent = false
+				const cells = row.getElementsByTagName("c")
+				if (cells.length === 0) continue
+				const values: string[] = []
+				let maxColumn = -1
+				for (let cellIndex = 0; cellIndex < cells.length; cellIndex++) {
+					const cell = cells[cellIndex]
+					const reference = cell.getAttribute("r") ?? ""
+					const column = columnIndex(reference)
+					maxColumn = Math.max(maxColumn, column)
 
-				row.eachCell({ includeEmpty: true }, (cell, _colNumber) => {
-					const cellText = formatCellValue(cell)
-					if (cellText.trim()) {
-						hasContent = true
+					const type = cell.getAttribute("t")
+					const styleIndex = Number(cell.getAttribute("s") ?? "-1")
+					const formula = cell.getElementsByTagName("f")[0]?.textContent ?? ""
+					const rawValue = textContent(cell, "v")
+					let value = ""
+
+					if (type === "inlineStr") {
+						value = textContent(cell, "t")
+					} else if (type === "s") {
+						value = sharedStrings[Number(rawValue)] ?? ""
+					} else if (type === "b") {
+						value = rawValue === "1" ? "TRUE" : "FALSE"
+					} else if (type === "e") {
+						value = `[Error: ${rawValue}]`
+					} else if (type === "d") {
+						value = rawValue ? new Date(rawValue).toISOString().slice(0, 10) : ""
+					} else if (rawValue !== "") {
+						value =
+							dateStyles.has(styleIndex) && !Number.isNaN(Number(rawValue))
+								? excelSerialToIsoDate(Number(rawValue), date1904)
+								: rawValue
+					} else if (formula) {
+						value = `[Formula: ${formula}]`
 					}
-					rowTexts.push(cellText)
-				})
 
-				// Only add rows with actual content
-				if (hasContent) {
-					excelText += rowTexts.join("\t") + "\n"
+					values[column] = value
 				}
 
-				return true
-			})
-
-			excelText += "\n" // Blank line between sheets
-		})
+				// Drop completely empty rows, matching the old includeEmpty:false
+				// behavior for rows and preserving tab-separated columns.
+				if (values.some((value) => (value ?? "").trim().length > 0)) {
+					excelText += Array.from({ length: maxColumn + 1 }, (_, index) => values[index] ?? "").join("\t") + "\n"
+				}
+			}
+			excelText += "\n"
+		}
 
 		return excelText.trim()
 	} catch (error: any) {

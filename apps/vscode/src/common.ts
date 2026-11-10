@@ -9,6 +9,7 @@ import { clearOnboardingModelsCache } from "./core/controller/models/getBytosOnb
 import { HookDiscoveryCache } from "./core/hooks/HookDiscoveryCache"
 import { HookProcessRegistry } from "./core/hooks/HookProcessRegistry"
 import { StateManager } from "./core/storage/StateManager"
+import { disposeVoiceRuntime } from "./core/voice"
 import { ExtensionRegistryInfo } from "./registry"
 import { registerVsCodeLmHandler } from "./sdk/vscode-lm/register-vscode-lm"
 import { registerBytosClientIdentity } from "./services/BytosClientIdentity"
@@ -179,6 +180,9 @@ export async function tearDown(): Promise<void> {
 
 		// Kill any running hook processes to prevent zombies
 		await HookProcessRegistry.terminateAll()
+		// Kill any live voice capture helper: closing the extension host must never
+		// leave an orphaned process holding the microphone open (Voice TD-14).
+		await disposeVoiceRuntime()
 		// Clean up hook discovery cache
 		HookDiscoveryCache.getInstance().dispose()
 		// Stop periodic temp file cleanup

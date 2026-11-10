@@ -88,7 +88,7 @@ describe("shouldZeroBytosFreeModelCost", () => {
 
 		await expect(
 			shouldZeroBytosFreeModelCost({
-				providerId: "bytos-pass",
+				providerId: "cline-pass",
 				modelId: "deepseek-v4-flash",
 				baseUrl: "https://bytos.test/api/v1",
 			}),
@@ -107,37 +107,6 @@ describe("shouldZeroBytosFreeModelCost", () => {
 			}),
 		).resolves.toBe(false);
 		expect(fetchMock).not.toHaveBeenCalled();
-	});
-
-	it("zeros cost of free models selected on the bytos-pass provider", async () => {
-		vi.stubGlobal(
-			"fetch",
-			vi.fn(async () => {
-				return new Response(
-					JSON.stringify({
-						free: [{ id: "deepseek/deepseek-v4-flash" }],
-					}),
-					{ status: 200, headers: { "content-type": "application/json" } },
-				);
-			}),
-		);
-
-		await expect(
-			shouldZeroBytosFreeModelCost({
-				providerId: "bytos-pass",
-				modelId: "deepseek/deepseek-v4-flash",
-				baseUrl: "https://bytos.test/api/v1",
-			}),
-		).resolves.toBe(true);
-
-		// subscription (bytos-pass/...) models are not in the free bucket
-		await expect(
-			shouldZeroBytosFreeModelCost({
-				providerId: "bytos-pass",
-				modelId: "bytos-pass/glm-5.1",
-				baseUrl: "https://bytos.test/api/v1",
-			}),
-		).resolves.toBe(false);
 	});
 
 	it("does not match a paid model by only the final path segment", async () => {

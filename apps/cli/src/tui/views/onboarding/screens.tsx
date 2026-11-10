@@ -1,7 +1,5 @@
 import "opentui-spinner/react";
-import type { ScrollBoxRenderable } from "@opentui/core";
 import type { ReactNode } from "react";
-import { useEffect, useRef } from "react";
 import type {
 	LocalCliStatus,
 	ProviderLocalCli,
@@ -23,8 +21,6 @@ import { useTheme } from "../../hooks/use-theme";
 import { getInputRuleColor, getUserMessageBackground } from "../../palette";
 import { FIELD_ORDER } from "./fields";
 import {
-	type BytosPassSubscriptionOption,
-	type BytosPassSubscriptionStatus,
 	canContinueLocalCliSetup,
 	type MenuOption,
 	THINKING_LEVELS,
@@ -51,10 +47,6 @@ function useOnboardingColors() {
 		subtleBorder: getUserMessageBackground(theme.background),
 		mutedDetail: getInputRuleColor(theme.background),
 	};
-}
-
-function getBytosPassSubscriptionOptionId(index: number): string {
-	return `bytos-pass-subscription-option-${index}`;
 }
 
 interface OnboardingFrameProps {
@@ -503,198 +495,6 @@ export function OnboardingBytosModelScreen(props: {
 				selected={props.bytosModelSelected}
 				loading={props.recommendedLoading}
 			/>
-
-			<text fg="gray" paddingX={1}>
-				<em>↑/↓ navigate, Enter to select, Esc to go back, Ctrl+C to exit</em>
-			</text>
-		</OnboardingFrame>
-	);
-}
-
-export function OnboardingBytosPassSubscriptionScreen(props: {
-	compact: boolean;
-	contentWidth: number;
-	currentPlanName: string;
-	error: string;
-	mouse: MouseTrackerState;
-	openStatus: string;
-	options: BytosPassSubscriptionOption[];
-	planFeatures: string[];
-	selected: number;
-	status: BytosPassSubscriptionStatus;
-	subscriptionUrl: string;
-}) {
-	const defaultFg = useDefaultFg();
-	const planAccent = useTheme().accents.plan;
-	const colors = useOnboardingColors();
-	const scrollRef = useRef<ScrollBoxRenderable | null>(null);
-	const isLoading = props.status === "loading";
-	const isSubscribed = props.status === "subscribed";
-	const isError = props.status === "error";
-	const bodyHeight = props.compact ? 17 : 19;
-
-	useEffect(() => {
-		if (isSubscribed) {
-			return;
-		}
-		const scrollSelectedOptionIntoView = () => {
-			scrollRef.current?.scrollChildIntoView(
-				getBytosPassSubscriptionOptionId(props.selected),
-			);
-		};
-		scrollSelectedOptionIntoView();
-		queueMicrotask(scrollSelectedOptionIntoView);
-		const timeout = setTimeout(scrollSelectedOptionIntoView, 0);
-		return () => clearTimeout(timeout);
-	}, [isSubscribed, props.selected]);
-
-	return (
-		<OnboardingFrame
-			compact={props.compact}
-			contentWidth={props.contentWidth}
-			mouse={props.mouse}
-		>
-			<box
-				flexDirection="column"
-				border
-				borderStyle="rounded"
-				borderColor={isSubscribed ? colors.success : planAccent}
-				paddingX={1}
-				paddingY={1}
-				height={bodyHeight}
-				overflow="hidden"
-			>
-				<scrollbox
-					ref={scrollRef}
-					width="100%"
-					height="100%"
-					scrollY
-					scrollX={false}
-					viewportOptions={{ overflow: "hidden" }}
-					contentOptions={{ flexDirection: "column" }}
-				>
-					<box flexDirection="column" width="100%" flexShrink={0}>
-						<text
-							fg={isSubscribed ? colors.success : planAccent}
-							flexShrink={0}
-						>
-							{isSubscribed
-								? "BytosPass subscription active"
-								: "BytosPass subscription required"}
-						</text>
-
-						{isLoading ? (
-							<box flexDirection="row" gap={1} flexShrink={0}>
-								<spinner name="dots" color="gray" />
-								<text fg="gray">Checking your BytosPass subscription...</text>
-							</box>
-						) : isSubscribed ? (
-							<text fg={defaultFg} selectable flexShrink={0}>
-								Current plan: {props.currentPlanName || "BytosPass"}
-							</text>
-						) : isError ? (
-							<text
-								fg={defaultFg}
-								selectable
-								flexShrink={0}
-								content="Could not verify your BytosPass subscription. Re-check before choosing a BytosPass model."
-							/>
-						) : (
-							<text
-								fg={defaultFg}
-								selectable
-								flexShrink={0}
-								content="No access to BytosPass subscription models yet. Subscribe to BytosPass, the low cost open weights model coding plan."
-							/>
-						)}
-
-						{props.status === "error" &&
-							props.error &&
-							props.error !== "no plan found for user" && (
-								<text fg="red" selectable flexShrink={0}>
-									{props.error}
-								</text>
-							)}
-
-						{!isSubscribed && props.planFeatures.length > 0 && (
-							<box flexDirection="column" marginTop={1} flexShrink={0}>
-								{props.planFeatures.map((feature) => {
-									if (
-										feature === "Low cost subscription pricing" ||
-										feature === "Generous limits and reliable access" ||
-										feature === "Built for as many programmers as possible"
-									) {
-										return null;
-									}
-
-									return (
-										<text
-											key={feature}
-											fg={defaultFg}
-											selectable
-											flexShrink={0}
-										>
-											<span fg="green">✓ </span>
-											<span>{feature}</span>
-										</text>
-									);
-								})}
-							</box>
-						)}
-
-						{!isSubscribed && (
-							<box flexDirection="column" marginTop={1} flexShrink={0}>
-								{props.options.map((option, i) => {
-									const isSel = i === props.selected;
-									return (
-										<box
-											id={getBytosPassSubscriptionOptionId(i)}
-											key={option.value}
-											paddingX={1}
-											flexDirection="row"
-											gap={1}
-											backgroundColor={isSel ? colors.selection : undefined}
-											height={1}
-											flexShrink={0}
-											overflow="hidden"
-										>
-											<text
-												fg={isSel ? colors.textOnSelection : "gray"}
-												flexShrink={0}
-											>
-												{isSel ? "\u276f" : " "}
-											</text>
-											<text
-												fg={isSel ? colors.textOnSelection : defaultFg}
-												flexShrink={0}
-											>
-												{option.label}
-											</text>
-										</box>
-									);
-								})}
-							</box>
-						)}
-
-						{props.openStatus && (
-							<text fg="gray" selectable flexShrink={0}>
-								{props.openStatus}
-							</text>
-						)}
-
-						{!isSubscribed && (
-							<box flexDirection="column" marginTop={1} flexShrink={0}>
-								<text fg="gray" flexShrink={0}>
-									If the browser button does not work:
-								</text>
-								<text fg={colors.accent} selectable flexShrink={0}>
-									<a href={props.subscriptionUrl}>{props.subscriptionUrl}</a>
-								</text>
-							</box>
-						)}
-					</box>
-				</scrollbox>
-			</box>
 
 			<text fg="gray" paddingX={1}>
 				<em>↑/↓ navigate, Enter to select, Esc to go back, Ctrl+C to exit</em>

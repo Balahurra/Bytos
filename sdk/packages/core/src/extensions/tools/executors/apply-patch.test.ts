@@ -132,7 +132,7 @@ describe("createApplyPatchExecutor", () => {
 	});
 
 	// The CRLF branch is exercised for real by Windows CI, where os.EOL is
-	// "\r\n" (github.com/bytos/bytos/issues/13504).
+	// "\r\n" (github.com/Balahurra/Bytos/issues/13504).
 	it("adds new files with the platform-native line ending", async () => {
 		const filePath = path.join(tempDir, "added.txt");
 		const execute = createApplyPatchExecutor();

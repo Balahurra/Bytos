@@ -20,21 +20,11 @@ Hooks in the extension live in `.bytosrules/hooks/` (workspace) or `~/Documents/
 
 ```bash
 mkdir -p .bytosrules/hooks
-curl -o .bytosrules/hooks/PreToolUse https://raw.githubusercontent.com/bytos/bytos/main/sdk/examples/hooks/PreToolUse_BytosignoreGuard.sh
+curl -o .bytosrules/hooks/PreToolUse https://raw.githubusercontent.com/Balahurra/Bytos/main/sdk/examples/hooks/PreToolUse_BytosignoreGuard.sh
 chmod +x .bytosrules/hooks/PreToolUse
 ```
 
 Then check **Enable Hooks** in Bytos's feature settings.
-
-### Install in the CLI
-
-The CLI discovers hooks from `.bytos/hooks/` in the workspace (or `~/.bytos/hooks/` globally, or a custom `--hooks-dir`):
-
-```bash
-mkdir -p .bytos/hooks
-curl -o .bytos/hooks/PreToolUse.sh https://raw.githubusercontent.com/bytos/bytos/main/sdk/examples/hooks/PreToolUse_BytosignoreGuard.sh
-chmod +x .bytos/hooks/PreToolUse.sh
-```
 
 ### List the files to protect
 
@@ -238,14 +228,13 @@ fi
 ```
 </Accordion>
 
-The source lives at [`sdk/examples/hooks/PreToolUse_BytosignoreGuard.sh`](https://github.com/bytos/bytos/blob/main/sdk/examples/hooks/PreToolUse_BytosignoreGuard.sh).
+The source lives at [`sdk/examples/hooks/PreToolUse_BytosignoreGuard.sh`](https://github.com/Balahurra/Bytos/blob/main/sdk/examples/hooks/PreToolUse_BytosignoreGuard.sh).
 
 <Note>
 This hook covers only part of what `.bytosignore` did — and enforces more than it ever did:
 - It **blocks file reads, edits, and shell commands** — it does **not** filter search or file-listing results, so it is an access-control boundary rather than a context-reduction tool (the original `.bytosignore` was the reverse).
 - A cancelled tool call stops the current task run with the reason shown; send a follow-up message to continue the conversation.
 - The shell guard is a conservative token check, not a full shell parser: it catches straightforward access like `cat .env`, but a sufficiently creative command could still slip through. Paths are canonicalized lexically, but symlinks are not resolved — a pre-existing symlink aliasing an ignored file is not caught, so add such aliases to `.bytosignore` too.
-- In the CLI, hooks are disabled in `--yolo` mode; use `--act` or `--plan`.
 </Note>
 
 ---

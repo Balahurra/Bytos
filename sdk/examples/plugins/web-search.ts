@@ -4,7 +4,7 @@
  * Registers a `web_search` tool backed by Exa.
  *
  * CLI usage:
- *   bytos plugin install https://github.com/bytos/bytos/blob/main/sdk/examples/plugins/web-search.ts --cwd .
+ *   bytos plugin install https://github.com/Balahurra/Bytos/blob/main/sdk/examples/plugins/web-search.ts --cwd .
  *   EXA_API_KEY=... bytos "Search the web for recent TypeScript 6 updates"
  *
  * Provider key:

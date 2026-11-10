@@ -41,7 +41,7 @@
  *      logger instead (which stays on the user's machine).
  *
  * CLI usage:
- *   bytos plugin install https://github.com/bytos/bytos/blob/main/sdk/examples/plugins/telemetry.ts --cwd .
+ *   bytos plugin install https://github.com/Balahurra/Bytos/blob/main/sdk/examples/plugins/telemetry.ts --cwd .
  *   bytos -i "Roll a die a few times and tell me your best roll."
  */
 

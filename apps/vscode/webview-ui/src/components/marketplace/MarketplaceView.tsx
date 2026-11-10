@@ -84,7 +84,7 @@ const PRIMITIVES: PrimitiveConfig[] = [
 		title: "Plugins",
 		description: (
 			<>
-				<VSCodeLink href="https://github.com/bytos/bytos">Plugins</VSCodeLink> are extensions for capabilities more
+				<VSCodeLink href="https://github.com/Balahurra/Bytos">Plugins</VSCodeLink> are extensions for capabilities more
 				complex than a single MCP server or skill, including custom tools, hooks, rules, slash commands, or bundled
 				skills.
 			</>
@@ -94,7 +94,7 @@ const PRIMITIVES: PrimitiveConfig[] = [
 ]
 
 // Plugins are hidden in the extension until the hub can manage the plugin process
-// (see https://github.com/bytos/bytos/pull/12522). MCP servers and skills are unaffected.
+// (see https://github.com/Balahurra/Bytos/pull/12522). MCP servers and skills are unaffected.
 const HIDDEN_PRIMITIVE_TYPES: ReadonlySet<PrimitiveType> = new Set(["plugin"])
 
 const VISIBLE_PRIMITIVES = PRIMITIVES.filter((primitive) => !HIDDEN_PRIMITIVE_TYPES.has(primitive.type))

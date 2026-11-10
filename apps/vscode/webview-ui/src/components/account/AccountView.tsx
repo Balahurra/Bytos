@@ -15,7 +15,6 @@ import ViewHeader from "../common/ViewHeader"
 import VSCodeButtonLink from "../common/VSCodeButtonLink"
 import { updateSetting } from "../settings/utils/settingsHandlers"
 import { AccountWelcomeView } from "./AccountWelcomeView"
-import { BytosPassCard } from "./BytosPassCard"
 import { CreditBalance } from "./CreditBalance"
 import CreditsHistoryTable from "./CreditsHistoryTable"
 import { convertProtoUsageTransactions, getBytosUris, getMainRole } from "./helpers"
@@ -218,6 +217,30 @@ const BytosAccountView = ({ bytosUser, userOrganizations, activeOrganization, by
 
 				<VSCodeDivider className="w-full my-6" />
 
+				<div className="w-full text-xs text-(--vscode-descriptionForeground) mb-6">
+					<div className="text-sm font-semibold text-foreground mb-1">Privacy and data</div>
+					<p className="m-0 mb-2">
+						Your Bytos account stores your email address and the profile fields you enter. Authentication and profile
+						data are processed by Supabase Auth; account and usage requests go to the Bytos API. Provider API keys
+						stay in this editor's secret storage and model requests go directly to the provider you select.
+					</p>
+					<p className="m-0 mb-2">
+						Account deletion is handled on the Bytos website. Open the account page to review your data and
+						permanently delete your account, profile, and active sessions.
+					</p>
+					<p className="m-0 flex flex-wrap gap-x-2 gap-y-1">
+						<VSCodeButtonLink appearance="secondary" href="https://bytos.dev/privacy">
+							Privacy Policy
+						</VSCodeButtonLink>
+						<VSCodeButtonLink appearance="secondary" href="https://bytos.dev/terms">
+							Terms of Service
+						</VSCodeButtonLink>
+						<VSCodeButtonLink appearance="secondary" href="https://bytos.dev/account">
+							Manage or delete account
+						</VSCodeButtonLink>
+					</p>
+				</div>
+
 				{cloudSessionsEnabled && (
 					<div className="mb-6">
 						<CloudGitHubCard />
@@ -231,8 +254,6 @@ const BytosAccountView = ({ bytosUser, userOrganizations, activeOrganization, by
 					isLoading={isLoading || !!accountSwitch}
 					lastFetchTime={lastFetchTime}
 				/>
-
-				<BytosPassCard />
 
 				<VSCodeDivider className="mt-6 mb-3 w-full" />
 

@@ -168,7 +168,7 @@ function isAllProvidersTracingEnabled(): boolean {
 }
 
 function isBytosProviderId(providerId: string): boolean {
-	return providerId === "bytos" || providerId === "bytos-pass";
+	return providerId === "bytos";
 }
 
 export type AiSdkTelemetryDecision = {

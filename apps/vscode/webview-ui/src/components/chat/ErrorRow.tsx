@@ -3,10 +3,7 @@ import { memo } from "react"
 import { BytosAuthStatus } from "@/components/account/BytosAuthStatus"
 import BytosFreeModelLimitError from "@/components/chat/BytosFreeModelLimitError"
 import BytosFreePromotionEndedError from "@/components/chat/BytosFreePromotionEndedError"
-import BytosPassLimitError from "@/components/chat/BytosPassLimitError"
 import CreditLimitError from "@/components/chat/CreditLimitError"
-import EntitlementError from "@/components/chat/EntitlementError"
-import OrgBytosPassRestrictionError from "@/components/chat/OrgBytosPassRestrictionError"
 import SpendLimitError from "@/components/chat/SpendLimitError"
 import { Button } from "@/components/ui/button"
 import { useBytosAuth, useBytosSignIn } from "@/context/BytosAuthContext"
@@ -41,7 +38,7 @@ const ErrorRow = memo((props: ErrorRowProps) => {
 					const requestId = bytosError?._error?.request_id
 					const providerId = bytosError?.providerId || bytosError?._error?.providerId
 					// Deliberately narrower than the shared isBytosManagedProvider (which
-					// also matches bytos-pass): only usage-billing errors get the credit
+					// also matches cline-pass): only usage-billing errors get the credit
 					// and login prompts below.
 					const isBytosUsageBillingProvider = providerId === "bytos"
 					const errorCode = bytosError?._error?.code
@@ -73,20 +70,6 @@ const ErrorRow = memo((props: ErrorRowProps) => {
 								spentUsd={d?.spent_usd}
 							/>
 						)
-					}
-
-					if (bytosError?.isErrorType(BytosErrorType.Entitlement)) {
-						const detailMessage = bytosError?._error?.details?.message || errorMessage
-						return <EntitlementError message={detailMessage} retryFailedRequest={retryFailedRequest} />
-					}
-
-					if (bytosError?.isErrorType(BytosErrorType.OrgBytosPassRestriction)) {
-						return <OrgBytosPassRestrictionError />
-					}
-
-					if (bytosError?.isErrorType(BytosErrorType.BytosPassLimit)) {
-						const detailMessage = bytosError?._error?.details?.message || errorMessage
-						return <BytosPassLimitError message={detailMessage} />
 					}
 
 					if (bytosError?.isErrorType(BytosErrorType.BytosFreeModelLimit)) {
@@ -168,7 +151,7 @@ const ErrorRow = memo((props: ErrorRowProps) => {
 									It seems like you're having Windows PowerShell issues, please see this{" "}
 									<a
 										className="underline text-inherit"
-										href="https://github.com/bytos/bytos/wiki/TroubleShooting-%E2%80%90-%22PowerShell-is-not-recognized-as-an-internal-or-external-command%22">
+										href="https://github.com/Balahurra/Bytos/wiki/TroubleShooting-%E2%80%90-%22PowerShell-is-not-recognized-as-an-internal-or-external-command%22">
 										troubleshooting guide
 									</a>
 									.

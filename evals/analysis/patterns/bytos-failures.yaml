@@ -8,13 +8,13 @@ patterns:
   - name: "gemini_signature"
     pattern: "missing.?signature|thoughtSignature"
     category: "provider_bug"
-    issue: "https://github.com/bytos/bytos/issues/7974"
+    issue: "https://github.com/Balahurra/Bytos/issues/7974"
     description: "Gemini 3 Pro requires thoughtSignature for native tool calls"
 
   - name: "claude_tool_format"
     pattern: "write_to_file.*missing.*content|content.*parameter.*required"
     category: "provider_bug"
-    issue: "https://github.com/bytos/bytos/issues/7998"
+    issue: "https://github.com/Balahurra/Bytos/issues/7998"
     description: "Claude tool parameter extraction failure"
 
   # Transient failures (retriable)

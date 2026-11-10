@@ -466,9 +466,9 @@ describe("ProviderDetailContent audio capabilities", () => {
 			enabled: true,
 			modelList: [{ id: "bytos/snapshot-model", name: "Bytos Snapshot" }],
 		};
-		const bytosPassProvider: Provider = {
-			id: "bytos-pass",
-			name: "BytosPass",
+		const clinePassProvider: Provider = {
+			id: "cline-pass",
+			name: "ClinePass",
 			models: 1,
 			color: "#000",
 			letter: "CP",
@@ -504,7 +504,7 @@ describe("ProviderDetailContent audio capabilities", () => {
 		// Switching directly to the other featured provider must not keep
 		// showing the previous provider's fetched models while its own
 		// request is still pending — the same component instance is reused.
-		await render(bytosPassProvider);
+		await render(clinePassProvider);
 		expect(container.textContent).not.toContain("Claude Opus 5");
 		expect(container.textContent).toContain("Pass Snapshot");
 
@@ -526,9 +526,9 @@ describe("ProviderDetailContent audio capabilities", () => {
 			enabled: true,
 			modelList: [{ id: "bytos/snapshot-model", name: "Bytos Snapshot" }],
 		};
-		const bytosPassProvider: Provider = {
-			id: "bytos-pass",
-			name: "BytosPass",
+		const clinePassProvider: Provider = {
+			id: "cline-pass",
+			name: "ClinePass",
 			models: 1,
 			color: "#000",
 			letter: "CP",
@@ -561,7 +561,7 @@ describe("ProviderDetailContent audio capabilities", () => {
 
 		// A failed refresh after switching falls back to the new provider's
 		// snapshot; the previous provider's fetched list must not survive.
-		await render(bytosPassProvider);
+		await render(clinePassProvider);
 		expect(container.textContent).not.toContain("Claude Opus 5");
 		expect(container.textContent).toContain("Pass Snapshot");
 

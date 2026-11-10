@@ -1,6 +1,7 @@
 import type { GlobalSettings } from "@bytos/core";
 import { describe, expect, it } from "vitest";
 import {
+	CLI_DEFAULT_TOOL_AUTO_APPROVE,
 	resolveStartupCompactionMode,
 	resolveStartupMode,
 	resolveStartupToolAutoApprove,
@@ -51,6 +52,17 @@ describe("resolveStartupMode", () => {
 });
 
 describe("resolveStartupToolAutoApprove", () => {
+	it("ships a fail-closed built-in default", () => {
+		expect(CLI_DEFAULT_TOOL_AUTO_APPROVE).toBe(false);
+		expect(
+			resolveStartupToolAutoApprove(
+				{},
+				makeSettings(),
+				CLI_DEFAULT_TOOL_AUTO_APPROVE,
+			),
+		).toBe(false);
+	});
+
 	it("falls back to the built-in default when nothing is persisted", () => {
 		expect(resolveStartupToolAutoApprove({}, makeSettings(), true)).toBe(true);
 	});

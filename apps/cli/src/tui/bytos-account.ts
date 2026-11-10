@@ -26,8 +26,6 @@ export const BYTOS_CREDITS_DASHBOARD_URL =
 
 type BytosAccountConfig = Pick<Config, "apiKey" | "logger" | "providerId">;
 
-const BYTOS_PASS_PROVIDER_ID = "bytos-pass";
-
 export interface BytosAccountSnapshot {
 	user: BytosAccountUser;
 	balance: BytosAccountBalance;
@@ -237,56 +235,9 @@ export async function loadCurrentUserPlan(input: {
 	return service.fetchCurrentUserPlan();
 }
 
-export async function loadCurrentUserPlanFromProviderSettings(input: {
-	providerSettingsManager: ProviderSettingsManager;
-	bytosApiBaseUrl?: string;
-}): Promise<UserCurrentPlan | undefined> {
-	const service = await createBytosAccountService({
-		config: { apiKey: "", logger: undefined, providerId: "bytos" },
-		bytosApiBaseUrl: input.bytosApiBaseUrl,
-		providerSettingsManager: input.providerSettingsManager,
-	});
-	if (!service) {
-		throw new Error("No Bytos account auth token found");
-	}
-	return service.fetchCurrentUserPlan();
-}
-
-export async function loadIndividualSubscriptionPlansFromProviderSettings(input: {
-	providerSettingsManager: ProviderSettingsManager;
-	bytosApiBaseUrl?: string;
-}): Promise<BytosSubscriptionPlan[]> {
-	const service = await createBytosAccountService({
-		config: { apiKey: "", logger: undefined, providerId: "bytos" },
-		bytosApiBaseUrl: input.bytosApiBaseUrl,
-		providerSettingsManager: input.providerSettingsManager,
-	});
-	if (!service) {
-		throw new Error("No Bytos account auth token found");
-	}
-	return service.fetchAvailableSubscriptionPlans({ type: "individual" });
-}
-
-async function onChangeToBytosPass(config: BytosAccountConfig) {
-	try {
-		await switchBytosAccount({
-			config: config,
-			organizationId: null,
-		});
-	} catch (error) {
-		config.logger?.debug("Failed to switch BytosPass to personal account", {
-			error,
-		});
-	}
-}
-
-export async function onProviderChange(input: {
+export async function onProviderChange(_input: {
 	config: BytosAccountConfig;
 	providerId: string;
 }): Promise<void> {
-	if (input.providerId === BYTOS_PASS_PROVIDER_ID) {
-		return onChangeToBytosPass(input.config);
-	}
-
 	return;
 }

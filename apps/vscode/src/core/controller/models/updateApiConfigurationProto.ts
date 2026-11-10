@@ -12,7 +12,6 @@ import { Logger } from "@/shared/services/Logger"
 import { isSecretMaskOnly, stripSecretMask } from "@/shared/storage/secret-mask"
 import { SecretKeys } from "@/shared/storage/state-keys"
 import type { Controller } from "../index"
-import { clearOrganizationForBytosPassProviderSelection } from "./handleBytosPassProviderSelection"
 import { normalizeProviderSwitchModel } from "./providerSwitchNormalization"
 import { createTaskApiModelShim, resolveActiveModelIdFromApiConfiguration } from "./taskApiModel"
 
@@ -54,8 +53,8 @@ export async function updateApiConfigurationProto(
 			planModeBytosModelInfo: protoApiConfiguration.planModeBytosModelInfo
 				? fromProtobufModelInfo(protoApiConfiguration.planModeBytosModelInfo)
 				: undefined,
-			planModeBytosPassModelInfo: protoApiConfiguration.planModeBytosPassModelInfo
-				? fromProtobufModelInfo(protoApiConfiguration.planModeBytosPassModelInfo)
+			planModeClinePassModelInfo: protoApiConfiguration.planModeClinePassModelInfo
+				? fromProtobufModelInfo(protoApiConfiguration.planModeClinePassModelInfo)
 				: undefined,
 			planModeOpenAiModelInfo: protoApiConfiguration.planModeOpenAiModelInfo
 				? fromProtobufOpenAiCompatibleModelInfo(protoApiConfiguration.planModeOpenAiModelInfo)
@@ -95,8 +94,8 @@ export async function updateApiConfigurationProto(
 			actModeBytosModelInfo: protoApiConfiguration.actModeBytosModelInfo
 				? fromProtobufModelInfo(protoApiConfiguration.actModeBytosModelInfo)
 				: undefined,
-			actModeBytosPassModelInfo: protoApiConfiguration.actModeBytosPassModelInfo
-				? fromProtobufModelInfo(protoApiConfiguration.actModeBytosPassModelInfo)
+			actModeClinePassModelInfo: protoApiConfiguration.actModeClinePassModelInfo
+				? fromProtobufModelInfo(protoApiConfiguration.actModeClinePassModelInfo)
 				: undefined,
 			actModeOpenAiModelInfo: protoApiConfiguration.actModeOpenAiModelInfo
 				? fromProtobufOpenAiCompatibleModelInfo(protoApiConfiguration.actModeOpenAiModelInfo)
@@ -154,7 +153,6 @@ export async function updateApiConfigurationProto(
 
 		// Update the API configuration in storage
 		controller.stateManager.setApiConfiguration(normalizedApiConfiguration)
-		clearOrganizationForBytosPassProviderSelection(controller, normalizedApiConfiguration)
 
 		// Update the task's API handler if there's an active task
 		if (controller.task) {

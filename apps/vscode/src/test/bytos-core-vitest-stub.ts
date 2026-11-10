@@ -416,7 +416,7 @@ const WORKOS_TOKEN_PREFIX = "workos:"
 
 export function getProviderAuthStorageId(providerId: string): string | undefined {
 	const normalized = providerId.trim().toLowerCase()
-	if (normalized === "bytos" || normalized === "bytos-pass") {
+	if (normalized === "bytos") {
 		return "bytos"
 	}
 	if (normalized === "oca" || normalized === "openai-codex") {
@@ -473,7 +473,7 @@ function titleCaseFromId(id: string): string {
 
 export async function listLocalProviders(
 	manager: ProviderSettingsManager,
-	options: { isBytosPassEnabled?: boolean } = {},
+	_options: Record<string, unknown> = {},
 ): Promise<{ providers: Array<Record<string, unknown>>; settingsPath: string }> {
 	const state = manager.read()
 	const providers = Object.entries(MODEL_COLLECTIONS_BY_PROVIDER_ID)
@@ -495,7 +495,6 @@ export async function listLocalProviders(
 				baseUrlDescription: "The base endpoint to use for provider requests.",
 			}
 		})
-		.filter((provider) => options.isBytosPassEnabled === true || provider.id !== "bytos-pass")
 		.sort((a, b) => a.name.localeCompare(b.name) || a.id.localeCompare(b.id))
 
 	return { providers, settingsPath: manager.getFilePath() }

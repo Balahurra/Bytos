@@ -2,6 +2,7 @@ import { EmptyRequest } from "@shared/proto/bytos/common"
 import { McpServers } from "@shared/proto/bytos/mcp"
 import { convertProtoMcpServersToMcpServers } from "@shared/proto-conversions/mcp/mcp-server-conversion"
 import { VSCodeButton } from "@vscode/webview-ui-toolkit/react"
+import { ServerCog } from "lucide-react"
 import React, { useEffect, useRef, useState } from "react"
 import { useClickAway, useWindowSize } from "react-use"
 import PopupModalContainer from "@/components/common/PopupModalContainer"
@@ -62,7 +63,7 @@ const ServersToggleModal: React.FC = () => {
 							aria-label={isVisible ? "Hide MCP Servers" : "Show MCP Servers"}
 							className="p-0 m-0 flex items-center"
 							onClick={() => setIsVisible(!isVisible)}>
-							<i className="codicon codicon-server" style={{ fontSize: "12.5px" }} />
+							<ServerCog size={12.5} />
 						</VSCodeButton>
 					</TooltipTrigger>
 				</Tooltip>
@@ -80,7 +81,7 @@ const ServersToggleModal: React.FC = () => {
 									setIsVisible(false)
 									navigateToMcp("configure")
 								}}>
-								<span className="codicon codicon-gear text-[10px]"></span>
+								<span className="codicon codicon-gear text-[10px]" />
 							</VSCodeButton>
 						</div>
 					</div>

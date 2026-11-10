@@ -340,7 +340,7 @@ export async function loadProviderModelCatalog(options?: {
 		return buildProviderModelCatalog(
 			Object.entries({
 				bytos: "Bytos Usage-Billing",
-				"bytos-pass": "BytosPass",
+				"cline-pass": "ClinePass",
 				"bytos-cloud": "BytosFree",
 			}).map(([id, name]) => ({
 				id,

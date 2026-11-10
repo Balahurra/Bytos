@@ -42,13 +42,7 @@ import type {
 } from "./builtin-types";
 import {
 	BytosFreeModelLimitError,
-	BytosNotSubscribedError,
-	BytosOrgIndividualInferenceSubscriptionError,
-	BytosPassLimitError,
-	extractBytosPassLimitMessage,
 	isBytosFreeModelLimitMessage,
-	isBytosNotSubscribedMessage,
-	isBytosOrgIndividualInferenceSubscriptionMessage,
 } from "./errors";
 import { BUILT_IN_PROVIDER, normalizeProviderId } from "./ids";
 import { toGatewayModelCapabilities } from "./model-capabilities";
@@ -72,7 +66,6 @@ export const DEFAULT_INTERNAL_OCA_BASE_URL =
 	"https://code-internal.aiservice.us-chicago-1.oci.oraclecloud.com/20250206/app/litellm";
 export const DEFAULT_EXTERNAL_OCA_BASE_URL =
 	"https://code.aiservice.us-chicago-1.oci.oraclecloud.com/20250206/app/litellm";
-const BYTOS_PASS_PROVIDER_ID = "bytos-pass";
 const OPENAI_CODEX_DEFAULT_MODEL_ID = "gpt-5.6-terra";
 const NATIVE_WEB_SEARCH_MODEL_TOOL_CAPABILITIES: readonly GatewayModelToolCapability[] =
 	[{ name: "web_search" }];
@@ -415,20 +408,6 @@ function generatedModels(providerId: string): Record<string, ModelInfo> {
 	return cloneModels(getGeneratedModelsForProvider(providerId));
 }
 
-function firstGeneratedModelId(providerId: string): string {
-	// The generated list is release-date ordered and mixes tiers (bytos-pass/*,
-	// bytos-free/*, :free). Only a subscribed-tier model is a safe default;
-	// fall back to the first entry only when the catalog has none.
-	const generatedModelList = Object.keys(
-		getGeneratedModelsForProvider(providerId),
-	);
-	return (
-		generatedModelList.find((id) => id.startsWith(`${providerId}/`)) ??
-		generatedModelList[0] ??
-		""
-	);
-}
-
 function buildOpenAICodexModels(): Record<string, ModelInfo> {
 	return filterOpenAICodexModels(generatedModels("openai-native"));
 }
@@ -687,21 +666,8 @@ async function handleBytosResponseError(
 		.text()
 		.catch(() => "");
 
-	if (isBytosOrgIndividualInferenceSubscriptionMessage(body)) {
-		throw new BytosOrgIndividualInferenceSubscriptionError(providerId);
-	}
-
 	if (isBytosFreeModelLimitMessage(body)) {
 		throw new BytosFreeModelLimitError(body, providerId);
-	}
-
-	const bytosPassLimitMessage = extractBytosPassLimitMessage(body);
-	if (bytosPassLimitMessage) {
-		throw new BytosPassLimitError(bytosPassLimitMessage, providerId);
-	}
-
-	if (isBytosNotSubscribedMessage(body)) {
-		throw new BytosNotSubscribedError(providerId);
 	}
 }
 
@@ -723,23 +689,24 @@ const bytos = createBytosLikeSpec({
 	},
 });
 
-const bytosPass = createBytosLikeSpec({
-	id: BYTOS_PASS_PROVIDER_ID,
+/**
+ * Cline's own hosted API. This is a compatibility provider authenticated with
+ * the user's Cline API key; it is not a Bytos account or subscription.
+ */
+const clinePass = createBytosLikeSpec({
+	id: "cline-pass",
 	family: "bytos",
-	name: "BytosPass",
-	popular: 2,
-	description: "Bytos API endpoint with BytosPass models",
-	modelsProviderId: BYTOS_PASS_PROVIDER_ID,
-	defaultModelId: firstGeneratedModelId(BYTOS_PASS_PROVIDER_ID),
+	name: "ClinePass",
+	popular: 900,
+	description: "Cline hosted API (bring your own Cline API key)",
+	modelsProviderId: "cline-pass",
+	defaultModelId: "cline-pass/glm-5.3",
 	metadata: { usageCostDisplay: "subscription" },
-	defaults: {
-		options: {
-			onResponseError: async (response: Response) => {
-				await handleBytosResponseError(response, BYTOS_PASS_PROVIDER_ID);
-			},
-		},
-	},
+	defaults: { baseUrl: "https://api.cline.bot/api/v1" },
 });
+clinePass.apiKeyEnv = ["CLINE_API_KEY"];
+// ClinePass authenticates with a pasted Cline API key, not Bytos OAuth.
+clinePass.capabilities = ["reasoning", "prompt-cache", "tools"];
 
 /**
  * Handwritten providers plus generated providers that require Bytos-specific
@@ -769,7 +736,7 @@ const OPENAI_COMPATIBLE_SPEC_OVERRIDES: BuiltinSpecOverride[] = [
 		metadata: { apiKeyOptional: true },
 	},
 	bytos,
-	bytosPass,
+	clinePass,
 	{
 		id: "deepseek",
 		name: "DeepSeek",

@@ -1,7 +1,7 @@
 export type CloudModel = {
 	id: string;
 	name: string;
-	catalogId: "bytos" | "bytos-pass" | "bytos-cloud";
+	catalogId: "bytos" | "bytos-cloud";
 };
 
 function readCloudModel(
@@ -36,7 +36,7 @@ function readCloudModels(
 
 export async function loadCloudModels(
 	apiBaseUrl: string,
-	options: { isOrganizationSession?: boolean; fetchImpl?: typeof fetch } = {},
+	options: { fetchImpl?: typeof fetch } = {},
 ): Promise<CloudModel[]> {
 	const trimmedBaseUrl = apiBaseUrl.trim();
 	let end = trimmedBaseUrl.length;
@@ -78,14 +78,9 @@ export async function loadCloudModels(
 		recommendedEnvelope?.data && typeof recommendedEnvelope.data === "object"
 			? (recommendedEnvelope.data as Record<string, unknown>)
 			: recommendedEnvelope;
-	const pass = readCloudModels(recommended?.bytosPass, "bytos-pass");
 	const cloud = readCloudModels(recommended?.bytosCloud, "bytos-cloud");
 	const seen = new Set<string>();
-	return [
-		...(options.isOrganizationSession ? [] : pass),
-		...cloud,
-		...catalog,
-	].filter((model) => {
+	return [...cloud, ...catalog].filter((model) => {
 		if (seen.has(model.id)) return false;
 		seen.add(model.id);
 		return true;

@@ -116,6 +116,13 @@ export interface ExtensionState {
 	foregroundCommandRunning?: boolean
 	lastCompletedCommandTs?: number
 	userInfo?: UserInfo
+	/** Supabase-authenticated user (non-secret state pushed by the host). */
+	supabaseUser?: {
+		uid: string
+		email?: string
+		displayName?: string
+		photoUrl?: string
+	}
 	version: string
 	/**
 	 * Which rollout bundle this build is ("legacy" or "next"). Only present for
@@ -157,6 +164,14 @@ export interface ExtensionState {
 	optOutOfRemoteConfig?: boolean
 	remoteConfigAvailable?: boolean
 	showFeatureTips?: boolean
+	/** F3: voice is enabled in Settings → Voice. */
+	voiceEnabled?: boolean
+	/** F3: pinned capture device id, absent means "system default". */
+	voiceMicrophoneId?: string
+	/** F3: transcription language preference (`auto` | `tr` | `en` | `de`). */
+	voiceLanguage?: string
+	/** F3: recognition model preference (`tiny` | `base`). */
+	voiceModelId?: string
 	banners?: BannerCardData[]
 	welcomeBanners?: BannerCardData[]
 	/** Bytos Cloud sessions rollout flag; shows the Settings toggle. */

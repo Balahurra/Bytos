@@ -110,6 +110,7 @@ const FeatureRow = memo(
 						id={switchId}
 						onCheckedChange={onChange}
 						size="lg"
+						tone="green"
 					/>
 					{isRemoteLocked && <i className="codicon codicon-lock text-description text-sm" />}
 				</div>

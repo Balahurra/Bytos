@@ -10,9 +10,6 @@ import type { Provider } from "@/lib/provider-schema";
  */
 export const OAUTH_PROVIDER_IDS = new Set([
 	"bytos",
-	// BytosPass shares the Bytos account OAuth credentials (its auth handler
-	// stores under the "bytos" provider), so it never has its own API key.
-	"bytos-pass",
 	"oca",
 	"openai-codex",
 ]);

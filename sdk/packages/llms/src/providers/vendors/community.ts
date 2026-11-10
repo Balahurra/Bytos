@@ -78,11 +78,10 @@ export async function createDifyProviderModule(
 export async function createSapAiCoreProviderModule(
 	_config: GatewayResolvedProviderConfig,
 ): Promise<ProviderFactoryResult> {
-	// Removed from the free BYOK build: the SAP AI Core provider requires
-	// @jerome-benoit/sap-ai-provider and @sap-cloud-sdk, which are distributed
-	// under the SAP Developer License Agreement. That agreement is not
-	// compatible with bundling them into a public VSIX without a separate
-	// distribution review.
+	// Removed from the free BYOK build: the SAP AI Core provider pulls in
+	// @sap/xsenv and @sap/xssec under the SAP Developer License Agreement.
+	// That agreement needs a separate distribution review before those packages
+	// can be bundled into a public VSIX.
 	throw new Error(
 		"The SAP AI Core provider is not included in the BYOK build. " +
 			"Use a BYOK provider with your own API key instead.",

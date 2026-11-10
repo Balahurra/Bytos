@@ -5,6 +5,7 @@ import os from "os"
 import path from "path"
 import * as sinon from "sinon"
 import { WebviewProvider } from "@/core/webview"
+import { SupabaseAccountService } from "@/services/auth/supabaseAccountService"
 import * as actualWebhookHooks from "@/services/lg-cns-integration/webhook-hooks"
 import { Logger } from "@/shared/services/Logger"
 
@@ -28,14 +29,19 @@ import { SharedUriHandler } from "./SharedUriHandler"
 describe("SharedUriHandler", () => {
 	let sandbox: sinon.SinonSandbox
 	let handleOpenRouterCallbackStub: sinon.SinonStub
+	let handleRequestyCallbackStub: sinon.SinonStub
+	let handleOcaAuthCallbackStub: sinon.SinonStub
+	let handleHicapCallbackStub: sinon.SinonStub
 	let handleAuthCallbackStub: sinon.SinonStub
 	let handleTaskCreationStub: sinon.SinonStub
 
 	beforeEach(async () => {
 		sandbox = sinon.createSandbox()
+		SupabaseAccountService.resetForTests()
 
 		// Mock Logger methods to avoid HostProvider dependency
 		sandbox.stub(Logger, "info").returns()
+		sandbox.stub(Logger, "warn").returns()
 		sandbox.stub(Logger, "error").returns()
 		// Mock ErrorService to avoid telemetry dependency
 		const mockErrorService = {
@@ -53,11 +59,17 @@ describe("SharedUriHandler", () => {
 		await ErrorService.initialize()
 
 		handleOpenRouterCallbackStub = sandbox.stub().resolves()
+		handleRequestyCallbackStub = sandbox.stub().resolves()
+		handleOcaAuthCallbackStub = sandbox.stub().resolves()
+		handleHicapCallbackStub = sandbox.stub().resolves()
 		handleAuthCallbackStub = sandbox.stub().resolves()
 		handleTaskCreationStub = sandbox.stub().resolves()
 		const mockWebviewProvider = {
 			controller: {
 				handleOpenRouterCallback: handleOpenRouterCallbackStub,
+				handleRequestyCallback: handleRequestyCallbackStub,
+				handleOcaAuthCallback: handleOcaAuthCallbackStub,
+				handleHicapCallback: handleHicapCallbackStub,
 				handleAuthCallback: handleAuthCallbackStub,
 				handleTaskCreation: handleTaskCreationStub,
 			},
@@ -94,26 +106,134 @@ describe("SharedUriHandler", () => {
 			})
 		})
 
-		describe("Auth callback handling", () => {
-			it("should successfully handle auth callback with idToken", async () => {
+		describe("Other auth callback regression handling", () => {
+			it("should still handle the OCA callback with code and state", async () => {
+				const result = await SharedUriHandler.handleUri("vscode://bytos.bytos/auth/oca?code=oca-code&state=oca-state")
+
+				expect(result).to.be.true
+				sinon.assert.calledOnceWithExactly(handleOcaAuthCallbackStub, "oca-code", "oca-state")
+			})
+
+			it("should reject the OCA callback when state is missing", async () => {
+				const result = await SharedUriHandler.handleUri("vscode://bytos.bytos/auth/oca?code=oca-code")
+
+				expect(result).to.be.false
+				sinon.assert.notCalled(handleOcaAuthCallbackStub)
+			})
+
+			it("should still handle the Requesty callback", async () => {
+				const result = await SharedUriHandler.handleUri("vscode://bytos.bytos/requesty?code=requesty-code")
+
+				expect(result).to.be.true
+				sinon.assert.calledOnceWithExactly(handleRequestyCallbackStub, "requesty-code")
+			})
+
+			it("should still handle the Hicap callback", async () => {
+				const result = await SharedUriHandler.handleUri("vscode://bytos.bytos/hicap?code=hicap-code")
+
+				expect(result).to.be.true
+				sinon.assert.calledOnceWithExactly(handleHicapCallbackStub, "hicap-code")
+			})
+
+			it("should still handle task deep links", async () => {
+				const result = await SharedUriHandler.handleUri("vscode://bytos.bytos/task?prompt=hello")
+
+				expect(result).to.be.true
+				sinon.assert.calledOnceWithExactly(handleTaskCreationStub, "hello")
+			})
+		})
+
+		describe("Web account handoff callback (production SupabaseAccountService)", () => {
+			const webAuth = { expectedScheme: "vscode", expectedAuthority: "bytos.bytos" }
+			const redirectUri = "vscode://bytos.bytos/auth/callback"
+
+			function callback(state: string, extra = "code=code123"): string {
+				return `${redirectUri}?state=${encodeURIComponent(state)}&${extra}`
+			}
+
+			it("rejects a callback that arrived without the VS Code handler context", async () => {
+				const result = await SharedUriHandler.handleUri(callback("any-state"))
+				expect(result).to.be.false
+				sinon.assert.notCalled(handleAuthCallbackStub)
+			})
+
+			it("rejects a callback with no matching extension-side handoff", async () => {
+				const result = await SharedUriHandler.handleUri(callback("unknown-state"), { webAuth })
+				expect(result).to.be.false
+				sinon.assert.notCalled(handleAuthCallbackStub)
+			})
+
+			it("rejects a wrong scheme on the callback path", async () => {
+				const result = await SharedUriHandler.handleUri("https://bytos.bytos/auth/callback?state=x&code=y", { webAuth })
+				expect(result).to.be.false
+			})
+
+			it("rejects a wrong authority on the callback path", async () => {
+				const result = await SharedUriHandler.handleUri("vscode://evil.extension/auth/callback?state=x&code=y", {
+					webAuth,
+				})
+				expect(result).to.be.false
+			})
+
+			it("keeps the legacy /auth path rejected", async () => {
+				const result = await SharedUriHandler.handleUri("vscode://bytos.bytos/auth?code=legacy-code", { webAuth })
+
+				expect(result).to.be.false
+				sinon.assert.notCalled(handleAuthCallbackStub)
+			})
+
+			it("never establishes a session for a callback with only legacy token parameters", async () => {
+				const result = await SharedUriHandler.handleUri(
+					`${redirectUri}?state=anything&idToken=jwt123&refreshToken=rt123`,
+					{ webAuth },
+				)
+				expect(result).to.be.false
+			})
+		})
+
+		describe("Auth callback handling (disabled)", () => {
+			it("should reject idToken instead of treating it as an authorization code", async () => {
 				const result = await SharedUriHandler.handleUri("vscode://bytos.bytos/auth?idToken=jwt123&provider=google")
 
-				expect(result).to.be.true
-				sinon.assert.calledOnceWithExactly(handleAuthCallbackStub, "jwt123", "google")
+				expect(result).to.be.false
+				sinon.assert.notCalled(handleAuthCallbackStub)
 			})
 
-			it("should successfully handle auth callback without provider", async () => {
+			it("should reject refreshToken instead of treating it as an authorization code", async () => {
+				const result = await SharedUriHandler.handleUri(
+					"vscode://bytos.bytos/auth?refreshToken=refresh123&provider=github",
+				)
+
+				expect(result).to.be.false
+				sinon.assert.notCalled(handleAuthCallbackStub)
+			})
+
+			it("should reject code without initiating account authentication", async () => {
+				const result = await SharedUriHandler.handleUri("vscode://bytos.bytos/auth?code=code123&provider=bytos")
+
+				expect(result).to.be.false
+				sinon.assert.notCalled(handleAuthCallbackStub)
+			})
+
+			it("should reject auth callbacks from unexpected schemes and hosts", async () => {
+				const httpsResult = await SharedUriHandler.handleUri("https://example.com/auth?code=code123")
+				const httpResult = await SharedUriHandler.handleUri("http://localhost:3000/auth?code=code123")
+
+				expect(httpsResult).to.be.false
+				expect(httpResult).to.be.false
+				sinon.assert.notCalled(handleAuthCallbackStub)
+			})
+
+			it("should not change authentication state when a callback is rejected", async () => {
 				const result = await SharedUriHandler.handleUri("vscode://bytos.bytos/auth?idToken=jwt123")
-
-				expect(result).to.be.true
-				sinon.assert.calledOnceWithExactly(handleAuthCallbackStub, "jwt123", null)
-			})
-
-			it("should return false when idToken is missing", async () => {
-				const result = await SharedUriHandler.handleUri("vscode://bytos.bytos/auth?provider=google")
 
 				expect(result).to.be.false
 				expect(handleAuthCallbackStub.called).to.be.false
+				expect(handleOpenRouterCallbackStub.called).to.be.false
+				expect(handleRequestyCallbackStub.called).to.be.false
+				expect(handleOcaAuthCallbackStub.called).to.be.false
+				expect(handleHicapCallbackStub.called).to.be.false
+				expect(handleTaskCreationStub.called).to.be.false
 			})
 		})
 
@@ -200,22 +320,18 @@ describe("SharedUriHandler", () => {
 
 		describe("Query parameter parsing", () => {
 			it("should correctly parse multiple query parameters", async () => {
-				const result = await SharedUriHandler.handleUri(
-					"vscode://bytos.bytos/auth?idToken=jwt123&provider=github&extra=param",
-				)
+				const result = await SharedUriHandler.handleUri("vscode://bytos.bytos/openrouter?code=test123&extra=param")
 
 				expect(result).to.be.true
-				sinon.assert.calledOnceWithExactly(handleAuthCallbackStub, "jwt123", "github")
+				sinon.assert.calledOnceWithExactly(handleOpenRouterCallbackStub, "test123")
 			})
 
 			it("should handle URL-encoded parameters", async () => {
-				const result = await SharedUriHandler.handleUri(
-					"vscode://bytos.bytos/auth?idToken=jwt%20with%20spaces&provider=google",
-				)
+				const result = await SharedUriHandler.handleUri("vscode://bytos.bytos/openrouter?code=test%20with%20spaces")
 
 				expect(result).to.be.true
 				// URLSearchParams should decode %20 to spaces
-				sinon.assert.calledOnceWithExactly(handleAuthCallbackStub, "jwt with spaces", "google")
+				sinon.assert.calledOnceWithExactly(handleOpenRouterCallbackStub, "test with spaces")
 			})
 
 			it("should handle empty query string", async () => {
@@ -235,11 +351,11 @@ describe("SharedUriHandler", () => {
 				sinon.assert.calledOnceWithExactly(handleOpenRouterCallbackStub, "test123")
 			})
 
-			it("should handle HTTPS scheme URIs", async () => {
+			it("should reject HTTPS auth callbacks", async () => {
 				const result = await SharedUriHandler.handleUri("https://example.com/auth?idToken=jwt123&provider=github")
 
-				expect(result).to.be.true
-				sinon.assert.calledOnceWithExactly(handleAuthCallbackStub, "jwt123", "github")
+				expect(result).to.be.false
+				sinon.assert.notCalled(handleAuthCallbackStub)
 			})
 		})
 	})

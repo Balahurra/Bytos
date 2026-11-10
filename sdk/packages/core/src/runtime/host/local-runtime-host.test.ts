@@ -688,8 +688,8 @@ describe("LocalRuntimeHost", () => {
 			normalizeStartInput({
 				config: createConfig({
 					sessionId,
-					providerId: "bytos-pass",
-					modelId: "bytos-pass/glm-5.2",
+					providerId: "cline-pass",
+					modelId: "cline-pass/glm-5.2",
 					apiKey: undefined,
 				}),
 				prompt: "hello",
@@ -697,11 +697,11 @@ describe("LocalRuntimeHost", () => {
 		);
 
 		expect(oauthTokenManager.resolveProviderApiKey).toHaveBeenCalledWith({
-			providerId: "bytos-pass",
+			providerId: "cline-pass",
 		});
 		expect(createAgent).toHaveBeenCalledWith(
 			expect.objectContaining({
-				providerId: "bytos-pass",
+				providerId: "cline-pass",
 				apiKey: "workos:resolved-token",
 			}),
 		);

@@ -20,7 +20,7 @@ export function isOnboardingOAuthProviderId(
 }
 
 function isBytosAccountOAuthProvider(providerId: string): boolean {
-	return providerId === "bytos" || providerId === "bytos-pass";
+	return providerId === "bytos";
 }
 
 export function runOAuthAuthFlow(input: {

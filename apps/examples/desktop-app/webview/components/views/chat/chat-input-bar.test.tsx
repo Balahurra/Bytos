@@ -841,14 +841,14 @@ describe("ChatInputBar", () => {
 	it("allows cloud image and model selection without replacing local defaults", async () => {
 		loadProviderModelCatalogMock.mockResolvedValue({
 			providers: [],
-			enabledProviderIds: ["bytos", "bytos-pass", "bytos-cloud"],
+			enabledProviderIds: ["bytos", "cline-pass", "bytos-cloud"],
 			providerNames: {
 				bytos: "Bytos Usage-Billing",
-				"bytos-pass": "BytosPass",
+				"cline-pass": "ClinePass",
 				"bytos-cloud": "BytosFree",
 			},
 			providerModels: {
-				"bytos-pass": ["bytos-pass/pass-model"],
+				"cline-pass": ["cline-pass/pass-model"],
 				"bytos-cloud": ["bytos-cloud/free-model"],
 				bytos: ["bytos-test", "bytos-alt"],
 			},
@@ -907,7 +907,7 @@ describe("ChatInputBar", () => {
 						promptsInQueue={[]}
 						provider="anthropic"
 						reasoningEffort="low"
-						repoUrl="https://github.com/bytos/bytos"
+						repoUrl="https://github.com/Balahurra/Bytos"
 						status="idle"
 						summary={{ toolCalls: 0, tokensIn: 0, tokensOut: 0 }}
 						thinking
@@ -984,7 +984,7 @@ describe("ChatInputBar", () => {
 		await act(async () => alternateModel?.click());
 		expect(onModelChange).toHaveBeenCalledWith("bytos-alt");
 		for (const [label, model] of [
-			["BytosPass", "bytos-pass/pass-model"],
+			["ClinePass", "cline-pass/pass-model"],
 			["BytosFree", "bytos-cloud/free-model"],
 		]) {
 			await act(async () =>
@@ -1095,7 +1095,7 @@ describe("ChatInputBar", () => {
 		});
 		expect(onSend).not.toHaveBeenCalled();
 
-		await render("https://github.com/bytos/bytos");
+		await render("https://github.com/Balahurra/Bytos");
 		expect(sendButton?.disabled).toBe(true);
 		await act(async () =>
 			promptInput?.dispatchEvent(
@@ -1114,7 +1114,7 @@ describe("ChatInputBar", () => {
 		expect(onSend).toHaveBeenCalledWith("Continue in cloud");
 
 		onSend.mockClear();
-		await render("https://github.com/bytos/bytos", "", [
+		await render("https://github.com/Balahurra/Bytos", "", [
 			{ id: "image-1", name: "image.png", isImage: true },
 		]);
 		const imageOnlySendButton = container.querySelector<HTMLButtonElement>(
@@ -2468,13 +2468,13 @@ describe("ChatInputBar", () => {
 	it("opens model settings from the provider picker's set-up row", async () => {
 		loadProviderModelCatalogMock.mockResolvedValue({
 			providers: [],
-			enabledProviderIds: ["bytos", "bytos-pass"],
+			enabledProviderIds: ["bytos", "cline-pass"],
 			providerModels: {
 				bytos: ["anthropic/claude-opus-5"],
-				"bytos-pass": ["anthropic/claude-opus-5"],
+				"cline-pass": ["anthropic/claude-opus-5"],
 			},
 			providerModelDetails: {},
-			providerNames: { bytos: "Bytos", "bytos-pass": "Bytos Pass" },
+			providerNames: { bytos: "Bytos", "cline-pass": "Bytos Pass" },
 			providerReasoningModels: {},
 		});
 		const onOpenModelSettings = vi.fn();
@@ -2544,7 +2544,7 @@ describe("ChatInputBar", () => {
 		expect(document.querySelector('[role="dialog"]')).toBeNull();
 	});
 
-	describe("bytos-pass picker offer", () => {
+	describe("cline-pass picker offer", () => {
 		const renderComposer = async (props: {
 			executionTarget?: "cloud" | "local";
 			hasActiveSession?: boolean;
@@ -2598,23 +2598,23 @@ describe("ChatInputBar", () => {
 		};
 
 		beforeEach(() => {
-			// The BytosPass offer: one subscribed and one free model, stamped
+			// The ClinePass offer: one subscribed and one free model, stamped
 			// by the SDK onto ProviderModel.featured. The catalog additionally
 			// contains a stale unstamped model outside the offer, which the
 			// picker hides while the subscribed tier is non-empty.
 			loadProviderModelCatalogMock.mockResolvedValue({
 				providers: [],
-				enabledProviderIds: ["bytos", "bytos-pass"],
+				enabledProviderIds: ["bytos", "cline-pass"],
 				providerModels: {
 					bytos: ["test-model"],
-					"bytos-pass": [
+					"cline-pass": [
 						"openai/gpt-5",
 						"google/gemini-flash",
 						"legacy/stale-model",
 					],
 				},
 				providerModelDetails: {
-					"bytos-pass": [
+					"cline-pass": [
 						{
 							id: "openai/gpt-5",
 							name: "GPT-5",
@@ -2628,8 +2628,8 @@ describe("ChatInputBar", () => {
 						{ id: "legacy/stale-model", name: "Stale Legacy" },
 					],
 				},
-				providerNames: { bytos: "Bytos", "bytos-pass": "BytosPass" },
-				providerReasoningModels: { bytos: [], "bytos-pass": [] },
+				providerNames: { bytos: "Bytos", "cline-pass": "ClinePass" },
+				providerReasoningModels: { bytos: [], "cline-pass": [] },
 			});
 		});
 
@@ -2638,7 +2638,7 @@ describe("ChatInputBar", () => {
 		});
 
 		const kimi: ProviderModel = {
-			id: "bytos-pass/kimi-k3",
+			id: "cline-pass/kimi-k3",
 			name: "Kimi K3",
 			featured: { tier: "subscribed", rank: 0, tags: [] },
 		};
@@ -2651,14 +2651,14 @@ describe("ChatInputBar", () => {
 		function mockBundledCatalog() {
 			loadProviderModelCatalogMock.mockResolvedValue({
 				providers: [],
-				enabledProviderIds: ["bytos", "bytos-pass"],
+				enabledProviderIds: ["bytos", "cline-pass"],
 				providerModels: {
 					bytos: ["test-model"],
-					"bytos-pass": [flash.id],
+					"cline-pass": [flash.id],
 				},
-				providerModelDetails: { "bytos-pass": [flash] },
-				providerNames: { bytos: "Bytos", "bytos-pass": "BytosPass" },
-				providerReasoningModels: { bytos: [], "bytos-pass": [] },
+				providerModelDetails: { "cline-pass": [flash] },
+				providerNames: { bytos: "Bytos", "cline-pass": "ClinePass" },
+				providerReasoningModels: { bytos: [], "cline-pass": [] },
 			});
 		}
 
@@ -2668,8 +2668,8 @@ describe("ChatInputBar", () => {
 		])("preserves the saved model through a delayed live catalog %s", async (outcome) => {
 			mockBundledCatalog();
 			const selection = {
-				lastProvider: "bytos-pass",
-				lastModelByProvider: { "bytos-pass": kimi.id },
+				lastProvider: "cline-pass",
+				lastModelByProvider: { "cline-pass": kimi.id },
 			};
 			window.localStorage.setItem(
 				MODEL_SELECTION_STORAGE_KEY,
@@ -2686,10 +2686,10 @@ describe("ChatInputBar", () => {
 			const onModelChange = vi.fn();
 			await renderComposer({
 				model: kimi.id,
-				provider: "bytos-pass",
+				provider: "cline-pass",
 				onModelChange,
 			});
-			expect(loadProviderModelsMock).toHaveBeenCalledWith("bytos-pass");
+			expect(loadProviderModelsMock).toHaveBeenCalledWith("cline-pass");
 			expect(onModelChange).not.toHaveBeenCalled();
 			expect(
 				container.querySelector('[aria-label^="Model:"]')?.textContent,
@@ -2713,7 +2713,7 @@ describe("ChatInputBar", () => {
 		it("keeps the live model name while the picker-open refresh is in flight", async () => {
 			mockBundledCatalog();
 			loadProviderModelsMock.mockResolvedValue([flash, kimi]);
-			await renderComposer({ model: kimi.id, provider: "bytos-pass" });
+			await renderComposer({ model: kimi.id, provider: "cline-pass" });
 			const modelTrigger = container.querySelector<HTMLButtonElement>(
 				'[aria-label^="Model:"]',
 			);
@@ -2732,7 +2732,7 @@ describe("ChatInputBar", () => {
 			// Only the live list is re-fetched; re-applying the bundled catalog
 			// (which lacks kimi) would flash the raw id in the trigger.
 			expect(modelTrigger?.textContent).toContain(kimi.name);
-			expect(loadProviderModelsMock).toHaveBeenLastCalledWith("bytos-pass");
+			expect(loadProviderModelsMock).toHaveBeenLastCalledWith("cline-pass");
 			expect(loadProviderModelCatalogMock).not.toHaveBeenCalled();
 			await act(async () => resolveModels([flash, kimi]));
 			expect(modelTrigger?.textContent).toContain(kimi.name);
@@ -2752,7 +2752,7 @@ describe("ChatInputBar", () => {
 			const onModelChange = vi.fn();
 			await renderComposer({
 				model: flash.id,
-				provider: "bytos-pass",
+				provider: "cline-pass",
 				onModelChange,
 			});
 			await act(async () =>
@@ -2768,7 +2768,7 @@ describe("ChatInputBar", () => {
 			expect(onModelChange).toHaveBeenCalledWith(kimi.id);
 			await renderComposer({
 				model: kimi.id,
-				provider: "bytos-pass",
+				provider: "cline-pass",
 				onModelChange,
 			});
 			onModelChange.mockClear();
@@ -2779,7 +2779,7 @@ describe("ChatInputBar", () => {
 				root = createRoot(container);
 				const initial = getInitialChatConfig();
 				expect(initial).toMatchObject({
-					provider: "bytos-pass",
+					provider: "cline-pass",
 					model: kimi.id,
 				});
 				let resolveModels!: (models: ProviderModel[]) => void;
@@ -2799,7 +2799,7 @@ describe("ChatInputBar", () => {
 				).toContain(kimi.id);
 				await act(async () => resolveModels([flash, kimi]));
 			} else {
-				await act(async () => publishModels("bytos-pass", [flash]));
+				await act(async () => publishModels("cline-pass", [flash]));
 			}
 			expect(onModelChange).not.toHaveBeenCalled();
 			expect(
@@ -2813,7 +2813,7 @@ describe("ChatInputBar", () => {
 				MODEL_SELECTION_STORAGE_KEY,
 				JSON.stringify({
 					lastProvider: "bytos",
-					lastModelByProvider: { bytos: "test-model", "bytos-pass": kimi.id },
+					lastModelByProvider: { bytos: "test-model", "cline-pass": kimi.id },
 				}),
 			);
 			const onModelChange = vi.fn();
@@ -2831,16 +2831,16 @@ describe("ChatInputBar", () => {
 			);
 			const option = [
 				...document.querySelectorAll<HTMLButtonElement>('[role="option"]'),
-			].find((entry) => entry.textContent?.includes("BytosPass"));
+			].find((entry) => entry.textContent?.includes("ClinePass"));
 			expect(option).toBeTruthy();
 			await act(async () => option?.click());
-			expect(onProviderChange).toHaveBeenCalledWith("bytos-pass");
+			expect(onProviderChange).toHaveBeenCalledWith("cline-pass");
 			expect(onModelChange).toHaveBeenCalledWith(kimi.id);
 			expect(onModelChange).not.toHaveBeenCalledWith(flash.id);
 			expect(
 				parseModelSelectionStorage(
 					window.localStorage.getItem(MODEL_SELECTION_STORAGE_KEY),
-				).lastModelByProvider["bytos-pass"],
+				).lastModelByProvider["cline-pass"],
 			).toBe(kimi.id);
 		});
 
@@ -2848,15 +2848,15 @@ describe("ChatInputBar", () => {
 			window.localStorage.setItem(
 				MODEL_SELECTION_STORAGE_KEY,
 				JSON.stringify({
-					lastProvider: "bytos-pass",
-					lastModelByProvider: { "bytos-pass": "legacy/stale-model" },
+					lastProvider: "cline-pass",
+					lastModelByProvider: { "cline-pass": "legacy/stale-model" },
 				}),
 			);
 			const onModelChange = vi.fn();
 			await renderComposer({
 				model: "",
 				onModelChange,
-				provider: "bytos-pass",
+				provider: "cline-pass",
 			});
 
 			// The default selection must come from the visible offer, not the
@@ -2887,7 +2887,7 @@ describe("ChatInputBar", () => {
 			const onModelChange = vi.fn();
 			await renderComposer({
 				model: "",
-				provider: "bytos-pass",
+				provider: "cline-pass",
 				onModelChange,
 			});
 			expect(onModelChange).toHaveBeenCalledWith(flash.id);
@@ -2899,7 +2899,7 @@ describe("ChatInputBar", () => {
 			await renderComposer({
 				model: "legacy/stale-model",
 				onModelChange,
-				provider: "bytos-pass",
+				provider: "cline-pass",
 			});
 
 			// The session's configured model stays active…
@@ -2951,7 +2951,7 @@ describe("ChatInputBar", () => {
 					lastProvider: "bytos",
 					lastModelByProvider: {
 						bytos: "test-model",
-						"bytos-pass": "legacy/stale-model",
+						"cline-pass": "legacy/stale-model",
 					},
 				}),
 			);
@@ -2969,13 +2969,13 @@ describe("ChatInputBar", () => {
 			);
 			await act(async () => providerTrigger?.click());
 			const panel = document.querySelector('[role="dialog"]');
-			const bytosPassOption = [
+			const clinePassOption = [
 				...(panel?.querySelectorAll<HTMLButtonElement>('[role="option"]') ??
 					[]),
-			].find((option) => option.textContent?.includes("BytosPass"));
-			await act(async () => bytosPassOption?.click());
+			].find((option) => option.textContent?.includes("ClinePass"));
+			await act(async () => clinePassOption?.click());
 
-			expect(onProviderChange).toHaveBeenCalledWith("bytos-pass");
+			expect(onProviderChange).toHaveBeenCalledWith("cline-pass");
 			// The hidden remembered model is not restored; the selection falls
 			// back to the offer and the remembered slot is repaired.
 			expect(onModelChange).toHaveBeenCalledWith("openai/gpt-5");
@@ -2984,10 +2984,10 @@ describe("ChatInputBar", () => {
 					window.localStorage.getItem(MODEL_SELECTION_STORAGE_KEY),
 				),
 			).toEqual({
-				lastProvider: "bytos-pass",
+				lastProvider: "cline-pass",
 				lastModelByProvider: {
 					bytos: "test-model",
-					"bytos-pass": "openai/gpt-5",
+					"cline-pass": "openai/gpt-5",
 				},
 			});
 		});

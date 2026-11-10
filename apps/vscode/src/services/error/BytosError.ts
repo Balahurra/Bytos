@@ -1,11 +1,4 @@
-import {
-	getBytosOrgIndividualInferenceSubscriptionMessage,
-	isBytosFreeModelLimitMessage,
-	isBytosModelNotFoundMessage,
-	isBytosNotSubscribedMessage,
-	isBytosOrgIndividualInferenceSubscriptionMessage,
-	isBytosPassLimitMessage,
-} from "@bytos/llms"
+import { isBytosFreeModelLimitMessage, isBytosModelNotFoundMessage } from "@bytos/llms"
 import { serializeError } from "serialize-error"
 import { BYTOS_ACCOUNT_AUTH_ERROR_MESSAGE } from "../../shared/BytosAccount"
 
@@ -15,9 +8,6 @@ export enum BytosErrorType {
 	Balance = "balance",
 	SpendLimit = "spendLimit",
 	QuotaExceeded = "quotaExceeded",
-	Entitlement = "entitlement",
-	OrgBytosPassRestriction = "orgBytosPassRestriction",
-	BytosPassLimit = "bytosPassLimit",
 	BytosFreeModelLimit = "bytosFreeModelLimit",
 	BytosFreePromotionEnded = "bytosFreePromotionEnded",
 	/** HTTP 404/405/410: the model id or endpoint path does not exist on the server. */
@@ -49,7 +39,7 @@ export const BYTOS_FREE_PROMOTION_ENDED_ERROR_CODE = "bytos_free_promotion_ended
  * Detects a request against a retired free model: once a promotion ends the
  * bytos-free/ model is removed from the catalog and the backend answers "model
  * not found". The modelId gate keeps ordinary model-not-found errors on their
- * generic path. Mirrors the CLI's detection in apps/cli/src/utils/bytos-pass-errors.ts.
+ * generic path. Mirrors the CLI's detection in apps/cli/src/utils/cline-pass-errors.ts.
  */
 export function isBytosFreePromotionEndedMessage(message: string, modelId?: string): boolean {
 	if (!modelId?.toLowerCase().startsWith(BYTOS_FREE_MODEL_ID_PREFIX)) {
@@ -211,32 +201,10 @@ export class BytosError extends Error {
 		}
 
 		if (
-			rawMessage === getBytosOrgIndividualInferenceSubscriptionMessage() ||
-			(detailMessage ? isBytosOrgIndividualInferenceSubscriptionMessage(detailMessage) : false) ||
-			(rawMessage ? isBytosOrgIndividualInferenceSubscriptionMessage(rawMessage) : false)
-		) {
-			return BytosErrorType.OrgBytosPassRestriction
-		}
-
-		if (
-			(detailMessage ? isBytosNotSubscribedMessage(detailMessage) : false) ||
-			(rawMessage ? isBytosNotSubscribedMessage(rawMessage) : false)
-		) {
-			return BytosErrorType.Entitlement
-		}
-
-		if (
 			(detailMessage ? isBytosFreeModelLimitMessage(detailMessage) : false) ||
 			(rawMessage ? isBytosFreeModelLimitMessage(rawMessage) : false)
 		) {
 			return BytosErrorType.BytosFreeModelLimit
-		}
-
-		if (
-			(detailMessage ? isBytosPassLimitMessage(detailMessage) : false) ||
-			(rawMessage ? isBytosPassLimitMessage(rawMessage) : false)
-		) {
-			return BytosErrorType.BytosPassLimit
 		}
 
 		// Retired free models must be classified before the status branch: the

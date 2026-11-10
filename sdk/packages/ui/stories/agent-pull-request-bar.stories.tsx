@@ -9,12 +9,12 @@ const readyPullRequest: AgentPullRequestData = {
 	repository: "bytos/bytos",
 	branch: "refactor/shared-agent-review-ui",
 	branchUrl:
-		"https://github.com/bytos/bytos/tree/refactor/shared-agent-review-ui",
+		"https://github.com/Balahurra/Bytos/tree/refactor/shared-agent-review-ui",
 	published: true,
 	pullRequest: {
 		number: 14408,
 		title: "Share desktop Changes and PR presentation",
-		url: "https://github.com/bytos/bytos/pull/14408",
+		url: "https://github.com/Balahurra/Bytos/pull/14408",
 		state: "OPEN",
 		isDraft: false,
 		mergeable: "MERGEABLE",

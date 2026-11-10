@@ -71,7 +71,7 @@ const AutoApproveModal: React.FC<AutoApproveModalProps> = ({ isVisible, setIsVis
 					Let Bytos take these actions without asking for approval.{" "}
 					<a
 						className="text-link hover:text-link-hover"
-						href="https://github.com/bytos/bytos"
+						href="https://github.com/Balahurra/Bytos"
 						rel="noopener"
 						style={{ fontSize: "inherit" }}
 						target="_blank">

@@ -1,235 +1,44 @@
 ---
-title: "Networking and Proxies"
-sidebarTitle: "Networking & Proxies"
-description: "Configure Bytos to work behind firewalls and proxies"
+title: "Networking and proxies"
+sidebarTitle: "Networking and proxies"
+description: "Configure VS Code proxy settings for Bytos and its model providers."
 ---
 
-If you're working behind a corporate proxy or firewall, you'll need to configure
-proxy settings for Bytos to connect to AI providers. The configuration varies
-depending on which version of Bytos you're using.
+Bytos runs inside Visual Studio Code and uses VS Code's network stack for model
+requests and extension updates. The exact proxy settings depend on your VS Code
+version and environment.
 
-## VSCode Extension
+## Proxy settings
 
-The VSCode extension automatically uses VSCode's built-in proxy settings. See
-[Network Connections in Visual Studio Code, Proxy server support](https://code.visualstudio.com/docs/setup/network#_proxy-server-support)
-for instructions on how to set up proxies in VSCode. No additional configuration
-is needed for Bytos itself.
+1. Open **Settings** in VS Code.
+2. Search for `http.proxy`.
+3. Set the proxy URL, for example `http://proxy.example.com:8080`.
+4. If your proxy needs authentication, configure it through VS Code's proxy
+   settings or your operating system's credential store.
+5. Reload VS Code after changing proxy settings.
 
-## CLI
+VS Code also supports `http.proxyStrictSSL` and `http.proxySupport`. Use the
+values required by your network; do not disable certificate validation unless
+you understand the risk.
 
-The Bytos CLI uses standard HTTP proxy environment variables. Configure these before running `bytos` commands.
+## Corporate certificates
 
-### Basic Configuration
+If your proxy intercepts TLS, install the corporate root certificate in your
+operating system trust store and configure VS Code to trust it. Do not paste
+private keys or provider API keys into a proxy configuration file.
 
-**Windows (Command Prompt)**
-```cmd
-set https_proxy=http://proxy.company.com:8080
-set http_proxy=http://proxy.company.com:8080
-bytos
-```
+## Model provider connectivity
 
-**Windows (PowerShell)**
-```powershell
-$env:https_proxy="http://proxy.company.com:8080"
-$env:http_proxy="http://proxy.company.com:8080"
-bytos
-```
+- Cloud providers need outbound HTTPS access.
+- Local models through Ollama or LM Studio use a local endpoint such as
+  `http://localhost:11434` or `http://localhost:1234`.
+- If only the model list is empty, check the provider key/base URL first.
 
-**macOS/Linux**
-```bash
-export https_proxy=http://proxy.company.com:8080
-export http_proxy=http://proxy.company.com:8080
-bytos
-```
+## Diagnostics
 
-### Proxy with Authentication
+VS Code's **Help → Toggle Developer Tools → Console** and the **Output** panel
+can show extension/network errors. Do not share API keys or full prompts in a
+public issue; redact them first.
 
-If your proxy requires authentication, include credentials in the URL:
-
-```bash
-export https_proxy=http://username:password@proxy.company.com:8080
-export http_proxy=http://username:password@proxy.company.com:8080
-```
-
-<Warning>
-Storing credentials in environment variables can be a security risk.
-</Warning>
-
-### Bypass Proxy for Localhost
-
-To prevent localhost traffic from going through the proxy, set the `no_proxy` environment variable:
-
-**Windows**
-```cmd
-set no_proxy=localhost,127.0.0.1,.local
-```
-
-**macOS/Linux**
-```bash
-export no_proxy=localhost,127.0.0.1,.local
-```
-
-### Custom Certificate Authority
-
-If your proxy uses a custom CA certificate:
-
-**Windows**
-```cmd
-set NODE_EXTRA_CA_CERTS=C:\path\to\ca-certificate.crt
-bytos
-```
-
-**macOS/Linux**
-```bash
-export NODE_EXTRA_CA_CERTS=/path/to/ca-certificate.pem
-bytos
-```
-
-### Permanent Configuration
-
-To avoid setting these variables every time, add them to your shell profile or system environment variables.
-
-**macOS/Linux** (add to `~/.bashrc`, `~/.zshrc`, or `~/.profile`):
-```bash
-# Proxy configuration
-export https_proxy=http://proxy.company.com:8080
-export http_proxy=http://proxy.company.com:8080
-export no_proxy=localhost,127.0.0.1,.local
-export NODE_EXTRA_CA_CERTS=/path/to/ca-certificate.pem
-```
-
-**Windows** (System Environment Variables):
-1. Search for "Environment Variables" in Windows Settings
-2. Add the variables under "User variables" or "System variables"
-3. Restart your terminal or IDE
-
-### Known Limitations
-
-Bytos CLI only supports HTTP proxies. It does not support SOCKS proxies,
-proxy autoconfiguration (PAC) scripts, or HTTP proxies which require
-authentication beyond a basic username and password.
-
-## JetBrains IDEs
-
-The JetBrains plugin uses the IDE's HTTP proxy settings.
-
-### Configure JetBrains Proxy
-
-1. Open Settings/Preferences:
-   - **Windows/Linux**: File > Settings
-   - **macOS**: IntelliJ IDEA > Preferences
-   - Or press `Ctrl+Alt+S` (Windows/Linux) or `Cmd+,` (macOS)
-
-2. Navigate to:
-   ```
-   Appearance & Behavior > System Settings > HTTP Proxy
-   ```
-
-3. Select "Manual proxy configuration"
-
-4. Configure your proxy:
-   - **Host name**: `proxy.company.com`
-   - **Port number**: `8080`
-   - **No proxy for**: `localhost,127.0.0.1`
-   - Check "Proxy authentication" if required
-   - Enter your username and password
-
-5. Click "Check connection" to verify the settings
-
-6. Click "OK" to apply
-
-7. Restart the IDE
-
-### Test Connection
-
-After configuring the proxy, test that Bytos can connect to your AI provider:
-
-1. Open the Bytos panel
-2. Try sending a simple message
-3. If connection fails, check the IDE's Event Log for error messages
-
-### Custom Certificate Authority
-
-If your proxy uses a custom CA:
-
-1. Add the certificate to your system's trust store, or
-2. Import it into the JetBrains IDE:
-   - Settings > Tools > Server Certificates
-   - Click "+" to add your certificate
-
-### Known Limitations
-
-Bytos in JetBrains only supports HTTP proxies. It does not support SOCKS
-proxies, proxy autoconfiguration (PAC) scripts, or HTTP proxies which require
-authentication beyond a basic username and password.
-
-Bytos does not pick up changed proxy settings dynamically. After changing proxy
-settings, restart the IDE for Bytos to use the new settings.
-
-## Troubleshooting
-
-### Connection Timeouts
-
-If you're experiencing connection timeouts:
-
-1. Verify your proxy address and port are correct
-2. Check if the proxy requires authentication
-3. Ensure the AI provider's API endpoints aren't blocked by your firewall
-
-### SSL/TLS Certificate Errors
-
-If you see certificate-related errors:
-
-1. Check that `NODE_EXTRA_CA_CERTS` points to the correct certificate file
-2. Ensure the certificate file is in PEM format
-3. Use curl to verify the certificate works, for example, `curl -x proxy.corp.example:8080 --cacert /path/to/ca-cert.pem -o - -vv https://api.bytos.dev/`
-4. Consider disabling `http.proxyStrictSSL` in VSCode (not recommended for production)
-
-### Testing Proxy Configuration
-
-If you encounter problems with Bytos networking, first verify your proxy
-configuration works using curl:
-
-```bash
-# Linux/macOS
-export https_proxy=http://proxy.company.com:8080
-curl -vv https://api.anthropic.com
-
-# Windows PowerShell
-$env:https_proxy="http://proxy.company.com:8080"
-curl.exe -vv https://api.anthropic.com
-```
-
-Use `--cacert $NODE_EXTRA_CA_CERTS` to specify a certificate if necessary.
-
-Next, check the logs for messages confirming your proxy configuration and any
-network-related errors:
-
-- **CLI**: `~/.bytos/data/logs/bytos.log`, or the file `BYTOS_LOG_PATH` names.
-  `bytos doctor log` opens it. If the hub is involved, also check
-  `~/.bytos/data/logs/hub-daemon.log`.
-- **JetBrains IDEs**: `~/.bytos/bytos-core-service.log`. Bytos's process for
-  every open project writes to this one file.
-
-## Common Proxy Patterns
-
-### Authenticated HTTPS Proxy
-
-```bash
-export https_proxy=http://username:password@proxy.company.com:8080
-export NODE_EXTRA_CA_CERTS=/path/to/ca-cert.pem
-```
-
-### Proxy with No Authentication
-
-```bash
-export https_proxy=http://proxy.company.com:8080
-export http_proxy=http://proxy.company.com:8080
-```
-
-### Proxy with Bypass Rules
-
-```bash
-export https_proxy=http://proxy.company.com:8080
-export no_proxy=localhost,127.0.0.1,.company.local,192.168.0.0/16
-```
+For installation problems, see [Installing Bytos](/getting-started/installing-bytos)
+and [FAQ](/troubleshooting/faq).

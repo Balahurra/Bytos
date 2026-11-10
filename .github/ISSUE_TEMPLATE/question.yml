@@ -1,0 +1,46 @@
+name: ❓ Question / Help
+description: Ask for help with installation, providers, MCP, Auto Phase Plan, or voice
+labels: ['question']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For faster help, check the README, `docs/`, and the FAQ first. Remove API
+        keys, tokens, and private code before posting logs.
+  - type: dropdown
+    id: topic
+    attributes:
+      label: Topic
+      options:
+        - Installation or update
+        - Provider or model
+        - Agent / chat
+        - Auto Phase Plan
+        - MCP or tools
+        - Voice / microphone
+        - Other
+      default: 0
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+      description: What are you trying to do, and where are you stuck?
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Bytos and VS Code versions
+      description: Include both if they are relevant.
+      placeholder: 'Bytos 1.0.2 · VS Code 1.101.0'
+    validations:
+      required: false
+  - type: textarea
+    id: context
+    attributes:
+      label: What have you tried?
+      description: Include links, screenshots, or redacted logs.
+    validations:
+      required: false

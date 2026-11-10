@@ -229,7 +229,7 @@ describe("OnboardingView", () => {
 			),
 		).toEqual([
 			"Regular free model promotions",
-			"Subscribe to BytosPass for generous usage across the best open weights models like DeepSeek, Kimi, and GLM",
+			"Subscribe to ClinePass for generous usage across the best open weights models like DeepSeek, Kimi, and GLM",
 			"No API key needed",
 		]);
 		const apiKeyOption = container.querySelector(
@@ -408,7 +408,7 @@ describe("OnboardingView", () => {
 						{ id: "deepseek/deepseek-v4-flash", name: "deepseek-v4-flash" },
 						{ id: "bytos-free/solar-pro4", name: "Solar Pro 4" },
 					],
-					bytosPass: [],
+					clinePass: [],
 				};
 			}
 			return {};
@@ -430,7 +430,7 @@ describe("OnboardingView", () => {
 		// The redesigned completion step places transparent content over a static,
 		// wide version of the hero grid.
 		expect(container.textContent).toContain("You're all set");
-		// A Bytos sign-in ends on the current free models plus the BytosPass upsell.
+		// A Bytos sign-in ends on the current free models plus the ClinePass upsell.
 		const bytosModels = container.querySelector(
 			"[data-onboarding-bytos-models]",
 		);
@@ -438,7 +438,7 @@ describe("OnboardingView", () => {
 		expect(bytosModels?.textContent).toContain("deepseek-v4-flash");
 		expect(bytosModels?.textContent).toContain("Solar Pro 4");
 		await act(async () => {
-			buttonByText("Get BytosPass").click();
+			buttonByText("Get ClinePass").click();
 		});
 		expect(openExternalUrl).toHaveBeenCalledWith(
 			"https://app.bytos.dev/onboarding/individual-plan",

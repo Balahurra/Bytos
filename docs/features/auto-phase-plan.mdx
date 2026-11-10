@@ -1,0 +1,66 @@
+---
+title: "Auto Phase Plan"
+sidebarTitle: "Auto Phase Plan"
+description: "Run up to 10 sequential, independently configured Act-mode phases with automatic progression, failure handling, and Markdown reports."
+---
+
+**Auto Phase Plan** is Bytos's sequential multi-phase orchestration mode. It is
+not a parallel multi-agent system: one phase starts only after the previous one
+has finished.
+
+Open the mode selector in the chat input and choose **Auto**.
+
+## How a run works
+
+1. **Up to ten ordered phases.** Phase 1 starts first and Bytos advances
+   automatically until the last phase you configured.
+2. **Each phase is its own Act-mode task.** A phase gets a fresh task, its own
+   prompt, and its own tool loop. It does not inherit the previous phase's live
+   context.
+3. **Per-phase provider, model, API key, and MCP.** Each phase can use a different
+   provider, model, key, attachments, and MCP server allowlist.
+4. **Settings are isolated.** A phase's settings do not leak into the next phase
+   unless you explicitly copy them.
+5. **Failure policy is yours.** On a failure or a `BLOCKED` / `FAILED` report,
+   choose **Stop the plan**, **Continue with the next phase automatically**, or
+   **Ask me when a phase fails**. The default is to ask. Auth, API-key, credit,
+   and quota failures are not silently auto-continued.
+6. **Reports.** Every run writes
+   `.bytos/auto-phase-reports/<run-id>/report.md` with each phase's prompt,
+   provider/model, status, duration, error, and completion report. At the end
+   Bytos composes an overall summary of the run and stores it in the same
+   Markdown file. The chat shows a short summary with a link to the full report.
+7. **Optional AI final summary.** Off by default. When enabled, the last phase's
+   provider/model writes the closing summary. When off, it is generated
+   deterministically from the phase reports.
+8. **Explicit start and stop.** Starting a plan shows a confirmation warning; the
+   run can be stopped at any time. Stopping writes the partial report and marks
+   the remaining phases as skipped.
+
+## Configure a plan
+
+1. Open **Settings → Auto Phase Plan**.
+2. Add phases and give each one a prompt.
+3. Choose provider, model, API key, attachments, and MCP servers per phase.
+4. Choose the failure policy.
+5. Save the plan, then choose **Auto** in the composer and start the run.
+
+![Auto Phase Plan settings](/assets/auto-phase/ss1.png)
+
+![Failure handling options](/assets/auto-phase/ss2.png)
+
+![Per-phase prompt, provider, API key, and model](/assets/auto-phase/ss3.png)
+
+## What it is not
+
+- It is **not** a parallel fan-out. Phases run in order, one at a time.
+- It is **not** a replacement for approvals. Global approval settings still
+  apply.
+- It does **not** copy a completed phase's settings into the next phase unless
+  you explicitly copy them.
+
+## Related
+
+- [Plan and Act](/core-workflows/plan-and-act)
+- [Checkpoints](/core-workflows/checkpoints)
+- [FAQ](/troubleshooting/faq)

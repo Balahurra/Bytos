@@ -187,9 +187,8 @@ function writeBytosCredentials(credentials: {
 		}
 
 		// Token refreshes and startup restores also land here. Only claim the
-		// last-used slot when the current selection isn't already a provider
-		// backed by this credential entry (bytos-pass stores under "bytos") —
-		// otherwise every refresh resets a BytosPass selection back to
+		// last-used slot when the current selection isn't already backed by this
+		// credential entry, otherwise every refresh resets the selection back to
 		// usage-billing in the shared providers.json (#13501).
 		const lastUsedProvider = manager.read().lastUsedProvider
 		const setLastUsed = getProviderAuthStorageId(lastUsedProvider ?? "") !== "bytos"

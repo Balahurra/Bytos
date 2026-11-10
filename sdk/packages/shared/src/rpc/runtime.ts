@@ -176,7 +176,7 @@ export interface ProviderModel {
 	description?: string;
 	/**
 	 * Present when the Bytos recommended-models feed features this model
-	 * (bytos / bytos-pass providers only), so pickers can lead with the
+	 * (bytos / cline-pass providers only), so pickers can lead with the
 	 * feed's tiers without fetching and joining the feed themselves.
 	 */
 	featured?: ProviderModelFeatured;

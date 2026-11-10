@@ -16,7 +16,7 @@ import {
 	requestToolApproval,
 	submitAndExitInTerminal,
 } from "../utils/approval";
-import { formatCliErrorMessage } from "../utils/bytos-pass-errors";
+import { formatCliErrorMessage } from "../utils/cli-errors";
 import { handleEvent, handleTeamEvent } from "../utils/events";
 import {
 	shouldZeroBytosFreeModelCost,

@@ -13,23 +13,14 @@ import { isBytosProvider } from "@bytos/shared";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { isChatProviderModel } from "../../../utils/chat-models";
 import {
-	getCliSubscriptionUrl,
-	getIndividualPlanFeatures,
-} from "../../../utils/bytos-pass-errors";
-import {
 	checkLocalCliInstalled,
 	getLocalCliInfo,
 	type LocalCliStatus,
 	type ProviderLocalCli,
 } from "../../../utils/local-cli";
-import open from "../../../utils/open";
 import { getPersistedProviderApiKey } from "../../../utils/provider-auth";
 import { listLocalProviders } from "../../../utils/provider-catalog";
 import { getCliTelemetryService } from "../../../utils/telemetry";
-import {
-	loadCurrentUserPlanFromProviderSettings,
-	loadIndividualSubscriptionPlansFromProviderSettings,
-} from "../../bytos-account";
 import {
 	buildFeaturedModelEntries,
 	type BytosModelPickerEntry,
@@ -58,8 +49,6 @@ import {
 import { FIELD_ORDER } from "./fields";
 import { useOnboardingKeyboard } from "./keyboard";
 import {
-	BYTOS_PASS_SUBSCRIPTION_OPTIONS,
-	type BytosPassSubscriptionStatus,
 	canContinueLocalCliSetup,
 	DEFAULT_THINKING_LEVEL_INDEX,
 	getMainMenuOptions,
@@ -91,13 +80,7 @@ export function useOnboardingController(props: OnboardingControllerProps) {
 		() => props.providerSettingsManager ?? new ProviderSettingsManager(),
 		[props.providerSettingsManager],
 	);
-	const menuOptions = useMemo(
-		() =>
-			getMainMenuOptions({
-				isBytosPassEnabled: true,
-			}),
-		[],
-	);
+	const menuOptions = useMemo(() => getMainMenuOptions(), []);
 	const [step, setStep] = useState<OnboardingStep>("menu");
 	const [menuSelected, setMenuSelected] = useState(0);
 	const [oauthProvider, setOauthProvider] = useState("");
@@ -171,19 +154,6 @@ export function useOnboardingController(props: OnboardingControllerProps) {
 	const [modelsDefaultId, setModelsDefaultId] = useState("");
 	const [customModelId, setCustomModelId] = useState("");
 	const [customModelError, setCustomModelError] = useState("");
-	const [bytosPassSubscriptionStatus, setBytosPassSubscriptionStatus] =
-		useState<BytosPassSubscriptionStatus>("loading");
-	const [bytosPassSubscriptionError, setBytosPassSubscriptionError] =
-		useState("");
-	const [bytosPassCurrentPlanName, setBytosPassCurrentPlanName] = useState("");
-	const [bytosPassPlanFeatures, setBytosPassPlanFeatures] = useState<string[]>(
-		[],
-	);
-	const [bytosPassSubscriptionSelected, setBytosPassSubscriptionSelected] =
-		useState(0);
-	const [bytosPassSubscriptionOpenStatus, setBytosPassSubscriptionOpenStatus] =
-		useState("");
-	const bytosPassSubscriptionUrl = useMemo(() => getCliSubscriptionUrl(), []);
 
 	const modelItems: SearchableItem[] = useMemo(
 		() =>
@@ -199,9 +169,6 @@ export function useOnboardingController(props: OnboardingControllerProps) {
 
 	const createCustomModelItem = useCallback(
 		(_search: string, filteredItems: SearchableItem[]) => {
-			if (activeProviderId === "bytos-pass") {
-				return undefined;
-			}
 			if (filteredItems.some((item) => item.key === CUSTOM_MODEL_ID_ACTION)) {
 				return undefined;
 			}
@@ -212,12 +179,12 @@ export function useOnboardingController(props: OnboardingControllerProps) {
 				searchText: "create custom model id manual entry",
 			} satisfies SearchableItem;
 		},
-		[activeProviderId],
+		[],
 	);
 
 	const modelList = useSearchableList(modelItems, createCustomModelItem);
 
-	// Bytos featured model picker (BytosPass gets Subscribed/Free sections)
+	// Bytos featured model picker
 	const recommended = useBytosRecommendedModels();
 	const bytosEntries: BytosModelPickerEntry[] = useMemo(
 		() =>
@@ -232,20 +199,10 @@ export function useOnboardingController(props: OnboardingControllerProps) {
 	>(new Set());
 
 	useEffect(() => {
-		// The featured picker serves both bytos and bytos-pass, so pool
-		// reasoning support from both catalogs. Display names need no catalog
-		// here: fetchBytosRecommendedModels resolves them.
-		void Promise.allSettled(
-			["bytos", "bytos-pass"].map((providerId) =>
-				getLocalProviderModels(providerId),
-			),
-		).then((results) => {
+		void getLocalProviderModels("bytos").then((result) => {
 			const ids = new Set<string>();
-			for (const result of results) {
-				if (result.status !== "fulfilled") continue;
-				for (const m of result.value.models.filter(isChatProviderModel)) {
-					if (m.supportsReasoning) ids.add(m.id);
-				}
+			for (const m of result.models.filter(isChatProviderModel)) {
+				if (m.supportsReasoning) ids.add(m.id);
 			}
 			setBytosModelReasoningIds(ids);
 		});
@@ -304,62 +261,6 @@ export function useOnboardingController(props: OnboardingControllerProps) {
 		[providerSettingsManager],
 	);
 
-	const refreshBytosPassSubscriptionStatus = useCallback(() => {
-		setBytosPassSubscriptionStatus("loading");
-		setBytosPassSubscriptionError("");
-		setBytosPassCurrentPlanName("");
-		setBytosPassSubscriptionOpenStatus("");
-
-		loadCurrentUserPlanFromProviderSettings({ providerSettingsManager })
-			.then(
-				(value) => ({ status: "fulfilled" as const, value }),
-				(reason) => ({ status: "rejected" as const, reason }),
-			)
-			.then((currentPlanResult) =>
-				loadIndividualSubscriptionPlansFromProviderSettings({
-					providerSettingsManager,
-				})
-					.then(
-						(value) => ({ status: "fulfilled" as const, value }),
-						(reason) => ({ status: "rejected" as const, reason }),
-					)
-					.then((availablePlansResult) => ({
-						availablePlansResult,
-						currentPlanResult,
-					})),
-			)
-			.then(({ currentPlanResult, availablePlansResult }) => {
-				if (availablePlansResult.status === "fulfilled") {
-					setBytosPassPlanFeatures(
-						getIndividualPlanFeatures(availablePlansResult.value),
-					);
-				}
-
-				if (currentPlanResult.status === "rejected") {
-					const error = currentPlanResult.reason;
-					const message =
-						error instanceof Error ? error.message : String(error);
-					if (message.trim().toLowerCase() === "no plan found for user") {
-						setBytosPassSubscriptionStatus("unsubscribed");
-						return;
-					}
-					setBytosPassSubscriptionError(message);
-					setBytosPassSubscriptionStatus("error");
-					return;
-				}
-
-				const plan = currentPlanResult.value?.plan;
-				if (plan) {
-					setBytosPassCurrentPlanName(
-						plan.displayName || plan.name || plan.id || "BytosPass",
-					);
-					setBytosPassSubscriptionStatus("subscribed");
-				} else {
-					setBytosPassSubscriptionStatus("unsubscribed");
-				}
-			});
-	}, [providerSettingsManager]);
-
 	const transitionToModelPicker = useCallback(
 		(providerId: string) => {
 			setActiveProviderId(providerId);
@@ -383,25 +284,11 @@ export function useOnboardingController(props: OnboardingControllerProps) {
 		[providers, loadModelsForProvider, providerSettingsManager],
 	);
 
-	const transitionToBytosPassSubscription = useCallback(() => {
-		setActiveProviderId("bytos-pass");
-		const provider = providers.find((p) => p.id === "bytos-pass");
-		setActiveProviderName(provider?.name ?? "BytosPass");
-		setModelsDefaultId(provider?.defaultModelId ?? "");
-		setBytosPassSubscriptionSelected(0);
-		setStep("bytos_pass_subscription");
-		refreshBytosPassSubscriptionStatus();
-	}, [providers, refreshBytosPassSubscriptionStatus]);
-
 	const handleAuthComplete = useCallback(
 		(providerId: OnboardingOAuthProviderId) => {
-			if (providerId === "bytos-pass") {
-				transitionToBytosPassSubscription();
-				return;
-			}
 			transitionToModelPicker(providerId);
 		},
-		[transitionToBytosPassSubscription, transitionToModelPicker],
+		[transitionToModelPicker],
 	);
 
 	const resetAuth = useCallback(() => {
@@ -466,34 +353,6 @@ export function useOnboardingController(props: OnboardingControllerProps) {
 			startDeviceCodeFlow,
 		],
 	);
-
-	const continueFromBytosPassSubscription = useCallback(() => {
-		transitionToModelPicker("bytos-pass");
-	}, [transitionToModelPicker]);
-
-	const openBytosPassSubscriptionPage = useCallback(() => {
-		setBytosPassSubscriptionOpenStatus("Opening subscription page...");
-		void open(bytosPassSubscriptionUrl, { wait: false })
-			.then(() => {
-				setBytosPassSubscriptionOpenStatus(
-					"Opened subscription page in your browser.",
-				);
-			})
-			.catch(() => {
-				setBytosPassSubscriptionOpenStatus(
-					`Could not open browser automatically. Open ${bytosPassSubscriptionUrl}`,
-				);
-			});
-	}, [bytosPassSubscriptionUrl]);
-
-	useEffect(() => {
-		if (
-			step === "bytos_pass_subscription" &&
-			bytosPassSubscriptionStatus === "subscribed"
-		) {
-			transitionToModelPicker("bytos-pass");
-		}
-	}, [step, bytosPassSubscriptionStatus, transitionToModelPicker]);
 
 	const refreshLocalCliStatus = useCallback((provider: ProviderLocalCli) => {
 		// Probing spawns the provider's CLI, so a result can land long after the
@@ -804,9 +663,6 @@ export function useOnboardingController(props: OnboardingControllerProps) {
 		modelList,
 		bytosEntries,
 		bytosModelSelected,
-		bytosPassSubscriptionStatus,
-		bytosPassSubscriptionOptions: BYTOS_PASS_SUBSCRIPTION_OPTIONS,
-		bytosPassSubscriptionSelected,
 		thinkingSelected,
 		setStep,
 		setMenuSelected,
@@ -823,11 +679,7 @@ export function useOnboardingController(props: OnboardingControllerProps) {
 		setDeviceError,
 		setDeviceStatus,
 		setBytosModelSelected,
-		setBytosPassSubscriptionSelected,
 		setThinkingSelected,
-		continueFromBytosPassSubscription,
-		refreshBytosPassSubscriptionStatus,
-		openBytosPassSubscriptionPage,
 		abortOAuth: () => {
 			authAbortRef.current = true;
 		},
@@ -863,14 +715,6 @@ export function useOnboardingController(props: OnboardingControllerProps) {
 		localCliStatus,
 		bytosEntries,
 		bytosModelSelected,
-		bytosPassCurrentPlanName,
-		bytosPassPlanFeatures,
-		bytosPassSubscriptionError,
-		bytosPassSubscriptionOpenStatus,
-		bytosPassSubscriptionOptions: BYTOS_PASS_SUBSCRIPTION_OPTIONS,
-		bytosPassSubscriptionSelected,
-		bytosPassSubscriptionStatus,
-		bytosPassSubscriptionUrl,
 		deviceError,
 		deviceStatus,
 		deviceUserCode,

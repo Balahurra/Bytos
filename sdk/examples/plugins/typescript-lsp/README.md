@@ -28,7 +28,7 @@ The same pattern applies for enterprise use cases: you can build plugins that wr
 ## Use it with the CLI
 
 ```bash
-bytos plugin install https://github.com/bytos/bytos/blob/main/sdk/examples/plugins/typescript-lsp/index.ts
+bytos plugin install https://github.com/Balahurra/Bytos/blob/main/sdk/examples/plugins/typescript-lsp/index.ts
 bytos -i "Find where createTool is defined"
 ```
 

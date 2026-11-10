@@ -11,7 +11,10 @@ export interface WorkspacePathOptions {
 
 function isWithin(root: string, candidate: string): boolean {
 	const relative = path.relative(root, candidate)
-	return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative))
+	return (
+		relative === "" ||
+		(!relative.startsWith("..") && !path.isAbsolute(relative))
+	)
 }
 
 /**
@@ -60,8 +63,21 @@ export async function resolveWorkspacePath(
 		throw new Error("A valid file path is required.")
 	}
 
-	const root = await fs.realpath(workspaceRoot).catch(() => path.resolve(workspaceRoot))
-	const resolved = path.isAbsolute(inputPath) ? path.normalize(inputPath) : path.resolve(root, inputPath)
+	const root = await fs
+		.realpath(workspaceRoot)
+		.catch(() => path.resolve(workspaceRoot))
+	const resolved = path.isAbsolute(inputPath)
+		? path.normalize(inputPath)
+		: path.resolve(root, inputPath)
+
+	// Reject obvious lexical escapes before touching the filesystem. This is
+	// not the authorization decision (realpath below is), but it avoids
+	// resolving arbitrary network/UNC targets and gives a stable error even
+	// when the target cannot be reached.
+	if (!options.allowOutsideWorkspace && !isWithin(root, resolved)) {
+		throw new Error(`Path is outside the workspace: ${inputPath}`)
+	}
+
 	const real = await realpathNearest(resolved)
 
 	if (!options.allowOutsideWorkspace && !isWithin(root, real)) {

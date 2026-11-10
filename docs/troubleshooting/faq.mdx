@@ -1,0 +1,82 @@
+---
+title: "FAQ"
+sidebarTitle: "FAQ"
+description: "Short answers about installation, models, approvals, Auto Phase Plan, voice, and privacy."
+---
+
+## Is Bytos free?
+
+The extension is free and open source. It is **BYOK**: you pay your model
+provider for usage. A Bytos account is optional; chat and BYOK work without one.
+
+## Do I need a Bytos account?
+
+No. It is optional. You need a provider API key or a local model server.
+
+## Which VS Code versions are supported?
+
+Visual Studio Code **1.101.0 or newer**. VS Code Insiders works too.
+
+## Does Bytos work on macOS and Linux?
+
+The core extension is tested on Windows, macOS, and Linux. Local **voice
+dictation is Windows x64 only** in the current release.
+
+## Does Bytos send my code to a Bytos server?
+
+No, unless you select a Bytos-hosted provider. By default, model requests go
+directly to the provider you choose. The optional ClinePass compatibility provider
+sends requests to Cline's hosted API with your own Cline API key. If you sign in,
+account data is sent to Bytos services as described in `PRIVACY.md`.
+
+## Where are API keys stored?
+
+In VS Code SecretStorage (the OS credential store). They are never written to a
+plaintext settings file and are never sent to the webview.
+
+## What is Auto Phase Plan?
+
+A sequential mode that runs up to 10 phases, one after another. Each phase is
+its own Act-mode task with its own prompt, provider, model, API key, and MCP
+allowlist. See [Auto Phase Plan](/features/auto-phase-plan).
+
+## Are Auto Phase phases parallel?
+
+No. They run in order, one at a time.
+
+## Can I stop a plan when a phase fails?
+
+Yes. Choose **Stop the plan**, **Continue with the next phase automatically**, or
+**Ask me when a phase fails** in **Settings → Auto Phase Plan**.
+
+## Where are Auto Phase reports written?
+
+`.bytos/auto-phase-reports/<run-id>/report.md` in the workspace.
+
+## Why is the microphone list empty?
+
+On Windows x64, open **Settings → Voice**, turn on Voice, and press **Refresh**.
+If the list is still empty, check Windows microphone privacy settings and the
+troubleshooting page. On other platforms, voice capture is not available in this
+release.
+
+## Why can I not transcribe?
+
+A speech model must be downloaded and verified in **Settings → Voice**. The
+engine is bundled; the model is downloaded on demand.
+
+## Does Bytos auto-approve tools?
+
+No. Reads, edits, terminal commands, browser access, MCP tools, and unknown tools
+require approval until you explicitly auto-approve that category.
+
+## Is telemetry on?
+
+No. Telemetry is off by default and requires an explicit opt-in in
+**Settings → General**.
+
+## How is Bytos related to Cline?
+
+Bytos includes software derived from the Cline open-source project, licensed
+under Apache-2.0. Bytos is an independent project and is not endorsed by or
+affiliated with Cline. See `NOTICE` and `LICENSE`.

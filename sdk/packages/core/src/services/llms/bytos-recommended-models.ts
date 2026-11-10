@@ -24,7 +24,6 @@ export interface BytosRecommendedModel {
 export interface BytosRecommendedModelsData {
 	recommended: BytosRecommendedModel[];
 	free: BytosRecommendedModel[];
-	bytosPass: BytosRecommendedModel[];
 }
 
 type ModelsCatalog = Record<string, Record<string, ModelInfo>>;
@@ -51,7 +50,6 @@ export const FALLBACK_BYTOS_RECOMMENDED_MODELS: BytosRecommendedModelsData =
 		normalizeResponse(GENERATED_BYTOS_RECOMMENDED_MODELS) ?? {
 			recommended: [],
 			free: [],
-			bytosPass: [],
 		},
 		getGeneratedProviderModels(),
 	);
@@ -65,10 +63,6 @@ function cloneRecommendedModels(
 			tags: [...model.tags],
 		})),
 		free: data.free.map((model) => ({ ...model, tags: [...model.tags] })),
-		bytosPass: data.bytosPass.map((model) => ({
-			...model,
-			tags: [...model.tags],
-		})),
 	};
 }
 
@@ -96,21 +90,17 @@ function normalizeResponse(raw: unknown): BytosRecommendedModelsData | null {
 		? data.recommended
 		: [];
 	const freeRaw = Array.isArray(data.free) ? data.free : [];
-	const bytosPassRaw = Array.isArray(data.bytosPass) ? data.bytosPass : [];
 	const recommended = recommendedRaw
 		.map(normalizeModel)
 		.filter((model): model is BytosRecommendedModel => model !== null);
 	const free = freeRaw
 		.map(normalizeModel)
 		.filter((model): model is BytosRecommendedModel => model !== null);
-	const bytosPass = bytosPassRaw
-		.map(normalizeModel)
-		.filter((model): model is BytosRecommendedModel => model !== null);
-	if (recommended.length === 0 && free.length === 0 && bytosPass.length === 0) {
+	if (recommended.length === 0 && free.length === 0) {
 		return null;
 	}
 
-	return { recommended, free, bytosPass };
+	return { recommended, free };
 }
 
 function getConfiguredApiBaseUrl(
@@ -247,7 +237,6 @@ function resolveCatalogDisplayNames(
 	return {
 		recommended: withNames(data.recommended, [catalog?.openrouter]),
 		free: withNames(data.free, [catalog?.bytos, catalog?.openrouter]),
-		bytosPass: withNames(data.bytosPass, [catalog?.["bytos-pass"]]),
 	};
 }
 
@@ -366,12 +355,6 @@ const FEATURED_TIER_BUCKETS: Record<
 > = {
 	bytos: [
 		{ tier: "recommended", select: (data) => data.recommended },
-		{ tier: "free", select: (data) => data.free },
-	],
-	// BytosPass surfaces its subscription models plus the free models (both
-	// ride the same Bytos API; free models bill $0 outside the quota).
-	"bytos-pass": [
-		{ tier: "subscribed", select: (data) => data.bytosPass },
 		{ tier: "free", select: (data) => data.free },
 	],
 };

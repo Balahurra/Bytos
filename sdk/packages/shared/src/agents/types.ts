@@ -10,13 +10,9 @@
  * and is used directly.
  */
 
-import { z } from "zod";
-import type {
-	AgentRuntimeHooks,
-	AgentTool,
-	ProviderErrorClass,
-} from "../agent";
-import type { ExtensionContext } from "../extensions/context";
+import { z } from "zod"
+import type { AgentRuntimeHooks, AgentTool, ProviderErrorClass } from "../agent"
+import type { ExtensionContext } from "../extensions/context"
 import type {
 	AgentExtensionApi,
 	AgentExtensionHooks,
@@ -24,30 +20,30 @@ import type {
 	ContributionRegistryExtension,
 	PluginManifest,
 	PluginSetupContext,
-} from "../extensions/contribution-registry";
-import type { HookControl } from "../hooks/contracts";
-import type { GeneratedMedia } from "../llms/media";
+} from "../extensions/contribution-registry"
+import type { HookControl } from "../hooks/contracts"
+import type { GeneratedMedia } from "../llms/media"
 import type {
 	ImageContent,
 	MediaContent,
 	Message,
 	MessageWithMetadata,
 	TextContent,
-} from "../llms/messages";
-import type { ModelInfo } from "../llms/model-info";
-import { ModelInfoSchema } from "../llms/model-info";
-import type { ModelTool } from "../llms/model-tools";
+} from "../llms/messages"
+import type { ModelInfo } from "../llms/model-info"
+import { ModelInfoSchema } from "../llms/model-info"
+import type { ModelTool } from "../llms/model-tools"
 import {
 	type ReasoningEffort,
 	ReasoningEffortSchema,
-} from "../llms/reasoning-options";
+} from "../llms/reasoning-options"
 
 /** A file either flattens to text or contributes native media/image blocks. */
-export type UserFileContentBlock = TextContent | ImageContent | MediaContent;
+export type UserFileContentBlock = TextContent | ImageContent | MediaContent
 export type UserFileContent =
 	| string
 	| UserFileContentBlock
-	| UserFileContentBlock[];
+	| UserFileContentBlock[]
 
 export {
 	REASONING_LEVELS,
@@ -55,18 +51,18 @@ export {
 	ReasoningEffortSchema,
 	type ReasoningLevel,
 	ReasoningLevelSchema,
-} from "../llms/reasoning-options";
+} from "../llms/reasoning-options"
 
 import type {
 	ToolApprovalRequest,
 	ToolApprovalResult,
 	ToolCallRecord,
 	ToolPolicy,
-} from "../llms/tools";
-import { ToolCallRecordSchema } from "../llms/tools";
-import type { BasicLogger } from "../logging/logger";
-import type { ITelemetryService } from "../services/telemetry";
-import type { WorkspaceInfo } from "../session/workspace";
+} from "../llms/tools"
+import { ToolCallRecordSchema } from "../llms/tools"
+import type { BasicLogger } from "../logging/logger"
+import type { ITelemetryService } from "../services/telemetry"
+import type { WorkspaceInfo } from "../session/workspace"
 
 // =============================================================================
 // Agent Events
@@ -84,118 +80,118 @@ export type AgentEvent =
 	| AgentNoticeEvent
 	| AgentUsageEvent
 	| AgentDoneEvent
-	| AgentErrorEvent;
+	| AgentErrorEvent
 
-export type AgentContentType = "text" | "reasoning" | "media" | "tool";
+export type AgentContentType = "text" | "reasoning" | "media" | "tool"
 
 export interface AgentEventMetadata {
 	/** Current ID */
-	agentId?: string;
+	agentId?: string
 	/** Task ID */
-	conversationId?: string;
+	conversationId?: string
 	/** ID of the agent that created this agent */
-	parentAgentId?: string | null;
+	parentAgentId?: string | null
 }
 
 export interface AgentContentStartEvent extends AgentEventMetadata {
-	type: "content_start";
-	contentType: AgentContentType;
+	type: "content_start"
+	contentType: AgentContentType
 	/** The text chunk received from the model */
-	text?: string;
+	text?: string
 	/** Accumulated text so far in this turn */
-	accumulated?: string;
+	accumulated?: string
 	/** The reasoning/thinking text from the model */
-	reasoning?: string;
+	reasoning?: string
 	/** Whether this is redacted reasoning */
-	redacted?: boolean;
+	redacted?: boolean
 	/** Name of the tool being called */
-	toolName?: string;
+	toolName?: string
 	/** Unique identifier for this tool call */
-	toolCallId?: string;
+	toolCallId?: string
 	/** Input being passed to the tool */
-	input?: unknown;
+	input?: unknown
 	/** Where a model tool is executed; absent for ordinary local tools. */
-	execution?: "client" | "provider";
+	execution?: "client" | "provider"
 }
 
 export interface AgentContentUpdateEvent extends AgentEventMetadata {
-	type: "content_update";
-	contentType: "tool";
+	type: "content_update"
+	contentType: "tool"
 	/** Name of the tool emitting progress */
-	toolName?: string;
+	toolName?: string
 	/** Unique identifier for this tool call */
-	toolCallId?: string;
+	toolCallId?: string
 	/** Partial result emitted by the tool */
-	update: unknown;
+	update: unknown
 }
 
 export interface AgentContentEndEvent extends AgentEventMetadata {
-	type: "content_end";
-	contentType: AgentContentType;
+	type: "content_end"
+	contentType: AgentContentType
 	/** Final text generated for this turn */
-	text?: string;
+	text?: string
 	/** Final reasoning/thinking text generated for this turn */
-	reasoning?: string;
+	reasoning?: string
 	/** Generated media returned by the model. */
-	media?: GeneratedMedia;
+	media?: GeneratedMedia
 	/** Name of the tool that completed */
-	toolName?: string;
+	toolName?: string
 	/** Unique identifier for this tool call */
-	toolCallId?: string;
+	toolCallId?: string
 	/** Output from the tool */
-	output?: unknown;
+	output?: unknown
 	/** Error message if the tool failed */
-	error?: string;
+	error?: string
 	/** Time taken in milliseconds for tool content */
-	durationMs?: number;
+	durationMs?: number
 	/** Where a model tool is executed; absent for ordinary local tools. */
-	execution?: "client" | "provider";
+	execution?: "client" | "provider"
 }
 
 export interface AgentIterationStartEvent extends AgentEventMetadata {
-	type: "iteration_start";
+	type: "iteration_start"
 	/** The iteration number (1-based) */
-	iteration: number;
+	iteration: number
 }
 
 export interface AgentIterationEndEvent extends AgentEventMetadata {
-	type: "iteration_end";
+	type: "iteration_end"
 	/** The iteration number that just completed */
-	iteration: number;
+	iteration: number
 	/** Whether this iteration had any tool calls */
-	hadToolCalls: boolean;
+	hadToolCalls: boolean
 	/** Number of tool calls in this iteration */
-	toolCallCount: number;
+	toolCallCount: number
 }
 
 export interface AgentUsageEvent extends AgentEventMetadata {
-	type: "usage";
+	type: "usage"
 	/** Number of input tokens for this turn */
-	inputTokens: number;
+	inputTokens: number
 	/** Number of output tokens for this turn */
-	outputTokens: number;
+	outputTokens: number
 	/** Tokens read from cache */
-	cacheReadTokens?: number;
+	cacheReadTokens?: number
 	/** Tokens written to cache */
-	cacheWriteTokens?: number;
+	cacheWriteTokens?: number
 	/** Cost for this turn */
-	cost?: number;
+	cost?: number
 	/** Reasoning/thinking tokens for this turn, already excluded from outputTokens */
-	reasoningTokenCount?: number;
+	reasoningTokenCount?: number
 
 	/** Accumulated totals */
-	totalInputTokens: number;
-	totalCacheReadTokens?: number;
-	totalCacheWriteTokens?: number;
-	totalOutputTokens: number;
-	totalCost?: number;
+	totalInputTokens: number
+	totalCacheReadTokens?: number
+	totalCacheWriteTokens?: number
+	totalOutputTokens: number
+	totalCost?: number
 }
 
 export interface AgentNoticeEvent extends AgentEventMetadata {
-	type: "notice";
-	noticeType: "recovery" | "stop" | "status";
-	message: string;
-	displayRole?: "system" | "status";
+	type: "notice"
+	noticeType: "recovery" | "stop" | "status"
+	message: string
+	displayRole?: "system" | "status"
 	reason?:
 		| "api_error"
 		| "invalid_tool_call"
@@ -204,61 +200,61 @@ export interface AgentNoticeEvent extends AgentEventMetadata {
 		| "mistake_limit"
 		| "auto_compaction"
 		| "manual_compaction"
-		| "compaction_budget_emergency";
-	metadata?: Record<string, unknown>;
+		| "compaction_budget_emergency"
+	metadata?: Record<string, unknown>
 }
 
 export interface AgentDoneEvent extends AgentEventMetadata {
-	type: "done";
+	type: "done"
 	/** The reason the agent stopped */
-	reason: AgentFinishReason;
+	reason: AgentFinishReason
 	/** Final text output */
-	text: string;
+	text: string
 	/** Total number of iterations */
-	iterations: number;
+	iterations: number
 	/** Aggregated usage information */
-	usage?: LegacyAgentUsage;
+	usage?: LegacyAgentUsage
 }
 
 export interface AgentErrorEvent extends AgentEventMetadata {
-	type: "error";
+	type: "error"
 	/** The error that occurred */
-	error: Error;
+	error: Error
 	/** Classification of the provider error, when known. */
-	errorClass?: ProviderErrorClass;
+	errorClass?: ProviderErrorClass
 	/** Whether the error is recoverable */
-	recoverable: boolean;
+	recoverable: boolean
 	/** Current iteration when error occurred */
-	iteration: number;
+	iteration: number
 }
 
 export interface ConsecutiveMistakeLimitContext {
-	iteration: number;
-	consecutiveMistakes: number;
-	maxConsecutiveMistakes: number;
-	reason: "api_error" | "invalid_tool_call" | "tool_execution_failed";
-	details?: string;
+	iteration: number
+	consecutiveMistakes: number
+	maxConsecutiveMistakes: number
+	reason: "api_error" | "invalid_tool_call" | "tool_execution_failed"
+	details?: string
 }
 
 export type ConsecutiveMistakeLimitDecision =
 	| {
-			action: "continue";
+			action: "continue"
 			/**
 			 * Optional guidance appended as a user message before continuing.
 			 */
-			guidance?: string;
+			guidance?: string
 	  }
 	| {
-			action: "stop";
+			action: "stop"
 			/**
 			 * Optional reason surfaced when stopping due to the limit.
 			 */
-			reason?: string;
-	  };
+			reason?: string
+	  }
 
 export interface LoopDetectionConfig {
-	softThreshold: number;
-	hardThreshold: number;
+	softThreshold: number
+	hardThreshold: number
 }
 
 export interface AgentExecutionConfig {
@@ -268,19 +264,19 @@ export interface AgentExecutionConfig {
 	 * and iterations where every executed tool call fails.
 	 * @default 6
 	 */
-	maxConsecutiveMistakes?: number;
+	maxConsecutiveMistakes?: number
 	/**
 	 * After this many consecutive iterations with tool calls,
 	 * inject a reminder text block asking the agent to answer if it has enough info.
 	 * Set to `0` or omit to disable.
 	 * @default 0
 	 */
-	reminderAfterIterations?: number;
+	reminderAfterIterations?: number
 	/**
 	 * Custom reminder text to inject after `reminderAfterIterations`.
 	 * @default "REMINDER: If you have gathered enough information to answer the user's question, please provide your final answer now without using any more tools."
 	 */
-	reminderText?: string;
+	reminderText?: string
 	/**
 	 * Repeated tool call loop detection. When enabled, the agent detects
 	 * consecutive identical tool calls and intervenes:
@@ -290,7 +286,7 @@ export interface AgentExecutionConfig {
 	 * Set to `false` to explicitly disable. Omit or leave `undefined` for no detection.
 	 * The CLI enables this by default with `{ softThreshold: 3, hardThreshold: 5 }`.
 	 */
-	loopDetection?: false | Partial<LoopDetectionConfig>;
+	loopDetection?: false | Partial<LoopDetectionConfig>
 }
 
 // =============================================================================
@@ -302,7 +298,7 @@ export interface AgentExecutionConfig {
  * - "ignore": swallow hook errors and continue agent execution
  * - "throw": fail agent execution when a hook throws
  */
-export type HookErrorMode = "ignore" | "throw";
+export type HookErrorMode = "ignore" | "throw"
 
 /**
  * Common controls supported by lifecycle hooks.
@@ -312,38 +308,38 @@ export type AgentHookControl = Omit<HookControl, "appendMessages"> & {
 	 * Optional messages appended to history.
 	 * Primarily used by before-agent-start hook stages.
 	 */
-	appendMessages?: Message[];
+	appendMessages?: Message[]
 	/**
 	 * Optional replacement message history.
 	 * Primarily used by before-agent-start hooks and host-owned context pipelines.
 	 */
-	replaceMessages?: Message[];
-};
+	replaceMessages?: Message[]
+}
 
 export interface AgentHookRunStartContext {
 	/**
 	 * ID of the agent
 	 */
-	agentId: string;
+	agentId: string
 	/**
 	 * Session ID
 	 */
-	conversationId: string;
+	conversationId: string
 	/**
 	 * ID of the agent that spawned the agent that is executing this run
 	 */
-	parentAgentId: string | null;
+	parentAgentId: string | null
 	/**
 	 * The prompt submitted by user
 	 */
-	userMessage: string;
+	userMessage: string
 }
 
 export interface AgentHookScheduleContext {
-	scheduleId: string;
-	executionId?: string;
-	trigger: "scheduled" | "manual";
-	triggeredAt?: string;
+	scheduleId: string
+	executionId?: string
+	trigger: "scheduled" | "manual"
+	triggeredAt?: string
 }
 
 /**
@@ -361,13 +357,13 @@ export interface SessionWorkspaceEnv {
 	 * via `--cwd`). Always accurate — never use `process.cwd()` in plugins or
 	 * hooks; use this field instead.
 	 */
-	cwd?: string;
+	cwd?: string
 	/**
 	 * The workspace / project root when it differs from `cwd`. Global plugins
 	 * installed outside the project should use this rather than
 	 * `import.meta.url` tricks or `process.cwd()`.
 	 */
-	workspaceRoot?: string;
+	workspaceRoot?: string
 	/**
 	 * Structured workspace and git metadata for the session.
 	 *
@@ -379,7 +375,7 @@ export interface SessionWorkspaceEnv {
 	 * attribution, or tooling integrations without running their own `git`
 	 * calls. Populated once per session at session-start time.
 	 */
-	workspaceInfo?: WorkspaceInfo;
+	workspaceInfo?: WorkspaceInfo
 }
 
 /**
@@ -387,10 +383,10 @@ export interface SessionWorkspaceEnv {
  * first run starts. This is the right place for session-scoped setup.
  */
 export interface AgentHookSessionStartContext extends SessionWorkspaceEnv {
-	agentId: string;
-	conversationId: string;
-	parentAgentId: string | null;
-	schedule?: AgentHookScheduleContext;
+	agentId: string
+	conversationId: string
+	parentAgentId: string | null
+	schedule?: AgentHookScheduleContext
 }
 
 /**
@@ -398,10 +394,10 @@ export interface AgentHookSessionStartContext extends SessionWorkspaceEnv {
  * accepted and before the loop enters its first iteration.
  */
 export interface AgentHookRunEndContext {
-	agentId: string;
-	conversationId: string;
-	parentAgentId: string | null;
-	result: AgentResult;
+	agentId: string
+	conversationId: string
+	parentAgentId: string | null
+	result: AgentResult
 }
 
 /**
@@ -409,27 +405,27 @@ export interface AgentHookRunEndContext {
  * model preparation occurs.
  */
 export interface AgentHookIterationStartContext {
-	agentId: string;
-	conversationId: string;
-	parentAgentId: string | null;
-	iteration: number;
+	agentId: string
+	conversationId: string
+	parentAgentId: string | null
+	iteration: number
 }
 
 export interface AgentHookIterationEndContext {
-	agentId: string;
-	conversationId: string;
-	parentAgentId: string | null;
-	iteration: number;
-	hadToolCalls: boolean;
-	toolCallCount: number;
+	agentId: string
+	conversationId: string
+	parentAgentId: string | null
+	iteration: number
+	hadToolCalls: boolean
+	toolCallCount: number
 }
 
 export interface AgentHookTurnStartContext {
-	agentId: string;
-	conversationId: string;
-	parentAgentId: string | null;
-	iteration: number;
-	messages: Message[];
+	agentId: string
+	conversationId: string
+	parentAgentId: string | null
+	iteration: number
+	messages: Message[]
 }
 
 /**
@@ -441,64 +437,64 @@ export interface AgentHookTurnStartContext {
  * appending messages, or cancelling the run.
  */
 export interface AgentHookBeforeAgentStartContext {
-	agentId: string;
-	conversationId: string;
-	parentAgentId: string | null;
-	iteration: number;
-	systemPrompt: string;
-	messages: Message[];
+	agentId: string
+	conversationId: string
+	parentAgentId: string | null
+	iteration: number
+	systemPrompt: string
+	messages: Message[]
 }
 
 export interface AgentHookTurnEndContext {
-	agentId: string;
-	conversationId: string;
-	parentAgentId: string | null;
-	iteration: number;
-	turn: ProcessedTurn;
+	agentId: string
+	conversationId: string
+	parentAgentId: string | null
+	iteration: number
+	turn: ProcessedTurn
 }
 
 export interface AgentHookToolCallStartContext {
-	agentId: string;
-	conversationId: string;
-	parentAgentId: string | null;
-	iteration: number;
-	call: PendingToolCall;
+	agentId: string
+	conversationId: string
+	parentAgentId: string | null
+	iteration: number
+	call: PendingToolCall
 }
 
 export interface AgentHookToolCallEndContext {
-	agentId: string;
-	conversationId: string;
-	parentAgentId: string | null;
-	iteration: number;
-	record: ToolCallRecord;
+	agentId: string
+	conversationId: string
+	parentAgentId: string | null
+	iteration: number
+	record: ToolCallRecord
 }
 
 export interface AgentHookErrorContext {
-	agentId: string;
-	conversationId: string;
-	parentAgentId: string | null;
-	iteration: number;
-	error: Error;
+	agentId: string
+	conversationId: string
+	parentAgentId: string | null
+	iteration: number
+	error: Error
 }
 
 export interface AgentHookStopErrorContext {
-	agentId: string;
-	conversationId: string;
-	parentAgentId: string | null;
-	iteration: number;
-	error: Error;
+	agentId: string
+	conversationId: string
+	parentAgentId: string | null
+	iteration: number
+	error: Error
 }
 
 export interface AgentHookSessionShutdownContext {
-	agentId: string;
-	conversationId: string;
+	agentId: string
+	conversationId: string
 	/** Stable core session id for the root session, when provided by the host. */
-	sessionId?: string;
-	parentAgentId: string | null;
+	sessionId?: string
+	parentAgentId: string | null
 	/**
 	 * Optional reason for shutdown (e.g. "ctrl_d", "process_exit")
 	 */
-	reason?: string;
+	reason?: string
 }
 
 // =============================================================================
@@ -506,50 +502,50 @@ export interface AgentHookSessionShutdownContext {
 // =============================================================================
 
 export interface AgentExtensionRuntimeEventContext {
-	agentId: string;
-	conversationId: string;
-	parentAgentId: string | null;
-	event: AgentEvent;
+	agentId: string
+	conversationId: string
+	parentAgentId: string | null
+	event: AgentEvent
 }
 
 export interface AgentExtensionSessionStartContext extends SessionWorkspaceEnv {
-	agentId: string;
-	conversationId: string;
-	parentAgentId: string | null;
-	schedule?: AgentHookScheduleContext;
+	agentId: string
+	conversationId: string
+	parentAgentId: string | null
+	schedule?: AgentHookScheduleContext
 }
 
 export interface AgentExtensionSessionShutdownContext {
-	agentId: string;
-	conversationId: string;
+	agentId: string
+	conversationId: string
 	/** Stable core session id for the root session, when provided by the host. */
-	sessionId?: string;
-	parentAgentId: string | null;
-	reason?: string;
+	sessionId?: string
+	parentAgentId: string | null
+	reason?: string
 }
 
 export interface AgentExtensionContext extends PluginSetupContext {}
 
 export interface AgentExtension
 	extends ContributionRegistryExtension<AgentTool, Message[]> {
-	name: string;
-	manifest: PluginManifest;
-	hooks?: AgentExtensionHooks;
+	name: string
+	manifest: PluginManifest
+	hooks?: AgentExtensionHooks
 	setup?: (
 		api: AgentExtensionApi<AgentTool, Message[]>,
 		ctx: AgentExtensionContext,
-	) => void | Promise<void>;
+	) => void | Promise<void>
 }
 
 export type AgentLoopExtensionRegistry = AgentExtensionRegistryGeneric<
 	AgentTool,
 	Message
->;
+>
 
 /**
  * Lifecycle hooks for observing or influencing agent execution.
  */
-export type AgentHooks = Partial<AgentRuntimeHooks>;
+export type AgentHooks = Partial<AgentRuntimeHooks>
 
 // =============================================================================
 // Agent Finish Reasons
@@ -563,7 +559,7 @@ export type AgentFinishReason =
 	| "max_iterations" // Hit the maximum iteration limit
 	| "aborted" // User or system aborted
 	| "mistake_limit" // Stopped after repeated recoverable mistakes
-	| "error"; // Unrecoverable error occurred
+	| "error" // Unrecoverable error occurred
 
 export const AgentFinishReasonSchema = z.enum([
 	"completed",
@@ -571,7 +567,7 @@ export const AgentFinishReasonSchema = z.enum([
 	"aborted",
 	"mistake_limit",
 	"error",
-]);
+])
 
 // =============================================================================
 // Agent Usage
@@ -589,15 +585,15 @@ export const AgentFinishReasonSchema = z.enum([
  */
 export interface LegacyAgentUsage {
 	/** Total input tokens across all iterations */
-	inputTokens: number;
+	inputTokens: number
 	/** Total output tokens across all iterations */
-	outputTokens: number;
+	outputTokens: number
 	/** Total tokens read from cache */
-	cacheReadTokens?: number;
+	cacheReadTokens?: number
 	/** Total tokens written to cache */
-	cacheWriteTokens?: number;
+	cacheWriteTokens?: number
 	/** Total cost in dollars */
-	totalCost?: number;
+	totalCost?: number
 }
 
 export const AgentUsageSchema = z.object({
@@ -606,45 +602,45 @@ export const AgentUsageSchema = z.object({
 	cacheReadTokens: z.number().optional(),
 	cacheWriteTokens: z.number().optional(),
 	totalCost: z.number().optional(),
-});
+})
 
 export interface AgentPrepareTurnContext {
-	agentId: string;
-	conversationId: string;
-	parentAgentId: string | null;
-	iteration: number;
-	messages: MessageWithMetadata[];
-	apiMessages: MessageWithMetadata[];
-	abortSignal: AbortSignal;
-	systemPrompt: string;
-	tools: AgentTool[];
+	agentId: string
+	conversationId: string
+	parentAgentId: string | null
+	iteration: number
+	messages: MessageWithMetadata[]
+	apiMessages: MessageWithMetadata[]
+	abortSignal: AbortSignal
+	systemPrompt: string
+	tools: AgentTool[]
 	model: {
-		id: string;
-		provider: string;
-		info?: ModelInfo;
-	};
+		id: string
+		provider: string
+		info?: ModelInfo
+	}
 	/**
 	 * Set when the previous model request was rejected as exceeding the
 	 * model's context window; asks the prepare-turn pipeline to force a
 	 * compaction rather than trust its token estimates.
 	 */
-	overflowRecovery?: boolean;
+	overflowRecovery?: boolean
 	/**
 	 * Input tokens the provider actually counted for the previous request this
 	 * run, when available. Compaction uses it as a floor on its own char-based
 	 * estimate, which under-counts dense content (disassembly, pixel dumps) and
 	 * can otherwise let the real context grow past the window without triggering.
 	 */
-	previousRequestInputTokens?: number;
+	previousRequestInputTokens?: number
 	emitStatusNotice?: (
 		message: string,
 		metadata?: Record<string, unknown>,
-	) => void;
+	) => void
 }
 
 export interface AgentPrepareTurnResult {
-	messages?: MessageWithMetadata[];
-	systemPrompt?: string;
+	messages?: MessageWithMetadata[]
+	systemPrompt?: string
 }
 
 // =============================================================================
@@ -656,29 +652,29 @@ export interface AgentPrepareTurnResult {
  */
 export interface AgentResult {
 	/** Final text output from the agent */
-	text: string;
+	text: string
 	/** Aggregated token usage and cost */
-	usage: LegacyAgentUsage;
+	usage: LegacyAgentUsage
 	/** Full conversation history */
-	messages: MessageWithMetadata[];
+	messages: MessageWithMetadata[]
 	/** All tool calls made during execution */
-	toolCalls: ToolCallRecord[];
+	toolCalls: ToolCallRecord[]
 	/** Number of loop iterations */
-	iterations: number;
+	iterations: number
 	/** Why the agent stopped */
-	finishReason: AgentFinishReason;
+	finishReason: AgentFinishReason
 	/** Model information used */
 	model: {
-		id: string;
-		provider: string;
-		info?: ModelInfo;
-	};
+		id: string
+		provider: string
+		info?: ModelInfo
+	}
 	/** Start time of the run */
-	startedAt: Date;
+	startedAt: Date
 	/** End time of the run */
-	endedAt: Date;
+	endedAt: Date
 	/** Total duration in milliseconds */
-	durationMs: number;
+	durationMs: number
 }
 
 export const AgentResultSchema = z.object({
@@ -696,7 +692,7 @@ export const AgentResultSchema = z.object({
 	startedAt: z.date(),
 	endedAt: z.date(),
 	durationMs: z.number(),
-});
+})
 
 // =============================================================================
 // Agent Configuration
@@ -707,7 +703,7 @@ export const AgentResultSchema = z.object({
  */
 export interface AgentConfig {
 	/** Stable end-user identity used for provider and observability metadata. */
-	distinctId?: string;
+	distinctId?: string
 	/**
 	 * Core/hub runtime session identifier.
 	 *
@@ -716,21 +712,21 @@ export interface AgentConfig {
 	 * This is intentionally separate from `conversationId`, which identifies the
 	 * model transcript managed by the agent runtime.
 	 */
-	sessionId?: string;
+	sessionId?: string
 	// -------------------------------------------------------------------------
 	// Provider Settings
 	// -------------------------------------------------------------------------
 
 	/** Provider ID (e.g., "anthropic", "openai", "gemini") */
-	providerId: string;
+	providerId: string
 	/** Model ID to use */
-	modelId: string;
+	modelId: string
 	/** API key for the provider */
-	apiKey?: string;
+	apiKey?: string
 	/** Custom base URL for the API */
-	baseUrl?: string;
+	baseUrl?: string
 	/** Additional headers for API requests */
-	headers?: Record<string, string>;
+	headers?: Record<string, string>
 	/**
 	 * Called when a run fails with an auth-like provider error (e.g. an OAuth
 	 * access token that expired mid-run). Hosts refresh credentials and push
@@ -738,50 +734,50 @@ export interface AgentConfig {
 	 * makes the runtime retry the failed run once with the refreshed
 	 * connection.
 	 */
-	onAuthError?: () => Promise<boolean>;
+	onAuthError?: () => Promise<boolean>
 	/** Optional provider model catalog overrides */
-	knownModels?: Record<string, ModelInfo>;
+	knownModels?: Record<string, ModelInfo>
 	/** Optional pre-resolved provider configuration (includes provider-specific fields like aws/gcp). */
-	providerConfig?: unknown;
+	providerConfig?: unknown
 	/**
 	 * Optional preloaded conversation history for resume flows.
 	 * When provided, start by calling continue() to preserve history.
 	 */
-	initialMessages?: Message[];
+	initialMessages?: Message[]
 
 	// -------------------------------------------------------------------------
 	// Agent Behavior
 	// -------------------------------------------------------------------------
 
 	/** System prompt for the agent */
-	systemPrompt: string;
+	systemPrompt: string
 	/** Tools available to the agent */
-	tools: AgentTool[];
+	tools: AgentTool[]
 	/** Provider-executed tools enabled for the selected model. */
-	modelTools?: ModelTool[];
+	modelTools?: ModelTool[]
 	/**
 	 * Maximum number of loop iterations
 	 * If undefined, no iteration cap is enforced.
 	 */
-	maxIterations?: number;
+	maxIterations?: number
 	/**
 	 * Maximum number of tool calls to execute concurrently in a single iteration.
 	 * @default 8
 	 */
-	maxParallelToolCalls?: number;
+	maxParallelToolCalls?: number
 	/**
 	 * Maximum output tokens per API call
 	 */
-	maxTokensPerTurn?: number;
+	maxTokensPerTurn?: number
 	/**
 	 * Sampling temperature per API call
 	 */
-	temperature?: number;
+	temperature?: number
 	/**
 	 * Timeout for each API call in milliseconds
 	 * @default 180000 (3 minutes)
 	 */
-	apiTimeoutMs?: number;
+	apiTimeoutMs?: number
 	/**
 	 * Optional runtime file-content loader used when user files are attached.
 	 * When omitted, attached files will be represented as loader errors.
@@ -790,14 +786,14 @@ export interface AgentConfig {
 	 * (for example a PDF to a model that accepts document input) instead of
 	 * flattening it to text.
 	 */
-	userFileContentLoader?: (path: string) => Promise<UserFileContent>;
+	userFileContentLoader?: (path: string) => Promise<UserFileContent>
 	/**
 	 * Optional metadata merged into every tool execution context.
 	 * Hosts can use this to thread runtime-specific identifiers such as session IDs.
 	 */
-	toolContextMetadata?: Record<string, unknown>;
+	toolContextMetadata?: Record<string, unknown>
 	/** Execution guardrails and recovery settings. */
-	execution?: AgentExecutionConfig;
+	execution?: AgentExecutionConfig
 
 	// -------------------------------------------------------------------------
 	// Reasoning Settings (for capable models)
@@ -806,15 +802,15 @@ export interface AgentConfig {
 	/**
 	 * Reasoning effort level
 	 */
-	reasoningEffort?: ReasoningEffort;
+	reasoningEffort?: ReasoningEffort
 	/**
 	 * Maximum tokens for thinking/reasoning
 	 */
-	thinkingBudgetTokens?: number;
+	thinkingBudgetTokens?: number
 	/**
 	 * Enable default thinking/reasoning behavior for supported models.
 	 */
-	thinking?: boolean;
+	thinking?: boolean
 
 	// -------------------------------------------------------------------------
 	// Callbacks
@@ -823,40 +819,43 @@ export interface AgentConfig {
 	/**
 	 * Callback for agent events (streaming, progress, etc.)
 	 */
-	onEvent?: (event: AgentEvent) => void;
+	onEvent?: (event: AgentEvent) => void
 	/**
 	 * Lifecycle hooks for observing or influencing agent execution.
 	 */
-	hooks?: AgentHooks;
+	hooks?: AgentHooks
 	/**
 	 * Optional parent agent ID for spawned/delegated runs.
 	 * Root agents should leave this undefined.
 	 */
-	parentAgentId?: string;
+	parentAgentId?: string
 	/**
 	 * Extension modules that can intercept lifecycle events and register tools/commands.
 	 */
-	extensions?: AgentExtension[];
+	extensions?: AgentExtension[]
 	/**
 	 * How hook errors should be handled.
 	 * @default "ignore"
 	 */
-	hookErrorMode?: HookErrorMode;
+	hookErrorMode?: HookErrorMode
 	/**
 	 * Optional schedule metadata for runs initiated by scheduler services.
 	 * Used by session_start lifecycle hooks.
 	 */
-	schedule?: AgentHookScheduleContext;
+	schedule?: AgentHookScheduleContext
 	/**
-	 * Per-tool execution policy. Tool names not listed here default to enabled + autoApprove.
+	 * Per-tool execution policy. Hosts that expose powerful tools should supply
+	 * a fail-closed `"*": { autoApprove: false }` baseline. The low-level SDK
+	 * leaves unlisted tools at the caller-provided default so programmatic
+	 * embedders can opt into unattended execution explicitly.
 	 */
-	toolPolicies?: Record<string, ToolPolicy>;
+	toolPolicies?: Record<string, ToolPolicy>
 	/**
 	 * Optional callback to request client approval when a tool policy disables auto-approval.
 	 */
 	requestToolApproval?: (
 		request: ToolApprovalRequest,
-	) => Promise<ToolApprovalResult> | ToolApprovalResult;
+	) => Promise<ToolApprovalResult> | ToolApprovalResult
 	/**
 	 * Optional callback invoked when consecutive mistakes reach maxConsecutiveMistakes.
 	 */
@@ -864,11 +863,11 @@ export interface AgentConfig {
 		context: ConsecutiveMistakeLimitContext,
 	) =>
 		| Promise<ConsecutiveMistakeLimitDecision>
-		| ConsecutiveMistakeLimitDecision;
+		| ConsecutiveMistakeLimitDecision
 	/**
 	 * Optional logger for tracing agent loop lifecycle and recoverable failures.
 	 */
-	logger?: BasicLogger;
+	logger?: BasicLogger
 	/**
 	 * Optional request projection hook invoked before each model call.
 	 *
@@ -884,16 +883,16 @@ export interface AgentConfig {
 	) =>
 		| Promise<AgentPrepareTurnResult | undefined>
 		| AgentPrepareTurnResult
-		| undefined;
+		| undefined
 	/**
 	 * Optional Telemetry service for emitting structured events about agent execution to configured telemetry backends.
 	 */
-	telemetry?: ITelemetryService;
+	telemetry?: ITelemetryService
 	/**
 	 * Ambient runtime context: user identity, client surface, workspace, logger,
 	 * and telemetry. Threaded through to ProviderConfig so handlers can access it.
 	 */
-	extensionContext?: ExtensionContext;
+	extensionContext?: ExtensionContext
 
 	// -------------------------------------------------------------------------
 	// Completion Guard
@@ -911,9 +910,9 @@ export interface AgentConfig {
 	 * obligations (e.g. in-progress team tasks).
 	 */
 	completionPolicy?: {
-		requireCompletionTool?: boolean;
-		completionGuard?: () => string | undefined;
-	};
+		requireCompletionTool?: boolean
+		completionGuard?: () => string | undefined
+	}
 
 	// -------------------------------------------------------------------------
 	// Pending User Messages
@@ -926,7 +925,7 @@ export interface AgentConfig {
 	 * call. This allows the host to feed user input into a running loop
 	 * without waiting for the current run to finish.
 	 */
-	consumePendingUserMessage?: () => string | undefined;
+	consumePendingUserMessage?: () => string | undefined
 
 	// -------------------------------------------------------------------------
 	// Cancellation
@@ -935,7 +934,7 @@ export interface AgentConfig {
 	/**
 	 * Abort signal for cancellation
 	 */
-	abortSignal?: AbortSignal;
+	abortSignal?: AbortSignal
 }
 
 export const AgentConfigSchema = z.object({
@@ -1085,7 +1084,7 @@ export const AgentConfigSchema = z.object({
 
 	// Cancellation
 	abortSignal: z.custom<AbortSignal>().optional(),
-});
+})
 
 // =============================================================================
 // Internal Types
@@ -1095,11 +1094,11 @@ export const AgentConfigSchema = z.object({
  * Pending tool call from the model
  */
 export interface PendingToolCall {
-	id: string;
-	name: string;
-	input: unknown;
-	signature?: string;
-	review?: boolean;
+	id: string
+	name: string
+	input: unknown
+	signature?: string
+	review?: boolean
 }
 
 /**
@@ -1107,28 +1106,28 @@ export interface PendingToolCall {
  */
 export interface ProcessedTurn {
 	/** Text output from the model */
-	text: string;
+	text: string
 	/** Reasoning/thinking content */
-	reasoning?: string;
+	reasoning?: string
 	/** Tool calls requested by the model */
-	toolCalls: PendingToolCall[];
+	toolCalls: PendingToolCall[]
 	/** Model-emitted tool calls that were invalid or missing required fields */
 	invalidToolCalls: Array<{
-		id: string;
-		name?: string;
-		input?: unknown;
-		reason: "missing_name" | "missing_arguments" | "invalid_arguments";
-	}>;
+		id: string
+		name?: string
+		input?: unknown
+		reason: "missing_name" | "missing_arguments" | "invalid_arguments"
+	}>
 	/** Token usage for this turn */
 	usage: {
-		inputTokens: number;
-		outputTokens: number;
-		cacheReadTokens?: number;
-		cacheWriteTokens?: number;
-		cost?: number;
-	};
+		inputTokens: number
+		outputTokens: number
+		cacheReadTokens?: number
+		cacheWriteTokens?: number
+		cost?: number
+	}
 	/** Whether the response was truncated */
-	truncated: boolean;
+	truncated: boolean
 	/** Response ID from the API */
-	responseId?: string;
+	responseId?: string
 }

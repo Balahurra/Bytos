@@ -179,7 +179,7 @@ describe("openai-compatible wire format (openrouter / bytos / custom endpoints)"
 
 	it.each([
 		"bytos",
-		"bytos-pass",
+		"cline-pass",
 	])("exposes only returned HTTP IDs for %s", async (providerId) => {
 		for (const requestId of ["backend-request", undefined]) {
 			const config = {

@@ -45,7 +45,7 @@ function formatCost(cost: number): string {
 }
 
 function formatCostText(providerId: string, totalCost: number): string {
-	// Subscription providers (BytosPass) have no per-use cost worth surfacing.
+	// Subscription providers (ClinePass) have no per-use cost worth surfacing.
 	if (shouldShowCliUsageCoveredBySubscription(providerId)) {
 		return "";
 	}
@@ -102,8 +102,8 @@ export function resolveModelDisplayName(config: {
 	if (config.thinking && config.reasoningEffort) {
 		displayName = `${displayName} (${config.reasoningEffort})`;
 	}
-	if (config.providerId === "bytos-pass") {
-		displayName = `BytosPass: ${displayName}`;
+	if (config.providerId === "cline-pass") {
+		displayName = `ClinePass: ${displayName}`;
 	}
 	return displayName;
 }

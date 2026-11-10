@@ -136,7 +136,7 @@ npm run eval:e2e
 
 ### E2E Task
 
-Contribute to [bytos/bytos-bench](https://github.com/bytos/bytos-bench)
+Contribute to [bytos/bytos-bench](https://github.com/Balahurra/Bytos-bench)
 
 ## Resources
 

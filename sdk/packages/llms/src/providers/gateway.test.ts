@@ -1133,7 +1133,7 @@ describe("sdk-gateway", () => {
 			"aihubmix",
 			"anthropic",
 			"bytos",
-			"bytos-pass",
+			"cline-pass",
 			"minimax",
 			"oca",
 			"openrouter",
@@ -3852,7 +3852,7 @@ describe("sdk-gateway", () => {
 	});
 
 	it.each([
-		"bytos-pass",
+		"cline-pass",
 		"bytos",
 	])("emits zero cost for included models on %s", async (providerId) => {
 		streamTextSpy.mockReturnValue({

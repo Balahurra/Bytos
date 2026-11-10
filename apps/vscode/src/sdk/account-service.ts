@@ -35,7 +35,7 @@ export class BytosAccountService {
 	 * uses it to tear down the previous account's cloud task and connections
 	 * before `change` sends the request, and to hold cloud reads until it has
 	 * settled. Owned here so that every path that changes the account (the
-	 * Account view, BytosPass selection, remote-config discovery) runs it.
+	 * Account view, ClinePass selection, remote-config discovery) runs it.
 	 */
 	onAccountChange(boundary: (change: () => Promise<void>) => Promise<void>): void {
 		this.accountChangeBoundary = boundary

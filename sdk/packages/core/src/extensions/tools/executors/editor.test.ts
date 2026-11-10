@@ -229,7 +229,7 @@ describe("createEditorExecutor", () => {
 	});
 
 	// The CRLF branch is exercised for real by Windows CI, where os.EOL is
-	// "\r\n" (github.com/bytos/bytos/issues/13504).
+	// "\r\n" (github.com/Balahurra/Bytos/issues/13504).
 	it("creates new files with the platform-native line ending", async () => {
 		const dir = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "agents-editor-")));
 		const filePath = path.join(dir, "fresh.txt");

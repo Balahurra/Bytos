@@ -92,7 +92,7 @@ Preserve child step/tool spans too: they share the dedicated instrumentation
 scope but may not carry the model-provider attribute. Do not enable the publish
 rollout until a real streamed response reaches the intended collector destination.
 
-Direct `LANGFUSE_*` credentials remain supported for `bytos` and `bytos-pass`
+Direct `LANGFUSE_*` credentials remain supported for `bytos`
 when no host relay is registered. That path uses an isolated tracer provider and
 per-call integration; it neither registers a global AI SDK integration nor alters
 or shuts down another owner's tracer. When a relay is registered it takes

@@ -90,9 +90,9 @@ beforeEach(() => {
 describe("provider settings cloud session lifecycle", () => {
 	it.each([
 		["bytos", false, true],
-		["bytos-pass", false, true],
+		["cline-pass", false, true],
 		["openai-codex", false, false],
-		["bytos-pass", true, false],
+		["cline-pass", true, false],
 	] as const)("handles %s login (failed: %s, resets cloud: %s)", async (provider, failed, resets) => {
 		const { ctx } = createContext();
 		const dispose = vi.fn().mockResolvedValue(undefined);
@@ -523,7 +523,7 @@ describe("bytos_account keeps feature-flag identity in sync", () => {
 		);
 	});
 
-	it("signs out of the shared bytos entry and legacy secrets when bytos-pass is disabled", async () => {
+	it("signs out of the shared bytos entry and legacy secrets when cline-pass is disabled", async () => {
 		const { ctx } = createContext();
 		const dispose = vi.fn().mockResolvedValue(undefined);
 		ctx.cloudSessionManager = { dispose } as unknown as NonNullable<
@@ -546,14 +546,14 @@ describe("bytos_account keeps feature-flag identity in sync", () => {
 		);
 		const { handleCommand } = await import("./commands");
 		await handleCommand(ctx, "save_provider_settings", {
-			provider: "bytos-pass",
+			provider: "cline-pass",
 			enabled: false,
 		});
 
 		// Bytos Pass stores its credentials under "bytos", so both entries go,
 		// and the legacy secrets are cleared for the storage provider.
 		expect(saveProviderSettingsMock.mock.calls.map(([, r]) => r)).toEqual([
-			expect.objectContaining({ providerId: "bytos-pass", enabled: false }),
+			expect.objectContaining({ providerId: "cline-pass", enabled: false }),
 			{ providerId: "bytos", enabled: false },
 		]);
 		expect(clearLegacyProviderCredentialsMock).toHaveBeenCalledWith("bytos");

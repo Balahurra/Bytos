@@ -149,9 +149,26 @@ function walk(dir, depth = 0) {
 		if (SKIP_DIR_NAMES.has(entry.name) && entry.name !== "node_modules") continue
 		if (SKIP_PATH_SEGMENTS.has(entry.name)) continue
 		const full = path.join(dir, entry.name)
-		collectPackage(full)
+		// Only collect real package roots. Walking every directory also picked up
+		// fixture package.json files inside a dependency (for example
+		// node-pre-gyp's `nw-pre-gyp` test app and github-from-package's
+		// `example/package.json` named "beep-boop") and private subpath
+		// manifests such as posthog-js/customizations. Those are not separately
+		// distributed packages and must not appear as unresolved dependencies.
+		if (isPackageRoot(full)) {
+			collectPackage(full)
+		}
 		walk(full, depth + 1)
 	}
+}
+
+function isPackageRoot(dir) {
+	const parent = path.dirname(dir)
+	const grandparent = path.dirname(parent)
+	const parentName = path.basename(parent)
+	if (parentName === "node_modules") return true
+	// Scoped package: node_modules/@scope/name
+	return parentName.startsWith("@") && path.basename(grandparent) === "node_modules"
 }
 
 const roots = [path.join(repoRoot, "node_modules"), path.join(extensionRoot, "node_modules")]
@@ -308,10 +325,17 @@ lines.push("included here by reference. The font names are not trademarks of Byt
 lines.push("")
 lines.push("CC-BY-4.0 (icons and data)")
 lines.push("---------------------------")
-lines.push("@vscode/codicons and caniuse-lite are licensed under Creative Commons")
-lines.push("Attribution 4.0. Attribution: Microsoft Corporation (codicons) and")
-lines.push("caniuse.com contributors (caniuse-lite). License text:")
+lines.push("@vscode/codicons 0.0.36 is licensed under Creative Commons Attribution")
+lines.push("4.0. Copyright (c) Microsoft Corporation. Source:")
+lines.push("https://github.com/microsoft/vscode-codicons. License:")
 lines.push("https://creativecommons.org/licenses/by/4.0/legalcode")
+lines.push("Bytos packages the codicon.ttf font from that package; no Bytos")
+lines.push("modification to the font file is recorded.")
+lines.push("")
+lines.push("caniuse-lite is listed in the inventory for transparency but is not")
+lines.push("present in the packaged extension bundle. If it is ever distributed,")
+lines.push("credit the caniuse.com contributors and the Can I Use data project:")
+lines.push("https://github.com/browserslist/caniuse-lite (CC-BY-4.0).")
 lines.push("")
 lines.push("Unlicense / public domain")
 lines.push("-------------------------")
@@ -319,6 +343,20 @@ lines.push(`This is free and unencumbered software released into the public doma
 Anyone is free to copy, modify, publish, use, compile, sell, or distribute
 this software, either in source code form or as a compiled binary, for any
 purpose, commercial or non-commercial, and by any means.`)
+lines.push("")
+lines.push("Native binaries")
+lines.push("---------------")
+lines.push("Bytos Voice ships native binaries that are not npm packages:")
+lines.push("")
+lines.push("- bv-os-audio-helper.exe (0.1.0) - Bytos-authored WASAPI capture helper.")
+lines.push("  Licensed under the Apache License 2.0, same as Bytos. Contains no")
+lines.push("  third-party code.")
+lines.push("- whisper.cpp (release b5454) - MIT License,")
+lines.push("  Copyright (c) 2023-2026 The ggml authors.")
+lines.push("  Project: https://github.com/ggml-org/whisper.cpp")
+lines.push("  Files: whisper-cli.exe, whisper.dll, ggml.dll, ggml-base.dll, llama.dll,")
+lines.push("  ggml-cpu-*.dll. The MIT license text above applies. The full license text")
+lines.push("  is also bundled at assets/voice/whisper/LICENSE.whisper.cpp.txt.")
 lines.push("")
 lines.push("Unresolved licenses")
 lines.push("-------------------")

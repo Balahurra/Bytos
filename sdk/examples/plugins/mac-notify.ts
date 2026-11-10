@@ -4,7 +4,7 @@
  * Sends a Notification Center alert when a Bytos run completes successfully.
  *
  * CLI usage:
- *   bytos plugin install https://github.com/bytos/bytos/blob/main/sdk/examples/plugins/mac-notify.ts --cwd .
+ *   bytos plugin install https://github.com/Balahurra/Bytos/blob/main/sdk/examples/plugins/mac-notify.ts --cwd .
  *   bytos -i "Run the test suite"
  */
 

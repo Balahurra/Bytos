@@ -374,7 +374,7 @@ describe("mcp client request timeout", () => {
 	it("connects a moderately slow server without a configured timeout", async () => {
 		const factory = createDefaultMcpServerClientFactory();
 		// The old 1.5s initialize probe killed servers that needed ~2s to answer
-		// (https://github.com/bytos/bytos/issues/13035), and the 3s budget that
+		// (https://github.com/Balahurra/Bytos/issues/13035), and the 3s budget that
 		// replaced it still dropped `npx`/`uvx`-launched servers on Windows,
 		// where reaching initialize routinely takes 3-6s. The default budget
 		// must cover them. It deliberately stays small beyond that: initialize

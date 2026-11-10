@@ -22,7 +22,9 @@ describe("resolveWorkspacePath", () => {
 		const file = path.join(root, "src", "index.ts")
 		await fs.mkdir(path.dirname(file), { recursive: true })
 		await fs.writeFile(file, "x")
-		await expect(resolveWorkspacePath(root, "src/index.ts")).resolves.toBe(await fs.realpath(file))
+		await expect(resolveWorkspacePath(root, "src/index.ts")).resolves.toBe(
+			await fs.realpath(file),
+		)
 	})
 
 	it("resolves a new file inside the workspace", async () => {
@@ -31,17 +33,23 @@ describe("resolveWorkspacePath", () => {
 	})
 
 	it("rejects relative traversal", async () => {
-		await expect(resolveWorkspacePath(root, "../outside.txt")).rejects.toThrow(/outside the workspace/i)
+		await expect(resolveWorkspacePath(root, "../outside.txt")).rejects.toThrow(
+			/outside the workspace/i,
+		)
 	})
 
 	it("rejects an absolute path outside the workspace", async () => {
-		await expect(resolveWorkspacePath(root, path.join(outside, "secret.txt"))).rejects.toThrow(/outside the workspace/i)
+		await expect(
+			resolveWorkspacePath(root, path.join(outside, "secret.txt")),
+		).rejects.toThrow(/outside the workspace/i)
 	})
 
 	it("accepts an absolute path inside the workspace", async () => {
 		const file = path.join(root, "inside.txt")
 		await fs.writeFile(file, "x")
-		await expect(resolveWorkspacePath(root, file)).resolves.toBe(await fs.realpath(file))
+		await expect(resolveWorkspacePath(root, file)).resolves.toBe(
+			await fs.realpath(file),
+		)
 	})
 
 	it("rejects a symlink whose target is outside the workspace", async () => {
@@ -58,10 +66,63 @@ describe("resolveWorkspacePath", () => {
 			}
 			throw error
 		}
-		await expect(resolveWorkspacePath(root, "link.txt")).rejects.toThrow(/outside the workspace/i)
+		await expect(resolveWorkspacePath(root, "link.txt")).rejects.toThrow(
+			/outside the workspace/i,
+		)
 	})
 
 	it("rejects NUL bytes", async () => {
-		await expect(resolveWorkspacePath(root, "bad\0name")).rejects.toThrow(/valid file path/i)
+		await expect(resolveWorkspacePath(root, "bad\0name")).rejects.toThrow(
+			/valid file path/i,
+		)
+	})
+
+	it("rejects Windows drive paths outside the workspace", async () => {
+		if (process.platform !== "win32") {
+			return
+		}
+		const otherDrive = path.join("D:\\", "bytos-outside", "secret.txt")
+		await expect(resolveWorkspacePath(root, otherDrive)).rejects.toThrow(
+			/outside the workspace/i,
+		)
+	})
+
+	it("rejects UNC paths outside the workspace", async () => {
+		if (process.platform !== "win32") {
+			return
+		}
+		await expect(
+			resolveWorkspacePath(root, "\\\\server\\share\\secret.txt"),
+		).rejects.toThrow(/outside the workspace/i)
+	})
+
+	it("accepts a differently-cased path inside the workspace on Windows", async () => {
+		if (process.platform !== "win32") {
+			return
+		}
+		const file = path.join(root, "CaseSensitive.txt")
+		await fs.writeFile(file, "x")
+		await expect(resolveWorkspacePath(root, "casesensitive.TXT")).resolves.toBe(
+			await fs.realpath(file),
+		)
+	})
+
+	it("rejects a Windows junction whose target is outside the workspace", async () => {
+		if (process.platform !== "win32") {
+			return
+		}
+		const link = path.join(root, "junction-outside")
+		try {
+			await fs.symlink(outside, link, "junction")
+		} catch (error) {
+			const code = (error as NodeJS.ErrnoException).code
+			if (code === "EPERM" || code === "EACCES" || code === "ENOSYS") {
+				return
+			}
+			throw error
+		}
+		await expect(
+			resolveWorkspacePath(root, "junction-outside"),
+		).rejects.toThrow(/outside the workspace/i)
 	})
 })

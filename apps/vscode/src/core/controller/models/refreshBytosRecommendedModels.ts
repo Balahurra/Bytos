@@ -12,7 +12,6 @@ interface BytosRecommendedModelData {
 export interface BytosRecommendedModelsData {
 	recommended: BytosRecommendedModelData[]
 	free: BytosRecommendedModelData[]
-	bytosPass?: BytosRecommendedModelData[]
 }
 
 const RECOMMENDED_MODELS_CACHE_TTL_MS = 60 * 60 * 1000

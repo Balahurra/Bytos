@@ -13,7 +13,7 @@ const CUSTOM_PROVIDER_SETTINGS_IDS = new Set([
 	"bedrock",
 	"claude-code",
 	"bytos",
-	"bytos-pass",
+	"cline-pass",
 	"dify",
 	"hicap",
 	"litellm",

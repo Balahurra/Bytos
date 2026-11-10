@@ -104,14 +104,14 @@ describe("buildConnectorStartRequest", () => {
 		expect(request.apiKey).toBe("env-openrouter-key");
 		expect(request.model).toBe("anthropic/claude-sonnet-4.6");
 		expect(mockGetLastUsedProviderSettings).toHaveBeenCalledWith({
-			isBytosPassEnabled: true,
+			isClinePassEnabled: true,
 		});
 	});
 
 	it("uses auth material resolved by provider settings manager", async () => {
-		mockGetLastUsedProviderSettings.mockReturnValue({ provider: "bytos-pass" });
+		mockGetLastUsedProviderSettings.mockReturnValue({ provider: "cline-pass" });
 		mockGetProviderSettings.mockReturnValue({
-			provider: "bytos-pass",
+			provider: "cline-pass",
 			auth: { accessToken: "workos:resolved-token" },
 		});
 		mockGetProviderCollection.mockReturnValue({
@@ -128,12 +128,12 @@ describe("buildConnectorStartRequest", () => {
 			io: { writeln: vi.fn(), writeErr: vi.fn() },
 			loggerConfig: { enabled: false, level: "info", destination: "stdout" },
 			systemRules: "Rules",
-			defaultModel: "bytos-pass/glm-5.2",
+			defaultModel: "cline-pass/glm-5.2",
 		});
 
-		expect(request.provider).toBe("bytos-pass");
+		expect(request.provider).toBe("cline-pass");
 		expect(request.apiKey).toBe("workos:resolved-token");
-		expect(request.model).toBe("bytos-pass/glm-5.2");
+		expect(request.model).toBe("cline-pass/glm-5.2");
 	});
 
 	it("falls back to the provider's declared default, skipping the placeholder", async () => {
@@ -164,9 +164,9 @@ describe("buildConnectorStartRequest", () => {
 	});
 
 	it("uses auth material resolved by provider settings manager", async () => {
-		mockGetLastUsedProviderSettings.mockReturnValue({ provider: "bytos-pass" });
+		mockGetLastUsedProviderSettings.mockReturnValue({ provider: "cline-pass" });
 		mockGetProviderSettings.mockReturnValue({
-			provider: "bytos-pass",
+			provider: "cline-pass",
 			auth: { accessToken: "workos:resolved-token" },
 		});
 		mockGetProviderCollection.mockReturnValue({
@@ -183,12 +183,12 @@ describe("buildConnectorStartRequest", () => {
 			io: { writeln: vi.fn(), writeErr: vi.fn() },
 			loggerConfig: { enabled: false, level: "info", destination: "stdout" },
 			systemRules: "Rules",
-			defaultModel: "bytos-pass/glm-5.2",
+			defaultModel: "cline-pass/glm-5.2",
 		});
 
-		expect(request.provider).toBe("bytos-pass");
+		expect(request.provider).toBe("cline-pass");
 		expect(request.apiKey).toBe("workos:resolved-token");
-		expect(request.model).toBe("bytos-pass/glm-5.2");
+		expect(request.model).toBe("cline-pass/glm-5.2");
 	});
 });
 

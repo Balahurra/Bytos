@@ -1,6 +1,13 @@
-import { afterEach, describe, it } from "bun:test"
+import { afterEach, beforeAll, describe, it } from "bun:test"
 import "should"
-import { AuthHandler } from "@/hosts/external/AuthHandler"
+
+// AuthHandler transitively imports puppeteer-core, which is ESM-only in v25.
+// Load it dynamically so the Bun test runner does not transpile the import to
+// require() (which cannot load ESM modules).
+let AuthHandler: typeof import("@/hosts/external/AuthHandler").AuthHandler
+beforeAll(async () => {
+	;({ AuthHandler } = await import("@/hosts/external/AuthHandler"))
+})
 
 /**
  * Regression tests for OAuth callback URL generation.

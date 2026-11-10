@@ -24,7 +24,7 @@ import {
  * into the current session when the command exits.
  *
  * CLI usage:
- *   bytos plugin install https://github.com/bytos/bytos/blob/main/sdk/examples/plugins/background-terminal.ts --cwd .
+ *   bytos plugin install https://github.com/Balahurra/Bytos/blob/main/sdk/examples/plugins/background-terminal.ts --cwd .
  *   bytos -i "Start the dev server in the background and keep working"
  */
 

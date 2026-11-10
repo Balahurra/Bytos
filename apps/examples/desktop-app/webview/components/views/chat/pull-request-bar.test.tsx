@@ -16,11 +16,11 @@ vi.mock("@/lib/desktop-client", () => ({
 const data: PullRequestStatus = {
 	repository: "bytos/bytos",
 	branch: "feature",
-	createUrl: "https://github.com/bytos/bytos/compare/main...feature?expand=1",
+	createUrl: "https://github.com/Balahurra/Bytos/compare/main...feature?expand=1",
 	pullRequest: {
 		number: 42,
 		title: "Feature",
-		url: "https://github.com/bytos/bytos/pull/42",
+		url: "https://github.com/Balahurra/Bytos/pull/42",
 		state: "OPEN",
 		isDraft: false,
 		mergeable: "CONFLICTING",
@@ -31,7 +31,7 @@ const data: PullRequestStatus = {
 			{
 				name: "Tests",
 				state: "failure",
-				url: "https://github.com/bytos/bytos/actions/runs/1",
+				url: "https://github.com/Balahurra/Bytos/actions/runs/1",
 			},
 		],
 	},

@@ -6,7 +6,7 @@ import { toSdkProviderId } from "@/sdk/model-catalog/sdk-provider-id"
 import { toLegacyApiProvider } from "@/shared/model-catalog/provider-helpers"
 import {
 	type ApiProvider,
-	bytosPassDefaultModelId,
+	clinePassDefaultModelId,
 	liteLlmDefaultModelId,
 	openRouterDefaultModelId,
 	requestyDefaultModelId,
@@ -15,7 +15,7 @@ import {
 const ProviderKeyMap: Partial<Record<ApiProvider, string>> = {
 	openrouter: "OpenRouterModelId",
 	bytos: "BytosModelId",
-	"bytos-pass": "BytosPassModelId",
+	"cline-pass": "ClinePassModelId",
 	openai: "OpenAiModelId",
 	ollama: "OllamaModelId",
 	lmstudio: "LmStudioModelId",
@@ -48,7 +48,7 @@ const ProviderKeyMap: Partial<Record<ApiProvider, string>> = {
  */
 const NON_SDK_PROVIDER_DEFAULTS: Partial<Record<ApiProvider, string>> = {
 	openrouter: openRouterDefaultModelId,
-	"bytos-pass": bytosPassDefaultModelId,
+	"cline-pass": clinePassDefaultModelId,
 	together: openRouterDefaultModelId,
 	aihubmix: openRouterDefaultModelId,
 	"vercel-ai-gateway": openRouterDefaultModelId,

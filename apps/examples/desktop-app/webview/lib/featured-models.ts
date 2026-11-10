@@ -13,8 +13,6 @@ export type ModelPickerData = {
 
 // Section copy mirrors the CLI's featured picker so the products read the same.
 const FREE_SECTION_DESCRIPTION = "Try with limited usage at no cost";
-const BYTOS_PASS_FREE_SECTION_DESCRIPTION =
-	"Try with limited usage, separate from BytosPass quota";
 
 function displayName(model: ProviderModel): string {
 	return model.name?.trim() || model.id;
@@ -64,11 +62,8 @@ function tierOptions(
  * Builds the sectioned model picker for a provider from the tier data the SDK
  * stamps onto `ProviderModel.featured` (see @bytos/core's
  * applyBytosFeaturedModels). The `bytos` provider gets Recommended / Free /
- * All models; `bytos-pass` gets Subscribed / Free only — its offer is exactly
- * those tiers, and stale catalog leftovers must not be advertised (the full
- * catalog returns in the same two groups when the subscribed tier is empty, so a subscriber is
- * never limited to free models offline). Every other provider renders its
- * catalog as a flat list ordered by display name.
+ * All models. Every other provider renders its catalog as a flat list ordered
+ * by display name.
  */
 export function buildModelPickerData(
 	providerId: string,
@@ -103,38 +98,6 @@ export function buildModelPickerData(
 					label: "Free",
 				},
 				{ id: "all", label: "All models" },
-			],
-		};
-	}
-
-	if (providerId === "bytos-pass") {
-		const subscribed = tierOptions(models, "subscribed", "subscribed");
-		const free = tierOptions(models, "free", "free");
-		if (subscribed.length === 0) {
-			// BytosPass catalogs contain subscription routes under bytos-pass/
-			// plus the free feed overlay (bytos-free/ or upstream IDs). Keep those
-			// groups separate offline too; live featured tiers remain authoritative.
-			const fallback = models.filter((model) => !model.featured);
-			subscribed.push(
-				...flatOptions(
-					fallback.filter((model) => model.id.startsWith("bytos-pass/")),
-				).map((option) => ({ ...option, section: "subscribed" })),
-			);
-			free.push(
-				...flatOptions(
-					fallback.filter((model) => !model.id.startsWith("bytos-pass/")),
-				).map((option) => ({ ...option, section: "free" })),
-			);
-		}
-		return {
-			options: [...subscribed, ...free],
-			sections: [
-				{ id: "subscribed", label: "Subscribed" },
-				{
-					description: BYTOS_PASS_FREE_SECTION_DESCRIPTION,
-					id: "free",
-					label: "Free",
-				},
 			],
 		};
 	}

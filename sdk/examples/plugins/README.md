@@ -33,7 +33,7 @@ The runtime-hook variant of compaction lives in [../hooks/custom-compaction-hook
 The CLI auto-discovers plugins from `.bytos/plugins` in the workspace, `~/.bytos/plugins`, and the system Plugins folder. Use `bytos plugin install` for local files, GitHub file URLs, package directories, git repos, and npm packages:
 
 ```bash
-bytos plugin install https://github.com/bytos/bytos/blob/main/sdk/examples/plugins/weather-metrics.ts --cwd .
+bytos plugin install https://github.com/Balahurra/Bytos/blob/main/sdk/examples/plugins/weather-metrics.ts --cwd .
 bytos -i "What's the weather like in Tokyo and Paris?"
 ```
 
@@ -42,7 +42,7 @@ Swap the GitHub URL for any other single-file example.
 To block file access for paths ignored by workspace `.gitignore` files:
 
 ```bash
-bytos plugin install https://github.com/bytos/bytos/blob/main/sdk/examples/plugins/gitignore-read-files-guard.ts --cwd .
+bytos plugin install https://github.com/Balahurra/Bytos/blob/main/sdk/examples/plugins/gitignore-read-files-guard.ts --cwd .
 bytos -i "Read the ignored .env file"
 ```
 
@@ -57,7 +57,7 @@ bytos plugin install ./examples/plugins/agents-squad
 To add web search through a normal plugin tool:
 
 ```bash
-bytos plugin install https://github.com/bytos/bytos/blob/main/sdk/examples/plugins/web-search.ts --cwd .
+bytos plugin install https://github.com/Balahurra/Bytos/blob/main/sdk/examples/plugins/web-search.ts --cwd .
 
 export EXA_API_KEY=...
 export OPENROUTER_API_KEY=...

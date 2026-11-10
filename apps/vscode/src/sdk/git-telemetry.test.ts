@@ -380,11 +380,11 @@ describe("conversation Git telemetry", () => {
 			apiKey: "preserved-key",
 			fetch: delegate as unknown as typeof fetch,
 		}
-		const tracker = observer({ sessionId: "custom-task", providerId: "bytos-pass", modelId: "top-model", providerConfig })
+		const tracker = observer({ sessionId: "custom-task", providerId: "cline-pass", modelId: "top-model", providerConfig })
 		const config = tracker.configure()
 		expect(config).toMatchObject({
 			sessionId: "custom-task",
-			providerId: "bytos-pass",
+			providerId: "cline-pass",
 			modelId: "top-model",
 			cwd,
 			systemPrompt: "test",
@@ -398,12 +398,12 @@ describe("conversation Git telemetry", () => {
 		expect(events[0].properties).toMatchObject({
 			sessionId: "custom-task",
 			ulid: "custom-task",
-			providerId: "bytos-pass",
+			providerId: "cline-pass",
 			request_id: "request-1",
 			workspace_root_count: 1,
 			git: { dirty: false, staged: false, unstaged: false, untracked: false },
 		})
-		expect(observer({ providerId: "bytos-pass" }).configure().providerConfig).toBeUndefined()
+		expect(observer({ providerId: "cline-pass" }).configure().providerConfig).toBeUndefined()
 	})
 
 	it("reads Git after the response, deduplicates state, and preserves existing hooks", async () => {

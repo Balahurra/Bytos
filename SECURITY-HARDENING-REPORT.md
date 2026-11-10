@@ -264,7 +264,15 @@ Remaining accepted risks are listed in `SECURITY.md` and in section D below.
 
 ## H. Git state
 
-Local commits were created in focused phases after verification. **No push, no tag, no release, no deployment, and no Marketplace upload occurred.**
+Local commits (in order):
+
+- `372997b` — `security: remediate dependency vulnerabilities`
+- `ef84ae8` — `security: harden agent permissions, paths, MCP and web fetch`
+- `0765595` — `security: remove unused inherited menubar example`
+- `3b61076` — `security: add CI gates, release checks and hardening report`
+- `3870977` — `chore(licenses): refresh notices for hardened build`
+
+**No push, no tag, no release, no deployment, and no Marketplace upload occurred.**
 
 Modified areas: dependency manifests/lockfiles, desktop Cargo lock/toml, VS Code OTel/MCP/webview/runtime files, CLI defaults and tests, SDK core path/SSRF/MCP code and tests, security workflow/scripts, Dependabot, SECURITY.md, generated third-party notices, and removal of `apps/examples/menubar`.
 

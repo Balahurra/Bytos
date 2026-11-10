@@ -73,35 +73,166 @@ function isCloudMetadataAddress(url: URL): boolean {
 	return false
 }
 
+const HTML_BLOCK_TAGS = new Set([
+	"p",
+	"div",
+	"br",
+	"hr",
+	"h1",
+	"h2",
+	"h3",
+	"h4",
+	"h5",
+	"h6",
+	"li",
+	"tr",
+])
+const HTML_RAW_TEXT_TAGS = new Set(["script", "style"])
+const HTML_NAMED_ENTITIES: Record<string, string> = {
+	nbsp: " ",
+	amp: "&",
+	lt: "<",
+	gt: ">",
+	quot: '"',
+	apos: "'",
+}
+
+interface ScannedHtmlTag {
+	name: string
+	closing: boolean
+	end: number
+}
+
 /**
- * Extract text content from HTML
- * Simple implementation - strips tags and normalizes whitespace
+ * Reads the tag starting at `start` without relying on a tag-matching regexp,
+ * so malformed tags (quoted `>`, missing close, whitespace before `>`) are
+ * handled by the same scanner the browser would use.
+ */
+function readHtmlTag(html: string, start: number): ScannedHtmlTag | undefined {
+	let i = start + 1
+	let closing = false
+	if (html[i] === "/") {
+		closing = true
+		i++
+	}
+	while (i < html.length && /\s/.test(html[i] ?? "")) i++
+	const nameStart = i
+	while (i < html.length) {
+		const code = html.charCodeAt(i)
+		const isNameCharacter =
+			(code >= 65 && code <= 90) ||
+			(code >= 97 && code <= 122) ||
+			(code >= 48 && code <= 57) ||
+			code === 58 ||
+			code === 45
+		if (!isNameCharacter) break
+		i++
+	}
+	if (i === nameStart) return undefined
+	const name = html.slice(nameStart, i).toLowerCase()
+	let quote = ""
+	while (i < html.length) {
+		const char = html[i]
+		if (quote) {
+			if (char === quote) quote = ""
+		} else if (char === '"' || char === "'") {
+			quote = char
+		} else if (char === ">") {
+			return { name, closing, end: i + 1 }
+		}
+		i++
+	}
+	return { name, closing, end: html.length }
+}
+
+/** Returns the index just past the matching raw-text close tag. */
+function skipRawTextElement(html: string, from: number, name: string): number {
+	let i = from
+	while (i < html.length) {
+		const lt = html.indexOf("<", i)
+		if (lt === -1) return html.length
+		if (html.startsWith("<!--", lt)) {
+			const end = html.indexOf("-->", lt + 4)
+			i = end === -1 ? html.length : end + 3
+			continue
+		}
+		const tag = readHtmlTag(html, lt)
+		if (!tag) {
+			i = lt + 1
+			continue
+		}
+		if (tag.closing && tag.name === name) return tag.end
+		i = tag.end
+	}
+	return html.length
+}
+
+function isValidCodePoint(code: number): boolean {
+	return (
+		Number.isInteger(code) &&
+		code >= 0 &&
+		code <= 0x10ffff &&
+		!(code >= 0xd800 && code <= 0xdfff)
+	)
+}
+
+/**
+ * Decodes entities in a single pass. A single pass matters: decoding `&amp;`
+ * before `&lt;` would turn `&amp;lt;` into `<`, i.e. unescape twice.
+ */
+function decodeHtmlEntities(text: string): string {
+	return text.replace(
+		/&(#[0-9]+|#[xX][0-9a-fA-F]+|[a-zA-Z][a-zA-Z0-9]+);/g,
+		(match, entity: string) => {
+			if (entity.startsWith("#x") || entity.startsWith("#X")) {
+				const code = Number.parseInt(entity.slice(2), 16)
+				return isValidCodePoint(code) ? String.fromCodePoint(code) : match
+			}
+			if (entity.startsWith("#")) {
+				const code = Number.parseInt(entity.slice(1), 10)
+				return isValidCodePoint(code) ? String.fromCodePoint(code) : match
+			}
+			return HTML_NAMED_ENTITIES[entity.toLowerCase()] ?? match
+		},
+	)
+}
+
+/**
+ * Extract text content from HTML.
+ * A small scanner removes comments, skips script/style raw text and drops
+ * markup before normalizing whitespace; no regexp is used to filter tags.
  */
 function htmlToText(html: string): string {
-	return (
-		html
-			// Remove script and style elements
-			.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
-			.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
-			// Remove HTML comments
-			.replace(/<!--[\s\S]*?-->/g, "")
-			// Replace block elements with newlines
-			.replace(/<(p|div|br|hr|h[1-6]|li|tr)[^>]*>/gi, "\n")
-			// Remove all remaining tags
-			.replace(/<[^>]+>/g, " ")
-			// Decode HTML entities
-			.replace(/&nbsp;/g, " ")
-			.replace(/&amp;/g, "&")
-			.replace(/&lt;/g, "<")
-			.replace(/&gt;/g, ">")
-			.replace(/&quot;/g, '"')
-			.replace(/&#(\d+);/g, (_, n) => String.fromCharCode(parseInt(n, 10)))
-			// Normalize whitespace
-			.replace(/\s+/g, " ")
-			.replace(/\n\s+/g, "\n")
-			.replace(/\n{3,}/g, "\n\n")
-			.trim()
-	)
+	let output = ""
+	let i = 0
+	while (i < html.length) {
+		const lt = html.indexOf("<", i)
+		if (lt === -1) {
+			output += html.slice(i)
+			break
+		}
+		output += html.slice(i, lt)
+		if (html.startsWith("<!--", lt)) {
+			const end = html.indexOf("-->", lt + 4)
+			i = end === -1 ? html.length : end + 3
+			continue
+		}
+		const tag = readHtmlTag(html, lt)
+		if (!tag) {
+			output += "<"
+			i = lt + 1
+			continue
+		}
+		i = tag.end
+		if (HTML_RAW_TEXT_TAGS.has(tag.name)) {
+			if (!tag.closing) {
+				i = skipRawTextElement(html, i, tag.name)
+			}
+			continue
+		}
+		output += HTML_BLOCK_TAGS.has(tag.name) ? "\n" : " "
+	}
+	return decodeHtmlEntities(output).replace(/\s+/g, " ").trim()
 }
 
 /**

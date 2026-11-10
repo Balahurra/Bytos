@@ -428,7 +428,13 @@ export async function resolveVoiceEngine(options: { extensionRoot?: string } = {
  */
 function storageRootOf(modelDir: string): string | undefined {
 	if (!modelDir) return undefined
-	const normalized = modelDir.replace(/[\\/]+$/, "")
+	let end = modelDir.length
+	while (end > 0) {
+		const char = modelDir[end - 1]
+		if (char !== "\\" && char !== "/") break
+		end--
+	}
+	const normalized = modelDir.slice(0, end)
 	const parent = normalized.slice(0, Math.max(normalized.lastIndexOf("\\"), normalized.lastIndexOf("/")))
 	return parent.length > 0 ? parent : undefined
 }

@@ -35,19 +35,49 @@ function hasUnterminatedString(text: string): boolean {
 	return inDouble || inSingle;
 }
 
-const BARE_OBJECT_RE = /^\{\s*"([A-Za-z0-9_.$-]+)"\s*:\s*([\s\S]+?)\s*\}$/;
+const BARE_OBJECT_KEY_CHAR = /[A-Za-z0-9_.$-]/;
 /**
  * Attempt to repair `{"key": some unquoted value}` by wrapping the value in quotes.
  * Returns undefined when the input doesn't match or the value is already a JSON token.
+ *
+ * The shape is parsed with a small linear scanner instead of a regexp: a
+ * non-greedy `([\s\S]+?)` followed by `\s*\}$` backtracks polynomially on
+ * long runs of whitespace.
  */
 function repairBareObjectValue(
 	text: string,
 ): Record<string, string> | undefined {
-	const match = text.match(BARE_OBJECT_RE);
-	if (!match) return undefined;
+	const source = text.trimEnd();
+	if (source[0] !== "{" || source[source.length - 1] !== "}") return undefined;
+	const skipWhitespace = (index: number): number => {
+		while (index < source.length && /\s/.test(source[index] ?? "")) index++;
+		return index;
+	};
 
-	const [, key, rawValue] = match;
-	const value = rawValue.trim();
+	let index = skipWhitespace(1);
+	if (source[index] !== '"') return undefined;
+	index++;
+	const keyStart = index;
+	while (
+		index < source.length &&
+		BARE_OBJECT_KEY_CHAR.test(source[index] ?? "")
+	) {
+		index++;
+	}
+	if (index === keyStart) return undefined;
+	const key = source.slice(keyStart, index);
+	if (source[index] !== '"') return undefined;
+	index = skipWhitespace(index + 1);
+	if (source[index] !== ":") return undefined;
+	index = skipWhitespace(index + 1);
+
+	const valueStart = index;
+	let valueEnd = source.length - 1;
+	while (valueEnd > valueStart && /\s/.test(source[valueEnd - 1] ?? "")) {
+		valueEnd--;
+	}
+	if (valueEnd <= valueStart) return undefined;
+	const value = source.slice(valueStart, valueEnd).trim();
 	if (!value) return undefined;
 
 	// Skip values that are already valid JSON tokens

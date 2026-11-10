@@ -57,7 +57,11 @@ export interface HandoffStore {
 }
 
 function baseUrl(env: StorageEnv): string {
-	return env.SUPABASE_URL.replace(/\/+$/, "")
+	// Trim trailing slashes with a linear scan; /\/+$/ backtracks
+	// polynomially on inputs made of many slashes.
+	let end = env.SUPABASE_URL.length
+	while (end > 0 && env.SUPABASE_URL[end - 1] === "/") end--
+	return env.SUPABASE_URL.slice(0, end)
 }
 
 /** D1 equivalent of the production cleanup RPC. Exported for SQL-level tests. */

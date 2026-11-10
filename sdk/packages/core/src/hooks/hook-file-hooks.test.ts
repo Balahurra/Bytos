@@ -722,9 +722,12 @@ describe("createHookConfigFileHooks", () => {
 
 	it("maps TaskError hook files to agent_error stop events", async () => {
 		const outputPath = join(tmpdir(), `hooks-task-error-${Date.now()}.json`);
+		// Pass the path through the environment instead of interpolating it
+		// into generated JavaScript.
+		process.env.BYTOS_HOOK_TASK_ERROR_OUTPUT = outputPath;
 		const { workspace } = await createWorkspaceWithHook(
 			"TaskError.js",
-			`let data='';process.stdin.on('data',c=>data+=c);process.stdin.on('end',()=>{require('node:fs').writeFileSync(${JSON.stringify(outputPath)}, data);});\n`,
+			`let data='';process.stdin.on('data',c=>data+=c);process.stdin.on('end',()=>{require('node:fs').writeFileSync(process.env.BYTOS_HOOK_TASK_ERROR_OUTPUT, data);});\n`,
 		);
 		try {
 			const hooks = createHookConfigFileHooks({
@@ -844,14 +847,15 @@ describe("createHookConfigFileHooks", () => {
 
 	it("dispatches agent_start and prompt_submit exactly once when both are configured", async () => {
 		const outputPath = join(tmpdir(), `hooks-start-prompt-${Date.now()}.jsonl`);
+		process.env.BYTOS_HOOK_START_PROMPT_OUTPUT = outputPath;
 		const { workspace } = await createWorkspaceWithHook(
 			"TaskStart.js",
-			`let data='';process.stdin.on('data',c=>data+=c);process.stdin.on('end',()=>{require('node:fs').appendFileSync(${JSON.stringify(outputPath)}, data.trim()+"\\n");});\n`,
+			`let data='';process.stdin.on('data',c=>data+=c);process.stdin.on('end',()=>{require('node:fs').appendFileSync(process.env.BYTOS_HOOK_START_PROMPT_OUTPUT, data.trim()+"\\n");});\n`,
 		);
 		try {
 			await writeFile(
 				join(workspace, ".bytosrules", "hooks", "UserPromptSubmit.js"),
-				`let data='';process.stdin.on('data',c=>data+=c);process.stdin.on('end',()=>{require('node:fs').appendFileSync(${JSON.stringify(outputPath)}, data.trim()+"\\n");});\n`,
+				`let data='';process.stdin.on('data',c=>data+=c);process.stdin.on('end',()=>{require('node:fs').appendFileSync(process.env.BYTOS_HOOK_START_PROMPT_OUTPUT, data.trim()+"\\n");});\n`,
 				"utf8",
 			);
 			const hooks = createHookConfigFileHooks({
@@ -895,6 +899,7 @@ describe("createHookConfigFileHooks", () => {
 				retryDelay: 250,
 			});
 			await rm(outputPath, { force: true });
+			delete process.env.BYTOS_HOOK_START_PROMPT_OUTPUT;
 		}
 	});
 
@@ -903,9 +908,10 @@ describe("createHookConfigFileHooks", () => {
 			tmpdir(),
 			`hooks-session-shutdown-${Date.now()}.json`,
 		);
+		process.env.BYTOS_HOOK_SESSION_SHUTDOWN_OUTPUT = outputPath;
 		const { workspace } = await createWorkspaceWithHook(
 			"SessionShutdown.js",
-			`let data='';process.stdin.on('data',c=>data+=c);process.stdin.on('end',()=>{require('node:fs').writeFileSync(${JSON.stringify(outputPath)}, data);});\n`,
+			`let data='';process.stdin.on('data',c=>data+=c);process.stdin.on('end',()=>{require('node:fs').writeFileSync(process.env.BYTOS_HOOK_SESSION_SHUTDOWN_OUTPUT, data);});\n`,
 		);
 		try {
 			const hooks = createHookConfigFileHooks({
@@ -942,6 +948,7 @@ describe("createHookConfigFileHooks", () => {
 				retryDelay: 250,
 			});
 			await rm(outputPath, { force: true });
+			delete process.env.BYTOS_HOOK_SESSION_SHUTDOWN_OUTPUT;
 		}
 	});
 });

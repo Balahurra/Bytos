@@ -29,7 +29,11 @@ export interface ProfileRow {
 const jwksCache = new Map<string, ReturnType<typeof createRemoteJWKSet>>()
 
 function baseUrl(env: SupabaseEnv): string {
-	return env.SUPABASE_URL.replace(/\/+$/, "")
+	// Trim trailing slashes with a linear scan; /\/+$/ backtracks
+	// polynomially on inputs made of many slashes.
+	let end = env.SUPABASE_URL.length
+	while (end > 0 && env.SUPABASE_URL[end - 1] === "/") end--
+	return env.SUPABASE_URL.slice(0, end)
 }
 
 function jwks(env: SupabaseEnv) {

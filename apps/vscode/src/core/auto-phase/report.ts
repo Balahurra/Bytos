@@ -179,7 +179,7 @@ function phaseTitle(outcome: AutoPhaseOutcome): string {
 }
 
 function tableCell(value: string): string {
-	return value.replace(/\|/g, "\\|").replace(/\r?\n/g, " ")
+	return value.replace(/\\/g, "\\\\").replace(/\|/g, "\\|").replace(/\r?\n/g, " ")
 }
 
 function countStatus(outcomes: AutoPhaseOutcome[], statuses: AutoPhaseOutcomeStatus[]): number {

@@ -568,17 +568,29 @@ const HistoryView = ({ onDone }: HistoryViewProps) => {
 	)
 }
 
+const UNSAFE_PATH_SEGMENTS = new Set(["__proto__", "prototype", "constructor"])
+
 // https://gist.github.com/evenfrost/1ba123656ded32fb7a0cd4651efd4db0
 export const highlight = (fuseSearchResult: FuseResult<any>[], highlightClassName = "history-item-highlight") => {
 	const set = (obj: Record<string, any>, path: string, value: any) => {
 		const pathValue = path.split(".")
-		let i: number
+		// Fuse keys are developer-defined, but treat them as untrusted anyway:
+		// never walk or write through prototype-manipulating segments.
+		if (pathValue.some((segment) => UNSAFE_PATH_SEGMENTS.has(segment))) {
+			return
+		}
+		let target: Record<string, any> = obj
 
-		for (i = 0; i < pathValue.length - 1; i++) {
-			obj = obj[pathValue[i]] as Record<string, any>
+		for (let i = 0; i < pathValue.length - 1; i++) {
+			const segment = pathValue[i]
+			const next = target[segment]
+			if (!Object.hasOwn(target, segment) || !next || typeof next !== "object") {
+				return
+			}
+			target = next as Record<string, any>
 		}
 
-		obj[pathValue[i]] = value
+		target[pathValue[pathValue.length - 1]] = value
 	}
 
 	// Function to merge overlapping regions

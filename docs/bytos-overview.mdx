@@ -12,9 +12,11 @@ implements changes through reviewable diffs, runs commands in the editor
 terminal, uses the browser and MCP tools with your approval, and records
 checkpoints you can restore.
 
-There is no Bytos account, subscription, or hosted backend in this build. You
-connect the model provider you already pay for. API keys are stored in VS Code
-SecretStorage and are never sent to the webview.
+A Bytos account is optional: chat, BYOK, and local models work without one.
+Model requests go directly to the provider you already pay for; Bytos does not
+proxy model prompts or code. API keys are stored in VS Code SecretStorage and
+are never sent to the webview. If you sign in, account data is sent to Bytos
+services as described in `PRIVACY.md`.
 
 ## Auto Phase Plan
 

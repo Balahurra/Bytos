@@ -9,8 +9,9 @@
 Bytos reads your workspace, plans before it edits, builds and verifies changes
 through reviewable diffs, terminal commands, tests, browser state, and MCP tools —
 with your approval at every risky step. It is **chat-first and
-bring-your-own-key**: there is **no Bytos backend**, account, subscription, or
-hosted model proxy. You connect the provider you already pay for.
+bring-your-own-key**: model requests go directly to the provider you choose, not
+through a Bytos model proxy. A Bytos account is **optional**; chat, BYOK, and
+local models work without one.
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=_pUIjs775ig">
@@ -97,8 +98,14 @@ or LM Studio. Token usage and estimated cost are tracked per request and per tas
   the webview.
 - **Telemetry is off by default.** It is enabled only by an explicit opt-in in
   Settings → General.
-- **No Bytos backend.** Model requests go from your machine to the provider you
-  picked. Local models do not leave your machine.
+- **Optional Bytos account.** Chat and BYOK do not require an account. Sign-up
+  and sign-in open bytos.dev and use Supabase Auth; the extension completes the
+  browser handoff through the Bytos API worker. Signed-in account screens can
+  request account data such as organizations, credits, remote configuration, and,
+  when enabled, BytosPass subscription links.
+- **Provider-direct model traffic.** Model requests go from your machine to the
+  provider you picked. Bytos does not proxy model prompts or code, and local
+  models do not leave your machine.
 - **Workspace boundaries.** File tools enforce a canonical workspace boundary,
   including absolute paths, traversal, Windows drive/UNC paths, and symlinks.
 
@@ -112,7 +119,8 @@ The full data map is in
 | VS Code extension (Windows/macOS/Linux) | Supported |
 | Local voice dictation | Windows x64 only in this release |
 | Remote SSH / WSL / VS Code Web / Windows ARM voice | Not supported for voice |
-| Desktop, CLI, JetBrains, SDK, Kanban, hosted billing, Enterprise | Not shipped in this release |
+| Desktop, CLI, JetBrains, SDK, Kanban, Enterprise | Not shipped in this release |
+| BytosPass subscription links | Feature-flagged; shown only when enabled |
 
 ## Feature status
 
@@ -129,7 +137,7 @@ Available in this release:
 Not part of this extension package:
 
 - the CLI, hub, desktop, and example applications in the repository;
-- any Bytos account, subscription, or hosted backend;
+- any requirement to create a Bytos account; the account is optional;
 - an OpenCode runtime or CLI dependency.
 
 ## Support

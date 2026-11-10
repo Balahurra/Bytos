@@ -28,9 +28,9 @@ describe("packaged README", () => {
 		expect(text).toContain(`\`engines.vscode\` is \`${engines}\``)
 	})
 
-	it("explains that the build is bring-your-own-key with no Bytos backend", () => {
+	it("explains that the build is bring-your-own-key with an optional Bytos account", () => {
 		expect(text).toMatch(/bring-your-own-key/i)
-		expect(text).toMatch(/no Bytos backend/i)
+		expect(text).toMatch(/Bytos account is \*\*optional\*\*/i)
 	})
 
 	it("documents where API keys are stored and that telemetry is opt-in", () => {

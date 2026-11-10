@@ -52,9 +52,14 @@ for Visual Studio Code**. It reads your repository, plans before it edits, build
 and verifies changes through reviewable diffs, terminal commands, tests, browser
 state, and MCP tools — with your approval at every risky step.
 
-There is no Bytos account, subscription, or hosted backend in this build. You
-connect the model provider you already pay for. API keys are stored in VS Code
-SecretStorage and are never sent to the webview.
+A Bytos account is **optional**. Chat, BYOK, and local models work without one.
+If you choose to sign in, Bytos opens the account flow on `bytos.dev`, uses
+Supabase Auth, and completes the handoff through the Bytos API worker. Account
+screens may request account data such as organizations, credits, remote
+configuration, and, when enabled, BytosPass subscription links. Model requests
+still go directly to the provider you already pay for; Bytos does not proxy model
+prompts or code. Provider API keys are stored in VS Code SecretStorage and are
+never sent to the webview. See [apps/vscode/PRIVACY.md](apps/vscode/PRIVACY.md).
 
 **Auto Phase Plan** is the differentiator: up to **10 sequential phases**, each
 its own Act-mode task with its own provider, model, API key, MCP allowlist, and
@@ -90,9 +95,11 @@ steps, and asks before it edits files, runs commands, opens a browser, or calls 
 MCP tool. You can review diffs, stop a task, compare checkpoints, and restore an
 earlier step.
 
-The current release is a **free BYOK build**. It does not include a CLI, desktop
-app, JetBrains plugin, SDK, Kanban, hosted Bytos Provider/BytosPass billing, or
-enterprise backend. See [Status and roadmap](#status-and-roadmap).
+The current release is a **free BYOK build**. It does not require a Bytos account
+and does not include a CLI, desktop app, JetBrains plugin, SDK, Kanban, or
+enterprise backend. An optional Bytos account is available; account and
+BytosPass billing surfaces are feature-flagged and may not be enabled in every
+build. See [Status and roadmap](#status-and-roadmap).
 
 ## Why Bytos
 
@@ -209,7 +216,7 @@ code --install-extension ../../bytos-<version>.vsix
 | MCP | Configure MCP servers and call their tools with approval |
 | Customization | Bytos rules, skills, hooks, `.bytosignore`, worktrees |
 | Voice | Windows x64 local dictation with bundled whisper.cpp engine |
-| Privacy | SecretStorage keys, telemetry off by default, no Bytos backend |
+| Privacy | Optional Bytos account, SecretStorage keys, telemetry off by default |
 
 ## Providers and models
 
@@ -244,8 +251,10 @@ See [MCP overview](docs/mcp/mcp-overview.mdx) and
   including absolute paths, traversal, Windows drive/UNC paths, and symlinks.
 - **Telemetry off by default.** It is enabled only by an explicit opt-in in
   **Settings → General**.
-- **No Bytos backend.** Model requests go from your machine to the provider you
-  picked. Local models do not leave your machine.
+- **Provider-direct model traffic.** Model requests go from your machine to the
+  provider you picked; Bytos does not proxy model prompts or code. Local models
+  do not leave your machine. If you sign in, account data is sent to Bytos
+  services as described in [apps/vscode/PRIVACY.md](apps/vscode/PRIVACY.md).
 
 Read [SECURITY.md](SECURITY.md) and [apps/vscode/PRIVACY.md](apps/vscode/PRIVACY.md).
 
@@ -285,15 +294,19 @@ See [Configuration](docs/getting-started/config.mdx) for the full map.
 **Is Bytos free?** The extension is free and open source. It is BYOK; you pay your
 provider for usage.
 
-**Do I need a Bytos account?** No.
+**Do I need a Bytos account?** No. It is optional; the agent, BYOK, and local
+models work without one. Signing in enables the account, credits, and
+organization screens.
 
 **Which VS Code version?** 1.101.0 or newer.
 
 **Does it work on macOS/Linux?** The core extension is tested on Windows, macOS,
 and Linux. Local voice is Windows x64 only.
 
-**Does Bytos send code to a Bytos server?** No. Requests go directly to your
-provider or local model.
+**Does Bytos send code to a Bytos server?** Not through a model proxy. Model
+requests go directly to your provider or local model. If you choose to sign in,
+account data is sent to Bytos services as described in
+[apps/vscode/PRIVACY.md](apps/vscode/PRIVACY.md).
 
 **Where are keys stored?** VS Code SecretStorage.
 
@@ -324,8 +337,9 @@ For security issues, use the private advisory link in [SECURITY.md](SECURITY.md)
 **Shipped:** VS Code extension, BYOK providers, approval-first tools, Auto Phase
 Plan, MCP, rules/skills/hooks, checkpoints/worktrees, Windows x64 local voice.
 
-**Not shipped:** Desktop, CLI, JetBrains, SDK, Kanban, Bytos Provider/BytosPass
-hosted billing, Enterprise SSO/monitoring, public Bytos API.
+**Not shipped:** Desktop, CLI, JetBrains, SDK, Kanban, Enterprise
+SSO/monitoring, public Bytos API. Account and BytosPass billing surfaces are
+feature-flagged and may not be enabled in every build.
 
 There is no dated public roadmap yet. Follow GitHub Issues and releases; see
 [Status and roadmap](docs/status-and-roadmap.mdx).

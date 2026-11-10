@@ -8,7 +8,8 @@ web UI or an authenticated owner action.
 
 > Open-source, BYOK autonomous AI coding agent for VS Code. Auto Phase Plan runs
 > up to 10 sequential phases, each with its own provider, model, API key, and MCP
-> tools, and writes a Markdown report. Approval-first; no Bytos backend.
+> tools, and writes a Markdown report. Approval-first; provider-direct model
+> traffic; optional Bytos account.
 
 ## Website
 

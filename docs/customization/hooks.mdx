@@ -1,7 +1,56 @@
 ---
 title: "Hooks"
 sidebarTitle: "Hooks"
-description: "See details under SDK Plugins page."
+description: "Run workspace or global hook scripts at Bytos tool and task lifecycle events."
 ---
 
-See details under [SDK Plugins](/sdk/plugins).
+Hooks let you run a script when Bytos reaches a lifecycle event, such as before a
+tool call. A hook can inspect the event and cancel the call with a reason.
+
+## Where hooks live
+
+In the VS Code extension:
+
+- **Workspace hooks:** `.bytosrules/hooks/`
+- **Global hooks:** `~/Documents/Bytos/Hooks/`
+
+A hook file must be named exactly after its event and have no file extension. It
+must include a shebang and have the executable bit set.
+
+Example for `PreToolUse`:
+
+```bash
+mkdir -p .bytosrules/hooks
+cp PreToolUse.sh .bytosrules/hooks/PreToolUse
+chmod +x .bytosrules/hooks/PreToolUse
+```
+
+Then enable hooks in Bytos's feature settings.
+
+## PreToolUse
+
+A `PreToolUse` hook receives the tool name and parameters. It can return a JSON
+decision:
+
+```json
+{
+  "cancel": true,
+  "errorMessage": "Blocked by workspace policy."
+}
+```
+
+`cancel: false` allows the tool call to continue. A cancelled call stops the
+current task run; send a follow-up message to continue.
+
+## Safety notes
+
+- Hooks are local scripts. Review them before enabling them.
+- A hook is not a sandbox; it can read/write whatever your user can.
+- Do not put API keys in hook scripts or logs.
+- Test hooks in a disposable workspace before enabling them globally.
+
+## Related
+
+- [.bytosignore](/customization/bytosignore)
+- [Tools and approvals](/tools-reference/all-bytos-tools)
+- [Configuration](/getting-started/config)

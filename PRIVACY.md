@@ -1,7 +1,6 @@
 # Bytos privacy and data handling
 
-**Applies to:** the Bytos VS Code extension, CLI, hub, and desktop app in this
-repository.
+**Applies to:** the Bytos VS Code extension in this repository.
 
 This file is a pointer. The authoritative, feature-by-feature data map is
 maintained next to the VS Code extension, because that package is what the
@@ -9,7 +8,7 @@ Marketplace distributes:
 
 - **[apps/vscode/PRIVACY.md](apps/vscode/PRIVACY.md)** - what is stored locally,
   what is sent to which provider, telemetry behaviour, and how to delete local
-  data. (Version: Bytos VS Code extension 1.0.1.)
+  data. (Version: Bytos VS Code extension 1.0.2.)
 
 Summary of the guarantees this build makes:
 
@@ -29,7 +28,7 @@ exist, they take precedence.
 
 # Privacy and Data Handling
 
-**Applies to:** Bytos VS Code extension 4.1.45 (free BYOK build)
+**Applies to:** Bytos VS Code extension 1.0.2 (free BYOK build)
 
 This document describes what the current build actually does. It is not a legal
 certification and does not claim GDPR compliance. The privacy policy at
@@ -74,7 +73,7 @@ Bytos does not proxy model requests through a Bytos backend.
 ## Telemetry
 
 Telemetry is **disabled by default**. It is enabled only by an explicit positive
-opt-in in **Settings → General → Telemetry**. When disabled, the extension and
+opt-in in **Settings â†’ General â†’ Telemetry**. When disabled, the extension and
 webview do not send PostHog events or feature-flag requests. The setting is
 stored locally and survives restarts.
 
@@ -84,10 +83,10 @@ and booleans; strings and objects are dropped.
 
 ## Local data controls
 
-- **Delete a task:** History → delete the task.
-- **Delete all task history:** History → delete all.
-- **Reset extension settings:** Settings → General → Reset.
-- **Remove credentials:** clear the provider key in Settings → API Configuration.
+- **Delete a task:** History â†’ delete the task.
+- **Delete all task history:** History â†’ delete all.
+- **Reset extension settings:** Settings â†’ General â†’ Reset.
+- **Remove credentials:** clear the provider key in Settings â†’ API Configuration.
 - **Remove all local Bytos data:** close VS Code and delete `~/.bytos/data` (and
   `~/Documents/Bytos` if you created rules/workflows there).
 

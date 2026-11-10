@@ -2,7 +2,7 @@
 	"$schema": "https://mintlify.com/docs.json",
 	"theme": "mint",
 	"name": "Bytos",
-	"description": "AI-powered coding agent for complex work",
+	"description": "Open-source, BYOK autonomous AI coding agent for Visual Studio Code",
 	"colors": {
 		"primary": "#4F8CFF",
 		"light": "#E8F1FF",
@@ -41,12 +41,27 @@
 				"label": "GitHub",
 				"icon": "github",
 				"href": "https://github.com/Balahurra/Bytos"
+			},
+			{
+				"label": "Discord",
+				"icon": "discord",
+				"href": "https://discord.gg/2hSFZY9Bs"
+			},
+			{
+				"label": "YouTube",
+				"icon": "youtube",
+				"href": "https://www.youtube.com/@BytosAgent"
+			},
+			{
+				"label": "X",
+				"icon": "x",
+				"href": "https://x.com/balahurra_bytos"
 			}
 		],
 		"primary": {
 			"type": "button",
-			"label": "Install Bytos",
-			"href": "https://bytos.dev/install?utm_source=website&utm_medium=header"
+			"label": "Install from Marketplace",
+			"href": "https://marketplace.visualstudio.com/items?itemName=Bytos.bytos"
 		}
 	},
 	"navigation": {
@@ -56,305 +71,87 @@
 				"icon": "robot",
 				"groups": [
 					{
-						"group": "Getting Started",
+						"group": "Getting started",
 						"pages": [
 							"bytos-overview",
 							"getting-started/installing-bytos",
-							"getting-started/bytos-provider",
-							"getting-started/bytospass",
-							"getting-started/free-models",
-							{
-								"group": "Other Models & Providers",
-								"pages": [
-									"getting-started/authorizing-with-bytos",
-									"running-models-locally/overview",
-									{
-										"group": "Cloud Providers",
-										"pages": [
-											"provider-config/qwen",
-											"provider-config/anthropic",
-											{
-												"group": "AWS Bedrock",
-												"pages": [
-													"provider-config/aws-bedrock/api-key",
-													"provider-config/aws-bedrock/iam-credentials",
-													"provider-config/aws-bedrock/cli-profile"
-												]
-											},
-											"provider-config/deepseek",
-											"provider-config/google-gemini",
-											"provider-config/minimax",
-											"provider-config/openai",
-											"provider-config/openai-compatible",
-											"provider-config/openrouter",
-											"provider-config/poolside",
-											"provider-config/zai",
-											"provider-config/other-30-plus-providers"
-										]
-									}
-								]
-							},
+							"getting-started/quick-start",
 							"getting-started/config"
 						]
 					},
 					{
-						"group": "Usage",
+						"group": "Auto Phase Plan",
 						"pages": [
-							{
-								"group": "Bytos Desktop",
-								"pages": [
-									"usage/bytos-desktop",
-									"usage/bytos-desktop-ssh"
-								]
-							},
-							"usage/cloud-agents",
-							"usage/ide",
-							"usage/tui",
-							{
-								"group": "CLI",
-								"pages": [
-									"usage/cli-overview",
-									"cli/cli-reference",
-									{
-										"group": "Examples",
-										"pages": [
-											"cli/samples/github-issue-rca",
-											"cli/samples/github-integration",
-											"cli/samples/github-pr-review",
-											"cli/samples/model-orchestration",
-											"cli/samples/supply-chain-alerts"
-										]
-									}
-								]
-							},
-							"usage/acp",
-							{
-								"group": "Kanban",
-								"pages": [
-									"usage/kanban",
-									"kanban/core-workflow",
-									"kanban/remote-access"
-								]
-							}
+							"features/auto-phase-plan"
 						]
 					},
 					{
-						"group": "Configurations",
+						"group": "Core workflows",
 						"pages": [
-							"tools-reference/all-bytos-tools",
-							"customization/bytos-rules",
-							"customization/skills",
-							"customization/plugins",
-							"mcp/mcp-overview",
-							"customization/hooks",
-							"cli/scheduling",
-							"cli/connectors",
-							"customization/bytosignore"
+							"core-workflows/plan-and-act",
+							"core-workflows/working-with-files",
+							"core-workflows/using-commands",
+							"core-workflows/task-management",
+							"core-workflows/checkpoints"
 						]
 					},
 					{
 						"group": "Features",
 						"pages": [
-							"core-workflows/plan-and-act",
-							"core-workflows/working-with-files",
-							"core-workflows/using-commands",
-							"core-workflows/checkpoints",
-							"cli/agent-teams",
-							"features/subagents"
-						]
-					},
-					{
-						"group": "Best Practices",
-						"pages": [
-							"best-practices/memory-bank"
-						]
-					},
-					{
-						"group": "IDE Specific Features",
-						"pages": [
 							"features/auto-approve",
+							"features/auto-compact",
 							"features/jupyter-notebooks",
 							"features/multiroot-workspace"
 						]
 					},
 					{
+						"group": "Customization",
+						"pages": [
+							"customization/bytos-rules",
+							"customization/skills",
+							"customization/hooks",
+							"customization/bytosignore"
+						]
+					},
+					{
+						"group": "MCP and tools",
+						"pages": [
+							"mcp/mcp-overview",
+							"tools-reference/all-bytos-tools"
+						]
+					},
+					{
+						"group": "Providers and models",
+						"pages": [
+							"provider-config/overview",
+							"running-models-locally/overview",
+							"provider-config/openrouter",
+							"provider-config/anthropic",
+							"provider-config/openai",
+							"provider-config/google-gemini",
+							"provider-config/openai-compatible",
+							"provider-config/aws-bedrock/api-key",
+							"provider-config/other-30-plus-providers"
+						]
+					},
+					{
+						"group": "Best practices",
+						"pages": [
+							"best-practices/memory-bank"
+						]
+					},
+					{
 						"group": "Troubleshooting",
 						"pages": [
+							"troubleshooting/faq",
+							"troubleshooting/voice-and-microphone",
 							"troubleshooting/networking-and-proxies"
 						]
 					},
 					{
-						"group": "Resources",
+						"group": "Project",
 						"pages": [
-							"resources/deprecations"
-						]
-					}
-				]
-			},
-			{
-				"tab": "SDK",
-				"icon": "cube",
-				"groups": [
-					{
-						"group": "Start",
-						"pages": [
-							"sdk/overview",
-							"sdk/examples"
-						]
-					},
-					{
-						"group": "Concepts",
-						"pages": [
-							{
-								"group": "Plugins",
-								"pages": [
-									"sdk/plugins",
-									"sdk/plugin-install",
-									"sdk/guides/writing-plugins",
-									"sdk/plugin-examples"
-								]
-							},
-							{
-								"group": "Tools",
-								"pages": [
-									"sdk/tools",
-									"sdk/guides/creating-custom-tools"
-								]
-							},
-							"sdk/guides/scheduled-agents",
-							"sdk/events",
-							"sdk/model-providers",
-							"sdk/bytoscore"
-						]
-					},
-					{
-						"group": "Architecture",
-						"pages": [
-							"sdk/architecture/overview",
-							"sdk/architecture/hub-spoke"
-						]
-					},
-					{
-						"group": "Guides",
-						"pages": [
-							"sdk/guides/building-an-agent",
-							"sdk/guides/permission-handling",
-							"sdk/guides/multi-agent-teams",
-							"sdk/guides/going-to-production"
-						]
-					},
-					{
-						"group": "API Reference",
-						"pages": [
-							"sdk/reference/bytos-core",
-							"sdk/reference/agent",
-							"sdk/reference/gateway",
-							"sdk/reference/tools-api",
-							"sdk/reference/events",
-							"sdk/reference/types"
-						]
-					}
-				]
-			},
-			{
-				"tab": "Enterprise",
-				"icon": "building",
-				"groups": [
-					{
-						"group": "Enterprise Solutions",
-						"pages": [
-							"enterprise-solutions/overview",
-							"enterprise-solutions/onboarding",
-							"enterprise-solutions/sso-setup",
-							"enterprise-solutions/team-management/managing-members",
-							{
-								"group": "Remote Provider Configuration",
-								"pages": [
-									"enterprise-solutions/configuration/remote-configuration/overview",
-									{
-										"group": "AWS Bedrock",
-										"pages": [
-											"enterprise-solutions/configuration/remote-configuration/aws-bedrock/admin-configuration",
-											"enterprise-solutions/configuration/remote-configuration/aws-bedrock/member-configuration"
-										]
-									},
-									{
-										"group": "Google Vertex AI",
-										"pages": [
-											"enterprise-solutions/configuration/remote-configuration/google-vertex/admin-configuration",
-											"enterprise-solutions/configuration/remote-configuration/google-vertex/member-configuration"
-										]
-									},
-									{
-										"group": "OpenAI Compatible",
-										"pages": [
-											"enterprise-solutions/configuration/remote-configuration/openai-compatible/admin-configuration",
-											"enterprise-solutions/configuration/remote-configuration/openai-compatible/member-configuration"
-										]
-									},
-									{
-										"group": "Anthropic",
-										"pages": [
-											"enterprise-solutions/configuration/remote-configuration/anthropic/admin-configuration",
-											"enterprise-solutions/configuration/remote-configuration/anthropic/member-configuration"
-										]
-									},
-									{
-										"group": "LiteLLM",
-										"pages": [
-											"enterprise-solutions/configuration/remote-configuration/litellm/admin-configuration",
-											"enterprise-solutions/configuration/remote-configuration/litellm/member-configuration"
-										]
-									}
-								]
-							},
-							{
-								"group": "Control Other Bytos Features",
-								"pages": [
-									"enterprise-solutions/configuration/infrastructure-configuration/control-other-bytos-features/yolo-mode",
-									"enterprise-solutions/configuration/infrastructure-configuration/control-other-bytos-features/mcp-server-controls"
-								]
-							},
-							{
-								"group": "Monitoring",
-								"pages": [
-									"enterprise-solutions/monitoring/overview",
-									"enterprise-solutions/monitoring/telemetry",
-									"enterprise-solutions/monitoring/prompt-storage",
-									"enterprise-solutions/monitoring/opentelemetry",
-									"enterprise-solutions/monitoring/opentelemetry-events",
-									"enterprise-solutions/monitoring/opentelemetry_override"
-								]
-							},
-							"enterprise-solutions/api-reference"
-						]
-					}
-				]
-			},
-			{
-				"tab": "API",
-				"icon": "code",
-				"groups": [
-					{
-						"group": "Bytos API",
-						"pages": [
-							"api/overview",
-							"api/getting-started",
-							"api/authentication"
-						]
-					},
-					{
-						"group": "Endpoints",
-						"pages": [
-							"api/chat-completions"
-						]
-					},
-					{
-						"group": "Reference",
-						"pages": [
-							"api/models",
-							"api/errors",
-							"api/sdk-examples"
+							"status-and-roadmap"
 						]
 					}
 				]
@@ -364,773 +161,31 @@
 	"footer": {
 		"socials": {
 			"github": "https://github.com/Balahurra/Bytos",
-			"website": "https://bytos.dev"
+			"website": "https://bytos.dev/",
+			"discord": "https://discord.gg/2hSFZY9Bs",
+			"youtube": "https://www.youtube.com/@BytosAgent",
+			"x": "https://x.com/balahurra_bytos"
 		}
 	},
-	"anchors": [
-		{
-			"name": "Overview",
-			"icon": "house",
-			"url": "bytos-overview"
-		}
-	],
 	"redirects": [
-		{
-			"source": "/enterprise-solutions/configuration/infrastructure-configuration/control-other-bytos-features/mcp-marketplace",
-			"destination": "/enterprise-solutions/configuration/infrastructure-configuration/control-other-bytos-features/mcp-server-controls"
-		},
-		{
-			"source": "/usage/cli",
-			"destination": "/usage/cli-overview"
-		},
-		{
-			"source": "/getting-started/installing-bytos-jetbrains",
-			"destination": "/getting-started/installing-bytos"
-		},
-		{
-			"source": "/getting-started/for-new-coders",
-			"destination": "/getting-started/installing-bytos"
-		},
-		{
-			"source": "/getting-started/overview",
-			"destination": "/bytos-overview"
-		},
-		{
-			"source": "/getting-started/your-first-project",
-			"destination": "/usage/ide"
-		},
-		{
-			"source": "/introduction",
-			"destination": "/bytos-overview"
-		},
-		{
-			"source": "/introduction/welcome",
-			"destination": "/bytos-overview"
-		},
-		{
-			"source": "/introduction/overview",
-			"destination": "/bytos-overview"
-		},
-		{
-			"source": "/getting-started/model-selection-guide",
-			"destination": "/getting-started/bytos-provider"
-		},
-		{
-			"source": "/provider-config/ollama",
-			"destination": "/running-models-locally/overview#runtime-options"
-		},
-		{
-			"source": "/running-models-locally/read-me-first",
-			"destination": "/running-models-locally/overview"
-		},
-		{
-			"source": "/running-models-locally/ollama",
-			"destination": "/running-models-locally/overview#runtime-options"
-		},
-		{
-			"source": "/running-models-locally/lm-studio",
-			"destination": "/running-models-locally/overview#runtime-options"
-		},
-		{
-			"source": "/getting-started/understanding-context-management",
-			"destination": "/getting-started/bytos-provider"
-		},
-		{
-			"source": "/best-practices/understanding-context-management",
-			"destination": "/getting-started/bytos-provider"
-		},
-		{
-			"source": "/prompting/understanding-context-management",
-			"destination": "/getting-started/bytos-provider"
-		},
-		{
-			"source": "/model-config/context-windows",
-			"destination": "/getting-started/bytos-provider"
-		},
-		{
-			"source": "/core-features/model-selection-guide",
-			"destination": "/getting-started/bytos-provider"
-		},
-		{
-			"source": "/prompting/prompt-engineering-guide",
-			"destination": "/customization/bytos-rules"
-		},
-		{
-			"source": "/prompting/bytos-memory-bank",
-			"destination": "/best-practices/memory-bank"
-		},
-		{
-			"source": "/customization/memory-bank",
-			"destination": "/best-practices/memory-bank"
-		},
-		{
-			"source": "/customization/overview",
-			"destination": "/getting-started/config"
-		},
-		{
-			"source": "/customization/focus-chain",
-			"destination": "/core-workflows/using-commands#deep-planning"
-		},
-		{
-			"source": "/features/deep-planning",
-			"destination": "/core-workflows/using-commands#deep-planning"
-		},
-		{
-			"source": "/customization/auto-approve",
-			"destination": "/features/auto-approve"
-		},
-		{
-			"source": "/customization/auto-compact",
-			"destination": "/features/auto-compact"
-		},
-		{
-			"source": "/getting-started/your-first-task",
-			"destination": "/usage/ide"
-		},
-		{
-			"source": "/features/hooks/real-world-examples",
-			"destination": "/customization/hooks"
-		},
-		{
-			"source": "/features/hooks/index",
-			"destination": "/customization/hooks"
-		},
-		{
-			"source": "/features/hooks/hook-reference",
-			"destination": "/customization/hooks"
-		},
-		{
-			"source": "/features/hooks/samples",
-			"destination": "/customization/hooks"
-		},
-		{
-			"source": "/features/plan-and-act",
-			"destination": "/core-workflows/plan-and-act"
-		},
-		{
-			"source": "/features/checkpoints",
-			"destination": "/core-workflows/checkpoints"
-		},
-		{
-			"source": "/features/tasks/understanding-tasks",
-			"destination": "/core-workflows/task-management"
-		},
-		{
-			"source": "/features/tasks/task-management",
-			"destination": "/core-workflows/task-management"
-		},
-		{
-			"source": "/features/at-mentions/overview",
-			"destination": "/core-workflows/working-with-files"
-		},
-		{
-			"source": "/features/at-mentions/file-mentions",
-			"destination": "/core-workflows/working-with-files"
-		},
-		{
-			"source": "/features/at-mentions/folder-mentions",
-			"destination": "/core-workflows/working-with-files"
-		},
-		{
-			"source": "/features/at-mentions/terminal-mentions",
-			"destination": "/core-workflows/working-with-files"
-		},
-		{
-			"source": "/features/at-mentions/problem-mentions",
-			"destination": "/core-workflows/working-with-files"
-		},
-		{
-			"source": "/features/at-mentions/git-mentions",
-			"destination": "/core-workflows/working-with-files"
-		},
-		{
-			"source": "/features/at-mentions/url-mentions",
-			"destination": "/core-workflows/working-with-files"
-		},
-		{
-			"source": "/features/drag-and-drop",
-			"destination": "/core-workflows/working-with-files"
-		},
-		{
-			"source": "/features/yolo-mode",
-			"destination": "/features/auto-approve"
-		},
-		{
-			"source": "/features/bytos-rules",
-			"destination": "/customization/bytos-rules"
-		},
-		{
-			"source": "/features/bytos-rules/overview",
-			"destination": "/customization/bytos-rules"
-		},
-		{
-			"source": "/features/bytos-rules/conditional-rules",
-			"destination": "/customization/bytos-rules"
-		},
-		{
-			"source": "/features/commands-and-shortcuts/overview",
-			"destination": "/core-workflows/using-commands"
-		},
-		{
-			"source": "/features/commands-and-shortcuts/code-commands",
-			"destination": "/core-workflows/using-commands"
-		},
-		{
-			"source": "/features/commands-and-shortcuts/terminal-integration",
-			"destination": "/core-workflows/using-commands"
-		},
-		{
-			"source": "/features/commands-and-shortcuts/git-integration",
-			"destination": "/core-workflows/using-commands"
-		},
-		{
-			"source": "/features/commands-and-shortcuts/keyboard-shortcuts",
-			"destination": "/core-workflows/using-commands"
-		},
-		{
-			"source": "/features/slash-commands/new-task",
-			"destination": "/core-workflows/using-commands"
-		},
-		{
-			"source": "/exploring-bytoss-tools/bytos-tools-guide",
-			"destination": "/tools-reference/all-bytos-tools"
-		},
-		{
-			"source": "/exploring-bytoss-tools/new-task-tool",
-			"destination": "/tools-reference/all-bytos-tools"
-		},
-		{
-			"source": "/exploring-bytoss-tools/remote-browser-support",
-			"destination": "/tools-reference/all-bytos-tools"
-		},
-		{
-			"source": "/mcp/adding-mcp-servers-from-github",
-			"destination": "/mcp/mcp-overview"
-		},
-		{
-			"source": "/mcp/configuring-mcp-servers",
-			"destination": "/mcp/mcp-overview"
-		},
-		{
-			"source": "/more-info/telemetry",
-			"destination": "/enterprise-solutions/monitoring/telemetry"
-		},
-		{
-			"source": "/enterprise-solutions/configure-AWS-Bedrock-Admin",
-			"destination": "/enterprise-solutions/configuration/remote-configuration/aws-bedrock/admin-configuration"
-		},
-		{
-			"source": "/enterprise-solutions/configure-AWS-Bedrock-Member",
-			"destination": "/enterprise-solutions/configuration/remote-configuration/aws-bedrock/member-configuration"
-		},
-		{
-			"source": "/enterprise-solutions/configure-workOS-authkit",
-			"destination": "/enterprise-solutions/onboarding"
-		},
-		{
-			"source": "/enterprise-solutions/Onboarding your Organization",
-			"destination": "/enterprise-solutions/onboarding"
-		},
-		{
-			"source": "/enterprise-solutions/team-management/overview",
-			"destination": "/enterprise-solutions/team-management/managing-members"
-		},
-		{
-			"source": "/enterprise-solutions/team-management/roles-and-permissions",
-			"destination": "/enterprise-solutions/team-management/managing-members"
-		},
-		{
-			"source": "/features/customization/opening-bytos-in-sidebar",
-			"destination": "/usage/ide#move-bytos-to-the-right-sidebar"
-		},
-		{
-			"source": "/prompting/prompt-engineering-guide/bytosignore-file-guide",
-			"destination": "/customization/bytosignore"
-		},
-		{
-			"source": "/getting-started/selecting-your-model",
-			"destination": "/getting-started/authorizing-with-bytos"
-		},
-		{
-			"source": "/model-config/model-comparison",
-			"destination": "/getting-started/bytos-provider"
-		},
-		{
-			"source": "/troubleshooting/terminal-integration-guide",
-			"destination": "/core-workflows/using-commands"
-		},
-		{
-			"source": "/features/slash-commands/deep-planning",
-			"destination": "/core-workflows/using-commands#deep-planning"
-		},
-		{
-			"source": "/features/slash-commands/smol",
-			"destination": "/core-workflows/using-commands#smol"
-		},
-		{
-			"source": "/features/slash-commands/new-rule",
-			"destination": "/core-workflows/using-commands#newrule"
-		},
-		{
-			"source": "/features/memory-bank",
-			"destination": "/best-practices/memory-bank"
-		},
-		{
-			"source": "/features/focus-chain",
-			"destination": "/core-workflows/using-commands#deep-planning"
-		},
-		{
-			"source": "/features/skills",
-			"destination": "/customization/skills"
-		},
-		{
-			"source": "/api/reference",
-			"destination": "/api/overview"
-		},
-		{
-			"source": "/cli/overview",
-			"destination": "/usage/cli-overview"
-		},
-		{
-			"source": "/kanban/overview",
-			"destination": "/usage/kanban"
-		},
-		{
-			"source": "/kanban/getting-started",
-			"destination": "/usage/kanban"
-		},
-		{
-			"source": "/kanban/features",
-			"destination": "/usage/kanban"
-		},
-		{
-			"source": "/features/background-edit",
-			"destination": "/features/auto-approve"
-		},
-		{
-			"source": "/features/worktrees",
-			"destination": "/usage/ide"
-		},
-		{
-			"source": "/cli/getting-started",
-			"destination": "/usage/cli-overview"
-		},
-		{
-			"source": "/cli/installation",
-			"destination": "/getting-started/installing-bytos"
-		},
-		{
-			"source": "/cli/three-core-flows",
-			"destination": "/usage/cli-overview#headless-mode"
-		},
-		{
-			"source": "/bytos-cli/getting-started",
-			"destination": "/usage/cli-overview"
-		},
-		{
-			"source": "/bytos-cli/installation",
-			"destination": "/getting-started/installing-bytos"
-		},
-		{
-			"source": "/bytos-cli/three-core-flows",
-			"destination": "/usage/cli-overview#headless-mode"
-		},
-		{
-			"source": "/bytos-cli/connectors",
-			"destination": "/cli/connectors"
-		},
-		{
-			"source": "/bytos-cli/scheduling",
-			"destination": "/cli/scheduling"
-		},
-		{
-			"source": "/bytos-cli/mcp-servers",
-			"destination": "/mcp/mcp-overview"
-		},
-		{
-			"source": "/cli/mcp-servers",
-			"destination": "/mcp/mcp-overview"
-		},
-		{
-			"source": "/bytos-cli/agent-teams",
-			"destination": "/cli/agent-teams"
-		},
-		{
-			"source": "/bytos-cli/cli-reference",
-			"destination": "/cli/cli-reference"
-		},
-		{
-			"source": "/bytos-cli/configuration",
-			"destination": "/getting-started/config"
-		},
-		{
-			"source": "/provider-config/claude-code",
-			"destination": "/provider-config/anthropic"
-		},
-		{
-			"source": "/provider-config/openai-codex",
-			"destination": "/provider-config/openai"
-		},
-		{
-			"source": "/cli/configuration",
-			"destination": "/getting-started/config"
-		},
-		{
-			"source": "/bytos-cli/acp-editor-integrations",
-			"destination": "/usage/acp"
-		},
-		{
-			"source": "/bytos-cli/samples/github-issue-rca",
-			"destination": "/cli/samples/github-issue-rca"
-		},
-		{
-			"source": "/bytos-cli/samples/github-integration",
-			"destination": "/cli/samples/github-integration"
-		},
-		{
-			"source": "/bytos-cli/samples/github-pr-review",
-			"destination": "/cli/samples/github-pr-review"
-		},
-		{
-			"source": "/bytos-cli/samples/model-orchestration",
-			"destination": "/cli/samples/model-orchestration"
-		},
-		{
-			"source": "/bytos-sdk/overview",
-			"destination": "/sdk/overview"
-		},
-		{
-			"source": "/bytos-sdk/quickstart",
-			"destination": "/sdk/guides/building-an-agent"
-		},
-		{
-			"source": "/sdk/quickstart",
-			"destination": "/sdk/guides/building-an-agent"
-		},
-		{
-			"source": "/bytos-sdk/examples",
-			"destination": "/sdk/guides/building-an-agent"
-		},
-		{
-			"source": "/bytos-sdk/agents",
-			"destination": "/sdk/bytoscore"
-		},
-		{
-			"source": "/bytos-sdk/sessions",
-			"destination": "/sdk/bytoscore"
-		},
-		{
-			"source": "/bytos-sdk/tools",
-			"destination": "/sdk/tools"
-		},
-		{
-			"source": "/bytos-sdk/streaming-and-events",
-			"destination": "/sdk/events"
-		},
-		{
-			"source": "/bytos-sdk/plugins",
-			"destination": "/sdk/plugins"
-		},
-		{
-			"source": "/bytos-sdk/hooks",
-			"destination": "/sdk/plugins"
-		},
-		{
-			"source": "/bytos-sdk/model-providers",
-			"destination": "/sdk/model-providers"
-		},
-		{
-			"source": "/bytos-sdk/guides/building-an-agent",
-			"destination": "/sdk/guides/building-an-agent"
-		},
-		{
-			"source": "/bytos-sdk/guides/creating-custom-tools",
-			"destination": "/sdk/guides/creating-custom-tools"
-		},
-		{
-			"source": "/bytos-sdk/guides/writing-plugins",
-			"destination": "/sdk/guides/writing-plugins"
-		},
-		{
-			"source": "/bytos-sdk/guides/permission-handling",
-			"destination": "/sdk/guides/permission-handling"
-		},
-		{
-			"source": "/bytos-sdk/guides/scheduled-agents",
-			"destination": "/sdk/guides/scheduled-agents"
-		},
-		{
-			"source": "/bytos-sdk/guides/multi-agent-teams",
-			"destination": "/sdk/guides/multi-agent-teams"
-		},
-		{
-			"source": "/bytos-sdk/guides/connectors",
-			"destination": "/cli/connectors"
-		},
-		{
-			"source": "/sdk/guides/connectors",
-			"destination": "/cli/connectors"
-		},
-		{
-			"source": "/bytos-sdk/guides/going-to-production",
-			"destination": "/sdk/guides/going-to-production"
-		},
-		{
-			"source": "/bytos-sdk/architecture/overview",
-			"destination": "/sdk/architecture/overview"
-		},
-		{
-			"source": "/bytos-sdk/architecture/hub-spoke",
-			"destination": "/sdk/architecture/hub-spoke"
-		},
-		{
-			"source": "/bytos-sdk/architecture/packages",
-			"destination": "/sdk/architecture/overview"
-		},
-		{
-			"source": "/bytos-sdk/reference/bytos-core",
-			"destination": "/sdk/reference/bytos-core"
-		},
-		{
-			"source": "/bytos-sdk/reference/agent",
-			"destination": "/sdk/reference/agent"
-		},
-		{
-			"source": "/bytos-sdk/reference/gateway",
-			"destination": "/sdk/reference/gateway"
-		},
-		{
-			"source": "/bytos-sdk/reference/tools-api",
-			"destination": "/sdk/reference/tools-api"
-		},
-		{
-			"source": "/bytos-sdk/reference/events",
-			"destination": "/sdk/reference/events"
-		},
-		{
-			"source": "/bytos-sdk/reference/types",
-			"destination": "/sdk/reference/types"
-		},
-		{
-			"source": "/bytos-sdk/extensions",
-			"destination": "/sdk/plugins"
-		},
-		{
-			"source": "/sdk/guides/writing-extensions",
-			"destination": "/sdk/guides/writing-plugins"
-		},
-		{
-			"source": "/bytos-sdk/guides/writing-extensions",
-			"destination": "/sdk/guides/writing-plugins"
-		},
-		{
-			"source": "/mcp/mcp-marketplace",
-			"destination": "/mcp/mcp-overview"
-		},
-		{
-			"source": "/mcp/adding-and-configuring-servers",
-			"destination": "/mcp/mcp-overview"
-		},
-		{
-			"source": "/mcp/mcp-server-development-protocol",
-			"destination": "/mcp/mcp-overview"
-		},
-		{
-			"source": "/mcp/connecting-to-a-remote-server",
-			"destination": "/mcp/mcp-overview"
-		},
-		{
-			"source": "/mcp/mcp-transport-mechanisms",
-			"destination": "/mcp/mcp-overview"
-		},
-		{
-			"source": "/sdk/agents",
-			"destination": "/sdk/bytoscore"
-		},
-		{
-			"source": "/sdk/sessions",
-			"destination": "/sdk/bytoscore"
-		},
-		{
-			"source": "/sdk/streaming-and-events",
-			"destination": "/sdk/events"
-		},
-		{
-			"source": "/sdk/hooks",
-			"destination": "/sdk/plugins"
-		},
-		{
-			"source": "/sdk/extensions",
-			"destination": "/sdk/plugins"
-		},
-		{
-			"source": "/sdk/examples",
-			"destination": "/sdk/guides/building-an-agent"
-		},
-		{
-			"source": "/bytos-cli/interactive-mode",
-			"destination": "/usage/cli-overview"
-		},
-		{
-			"source": "/bytos-cli/overview",
-			"destination": "/usage/cli-overview"
-		},
-		{
-			"source": "/bytos-cli/samples/overview",
-			"destination": "/usage/cli-overview"
-		},
-		{
-			"source": "/bytos-cli/samples/worktree-workflows",
-			"destination": "/usage/cli-overview"
-		},
-		{
-			"source": "/contributing/doc-templates",
-			"destination": "/bytos-overview"
-		},
-		{
-			"source": "/contributing/documentation-guide",
-			"destination": "/bytos-overview"
-		},
-		{
-			"source": "/customization/workflows",
-			"destination": "/customization/bytos-rules"
-		},
-		{
-			"source": "/features/web-tools",
-			"destination": "/tools-reference/all-bytos-tools"
-		},
-		{
-			"source": "/getting-started/quick-start",
-			"destination": "/bytos-overview"
-		},
-		{
-			"source": "/getting-started/what-is-bytos",
-			"destination": "/bytos-overview"
-		},
-		{
-			"source": "/home",
-			"destination": "/bytos-overview"
-		},
-		{
-			"source": "/provider-config/aihubmix",
-			"destination": "/provider-config/other-30-plus-providers#aihubmix"
-		},
-		{
-			"source": "/provider-config/asksage",
-			"destination": "/provider-config/other-30-plus-providers#asksage"
-		},
-		{
-			"source": "/provider-config/avian",
-			"destination": "/provider-config/other-30-plus-providers#avian"
-		},
-		{
-			"source": "/provider-config/baseten",
-			"destination": "/provider-config/other-30-plus-providers#baseten"
-		},
-		{
-			"source": "/provider-config/cerebras",
-			"destination": "/provider-config/other-30-plus-providers#cerebras"
-		},
-		{
-			"source": "/provider-config/dify",
-			"destination": "/provider-config/other-30-plus-providers#difyai"
-		},
-		{
-			"source": "/provider-config/doubao",
-			"destination": "/provider-config/other-30-plus-providers#doubao"
-		},
-		{
-			"source": "/provider-config/fireworks",
-			"destination": "/provider-config/other-30-plus-providers#fireworks-ai"
-		},
-		{
-			"source": "/provider-config/gcp-vertex-ai",
-			"destination": "/provider-config/other-30-plus-providers#gcp-vertex-ai"
-		},
-		{
-			"source": "/provider-config/groq",
-			"destination": "/provider-config/other-30-plus-providers#groq"
-		},
-		{
-			"source": "/provider-config/hicap",
-			"destination": "/provider-config/other-30-plus-providers#hicap"
-		},
-		{
-			"source": "/provider-config/huawei-cloud-maas",
-			"destination": "/provider-config/other-30-plus-providers#huawei-cloud-maas"
-		},
-		{
-			"source": "/provider-config/huggingface",
-			"destination": "/provider-config/other-30-plus-providers#hugging-face"
-		},
-		{
-			"source": "/provider-config/litellm-and-bytos-using-codestral",
-			"destination": "/provider-config/openai-compatible"
-		},
-		{
-			"source": "/provider-config/mistral-ai",
-			"destination": "/provider-config/other-30-plus-providers#mistral"
-		},
-		{
-			"source": "/provider-config/moonshot",
-			"destination": "/provider-config/other-30-plus-providers#moonshot"
-		},
-		{
-			"source": "/provider-config/nebius",
-			"destination": "/provider-config/other-30-plus-providers#nebius-ai-studio"
-		},
-		{
-			"source": "/provider-config/nousresearch",
-			"destination": "/provider-config/other-30-plus-providers#nous-research"
-		},
-		{
-			"source": "/provider-config/oracle-code-assist",
-			"destination": "/provider-config/other-30-plus-providers#oracle-code-assist"
-		},
-		{
-			"source": "/provider-config/qwen-code",
-			"destination": "/provider-config/other-30-plus-providers#qwen-code"
-		},
-		{
-			"source": "/provider-config/requesty",
-			"destination": "/provider-config/other-30-plus-providers#requesty"
-		},
-		{
-			"source": "/provider-config/sambanova",
-			"destination": "/provider-config/other-30-plus-providers#sambanova"
-		},
-		{
-			"source": "/provider-config/sap-aicore",
-			"destination": "/provider-config/other-30-plus-providers#sap-ai-core"
-		},
-		{
-			"source": "/provider-config/together",
-			"destination": "/provider-config/other-30-plus-providers#together"
-		},
-		{
-			"source": "/provider-config/vercel-ai-gateway",
-			"destination": "/provider-config/other-30-plus-providers#vercel-ai-gateway"
-		},
-		{
-			"source": "/provider-config/vscode-language-model-api",
-			"destination": "/provider-config/other-30-plus-providers#vs-code-language-model-api"
-		},
-		{
-			"source": "/provider-config/xai-grok",
-			"destination": "/provider-config/other-30-plus-providers#xai-grok"
-		},
-		{
-			"source": "/tools-reference/browser-automation",
-			"destination": "/tools-reference/all-bytos-tools"
-		},
-		{
-			"source": "/troubleshooting/task-history-recovery",
-			"destination": "/core-workflows/task-management"
-		},
-		{
-			"source": "/troubleshooting/terminal-quick-fixes",
-			"destination": "/core-workflows/using-commands"
-		}
+		{ "source": "/api", "destination": "/status-and-roadmap" },
+		{ "source": "/cli", "destination": "/status-and-roadmap" },
+		{ "source": "/desktop", "destination": "/status-and-roadmap" },
+		{ "source": "/sdk", "destination": "/status-and-roadmap" },
+		{ "source": "/kanban", "destination": "/status-and-roadmap" },
+		{ "source": "/enterprise-solutions", "destination": "/status-and-roadmap" },
+		{ "source": "/getting-started/bytos-provider", "destination": "/status-and-roadmap" },
+		{ "source": "/getting-started/bytospass", "destination": "/status-and-roadmap" },
+		{ "source": "/getting-started/free-models", "destination": "/status-and-roadmap" },
+		{ "source": "/getting-started/authorizing-with-bytos", "destination": "/provider-config/overview" },
+		{ "source": "/usage/cli-overview", "destination": "/status-and-roadmap" },
+		{ "source": "/usage/bytos-desktop", "destination": "/status-and-roadmap" },
+		{ "source": "/usage/kanban", "destination": "/status-and-roadmap" },
+		{ "source": "/usage/tui", "destination": "/status-and-roadmap" },
+		{ "source": "/usage/acp", "destination": "/status-and-roadmap" },
+		{ "source": "/usage/cloud-agents", "destination": "/status-and-roadmap" },
+		{ "source": "/features/subagents", "destination": "/status-and-roadmap" },
+		{ "source": "/customization/plugins", "destination": "/status-and-roadmap" }
 	],
 	"search": {
 		"prompt": "Search Bytos documentation..."

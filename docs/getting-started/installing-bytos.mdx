@@ -1,158 +1,96 @@
 ---
 title: "Installing Bytos"
-description: "Choose your installation path: IDE Extension, CLI, SDK, or Kanban"
+sidebarTitle: "Install"
+description: "Install the Bytos VS Code extension, connect a model provider, and run your first task."
 ---
 
-## Choose Your Install Path
+Bytos is distributed as a **Visual Studio Code extension**. There is no separate
+Bytos account, subscription, or hosted backend in this build.
 
-- [Desktop App](#desktop-app) — Bytos as a native app
-- [IDE Extension](#ide-extension) — VS Code, Cursor, JetBrains, Windsurf, VSCodium, Antigravity
-- [CLI](#cli) — terminal workflows
-- [Kanban](#kanban) (preview) — easily manage multiple agents through a kanban board
-- [SDK](#sdk) — build with `@bytos/sdk`
+## Requirements
 
-## Desktop App
+- **Visual Studio Code 1.101.0 or newer** (VS Code Insiders works too).
+- A model provider API key, or a local model server such as Ollama or LM Studio.
+- **Windows x64** for the current local voice-dictation feature. The core
+  extension is tested on Windows, macOS, and Linux; voice capture is Windows x64
+  only in this release.
+- An internet connection for cloud providers. Local models do not need one.
 
-Use this if you want Bytos outside your editor, as a native desktop app with a dedicated workspace for running and managing agent sessions.
+## Install from the VS Code Marketplace
 
-<Steps>
-  <Step title="Download Bytos Desktop">
-    Get the installer for your platform from [bytos.dev/desktop](https://bytos.dev/desktop). Available for macOS and Windows (Windows is currently in beta).
-  </Step>
-  <Step title="Choose a provider and model">
-    Select the provider and open weight model of your choice. Bytos Desktop is an open source app for open weight models, so you bring your own model access.
-  </Step>
-  <Step title="Start a session">
-    Run sessions in parallel, schedule recurring tasks, and import sessions from other coding agents to continue in Bytos.
-  </Step>
-</Steps>
+1. Open [Bytos on the VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=Bytos.bytos).
+2. Click **Install**, or run:
 
-More details: [Bytos Desktop](/usage/bytos-desktop), and for remote machines [Bytos Desktop SSH](/usage/bytos-desktop-ssh)
+   ```bash
+   code --install-extension Bytos.bytos
+   ```
 
-## IDE Extension
+3. Open the Bytos view in the VS Code activity bar.
 
-Use this if you want Bytos inside your editor UI.
+## Install from a VSIX
 
-<Tabs>
-  <Tab title="VS Code / Cursor / Windsurf / VSCodium / Antigravity">
-    <Steps>
-      <Step title="Open Extensions">
-        Press `Ctrl/Cmd + Shift + X`.
-      </Step>
-      <Step title="Search for Bytos">
-        Type `Bytos`.
-      </Step>
-      <Step title="Install">
-        Click **Install** on the Bytos extension.
-      </Step>
-      <Step title="Open Bytos">
-        Find Bytos in the extension sidebar.
-      </Step>
-      <Step title="Authorize with Bytos">
-        After installing the extension, complete provider setup in Bytos settings. Use the Bytos Provider for pay-as-you-go access, BytosPass for a flat monthly subscription, or bring your own provider key.
+If you have a verified VSIX artifact:
 
-        [Authorize with Bytos](/getting-started/authorizing-with-bytos)
-      </Step>
-    </Steps>
+```bash
+code --install-extension bytos-<version>.vsix
+```
 
-    <Note>
-    Windsurf and VSCodium use Open VSX. The install flow is the same.
-    </Note>
-  </Tab>
+Then open the Bytos view in the activity bar.
 
-  <Tab title="JetBrains">
-    <Steps>
-      <Step title="Open Plugins Marketplace">
-        **Settings** → **Plugins** → **Marketplace**.
-      </Step>
-      <Step title="Install Bytos">
-        Search `Bytos`, click **Install**, then restart the IDE.
-      </Step>
-      <Step title="Open Bytos">
-        **View** → **Tool Windows** → **Bytos**.
-      </Step>
-      <Step title="Authorize with Bytos">
-        After installing the extension, complete provider setup in Bytos settings. Use the Bytos Provider for pay-as-you-go access, BytosPass for a flat monthly subscription, or bring your own provider key.
+## Configure a provider
 
-        [Authorize with Bytos](/getting-started/authorizing-with-bytos)
-      </Step>
-    </Steps>
+1. Open **Settings → API Configuration**.
+2. Choose a provider. Supported integrations include OpenRouter, Anthropic,
+   OpenAI, Google Gemini, AWS Bedrock, Azure, GCP Vertex, Cerebras, Groq, any
+   OpenAI-compatible endpoint, and local models through Ollama or LM Studio.
+3. Paste your API key, or configure the local endpoint.
+4. Select a model.
 
-    Alternative: install from the [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/28247-bytos).
-  </Tab>
-</Tabs>
+Your key is written to VS Code SecretStorage, never to a plaintext settings file,
+and the webview only receives a masked value and a configured/not-configured
+status. See [Providers and models](/provider-config/overview) for per-provider
+setup.
 
-## CLI
+## Run your first task
 
-Use this if you want Bytos in terminal workflows (interactive + automation).
+1. Open a workspace folder in VS Code.
+2. Open the Bytos panel.
+3. Describe a task, for example:
 
-<Steps>
-  <Step title="Install Node.js">
-    Install Node.js 20+ (22 recommended).
-  </Step>
-  <Step title="Install CLI">
-    ```bash
-    npm install -g bytos
-    ```
-  </Step>
-  <Step title="Authenticate">
-    ```bash
-    bytos auth
-    ```
-  </Step>
-  <Step title="Run Bytos">
-    ```bash
-    bytos
-    # or
-    bytos "your task"
-    ```
-  </Step>
-</Steps>
+   > Add a health-check endpoint to this Express app, add a test, and run the
+   > test suite. Ask before changing files outside `src/`.
 
-More details: [CLI Installation & Setup](/usage/cli-overview)
+4. Review the plan and approve the file/terminal actions you want Bytos to take.
+5. Review the diffs and test output. Use checkpoints if you want to restore an
+   earlier state.
 
-## Kanban
+See [Quick start](/getting-started/quick-start) for a shorter walkthrough and
+[Plan and Act](/core-workflows/plan-and-act) for the workflow model.
 
-Use this if you want task-board workflows with agent execution.
+## Optional: voice dictation
 
-<Steps>
-  <Step title="Install Node.js">
-    Install Node.js 18+.
-  </Step>
-  <Step title="Launch Kanban">
-    ```bash
-    npx kanban
-    ```
-  </Step>
-</Steps>
+On **Windows x64**, Bytos can record from your microphone and transcribe locally
+with the bundled whisper.cpp engine:
 
-More details: [Kanban](/usage/kanban)
+1. Open **Settings → Voice**.
+2. Turn on **Voice**.
+3. Press **Refresh** in the Microphone section and choose an input device.
+4. Download a speech model if none is installed.
+5. Use the microphone button in the chat composer.
 
-## SDK
+Audio stays in memory and is never uploaded to a Bytos service. See
+[Voice and microphone troubleshooting](/troubleshooting/voice-and-microphone).
 
-Use this if you are building your own app/agent on top of Bytos.
+## Troubleshooting
 
-<Steps>
-  <Step title="Create project">
-    ```bash
-    mkdir my-agent && cd my-agent
-    npm init -y
-    ```
-  </Step>
-  <Step title="Install SDK">
-    ```bash
-    npm install @bytos/sdk
-    ```
-  </Step>
-  <Step title="Build and run">
-    Browse SDK examples to run your first agent.
-  </Step>
-</Steps>
+- [FAQ](/troubleshooting/faq)
+- [Voice and microphone](/troubleshooting/voice-and-microphone)
+- [Networking and proxies](/troubleshooting/networking-and-proxies)
+- [GitHub Issues](https://github.com/Balahurra/Bytos/issues)
+- [Discord](https://discord.gg/2hSFZY9Bs)
 
-Start here: [SDK Examples](/sdk/examples)
+## Not shipped in this release
 
-
-## Need Help?
-
-- [Troubleshooting](/troubleshooting/networking-and-proxies)
-- [community discussions](https://github.com/bytos/bytos/discussions)
+Desktop, CLI, JetBrains, SDK, Kanban, BytosPass, Enterprise, and the public Bytos
+API are not part of the current VS Code extension release. See
+[Status and roadmap](/status-and-roadmap).

@@ -27,10 +27,10 @@ jobs:
               if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call'
               run: echo "run_all=true" >> "$GITHUB_OUTPUT"
 
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v7
               if: steps.force.outputs.run_all != 'true'
 
-            - uses: dorny/paths-filter@v3
+            - uses: dorny/paths-filter@v4
               if: steps.force.outputs.run_all != 'true'
               id: filter
               with:
@@ -90,7 +90,7 @@ jobs:
             working-directory: apps/vscode
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v7
 
             - name: Setup Bun
               uses: oven-sh/setup-bun@v2
@@ -142,7 +142,7 @@ jobs:
                 working-directory: apps/vscode
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v7
 
             - name: Setup Bun
               uses: oven-sh/setup-bun@v2
@@ -184,7 +184,7 @@ jobs:
 
             - name: Cache VS Code test runtime
               if: runner.os == 'Windows'
-              uses: actions/cache@v4
+              uses: actions/cache@v6
               with:
                   path: .vscode-test
                   key: vscode-test-runtime-${{ runner.os }}-${{ env.VSCODE_TEST_VERSION }}
@@ -273,7 +273,7 @@ jobs:
                   bun run test:coverage
 
             - name: Save Coverage Reports
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v7
               # Only upload artifacts on Linux - We only need coverage from one OS
               if: runner.os == 'Linux'
               with:
@@ -290,7 +290,7 @@ jobs:
             working-directory: apps/vscode
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v7
 
             - name: Setup Bun
               uses: oven-sh/setup-bun@v2
@@ -333,7 +333,7 @@ jobs:
               run: bun run test:tp-orchestrator -- tests/specs/ --count=1 --coverage
 
             - name: Save Coverage Reports
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v7
               with:
                 name: test-platform-integration-core-coverage
                 path: apps/vscode/coverage/**/lcov.info
@@ -391,11 +391,11 @@ jobs:
         # Run on PRs to main, pushes to main, and manual dispatches
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v7
 
             - name: Download unit tests coverage reports
               if: needs.detect-changes.outputs.vscode == 'true'
-              uses: actions/download-artifact@v4
+              uses: actions/download-artifact@v8
               with:
                   name: pr-coverage-reports
                   path: apps/vscode
@@ -423,7 +423,7 @@ jobs:
 
             - name: Download test platform integration core coverage artifact
               if: needs.detect-changes.outputs.testing_platform == 'true'
-              uses: actions/download-artifact@v4
+              uses: actions/download-artifact@v8
               continue-on-error: true
               id: download-integration-coverage
               with:

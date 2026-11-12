@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           persist-credentials: false
 
@@ -39,7 +39,7 @@ jobs:
           bun-version: "1.4.2"
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: "24.x"
 
@@ -89,7 +89,7 @@ jobs:
         run: bun sdk/packages/ui/scripts/smoke-package.ts "$UI_PACKAGE_ARCHIVE"
 
       - name: Upload publish artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ui-npm-package
           path: ${{ runner.temp }}/ui-npm-pack/*.tgz
@@ -114,13 +114,13 @@ jobs:
       id-token: write
     steps:
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: "24.x"
           registry-url: "https://registry.npmjs.org"
 
       - name: Download publish artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: ui-npm-package
           path: ${{ runner.temp }}/ui-npm-pack

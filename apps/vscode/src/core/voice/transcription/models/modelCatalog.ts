@@ -1,4 +1,7 @@
+import * as fs from "node:fs"
+import * as path from "node:path"
 import { VoiceError } from "../../types"
+import { sha256File } from "./integrity"
 
 /**
  * Pinned whisper.cpp artifacts (F2, TD-8 / §12.1).
@@ -150,14 +153,18 @@ export const PINNED_CPU_BACKENDS: readonly PinnedBinaryFile[] = [
 ]
 
 export interface ModelPin {
-	id: "tiny" | "base"
+	id: string
 	fileName: string
 	sizeBytes: number
 	sha256: string
 	url: string
-	tier: "fast" | "balanced"
+	tier: "fast" | "balanced" | "custom"
 	approxResidentMemoryMb: number
 	multilingual: boolean
+	/** Human label for user-added models. Built-ins derive their label from `id`. */
+	displayName?: string
+	/** True for a model the user added from a local `.bin` file. */
+	custom?: boolean
 }
 
 /**
@@ -198,20 +205,268 @@ export const PINNED_MODELS: Readonly<Record<"tiny" | "base", ModelPin>> = {
  */
 export const DEFAULT_MODEL_ID = "base" as const
 
-export function isKnownModelId(value: unknown): value is "tiny" | "base" {
-	return value === "tiny" || value === "base"
+/**
+ * Custom models the user added from a local whisper.cpp `.bin` file.
+ *
+ * A custom model is not trusted from upstream metadata either: Bytos hashes the
+ * exact bytes it copies and stores that SHA-256 in a small registry next to the
+ * model files. Every later check compares against that hash, so a corrupted or
+ * swapped file is still reported as failed rather than used.
+ */
+export const CUSTOM_MODEL_REGISTRY_FILE = "custom-models.json"
+export const CUSTOM_MODEL_ID_PREFIX = "custom:"
+
+export interface CustomModelRecord {
+	id: string
+	displayName: string
+	fileName: string
+	sizeBytes: number
+	sha256: string
+	createdAt: number
+}
+
+let customModelsDir = ""
+const customModels = new Map<string, ModelPin>()
+
+function getBuiltInPin(modelId: string): ModelPin | undefined {
+	if (modelId === "tiny" || modelId === "base") {
+		return PINNED_MODELS[modelId]
+	}
+	return undefined
+}
+
+/** True for any id shaped like a user-added model. */
+export function isCustomModelId(value: unknown): value is string {
+	return typeof value === "string" && value.startsWith(CUSTOM_MODEL_ID_PREFIX)
+}
+
+/** Accepted by the UI and the host: a built-in pin or a custom-model id. */
+export function isKnownModelId(value: unknown): value is string {
+	return typeof value === "string" && (getBuiltInPin(value) !== undefined || isCustomModelId(value))
 }
 
 export function getModelPin(modelId: unknown): ModelPin {
-	if (!isKnownModelId(modelId)) {
-		throw new VoiceError("MODEL_UNKNOWN", `Unknown whisper model: ${String(modelId)}`)
+	if (typeof modelId === "string") {
+		const builtIn = getBuiltInPin(modelId)
+		if (builtIn) return builtIn
+		const custom = customModels.get(modelId)
+		if (custom) return custom
 	}
-	return PINNED_MODELS[modelId]
+	throw new VoiceError("MODEL_UNKNOWN", `Unknown whisper model: ${String(modelId)}`)
+}
+
+/** True only when the registry currently holds this model. */
+export function hasModelPin(modelId: unknown): boolean {
+	if (typeof modelId !== "string") return false
+	return getBuiltInPin(modelId) !== undefined || customModels.has(modelId)
+}
+
+export function listCustomModelPins(): ModelPin[] {
+	return [...customModels.values()]
 }
 
 /** All models, cheapest first — the order a picker should show them in. */
 export function listModels(): ModelPin[] {
-	return [PINNED_MODELS.tiny, PINNED_MODELS.base]
+	return [PINNED_MODELS.tiny, PINNED_MODELS.base, ...customModels.values()]
+}
+
+/**
+ * Loads `<modelDir>/custom-models.json` into memory.
+ *
+ * Called once per model directory by `ModelStore`, before any `getModelPin` can
+ * see a custom id. A malformed entry is skipped rather than trusted.
+ */
+export function loadCustomModels(modelDir: string): ModelPin[] {
+	customModelsDir = modelDir ? path.resolve(modelDir) : ""
+	customModels.clear()
+	if (!customModelsDir) return []
+	for (const record of readCustomModelRecords(customModelsDir)) {
+		const pin = pinFromCustomRecord(record)
+		if (pin) customModels.set(pin.id, pin)
+	}
+	return listCustomModelPins()
+}
+
+export interface RegisterCustomModelInput {
+	displayName: string
+	sourcePath: string
+}
+
+/**
+ * Copies a user-selected local model into the model directory and registers its
+ * exact size and SHA-256. The copy makes the model independent of the source
+ * file being moved or deleted afterwards.
+ */
+export async function registerCustomModel(modelDir: string, input: RegisterCustomModelInput): Promise<ModelPin> {
+	if (!modelDir) {
+		throw new VoiceError("MODEL_NOT_INSTALLED", "This editor does not expose a storage folder for voice models.")
+	}
+	const sourcePath = path.resolve(input.sourcePath ?? "")
+	let sourceStat: fs.Stats
+	try {
+		sourceStat = await fs.promises.stat(sourcePath)
+	} catch {
+		throw new VoiceError("MODEL_NOT_INSTALLED", "The selected model file could not be read.")
+	}
+	if (!sourceStat.isFile()) {
+		throw new VoiceError("MODEL_NOT_INSTALLED", "The selected model is not a file.")
+	}
+	if (sourceStat.size <= 0) {
+		throw new VoiceError("MODEL_INTEGRITY_FAILED", "The selected model file is empty.")
+	}
+	if (path.extname(sourcePath).toLowerCase() !== ".bin") {
+		throw new VoiceError("MODEL_UNKNOWN", "Whisper.cpp models must be .bin files.")
+	}
+
+	const displayName = sanitizeDisplayName(input.displayName, path.basename(sourcePath, path.extname(sourcePath)))
+	const slug = slugify(displayName) || "model"
+	const id = `${CUSTOM_MODEL_ID_PREFIX}${slug}-${randomSuffix()}`
+	const fileName = `custom-${slug}-${randomSuffix()}.bin`
+	const target = path.join(modelDir, fileName)
+	await fs.promises.mkdir(modelDir, { recursive: true })
+	await fs.promises.copyFile(sourcePath, target)
+
+	try {
+		await assertLooksLikeWhisperModel(target)
+		const [stat, sha256] = await Promise.all([fs.promises.stat(target), sha256File(target)])
+		const pin: ModelPin = {
+			id,
+			fileName,
+			sizeBytes: stat.size,
+			sha256,
+			url: "",
+			tier: "custom",
+			approxResidentMemoryMb: Math.max(1, Math.round((stat.size / (1024 * 1024)) * 1.6)),
+			multilingual: true,
+			displayName,
+			custom: true,
+		}
+		const records = readCustomModelRecords(modelDir).filter((record) => record.id !== id)
+		records.push({
+			id,
+			displayName,
+			fileName,
+			sizeBytes: pin.sizeBytes,
+			sha256: pin.sha256,
+			createdAt: Date.now(),
+		})
+		writeCustomModelRecords(modelDir, records)
+		customModels.set(id, pin)
+		return pin
+	} catch (error) {
+		await fs.promises.rm(target, { force: true }).catch(() => undefined)
+		throw error
+	}
+}
+
+/** Removes a custom model from the registry (the caller removes the bytes). */
+export function unregisterCustomModel(modelDir: string, modelId: string): void {
+	if (!customModelsDir && modelDir) {
+		customModelsDir = path.resolve(modelDir)
+	}
+	const records = readCustomModelRecords(modelDir).filter((record) => record.id !== modelId)
+	writeCustomModelRecords(modelDir, records)
+	customModels.delete(modelId)
+}
+
+/** Test seam: forget the registry without touching files. */
+export function resetCustomModelRegistryForTesting(): void {
+	customModels.clear()
+	customModelsDir = ""
+}
+
+function registryPath(modelDir: string): string {
+	return path.join(modelDir, CUSTOM_MODEL_REGISTRY_FILE)
+}
+
+function readCustomModelRecords(modelDir: string): CustomModelRecord[] {
+	if (!modelDir) return []
+	try {
+		const raw = fs.readFileSync(registryPath(modelDir), "utf8")
+		const parsed = JSON.parse(raw) as unknown
+		if (!Array.isArray(parsed)) return []
+		return parsed.filter(isCustomModelRecord)
+	} catch {
+		return []
+	}
+}
+
+function writeCustomModelRecords(modelDir: string, records: CustomModelRecord[]): void {
+	fs.mkdirSync(modelDir, { recursive: true })
+	const target = registryPath(modelDir)
+	const temp = `${target}.tmp`
+	fs.writeFileSync(temp, `${JSON.stringify(records, null, 2)}\n`, "utf8")
+	fs.renameSync(temp, target)
+}
+
+function isCustomModelRecord(value: unknown): value is CustomModelRecord {
+	if (!value || typeof value !== "object") return false
+	const record = value as Partial<CustomModelRecord>
+	return (
+		typeof record.id === "string" &&
+		record.id.startsWith(CUSTOM_MODEL_ID_PREFIX) &&
+		typeof record.displayName === "string" &&
+		record.displayName.trim().length > 0 &&
+		typeof record.fileName === "string" &&
+		record.fileName === path.basename(record.fileName) &&
+		record.fileName.toLowerCase().endsWith(".bin") &&
+		typeof record.sizeBytes === "number" &&
+		Number.isFinite(record.sizeBytes) &&
+		record.sizeBytes > 0 &&
+		typeof record.sha256 === "string" &&
+		/^[0-9a-f]{64}$/i.test(record.sha256) &&
+		typeof record.createdAt === "number"
+	)
+}
+
+function pinFromCustomRecord(record: CustomModelRecord): ModelPin | undefined {
+	if (!isCustomModelRecord(record)) return undefined
+	return {
+		id: record.id,
+		fileName: record.fileName,
+		sizeBytes: record.sizeBytes,
+		sha256: record.sha256,
+		url: "",
+		tier: "custom",
+		approxResidentMemoryMb: Math.max(1, Math.round((record.sizeBytes / (1024 * 1024)) * 1.6)),
+		multilingual: true,
+		displayName: record.displayName,
+		custom: true,
+	}
+}
+
+function sanitizeDisplayName(value: unknown, fallback: string): string {
+	const name = typeof value === "string" ? value.trim().replace(/\s+/g, " ") : ""
+	const chosen = name.length > 0 ? name : fallback
+	return chosen.slice(0, 80)
+}
+
+function slugify(value: string): string {
+	return value
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, "-")
+		.replace(/^-+|-+$/g, "")
+		.slice(0, 40)
+}
+
+function randomSuffix(): string {
+	return Math.random().toString(36).slice(2, 8)
+}
+
+/** whisper.cpp GGML/GGUF files start with a known magic; reject obvious mistakes. */
+async function assertLooksLikeWhisperModel(filePath: string): Promise<void> {
+	let handle: fs.promises.FileHandle | undefined
+	try {
+		handle = await fs.promises.open(filePath, "r")
+		const header = Buffer.alloc(4)
+		await handle.read(header, 0, header.length, 0)
+		const magic = header.toString("latin1").toLowerCase()
+		if (magic !== "ggml" && magic !== "lmgg" && magic !== "gguf") {
+			throw new VoiceError("MODEL_UNKNOWN", "The selected file does not look like a whisper.cpp .bin model.")
+		}
+	} finally {
+		await handle?.close().catch(() => undefined)
+	}
 }
 
 /**

@@ -30,13 +30,13 @@ const convertToProtoValue = (field: keyof UpdateSettingsRequest, value: any): an
  * @param field - The field key to update
  * @param value - The new value for the field
  */
-export const updateSetting = (field: keyof UpdateSettingsRequest, value: any) => {
+export const updateSetting = (field: keyof UpdateSettingsRequest, value: any): Promise<unknown> => {
 	const updateRequest: Partial<UpdateSettingsRequest> = {}
 
 	const convertedValue = convertToProtoValue(field, value)
 	updateRequest[field] = convertedValue
 
-	StateServiceClient.updateSettings(UpdateSettingsRequest.create(updateRequest)).catch((error) => {
+	return StateServiceClient.updateSettings(UpdateSettingsRequest.create(updateRequest)).catch((error) => {
 		console.error(`Failed to update setting ${field}:`, error)
 	})
 }

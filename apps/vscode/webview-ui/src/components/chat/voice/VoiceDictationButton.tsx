@@ -7,21 +7,21 @@ import { type VoiceUiLanguage, voiceDictationStrings } from "./dictationStrings"
 import type { VoiceDictationController, VoiceDictationPhase } from "./useVoiceDictation"
 
 /**
- * F4 â€” the microphone control in the composer's bottom row.
+ * F4 — the microphone control in the composer's bottom row.
  *
  * It sits immediately left of the existing Send arrow and reuses the composer's
  * own controls: the `input-icon-button` class the Send arrow and the Settings
  * model pickers already use, the shared `Tooltip` primitive, and VS Code theme
- * variables only â€” so light and dark themes need no special case.
+ * variables only — so light and dark themes need no special case.
  *
  * ## States (F4 acceptance criteria)
  *
  * | phase | control | text |
  * |---|---|---|
  * | idle / cancelled | mic glyph | tooltip "Voice input" |
- * | initializing | spinner | "Starting the microphoneâ€¦" |
- * | recording | dot + stop glyph + **label** | "Metne Ã‡evir" / "Transcribe" / "In Text umwandeln" |
- * | transcribing | spinner | "Metne Ã§evriliyorâ€¦" |
+ * | initializing | spinner | "Starting the microphone…" |
+ * | recording | dot + stop glyph + **label** | "Metne Çevir" / "Transcribe" / "In Text umwandeln" |
+ * | transcribing | spinner | "Metne çevriliyor…" |
  * | completed | check | transcript already in the draft |
  * | error | alert glyph | the host's own sentence + "Yeniden dene" |
  *
@@ -144,7 +144,7 @@ export const VoiceDictationButton: React.FC<VoiceDictationButtonProps> = ({ dict
 				{tooltip}
 			</TooltipContent>
 			<TooltipTrigger asChild>
-				{/* While recording the control is a labelled button, so "Metne Ã‡evir"
+				{/* While recording the control is a labelled button, so "Metne Çevir"
 				    is read, not guessed from an icon. */}
 				{recording ? (
 					<button

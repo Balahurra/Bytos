@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.0.3]
+
+### Added
+
+- **Settings → Voice** now has an **Add a custom voice model** section. Pick any local whisper.cpp `.bin` model, give it a name, and Bytos copies it into the model folder, records its SHA-256, lists it beside the built-in models, and uses it for composer dictation once selected.
+- Model rows in **Settings → Voice** now show a clear **Selected** state, a **Use this model** action, and independent per-model download progress, so choosing between two downloaded models is unambiguous.
+
+### Changed
+
+- The **Auto Phase Plan** settings tab is now titled **Auto Phase Planner**.
+- The chat composer starts taller, scrolls its own text when the mouse wheel is used over it, and can be resized vertically from the handle above the prompt.
+- An expanded phase in **Auto Phase Planner** shows its **Phase N** label in yellow, matching the active state.
+
+### Fixed
+
+- Selecting a speech model now updates the radio and highlight immediately instead of leaving the previous model looking selected.
+- Downloading one speech model no longer hides or blocks the second model's state and actions.
+- Removed stray mojibake characters (such as `â€¦` and `Â·`) from the Auto Phase Planner labels and messages.
+- A model installed in a previous session (including a custom one) is verified on first dictation instead of being refused as "not installed".
+
 ## [1.0.2]
 
 ### Added

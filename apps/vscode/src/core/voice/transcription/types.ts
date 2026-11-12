@@ -24,7 +24,8 @@ export const SUPPORTED_LANGUAGES: readonly LanguageInfo[] = [
 	{ code: "de", englishName: "German", nativeName: "Deutsch" },
 ] as const
 
-export type ModelId = "tiny" | "base"
+/** A pinned built-in id (`tiny`, `base`) or a registered custom id (`custom:…`). */
+export type ModelId = string
 
 /**
  * A pinned, verified model artifact.

@@ -390,10 +390,53 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 
 		const [thumbnailsHeight, setThumbnailsHeight] = useState(0)
 		const [textAreaBaseHeight, setTextAreaBaseHeight] = useState<number | undefined>(undefined)
+		// The prompt box starts taller than the old three lines and can be dragged
+		// from its top edge. `composerRows` is the minimum row count; typing can
+		// still grow it further up to `maxRows`.
+		const [composerRows, setComposerRows] = useState(6)
 		const [showContextMenu, setShowContextMenu] = useState(false)
 		const [cursorPosition, setCursorPosition] = useState(0)
 		const [searchQuery, setSearchQuery] = useState("")
 		const textAreaRef = useRef<HTMLTextAreaElement | null>(null)
+
+		// The wheel belongs to the prompt while the pointer is over it. Without a
+		// non-passive native listener the browser scrolls the settings/chat page
+		// instead, which made a long prompt impossible to scroll inside the box.
+		useEffect(() => {
+			const element = textAreaRef.current
+			if (!element) return
+			const handleWheel = (event: WheelEvent) => {
+				event.stopPropagation()
+				if (event.cancelable) {
+					event.preventDefault()
+				}
+				element.scrollTop += event.deltaY
+			}
+			element.addEventListener("wheel", handleWheel, { passive: false })
+			return () => element.removeEventListener("wheel", handleWheel)
+		}, [])
+
+		/** Drag the top edge of the prompt box to make it taller or shorter. */
+		const beginComposerResize = useCallback(
+			(event: React.PointerEvent<HTMLElement>) => {
+				event.preventDefault()
+				const startY = event.clientY
+				const startRows = composerRows
+				const handleMove = (moveEvent: PointerEvent) => {
+					const deltaRows = Math.round((startY - moveEvent.clientY) / 20)
+					setComposerRows(Math.min(24, Math.max(3, startRows + deltaRows)))
+				}
+				const handleUp = () => {
+					window.removeEventListener("pointermove", handleMove)
+					window.removeEventListener("pointerup", handleUp)
+					window.removeEventListener("pointercancel", handleUp)
+				}
+				window.addEventListener("pointermove", handleMove)
+				window.addEventListener("pointerup", handleUp)
+				window.addEventListener("pointercancel", handleUp)
+			},
+			[composerRows],
+		)
 		const [isMouseDownOnMenu, setIsMouseDownOnMenu] = useState(false)
 		const highlightLayerRef = useRef<HTMLDivElement>(null)
 		const [selectedMenuIndex, setSelectedMenuIndex] = useState(-1)
@@ -1770,6 +1813,14 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 					onDragLeave={handleDragLeave}
 					onDragOver={onDragOver}
 					onDrop={onDrop}>
+					<div
+						aria-label="Resize the prompt box"
+						className="absolute -top-1.5 left-1/2 z-20 h-1.5 w-12 -translate-x-1/2 cursor-ns-resize rounded-full bg-[var(--vscode-panel-border)] hover:bg-[var(--vscode-focusBorder)]"
+						data-testid="composer-resize-handle"
+						onPointerDown={beginComposerResize}
+						role="separator"
+						title="Drag to resize the prompt box"
+					/>
 					{showDimensionError && (
 						<div className="absolute inset-2.5 bg-[rgba(var(--vscode-errorForeground-rgb),0.1)] border-2 border-error rounded-xs flex items-center justify-center z-10 pointer-events-none">
 							<span className="text-error font-bold text-xs text-center">
@@ -1843,8 +1894,8 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 					<DynamicTextArea
 						autoFocus={true}
 						data-testid="chat-input"
-						maxRows={10}
-						minRows={3}
+						maxRows={Math.max(10, composerRows + 4)}
+						minRows={composerRows}
 						onBlur={handleBlur}
 						onChange={(e) => {
 							handleInputChange(e)

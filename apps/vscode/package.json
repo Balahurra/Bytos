@@ -2,7 +2,7 @@
 	"name": "bytos",
 	"displayName": "Bytos",
 	"description": "Bytos is an open-source autonomous AI coding agent for Visual Studio Code. It plans before it edits, asks before it acts, and can edit files, run commands, use the browser, and call MCP tools with your approval. Auto Phase Plan runs up to 10 sequential, automatic phases with per-phase provider, model, API key, and MCP settings - each phase its own task, with an overall Markdown report. Bring your own API key (BYOK); no Bytos account or backend is required.",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"icon": "assets/icons/icon.png",
 	"publisher": "bytos",
 	"__metadata": {

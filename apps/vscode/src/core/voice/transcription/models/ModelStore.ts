@@ -2,7 +2,14 @@ import * as fs from "node:fs"
 import * as path from "node:path"
 import { VoiceError } from "../../types"
 import { verifyFile } from "./integrity"
-import { formatBytes, getModelPin, isKnownModelId, type ModelPin, PINNED_MODELS } from "./modelCatalog"
+import {
+	formatBytes,
+	getModelPin,
+	isKnownModelId,
+	listModels as listCatalogModels,
+	loadCustomModels,
+	type ModelPin,
+} from "./modelCatalog"
 
 // ── F3: cancel support ───────────────────────────────────────────────────
 //
@@ -63,7 +70,7 @@ export interface ModelStoreOptions {
 }
 
 export interface DownloadResult {
-	modelId: "tiny" | "base"
+	modelId: string
 	path: string
 	sizeBytes: number
 	sha256: string
@@ -90,6 +97,9 @@ export class ModelStore {
 	constructor(options: ModelStoreOptions) {
 		this.modelDir = options.modelDir
 		this.fetchImpl = options.fetchImpl ?? fetch
+		// Custom models live in a registry next to the built-in files, so every
+		// store knows about them before `getModelPin` is asked for an id.
+		loadCustomModels(this.modelDir)
 	}
 
 	get directory(): string {
@@ -97,20 +107,20 @@ export class ModelStore {
 	}
 
 	/** Absolute path a model occupies once installed. */
-	modelPath(modelId: "tiny" | "base"): string {
+	modelPath(modelId: string): string {
 		return path.join(this.modelDir, getModelPin(modelId).fileName)
 	}
 
 	/** Discloses what a download would cost. Call before requesting consent. */
-	describeDownload(modelId: "tiny" | "base"): { modelId: string; bytes: number; humanSize: string; url: string } {
+	describeDownload(modelId: string): { modelId: string; bytes: number; humanSize: string; url: string } {
 		const pin = getModelPin(modelId)
 		return { modelId: pin.id, bytes: pin.sizeBytes, humanSize: formatBytes(pin.sizeBytes), url: pin.url }
 	}
 
-	/** Every pinned model, with whether it is installed and verified. */
+	/** Every known model, with whether it is installed and verified. */
 	async listModels(): Promise<Array<{ pin: ModelPin; installed: boolean; path: string; verified: boolean }>> {
 		const out: Array<{ pin: ModelPin; installed: boolean; path: string; verified: boolean }> = []
-		for (const pin of Object.values(PINNED_MODELS)) {
+		for (const pin of listCatalogModels()) {
 			const target = this.modelPath(pin.id)
 			const installed = fs.existsSync(target)
 			out.push({ pin, installed, path: target, verified: installed ? await this.isVerified(pin.id) : false })
@@ -157,7 +167,7 @@ export class ModelStore {
 	 * Concurrent calls for the same model share one transfer, so a double click
 	 * cannot start two downloads or leave two `.part` files behind.
 	 */
-	async download(modelId: "tiny" | "base", options: DownloadOptions): Promise<DownloadResult> {
+	async download(modelId: string, options: DownloadOptions): Promise<DownloadResult> {
 		if (options.consent !== true) {
 			throw new VoiceError("MODEL_CONSENT_REQUIRED", "Downloading a speech model requires explicit consent.")
 		}
@@ -182,7 +192,7 @@ export class ModelStore {
 		}
 	}
 
-	private async runDownload(modelId: "tiny" | "base", options: DownloadOptions): Promise<DownloadResult> {
+	private async runDownload(modelId: string, options: DownloadOptions): Promise<DownloadResult> {
 		const pin = getModelPin(modelId)
 		const dir = options.targetDir ?? this.modelDir
 		const url = options.url ?? pin.url

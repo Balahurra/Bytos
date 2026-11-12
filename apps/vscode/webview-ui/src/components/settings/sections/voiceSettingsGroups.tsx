@@ -194,22 +194,40 @@ export const ModelGroup = ({
 	models,
 	selectedModelId,
 	selectedModelReady,
-	busyModelId,
+	busyModelIds,
+	removingModelId,
 	loading,
+	customName,
+	customFileName,
+	customBusy,
+	customError,
 	onSelect,
 	onDownload,
 	onCancel,
 	onRetry,
+	onRemove,
+	onCustomNameChange,
+	onPickCustomFile,
+	onAddCustom,
 }: {
 	models: VoiceModelInfo[]
 	selectedModelId: string
 	selectedModelReady: boolean
-	busyModelId: string | undefined
+	busyModelIds: ReadonlySet<string>
+	removingModelId: string | undefined
 	loading: boolean
+	customName: string
+	customFileName: string
+	customBusy: boolean
+	customError: string
 	onSelect: (modelId: string) => void
 	onDownload: (modelId: string) => void
 	onCancel: (modelId: string) => void
 	onRetry: (modelId: string) => void
+	onRemove: (modelId: string) => void
+	onCustomNameChange: (value: string) => void
+	onPickCustomFile: () => void
+	onAddCustom: () => void
 }) => (
 	<div>
 		<GroupLabel>Speech model</GroupLabel>
@@ -222,25 +240,63 @@ export const ModelGroup = ({
 				)}
 				{models.map((model) => (
 					<ModelRow
-						busy={busyModelId === model.id}
+						busy={busyModelIds.has(model.id)}
 						key={model.id}
 						model={model}
 						onCancel={() => onCancel(model.id)}
 						onDownload={() => onDownload(model.id)}
+						onRemove={() => onRemove(model.id)}
 						onRetry={() => onRetry(model.id)}
 						onSelect={() => onSelect(model.id)}
+						removing={removingModelId === model.id}
 						selected={model.id === selectedModelId}
 					/>
 				))}
 				<p className="text-xs text-description">
-					Models run locally with whisper.cpp. A model is used only after its SHA-256 checksum matches the pinned value,
-					and downloading one always asks for your confirmation first.
+					Models run locally with whisper.cpp. A built-in model is used only after its SHA-256 checksum matches the
+					pinned value, and downloading one always asks for your confirmation first.
 				</p>
 				{selectedModelId && !selectedModelReady && (
 					<p className="text-xs text-description">
 						The selected model is not ready yet, so transcription stays unavailable.
 					</p>
 				)}
+
+				<div className="border-t border-editor-widget-border/50 pt-3 space-y-2" id="voice-model-custom">
+					<div className="text-sm font-medium">Add a custom voice model</div>
+					<p className="text-xs text-description m-0">
+						Add any multilingual whisper.cpp model you already have as a local <code>.bin</code> file. Bytos copies
+						the file into its model folder, records its SHA-256, and lists it beside the built-in models. After
+						selecting it, the composer's microphone uses it for dictation.
+					</p>
+					<label className="block text-xs text-description" htmlFor="voice-custom-model-name">
+						Model name
+					</label>
+					<input
+						className="w-full box-border rounded-sm border border-[var(--vscode-input-border)] bg-[var(--vscode-input-background)] text-[var(--vscode-input-foreground)] px-2 py-1 text-sm"
+						id="voice-custom-model-name"
+						onChange={(event) => onCustomNameChange(event.target.value)}
+						placeholder="e.g. Whisper Small Turkish"
+						value={customName}
+					/>
+					<div className="flex items-center gap-2">
+						<button
+							className="rounded-xs border border-[var(--vscode-button-border,transparent)] bg-[var(--vscode-button-secondaryBackground)] px-2 py-1 text-xs text-[var(--vscode-button-secondaryForeground)] hover:bg-[var(--vscode-button-secondaryHoverBackground)]"
+							onClick={onPickCustomFile}
+							type="button">
+							{customFileName ? "Choose another file" : "Choose .bin file"}
+						</button>
+						<span className="min-w-0 truncate text-xs text-description">{customFileName || "No file selected"}</span>
+					</div>
+					<button
+						className="rounded-xs bg-[var(--vscode-button-background)] px-2.5 py-1 text-xs text-[var(--vscode-button-foreground)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50"
+						disabled={customBusy || !customFileName}
+						onClick={onAddCustom}
+						type="button">
+						{customBusy ? "Adding…" : "Add model and use it"}
+					</button>
+					{customError && <p className="text-xs text-error m-0">{customError}</p>}
+				</div>
 			</div>
 		</div>
 	</div>

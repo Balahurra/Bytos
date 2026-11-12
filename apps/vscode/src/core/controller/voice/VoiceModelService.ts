@@ -3,10 +3,16 @@ import { resolveVoiceModelDir } from "@core/voice"
 import { ModelStore } from "@core/voice/transcription/models/ModelStore"
 import {
 	DEFAULT_MODEL_ID,
+	getModelPin,
+	hasModelPin,
+	isCustomModelId,
 	isKnownModelId,
 	isWhisperPlatformSupported,
 	listModels,
 	type ModelPin,
+	registerCustomModel,
+	resetCustomModelRegistryForTesting,
+	unregisterCustomModel,
 } from "@core/voice/transcription/models/modelCatalog"
 import { locateVerifiedWhisperBinary } from "@core/voice/transcription/models/whisperBinaryLocator"
 import type { ModelId } from "@core/voice/transcription/types"
@@ -58,6 +64,8 @@ export interface VoiceModelView {
 	errorCode: string
 	isDefault: boolean
 	approxMemoryMb: number
+	/** True for a model the user added from a local `.bin` file. */
+	isCustom: boolean
 }
 
 export interface VoiceModelChange {
@@ -81,15 +89,12 @@ interface ModelRuntimeState {
 }
 
 function displayNameOf(pin: ModelPin): string {
+	if (pin.displayName) return pin.displayName
 	return pin.id === "base" ? "Base" : "Tiny"
 }
 
 function modelPin(modelId: ModelId): ModelPin {
-	const pin = listModels().find((entry) => entry.id === modelId)
-	if (!pin) {
-		throw new VoiceError("MODEL_UNKNOWN", `Unknown whisper model: ${String(modelId)}`)
-	}
-	return pin
+	return getModelPin(modelId)
 }
 
 function percentOf(state: ModelRuntimeState): number {
@@ -303,7 +308,29 @@ export class VoiceModelService {
 		const target = store.modelPath(modelId)
 		await fs.promises.rm(target, { force: true })
 		await fs.promises.rm(`${target}.part`, { force: true }).catch(() => undefined)
+		if (isCustomModelId(modelId)) {
+			unregisterCustomModel(store.directory, modelId)
+		}
 		this.setState(modelId, { state: "not-installed", verified: false, errorCode: "", ...EMPTY_PROGRESS })
+	}
+
+	/**
+	 * Adds a user-supplied whisper.cpp model from a local file.
+	 *
+	 * The file is copied into the model directory, hashed, and registered before
+	 * it is reported as ready. The copy is deliberate: deleting or moving the
+	 * original afterwards must not break dictation.
+	 */
+	async addCustomModel(input: { displayName: string; sourcePath: string }): Promise<VoiceModelView> {
+		const store = this.modelStore()
+		const pin = await registerCustomModel(store.directory, input)
+		this.setState(pin.id, { state: "verifying", errorCode: "", verified: false, ...EMPTY_PROGRESS })
+		return await this.verify(pin.id)
+	}
+
+	/** True only when the id names a built-in or a currently registered model. */
+	hasModel(modelId: unknown): boolean {
+		return hasModelPin(modelId)
 	}
 
 	/** One row, without hashing anything. */
@@ -339,15 +366,24 @@ export class VoiceModelService {
 			errorCode: resolved.errorCode,
 			isDefault: modelId === DEFAULT_MODEL_ID,
 			approxMemoryMb: pin.approxResidentMemoryMb,
+			isCustom: pin.custom === true,
 		}
 	}
 
 	/**
-	 * Every pinned model, cheapest first. Verification comes from cache: the
+	 * Every known model, cheapest first. Verification comes from cache: the
 	 * Settings panel calls `verify()` explicitly (and a download sets it), so
-	 * opening the panel never re-hashes 225 MB of models.
+	 * opening the panel never re-hashes installed models.
 	 */
 	list(): VoiceModelView[] {
+		try {
+			// Ensures the custom-model registry for the current directory is loaded
+			// before the catalog is enumerated.
+			this.modelStore()
+		} catch {
+			// No storage folder: the built-in models are still listed so the panel
+			// can explain what is missing.
+		}
 		return listModels().map((pin) => this.viewOf(pin.id))
 	}
 
@@ -363,6 +399,7 @@ export class VoiceModelService {
 		this.listeners.clear()
 		this.store = undefined
 		this.storeDir = ""
+		resetCustomModelRegistryForTesting()
 	}
 }
 

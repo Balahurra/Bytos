@@ -1,4 +1,4 @@
-﻿import { buildChatAttachments } from "@shared/attachments"
+import { buildChatAttachments } from "@shared/attachments"
 import { EmptyRequest } from "@shared/proto/bytos/common"
 import { SelectFilesRequest } from "@shared/proto/bytos/file"
 import { AutoPhaseErrorPolicy, AutoPhasePlan, AutoPhasePlanPhase } from "@shared/proto/bytos/state"
@@ -155,7 +155,7 @@ const PhaseModelSettings = ({ phase, onChange }: { phase: PhaseDraft; onChange: 
 					</VSCodeOption>
 				))}
 			</VSCodeDropdown>
-			{isLoading && <span className="text-xs text-description">Loading modelsâ€¦</span>}
+			{isLoading && <span className="text-xs text-description">Loading models…</span>}
 			{error && <span className="text-xs text-[var(--vscode-errorForeground)]">{error}</span>}
 			{selectedModelInfo && <ModelInfoView isPopup modelInfo={selectedModelInfo} selectedModelId={selectedModelId} />}
 		</div>
@@ -382,7 +382,7 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 				</p>
 
 				{loading ? (
-					<div className="text-sm text-description py-4">Loading Auto Phase Planâ€¦</div>
+					<div className="text-sm text-description py-4">Loading Auto Phase Planner…</div>
 				) : (
 					<div className="flex flex-col gap-3">
 						{phaseList.length === 0 && (
@@ -401,10 +401,15 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 											title={phase.expanded ? "Collapse phase" : "Expand phase"}>
 											{phase.expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
 										</VSCodeButton>
-										<span className="font-medium">Phase {index + 1}</span>
+										<span
+											className={`font-medium ${
+												phase.expanded ? "text-[var(--vscode-charts-yellow)]" : ""
+											}`}>
+											Phase {index + 1}
+										</span>
 										<span className="text-xs text-description truncate">
 											{providerLabel(provider)}
-											{phase.modelId ? ` Â· ${phase.modelId}` : ""}
+											{phase.modelId ? ` · ${phase.modelId}` : ""}
 										</span>
 										<div className="ml-auto flex items-center gap-1">
 											<VSCodeButton
@@ -464,7 +469,7 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 													className="w-full min-h-[90px] resize-y box-border rounded-sm border border-[var(--vscode-input-border)] bg-[var(--vscode-input-background)] text-[var(--vscode-input-foreground)] p-2 text-sm"
 													id={`auto-phase-prompt-${phase.id}`}
 													onChange={(event) => updatePhase(phase.id, { prompt: event.target.value })}
-													placeholder="Describe what this phase should doâ€¦"
+													placeholder="Describe what this phase should do…"
 													value={phase.prompt}
 												/>
 											</div>
@@ -657,7 +662,7 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 								</VSCodeButton>
 							)}
 							<DoneButton appearance="primary" disabled={saving || loading} onClick={() => persistPlan()}>
-								{saving ? "Savingâ€¦" : "Done"}
+								{saving ? "Saving…" : "Done"}
 							</DoneButton>
 						</div>
 					</div>

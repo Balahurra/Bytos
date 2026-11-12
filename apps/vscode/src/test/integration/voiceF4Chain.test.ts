@@ -33,7 +33,14 @@ const CAPABLE = {
 }
 
 describe("F4 voice chain (real extension host)", () => {
-	it("resolves the capture helper from the installed extension", async () => {
+	it("resolves the capture helper from the installed extension", async function () {
+		// Capture is implemented for Windows x64 only; Linux CI still runs the
+		// extension-host suite, so this Windows-specific assertion is skipped
+		// rather than reported as a missing helper.
+		if (process.platform !== "win32" || process.arch !== "x64") {
+			this.skip()
+			return
+		}
 		// `__dirname` inside the host is `<extension>/out/src/test/integration`.
 		const extensionRoot = require("node:path").resolve(__dirname, "../../../..")
 		const capability = resolveVoiceCapability({

@@ -132,7 +132,10 @@ jobs:
             - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
               with:
                   ref: ${{ github.sha }}
-                  lfs: true
+                  # Do not fetch Git LFS during the release build. The only LFS
+                  # payload is a documentation GIF, and a missing/moved LFS
+                  # object must not block packaging the extension. Nothing the
+                  # VSIX needs is stored in LFS.
 
             # The version input is a confirmation of what is being shipped, not
             # a stamp: the About tab, telemetry extension_version and the

@@ -12,6 +12,7 @@
 - The **Auto Phase Plan** settings tab is now titled **Auto Phase Planner**.
 - The chat composer starts taller, scrolls its own text when the mouse wheel is used over it, and can be resized vertically from the handle above the prompt.
 - An expanded phase in **Auto Phase Planner** shows its **Phase N** label in yellow, matching the active state.
+- The bottom action in **Auto Phase Planner** is now a green **Save** button. Closing Settings with the header **Done** only closes the view and does not save the plan.
 
 ### Fixed
 

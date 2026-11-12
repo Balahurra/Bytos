@@ -6,7 +6,7 @@ import { VSCodeButton, VSCodeCheckbox, VSCodeDropdown, VSCodeOption } from "@vsc
 import { Check, ChevronDown, ChevronRight, Copy, Eraser, Plus, Trash2 } from "lucide-react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { getDataUrlBase64Length, normalizeImagesForAttachment } from "@/components/chat/attachment-image-normalization"
-import DoneButton from "@/components/common/DoneButton"
+import SuccessButton from "@/components/common/SuccessButton"
 import Thumbnails from "@/components/common/Thumbnails"
 import { type ProviderId, useExtensionState } from "@/context/ExtensionStateContext"
 import { useProviderListings } from "@/hooks/useProviderListings"
@@ -255,7 +255,7 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 				})
 				setStatus(
 					images.length + files.length > 0
-						? { kind: "info", text: "Attachments added to this phase. Press Done to save the plan." }
+						? { kind: "info", text: "Attachments added to this phase. Press Save to save the plan." }
 						: null,
 				)
 			} catch (error) {
@@ -295,7 +295,7 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 
 	const deletePhase = useCallback((id: string) => {
 		setPhaseList((current) => current.filter((phase) => phase.id !== id))
-		setStatus({ kind: "info", text: "Phase removed. Press Done to save the plan." })
+		setStatus({ kind: "info", text: "Phase removed. Press Save to save the plan." })
 	}, [])
 
 	const copyPrompt = useCallback((prompt: string) => {
@@ -661,9 +661,14 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 									Delete all phases
 								</VSCodeButton>
 							)}
-							<DoneButton appearance="primary" disabled={saving || loading} onClick={() => persistPlan()}>
-								{saving ? "Saving…" : "Done"}
-							</DoneButton>
+							<SuccessButton
+								appearance="primary"
+								data-testid="auto-phase-save"
+								disabled={saving || loading}
+								onClick={() => persistPlan()}
+								title="Save the Auto Phase Planner plan">
+								{saving ? "Saving…" : "Save"}
+							</SuccessButton>
 						</div>
 					</div>
 				)}

@@ -169,6 +169,45 @@ describe("VoiceModelService — consent", () => {
 	})
 })
 
+describe("VoiceModelService — custom models", () => {
+	it("copies a local .bin and reports it ready with its own hash", async () => {
+		const source = path.join(root, "my-whisper.bin")
+		fs.writeFileSync(source, Buffer.concat([Buffer.from("ggml"), Buffer.alloc(4096, 5)]))
+		const service = new VoiceModelService()
+		const view = await service.addCustomModel({ displayName: "My Turkish Model", sourcePath: source })
+		expect(view.isCustom).toBe(true)
+		expect(view.displayName).toBe("My Turkish Model")
+		expect(view.state).toBe("ready")
+		expect(view.verified).toBe(true)
+		expect(fs.existsSync(path.join(dir, view.fileName))).toBe(true)
+		expect(service.isModelReady(view.id)).toBe(true)
+		expect(service.list().map((model) => model.id)).toContain(view.id)
+	})
+
+	it("keeps the custom model registered after a service restart", async () => {
+		const source = path.join(root, "persisted.bin")
+		fs.writeFileSync(source, Buffer.concat([Buffer.from("ggml"), Buffer.alloc(2048, 9)]))
+		const id = (await new VoiceModelService().addCustomModel({ displayName: "Persisted", sourcePath: source })).id
+		resetVoiceModelServiceForTesting()
+		const restarted = new VoiceModelService()
+		expect(restarted.hasModel(id)).toBe(true)
+		expect(restarted.list().find((model) => model.id === id)?.displayName).toBe("Persisted")
+	})
+
+	it("rejects a file that is not a whisper.cpp model", async () => {
+		const source = path.join(root, "not-a-model.bin")
+		fs.writeFileSync(source, Buffer.from("this is not a ggml file"))
+		await expect(new VoiceModelService().addCustomModel({ displayName: "Broken", sourcePath: source })).rejects.toMatchObject(
+			{ code: "MODEL_UNKNOWN" },
+		)
+	})
+
+	it("accepts a custom id in assertModelId but still rejects arbitrary values", () => {
+		expect(assertModelId("custom:my-model-ab12")).toBe("custom:my-model-ab12")
+		expect(() => assertModelId("small")).toThrow()
+	})
+})
+
 describe("assertModelId", () => {
 	it("accepts the pinned ids and rejects everything else", () => {
 		expect(assertModelId("tiny")).toBe("tiny")

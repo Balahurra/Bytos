@@ -38,7 +38,11 @@ vi.mock("@core/controller/voice/VoiceModelService", async (importOriginal) => {
 	return {
 		...actual,
 		resolveVoiceEngine: async () => engineHolder.view,
-		getVoiceModelService: () => ({ isModelReady: () => modelReadyHolder.ready, list: () => [] }),
+		getVoiceModelService: () => ({
+			isModelReady: () => modelReadyHolder.ready,
+			verify: async () => ({ state: modelReadyHolder.ready ? "ready" : "not-installed" }),
+			list: () => [],
+		}),
 	}
 })
 

@@ -1,4 +1,4 @@
-﻿import { buildChatAttachments } from "@shared/attachments"
+import { buildChatAttachments } from "@shared/attachments"
 import { EmptyRequest } from "@shared/proto/bytos/common"
 import { SelectFilesRequest } from "@shared/proto/bytos/file"
 import { AutoPhaseErrorPolicy, AutoPhasePlan, AutoPhasePlanPhase } from "@shared/proto/bytos/state"
@@ -6,7 +6,7 @@ import { VSCodeButton, VSCodeCheckbox, VSCodeDropdown, VSCodeOption } from "@vsc
 import { Check, ChevronDown, ChevronRight, Copy, Eraser, Plus, Trash2 } from "lucide-react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { getDataUrlBase64Length, normalizeImagesForAttachment } from "@/components/chat/attachment-image-normalization"
-import DoneButton from "@/components/common/DoneButton"
+import SuccessButton from "@/components/common/SuccessButton"
 import Thumbnails from "@/components/common/Thumbnails"
 import { type ProviderId, useExtensionState } from "@/context/ExtensionStateContext"
 import { useProviderListings } from "@/hooks/useProviderListings"
@@ -155,7 +155,7 @@ const PhaseModelSettings = ({ phase, onChange }: { phase: PhaseDraft; onChange: 
 					</VSCodeOption>
 				))}
 			</VSCodeDropdown>
-			{isLoading && <span className="text-xs text-description">Loading modelsâ€¦</span>}
+			{isLoading && <span className="text-xs text-description">Loading models…</span>}
 			{error && <span className="text-xs text-[var(--vscode-errorForeground)]">{error}</span>}
 			{selectedModelInfo && <ModelInfoView isPopup modelInfo={selectedModelInfo} selectedModelId={selectedModelId} />}
 		</div>
@@ -255,7 +255,7 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 				})
 				setStatus(
 					images.length + files.length > 0
-						? { kind: "info", text: "Attachments added to this phase. Press Done to save the plan." }
+						? { kind: "info", text: "Attachments added to this phase. Press Save to save the plan." }
 						: null,
 				)
 			} catch (error) {
@@ -295,7 +295,7 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 
 	const deletePhase = useCallback((id: string) => {
 		setPhaseList((current) => current.filter((phase) => phase.id !== id))
-		setStatus({ kind: "info", text: "Phase removed. Press Done to save the plan." })
+		setStatus({ kind: "info", text: "Phase removed. Press Save to save the plan." })
 	}, [])
 
 	const copyPrompt = useCallback((prompt: string) => {
@@ -382,7 +382,7 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 				</p>
 
 				{loading ? (
-					<div className="text-sm text-description py-4">Loading Auto Phase Planâ€¦</div>
+					<div className="text-sm text-description py-4">Loading Auto Phase Planner…</div>
 				) : (
 					<div className="flex flex-col gap-3">
 						{phaseList.length === 0 && (
@@ -401,10 +401,15 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 											title={phase.expanded ? "Collapse phase" : "Expand phase"}>
 											{phase.expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
 										</VSCodeButton>
-										<span className="font-medium">Phase {index + 1}</span>
+										<span
+											className={`font-medium ${
+												phase.expanded ? "text-[var(--vscode-charts-yellow)]" : ""
+											}`}>
+											Phase {index + 1}
+										</span>
 										<span className="text-xs text-description truncate">
 											{providerLabel(provider)}
-											{phase.modelId ? ` Â· ${phase.modelId}` : ""}
+											{phase.modelId ? ` · ${phase.modelId}` : ""}
 										</span>
 										<div className="ml-auto flex items-center gap-1">
 											<VSCodeButton
@@ -464,7 +469,7 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 													className="w-full min-h-[90px] resize-y box-border rounded-sm border border-[var(--vscode-input-border)] bg-[var(--vscode-input-background)] text-[var(--vscode-input-foreground)] p-2 text-sm"
 													id={`auto-phase-prompt-${phase.id}`}
 													onChange={(event) => updatePhase(phase.id, { prompt: event.target.value })}
-													placeholder="Describe what this phase should doâ€¦"
+													placeholder="Describe what this phase should do…"
 													value={phase.prompt}
 												/>
 											</div>
@@ -656,9 +661,14 @@ const AutoPhasePlanSection = ({ renderSectionHeader }: AutoPhasePlanSectionProps
 									Delete all phases
 								</VSCodeButton>
 							)}
-							<DoneButton appearance="primary" disabled={saving || loading} onClick={() => persistPlan()}>
-								{saving ? "Savingâ€¦" : "Done"}
-							</DoneButton>
+							<SuccessButton
+								appearance="primary"
+								data-testid="auto-phase-save"
+								disabled={saving || loading}
+								onClick={() => persistPlan()}
+								title="Save the Auto Phase Planner plan">
+								{saving ? "Saving…" : "Save"}
+							</SuccessButton>
 						</div>
 					</div>
 				)}

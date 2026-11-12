@@ -96,23 +96,42 @@ export interface ModelRowProps {
 	model: VoiceModelInfo
 	selected: boolean
 	busy: boolean
+	removing: boolean
 	onSelect: () => void
 	onDownload: () => void
 	onCancel: () => void
 	onRetry: () => void
+	onRemove: () => void
 }
 
 /**
  * One pinned model: name, size, install/verify state, and exactly one primary
  * action for the state it is in (download → cancel, failed → retry).
  */
-export const ModelRow = ({ model, selected, busy, onSelect, onDownload, onCancel, onRetry }: ModelRowProps) => {
+export const ModelRow = ({
+	model,
+	selected,
+	busy,
+	removing,
+	onSelect,
+	onDownload,
+	onCancel,
+	onRetry,
+	onRemove,
+}: ModelRowProps) => {
 	const row = modelRowState(model)
 	const isDownloading = model.state === "downloading"
 	const isVerifying = model.state === "verifying"
 
 	return (
-		<div className="space-y-2" data-model-id={model.id}>
+		<div
+			className={`space-y-2 rounded-sm border p-2 transition-colors ${
+				selected
+					? "border-[var(--vscode-focusBorder)] bg-[var(--vscode-list-activeSelectionBackground)]"
+					: "border-transparent"
+			}`}
+			data-model-id={model.id}
+			data-selected={selected ? "true" : "false"}>
 			<div className="flex items-start justify-between gap-3">
 				<label className="flex items-start gap-2 cursor-pointer select-none" htmlFor={`voice-model-${model.id}`}>
 					<input
@@ -126,10 +145,17 @@ export const ModelRow = ({ model, selected, busy, onSelect, onDownload, onCancel
 					<span className="text-sm">
 						{model.displayName}
 						{model.isDefault && <span className="ml-1 text-xs text-description">(default)</span>}
+						{model.isCustom && (
+							<span className="ml-1 rounded-xs border border-[var(--vscode-panel-border)] px-1 py-0.5 text-[10px] uppercase tracking-wide text-description">
+								Custom
+							</span>
+						)}
+						{selected && <span className="ml-2 text-xs font-medium text-success">Selected</span>}
 					</span>
 				</label>
 				<span className="text-xs text-description shrink-0">
-					{formatModelSize(model.sizeBytes)} · ~{model.approxMemoryMb} MB RAM
+					{formatModelSize(model.sizeBytes)}
+					{model.approxMemoryMb > 0 ? ` · ~${model.approxMemoryMb} MB RAM` : ""}
 				</span>
 			</div>
 
@@ -142,6 +168,15 @@ export const ModelRow = ({ model, selected, busy, onSelect, onDownload, onCancel
 					{model.state === "failed" && model.errorCode ? ` — ${model.errorCode}` : ""}
 				</span>
 				<div className="flex items-center gap-2">
+					{!selected && (
+						<button
+							className="rounded-xs border border-[var(--vscode-button-border,transparent)] bg-[var(--vscode-button-secondaryBackground)] px-2 py-0.5 text-xs text-[var(--vscode-button-secondaryForeground)] hover:bg-[var(--vscode-button-secondaryHoverBackground)] disabled:opacity-50"
+							disabled={busy}
+							onClick={onSelect}
+							type="button">
+							Use this model
+						</button>
+					)}
 					{isDownloading && (
 						<button
 							className="rounded-xs px-1.5 py-0.5 text-xs text-description hover:bg-list-hover"
@@ -167,6 +202,16 @@ export const ModelRow = ({ model, selected, busy, onSelect, onDownload, onCancel
 							onClick={onDownload}
 							type="button">
 							Download
+						</button>
+					)}
+					{model.isCustom && (
+						<button
+							className="rounded-xs px-1.5 py-0.5 text-xs text-error hover:underline disabled:opacity-50"
+							disabled={busy || removing || isDownloading}
+							onClick={onRemove}
+							title="Remove this custom model from disk"
+							type="button">
+							{removing ? "Removing…" : "Remove"}
 						</button>
 					)}
 				</div>

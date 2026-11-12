@@ -65,9 +65,9 @@ const SETTINGS_TABS: SettingsTab[] = [
 	},
 	{
 		id: "auto-phase-plan",
-		name: "Auto Phase Plan",
-		tooltipText: "Auto Phase Plan",
-		headerText: "Auto Phase Plan",
+		name: "Auto Phase Planner",
+		tooltipText: "Auto Phase Planner",
+		headerText: "Auto Phase Planner",
 		icon: Sparkles,
 	},
 	{

@@ -5,7 +5,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest"
 import { ModelStore } from "../models/ModelStore"
 import { WhisperCliEngine } from "../WhisperCliEngine"
 import { WAV_HEADER_BYTES, wavFromPcm16 } from "../wav"
-import { AUDIO_DIR, ENGINE_ROOT, MODEL_DIR, readClipPcm16, skipWithoutAssets } from "./f2TestAssets"
+import { AUDIO_DIR, ENGINE_ROOT, MODEL_DIR, noise, readClipPcm16, skipWithoutAssets } from "./f2TestAssets"
 
 /**
  * Privacy and resource guarantees for F2.
@@ -33,7 +33,10 @@ function listTmpAudio(): string[] {
 describe("wav wrapper never touches disk", () => {
 	it("builds the WAV entirely in memory", () => {
 		const before = listTmpAudio()
-		const samples = readClipPcm16("en_numbers")
+		// Synthetic samples keep this guarantee runnable in CI without the
+		// downloaded voice corpus; the real-clip suites below are skipped when
+		// `test-assets/voice-f2` is absent.
+		const samples = noise(1)
 		const wav = wavFromPcm16(samples)
 		expect(wav.length).toBe(WAV_HEADER_BYTES + samples.length * 2)
 		expect(Buffer.isBuffer(wav)).toBe(true)

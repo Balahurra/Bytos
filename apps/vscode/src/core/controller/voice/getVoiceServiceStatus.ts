@@ -61,16 +61,19 @@ export async function getVoiceServiceStatus(controller: Controller, _request: Em
 	const { resolveVoiceEngine } = await import("./VoiceModelService")
 	const engine = await (engineResolver ?? resolveVoiceEngine)({ extensionRoot: extensionRoot() })
 	const models = getVoiceModelService()
+	// `list()` also loads the custom-model registry for this directory, so a
+	// custom id that is still persisted is recognised below.
+	const modelViews = models.list()
 	const storedLanguage = controller.stateManager.getGlobalSettingsKey("voiceLanguage")
 	const storedModelId = controller.stateManager.getGlobalSettingsKey("voiceModelId")
 	const language = isSupportedLanguage(storedLanguage) ? storedLanguage : "auto"
-	const modelId = isKnownModelId(storedModelId) ? storedModelId : DEFAULT_MODEL_ID
+	const modelId = isKnownModelId(storedModelId) && models.hasModel(storedModelId) ? storedModelId : DEFAULT_MODEL_ID
 
 	return VoiceServiceStatus.create({
 		capability,
 		language,
 		modelId,
-		models: models.list().map(toProtoModel),
+		models: modelViews.map(toProtoModel),
 		engineState: engine.state,
 		engineErrorCode: engine.errorCode,
 		transcribeReady: engine.state === "ready" && models.isModelReady(modelId),
@@ -94,6 +97,7 @@ export function toProtoModel(view: VoiceModelView): VoiceModelInfo {
 		errorCode: view.errorCode,
 		isDefault: view.isDefault,
 		approxMemoryMb: view.approxMemoryMb,
+		isCustom: view.isCustom,
 	})
 }
 

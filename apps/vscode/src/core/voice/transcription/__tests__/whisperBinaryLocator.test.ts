@@ -58,7 +58,7 @@ describe("engine directory resolution", () => {
 			extensionRoot: "C:\\ext",
 		})
 		expect(roots).toEqual([
-			"C:\\override",
+			path.resolve("C:\\override"),
 			path.resolve("C:\\storage"),
 			path.join("C:\\storage", "voice", "whisper"),
 			path.join("C:\\ext", "assets", "voice", "whisper"),

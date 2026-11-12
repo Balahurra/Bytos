@@ -53,8 +53,16 @@ export async function transcribeUtterance(
 	if (engine.state !== "ready") {
 		throw new VoiceError((engine.errorCode || "WHISPER_BINARY_MISSING") as never)
 	}
-	if (!getVoiceModelService().isModelReady(modelId)) {
-		throw new VoiceError("MODEL_NOT_INSTALLED")
+	const modelService = getVoiceModelService()
+	if (!modelService.isModelReady(modelId)) {
+		// A model installed in an earlier session (including a custom one) has not
+		// been hashed in this process yet. Verify it now rather than refusing a
+		// dictation the Settings panel can already see on disk. An absent model
+		// still fails here, before the capture is stopped.
+		const view = await modelService.verify(modelId)
+		if (view.state !== "ready") {
+			throw new VoiceError("MODEL_NOT_INSTALLED")
+		}
 	}
 	if (!runtime.canTranscribe) {
 		throw new VoiceError("WHISPER_BINARY_MISSING", "The recognition engine is not available in this host.")

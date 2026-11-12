@@ -54,14 +54,14 @@ jobs:
             # arbitrary ref here would hand both of them attacker-controlled
             # code. Hardcoding the branch makes its protection rules
             # load-bearing for releases.
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v7
               with:
                   ref: legacy-extension
 
             # Deliberately no dependency cache here: publish workflows do clean
             # installs and should not restore actions caches.
             - name: Setup Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v7
               with:
                   node-version: 22
 
@@ -112,7 +112,7 @@ jobs:
             # Check out the legacy branch (NOT main; hardcoded — see the test
             # job's checkout comment). fetch-depth: 0 + tags so we can
             # create/push the release tag and compute the previous tag.
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v7
               with:
                   ref: legacy-extension
                   fetch-depth: 0
@@ -154,7 +154,7 @@ jobs:
                   echo "tag=$TAG" >> $GITHUB_OUTPUT
 
             - name: Setup Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v7
               with:
                   node-version: 22
 
@@ -292,7 +292,7 @@ jobs:
                   echo "SLACK_EOF" >> $GITHUB_OUTPUT
 
             - name: Create GitHub Release
-              uses: softprops/action-gh-release@v1
+              uses: softprops/action-gh-release@v3
               with:
                   tag_name: ${{ steps.resolve_tag.outputs.tag }}
                   files: "apps/vscode/*.vsix"
@@ -305,7 +305,7 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Post release to Slack
-              uses: slackapi/slack-github-action@v3.0.1
+              uses: slackapi/slack-github-action@v4.0.0
               with:
                   method: chat.postMessage
                   token: ${{ secrets.SLACK_RELEASE_BOT_TOKEN }}

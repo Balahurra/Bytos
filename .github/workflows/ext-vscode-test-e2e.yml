@@ -27,10 +27,10 @@ jobs:
               if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
               run: echo "run_all=true" >> "$GITHUB_OUTPUT"
 
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v7
               if: steps.force.outputs.run_all != 'true'
 
-            - uses: dorny/paths-filter@v3
+            - uses: dorny/paths-filter@v4
               if: steps.force.outputs.run_all != 'true'
               id: filter
               with:
@@ -87,7 +87,7 @@ jobs:
             run:
                 working-directory: apps/vscode
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v7
             - name: Setup Bun
               uses: oven-sh/setup-bun@v2
               with:
@@ -100,7 +100,7 @@ jobs:
             # Cache VS Code installation. The key is exact-match only (no
             # restore-keys prefix fallbacks); a miss just downloads VS Code.
             - name: Cache VS Code
-              uses: actions/cache@v4
+              uses: actions/cache@v6
               id: vscode-cache
               with:
                   path: apps/vscode/.vscode-test
@@ -150,7 +150,7 @@ jobs:
             # Repo-root relative: the job's `working-directory` default applies to `run`
             # steps only, so an apps/vscode-relative path here silently matches nothing
             # and every failing run uploads no recordings at all.
-            - uses: actions/upload-artifact@v4
+            - uses: actions/upload-artifact@v7
               if: ${{ failure() }}
               with:
                   name: playwright-recordings-${{ matrix.runner }}

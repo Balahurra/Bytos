@@ -57,7 +57,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Determine publish channel
         id: channel
@@ -109,7 +109,7 @@ jobs:
 
       - name: Setup Node.js
         if: steps.check_commits.outputs.skip != 'true'
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: "24.x"
           registry-url: "https://registry.npmjs.org"
@@ -306,7 +306,7 @@ jobs:
 
       - name: Create GitHub Release
         if: steps.check_commits.outputs.skip != 'true' && steps.channel.outputs.channel == 'latest'
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: sdk/sdk/v${{ steps.version.outputs.version }}
           name: "SDK v${{ steps.version.outputs.version }}"
@@ -340,7 +340,7 @@ jobs:
 
       - name: Post release to Slack
         if: steps.check_commits.outputs.skip != 'true' && steps.channel.outputs.channel == 'latest'
-        uses: slackapi/slack-github-action@v3.0.1
+        uses: slackapi/slack-github-action@v4.0.0
         with:
           method: chat.postMessage
           token: ${{ secrets.SLACK_RELEASE_BOT_TOKEN }}
